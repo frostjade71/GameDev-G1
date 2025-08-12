@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Quicksand', sans-serif;
+}
+
+body {
+    background-image: url('assets/menu/menubg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+.menu-container {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-left: 5rem;
+    max-width: 500px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slide-out {
+    transform: translateX(-100vw);
+}
+
+.slide-in {
+    transform: translateX(0);
+}
+
+.menu-container.game-selection {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translate(-100%, -50%);
+    margin-left: 0;
+    max-width: 90vw;
+    width: 90vw;
+    transition: transform 0.5s ease-in-out;
+}
+
+.menu-container.game-selection.slide-in {
+    transform: translate(5%, -50%);
+}
+
+.menu-container.game-selection.slide-out {
+    transform: translate(100%, -50%);
+}
+
+.menu-content {
+    text-align: center;
+}
+
+.logo-container {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.game-logo {
+    max-width: 400px;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 2px 10px rgba(0, 255, 135, 0.2));
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.menu-button {
+    background: linear-gradient(45deg, rgba(96, 239, 255, 0.15), rgba(0, 255, 135, 0.15));
+    border: 2px solid rgba(96, 239, 255, 0.5);
+    border-radius: 10px;
+    padding: 0.8rem 1.8rem;
+    font-size: 0.8rem;
+    font-family: 'Press Start 2P', cursive;
+    letter-spacing: 0.5px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 180px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(96, 239, 255, 0.2),
+                inset 0 0 15px rgba(96, 239, 255, 0.1);
+}
+
+.menu-button:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(45deg, rgba(96, 239, 255, 0.3), rgba(0, 255, 135, 0.3));
+    border-color: rgba(0, 255, 135, 0.8);
+    box-shadow: 0 0 20px rgba(0, 255, 135, 0.4),
+                inset 0 0 20px rgba(0, 255, 135, 0.2);
+}
+
+.menu-button:active {
+    transform: translateY(0);
+}

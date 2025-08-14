@@ -1,4 +1,43 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Handle loading screen
+    const loadingScreen = document.getElementById('loading-screen');
+    const pressStart = document.querySelector('.press-start');
+    
+    if (loadingScreen) {
+        // Check if we're coming from game-selection page using URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('from') === 'selection') {
+            // Skip loading screen if coming from game selection
+            loadingScreen.style.display = 'none';
+        } else {
+            // Show loading screen and handle loading completion
+            setTimeout(() => {
+                if (loadingScreen && pressStart) {
+                    // Show the "press start" message
+                    pressStart.classList.remove('hidden');
+                    
+                    // Add click event listener to the loading screen
+                    const handleStart = () => {
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            if (loadingScreen) {
+                                loadingScreen.style.display = 'none';
+                                
+                                // Remove the event listener
+                                loadingScreen.removeEventListener('click', handleStart);
+                                document.removeEventListener('keydown', handleStart);
+                            }
+                        }, 1000);
+                    };
+                    
+                    // Listen for both click and keydown events
+                    loadingScreen.addEventListener('click', handleStart);
+                    document.addEventListener('keydown', handleStart);
+                }
+            }, 6000);
+        }
+    }
+
     // Add entry animation for game selection page
     const menuContainer = document.querySelector('.menu-container');
     if (menuContainer) {
@@ -28,14 +67,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 500); // Match this with your CSS transition duration
                 
                 event.preventDefault(); // Prevent immediate navigation
+            } else if (button.textContent === 'Credits') {
+                const menuContainer = document.querySelector('.menu-container');
+                menuContainer.classList.add('slide-out');
+                
+                // Wait for the slide-out animation to complete, then navigate
+                setTimeout(() => {
+                    window.location.href = 'credits.html?from=menu';
+                }, 500);
+                
+                event.preventDefault(); // Prevent immediate navigation
             }
         });
     });
 
-    // Handle back button on game selection page
-    const backButton = document.querySelector('.back-button');
-    if (backButton) {
-        backButton.addEventListener('click', (event) => {
+    // Handle back link/button
+    const backElement = document.querySelector('.back-button, .back-link');
+    if (backElement) {
+        backElement.addEventListener('click', (event) => {
+            playClickSound();
             const container = document.querySelector('.menu-container');
             
             // Add slide-out class to trigger animation
@@ -44,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Wait for the slide-out animation to complete, then navigate
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = 'index.html?from=selection';
             }, 500);
             
             event.preventDefault(); // Prevent immediate navigation

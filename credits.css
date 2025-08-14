@@ -1,0 +1,139 @@
+/* Credits Page Styles */
+.credits-title {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.credits-logo {
+    max-width: 200px;
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 135, 0.3));
+}
+
+.credits-section {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.credits-section h2 {
+    font-family: 'Press Start 2P', cursive;
+    color: rgb(253, 253, 253);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 8px rgba(153, 236, 11, 0.501);
+}
+
+.members-container {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin: 0 auto 1.5rem;
+    max-width: 600px;
+    border: 1px solid rgba(96, 239, 255, 0.2);
+    box-shadow: 0 0 20px rgba(96, 239, 255, 0.1);
+}
+
+.developer-container {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1.5rem auto;
+    max-width: 250px;
+    border: 1px solid rgba(0, 255, 135, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 135, 0.1);
+}
+
+.members-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.member-card, .developer-card {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.65rem;
+    text-align: center;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+}
+
+.member-card {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 10px rgba(96, 239, 255, 0.3);
+}
+
+.developer-card {
+    font-size: 0.5rem;
+    color: rgb(247, 249, 248);
+    text-shadow: 0 0 15px rgba(212, 255, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+    .credits-title {
+        font-size: 1.4rem;
+    }
+    
+    .credits-section h2 {
+        font-size: 1rem;
+    }
+    
+    .members-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .member-card, .developer-card {
+        font-size: 0.7rem;
+    }
+    
+    .developer-card {
+        font-size: 0.8rem;
+    }
+    
+    .members-container,
+    .developer-container {
+        padding: 1.5rem;
+    }
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    text-shadow: 0 0 8px rgb(0, 0, 0);
+    transition: all 0.3s ease;
+}
+
+.back-link:hover {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 12px rgba(0, 255, 135, 0.5);
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .credits-title {
+        font-size: 1.4rem;
+    }
+    
+    .credits-section h2 {
+        font-size: 1rem;
+    }
+    
+    .members-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .member-card, .developer-card {
+        font-size: 0.9rem;
+    }
+    
+    .menu-buttons .menu-button {
+        font-size: 0.5rem;
+        padding: 0.5rem 1rem;
+        min-width: 120px;
+    }
+}

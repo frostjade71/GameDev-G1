@@ -12,11 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const buttons = document.querySelectorAll('.menu-button, .play-button, .back-button');
     
     buttons.forEach(button => {
-        // Add hover sound effect
-        button.addEventListener('mouseenter', () => {
-            playHoverSound();
-        });
-        
         // Add click sound and visual effect
         button.addEventListener('click', () => {
             playClickSound();
@@ -56,30 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle game cards and play buttons
+    // Handle game cards
     const gameCards = document.querySelectorAll('.game-card');
-    const playButtons = document.querySelectorAll('.play-button');
-    
-    if (playButtons) {
-        playButtons.forEach(button => {
-            button.addEventListener('click', (event) => {
-                event.stopPropagation(); // Prevent card click
-                const gameSelection = document.querySelector('.menu-container.game-selection');
-                
-                // Slide out game selection to the right
-                gameSelection.classList.add('slide-out');
-                
-                // Get the game type from the parent card
-                const gameType = button.closest('.game-card').dataset.game;
-                
-                // Here you can add logic to start each specific game
-                setTimeout(() => {
-                    console.log(`Starting ${gameType}`);
-                    // Add your game start logic here
-                }, 500);
-            });
-        });
-    }
 
     if (gameCards) {
         let currentBackground = null;
@@ -101,17 +74,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
             card.addEventListener('click', () => {
                 const gameType = card.dataset.game;
-                console.log(`Selected ${gameType}`);
+                const menuContainer = document.querySelector('.menu-container');
+                
+                if (gameType === 'grow-word' || gameType === 'letterscapes') {
+                    showToast('Under Development');
+                } else if (gameType === 'spell-quest') {
+                    menuContainer.classList.add('slide-out');
+                    setTimeout(() => {
+                        window.location.href = './spellbee/spellbeemenu.html';
+                    }, 500);
+                }
+                playClickSound(); // Play click sound instead of game open sound
             });
         });
     }
-});
 
-function playHoverSound() {
-    // Add hover sound implementation here
-    // Example: const hoverSound = new Audio('hover.wav');
-    // hoverSound.play();
-}
+    // Toast notification function with sound and blur overlay
+    window.showToast = function(message) {
+        const toast = document.getElementById('toast');
+        const overlay = document.querySelector('.toast-overlay');
+        
+        if (toast && overlay) {
+            // Play toast notification sound
+            const toastSound = new Audio('assets/sounds/toast/toastnotifwarn.mp3');
+            toastSound.volume = 0.5; // Set volume to 50%
+            toastSound.play().catch(error => {
+                console.log('Error playing toast sound:', error);
+            });
+            
+            // Show overlay and toast
+            overlay.classList.add('show');
+            toast.textContent = message;
+            toast.classList.remove('hide');
+            toast.classList.add('show');
+            
+            // Hide the toast and overlay after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.classList.add('hide');
+                overlay.classList.remove('show');
+            }, 1500);
+        } else {
+            console.error('Toast or overlay elements not found');
+        }
+    }
+});
 
 function playClickSound() {
     const clickSound = new Audio('assets/sounds/clicks/mixkit-stapling-paper-2995.wav');

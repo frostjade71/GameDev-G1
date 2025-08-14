@@ -1,6 +1,6 @@
 body {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     min-height: 100vh;
     overflow-x: hidden;
@@ -45,9 +45,8 @@ body.hover-spell-quest::before {
 
 .menu-container {
     max-width: 450px;
-    margin-left: 5rem;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    width: 90%;
+    margin: 2rem auto;
     padding: 2rem;
     background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(10px);
@@ -115,12 +114,15 @@ body.hover-spell-quest::before {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
 }
 
 .game-logo img {
     max-height: 100px;
     width: auto;
     object-fit: contain;
+    margin: 0 auto;
+    display: block;
 }
 
 .card-content h2 {

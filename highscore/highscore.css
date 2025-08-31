@@ -1,0 +1,154 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('../assets/menu/menubg.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.highscore-container {
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 1.5rem;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    opacity: 1;
+}
+
+.highscore-container.slide-out {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.highscore-logo {
+    max-width: 200px;
+    height: auto;
+}
+
+.game-section {
+    margin-bottom: 2rem;
+    border-radius: 15px;
+    padding: 1.2rem;
+    transition: transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    filter: brightness(50%);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.game-section.grammar-heroes::before {
+    background-image: url('../assets/selection/Grammarbg.png');
+}
+
+.game-section.vocabworld::before {
+    background-image: url('../assets/selection/vocabbg.png');
+}
+
+.game-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+.game-section:hover {
+    transform: translateY(-5px);
+}
+
+.game-section * {
+    position: relative;
+    z-index: 1;
+}
+
+.game-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.game-logo {
+    max-height: 60px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.pixel-font {
+    font-family: 'Press Start 2P', cursive;
+    color: #ffffff;
+    margin: 0;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.score-list {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.score-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 1rem;
+    margin: 0.5rem auto;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    font-size: 0.7em;
+    gap: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.score-label {
+    text-align: left;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+.score {
+    text-align: right;
+    color: #ffd700;
+    font-size: 1.1em;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}

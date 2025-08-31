@@ -9,31 +9,48 @@
     <link rel="stylesheet" href="notif/toast.css">
 </head>
 <body>
-    <div class="menu-container">
-        <div class="menu-content">
-            <div class="credits-title">
-                <img src="assets/menu/credits2.png" alt="Credits" class="credits-logo">
+    <div class="credits-container">
+        <div class="credits-title">
+            <img src="assets/menu/credits2.png" alt="Credits" class="credits-logo">
+        </div>
+        <div class="credits-section members-container">
+            <h2>Group 3 Members</h2>
+            <div class="members-list">
+                <div class="member-card">Alfred Estares</div>
+                <div class="member-card">Loren Mae Pascual</div>
+                <div class="member-card">Jaderby Peñaranda</div>
+                <div class="member-card">Jeric Ganancial</div>
+                <div class="member-card">Ria Jhen Boreres</div>
+                <div class="member-card">Ken Erickson Bacarisas</div>
             </div>
-            <div class="credits-section members-container">
-                <h2>Group 3 Members</h2>
-                <div class="members-list">
-                    <div class="member-card">Alfred Estares</div>
-                    <div class="member-card">Loren Mae Pascual</div>
-                    <div class="member-card">Jaderby Peñaranda</div>
-                    <div class="member-card">Jeric Ganancial</div>
-                    <div class="member-card">Ria Jhen Boreres</div>
-                    <div class="member-card">Ken Erickson Bacarisas</div>
-                </div>
-            </div>
-            <div class="credits-section developer-container">
-                <h2>Developer</h2>
-                <div class="developer-card">Jaderby Peñaranda</div>
-            </div>
-            <a href="#" class="back-link">Back</a>
+        </div>
+        <div class="credits-section developer-container">
+            <h2>Developer</h2>
+            <div class="developer-card">Jaderby Peñaranda</div>
+        </div>
+            <nav class="menu-buttons">
+                <a href="index.html?from=selection" class="back-link" onclick="goBack(event)">Back to Menu</a>
+            </nav>
         </div>
     </div>
     <div class="toast-overlay"></div>
     <div id="toast" class="toast"></div>
+    <script>
+        function goBack(event) {
+            event.preventDefault();
+            const clickSound = new Audio('assets/sounds/clicks/mixkit-stapling-paper-2995.wav');
+            clickSound.play().catch(e => console.log('Error playing sound:', e));
+            
+            // Add slide-out animation
+            const container = document.querySelector('.credits-container');
+            container.classList.add('slide-out');
+            
+            // Wait for animation to finish before redirecting
+            setTimeout(() => {
+                window.location.href = 'index.html?from=selection';
+            }, 500);
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

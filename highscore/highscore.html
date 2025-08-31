@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Weavers - High Scores</title>
+    <link rel="stylesheet" href="highscore.css">
+    <link rel="stylesheet" href="../notif/toast.css">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="highscore-container">
+        <div class="logo-container">
+            <img src="../assets/menu/highscoremain.png" alt="High Scores" class="highscore-logo">
+        </div>
+        <div class="highscore-content">
+            <div class="game-section grammar-heroes">
+                <div class="game-header">
+                    <img src="../assets/selection/Grammarlogo.png" alt="Grammar Heroes" class="game-logo">
+                    <h2 class="pixel-font">Grammar Heroes</h2>
+                </div>
+                <div class="score-list">
+                    <div class="score-item personal-best">
+                        <span class="score-label">Personal Best:</span>
+                        <span class="score">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="game-section vocabworld">
+                <div class="game-header">
+                    <img src="../assets/selection/vocablogo.png" alt="Vocabworld" class="game-logo">
+                    <h2 class="pixel-font">Vocabworld</h2>
+                </div>
+                <div class="score-list">
+                    <div class="score-item personal-best">
+                        <span class="score-label">Personal Best:</span>
+                        <span class="score">0</span>
+                    </div>
+                </div>
+            </div>
+            <nav class="menu-buttons">
+                <button id="backToMenu" class="menu-button">Back to Menu</button>
+            </nav>
+        </div>
+    </div>
+    <div class="toast-overlay"></div>
+    <div id="toast" class="toast"></div>
+    <script src="highscore.js"></script>
+</body>
+</html>

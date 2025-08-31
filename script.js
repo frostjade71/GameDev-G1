@@ -4,11 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const pressStart = document.querySelector('.press-start');
     
     if (loadingScreen) {
-        // Check if we're coming from game-selection page using URL parameter
+        // Check if we're coming from another page or it's a refresh
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('from') === 'selection') {
-            // Skip loading screen if coming from game selection
+        const lastPage = sessionStorage.getItem('lastPage');
+        const isRefresh = window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_RELOAD;
+        
+        if (urlParams.get('from') === 'selection' || lastPage || isRefresh) {
+            // Skip loading screen if coming from another page or if it's a refresh
             loadingScreen.style.display = 'none';
+            sessionStorage.setItem('lastPage', window.location.pathname);
         } else {
             // Show loading screen and handle loading completion
             setTimeout(() => {
@@ -77,6 +81,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 500);
                 
                 event.preventDefault(); // Prevent immediate navigation
+            } else if (button.textContent === 'Settings') {
+                const menuContainer = document.querySelector('.menu-container');
+                menuContainer.classList.add('slide-out');
+                
+                // Wait for the slide-out animation to complete, then navigate
+                setTimeout(() => {
+                    window.location.href = 'settings/settings.html';
+                }, 500);
+                
+                event.preventDefault(); // Prevent immediate navigation
+            } else if (button.textContent === 'High Scores') {
+                const menuContainer = document.querySelector('.menu-container');
+                menuContainer.classList.add('slide-out');
+                
+                // Wait for the slide-out animation to complete, then navigate
+                setTimeout(() => {
+                    window.location.href = 'highscore/highscore.html';
+                }, 500);
+                
+                event.preventDefault(); // Prevent immediate navigation
             }
         });
     });
@@ -128,11 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (gameType === 'grow-word' || gameType === 'letterscapes') {
                     showToast('Under Development');
-                } else if (gameType === 'spell-quest') {
-                    menuContainer.classList.add('slide-out');
-                    setTimeout(() => {
-                        window.location.href = './spellbee/spellbeemenu.html';
-                    }, 500);
                 }
                 playClickSound(); // Play click sound instead of game open sound
             });

@@ -1,72 +1,101 @@
-/* Credits Page Styles */
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('assets/menu/menubg.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.credits-container {
+    padding: 1.5rem;
+    border-radius: 15px;
+    width: 60%;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    opacity: 1;
+}
+
+.credits-container.slide-out {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.credits-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('assets/menu/hcccibg.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+
 .credits-title {
     margin-bottom: 1.5rem;
     text-align: center;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .credits-logo {
     max-width: 200px;
     height: auto;
-    filter: drop-shadow(0 0 10px rgba(0, 255, 135, 0.3));
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
 }
 
 .credits-section {
     margin-bottom: 1.5rem;
     text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .credits-section h2 {
     font-family: 'Press Start 2P', cursive;
-    color: rgb(253, 253, 253);
-    font-size: 0.9rem;
+    color: #ffffff;
+    font-size: 0.8rem;
     margin-bottom: 1rem;
-    text-shadow: 0 0 8px rgba(153, 236, 11, 0.501);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.members-container {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 12px;
-    padding: 1.2rem;
+.members-container, .developer-container {
     margin: 0 auto 1.5rem;
-    max-width: 600px;
-    border: 1px solid rgba(96, 239, 255, 0.2);
-    box-shadow: 0 0 20px rgba(96, 239, 255, 0.1);
-}
-
-.developer-container {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 12px;
-    padding: 1rem;
-    margin: 1.5rem auto;
-    max-width: 250px;
-    border: 1px solid rgba(0, 255, 135, 0.2);
-    box-shadow: 0 0 20px rgba(0, 255, 135, 0.1);
+    padding: 0.5rem;
 }
 
 .members-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: 1fr;
     gap: 0.5rem;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
 }
 
 .member-card, .developer-card {
     font-family: 'Press Start 2P', cursive;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     text-align: center;
     line-height: 1.4;
     letter-spacing: 0.5px;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.member-card {
-    color: rgba(255, 255, 255, 0.9);
-    text-shadow: 0 0 10px rgba(96, 239, 255, 0.3);
-}
-
-.developer-card {
-    font-size: 0.5rem;
-    color: rgb(247, 249, 248);
-    text-shadow: 0 0 15px rgba(212, 255, 0, 0.4);
+.member-card:hover, .developer-card:hover {
+    color: #ffd700;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
 }
 
 @media (max-width: 768px) {
@@ -96,31 +125,58 @@
     }
 }
 
-.back-link {
-    display: block;
-    text-align: center;
-    margin-top: 1rem;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.6rem;
-    color: rgb(255, 255, 255);
-    text-decoration: none;
-    text-shadow: 0 0 8px rgb(0, 0, 0);
-    transition: all 0.3s ease;
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
-.back-link:hover {
-    color: rgba(255, 255, 255, 0.9);
-    text-shadow: 0 0 12px rgba(0, 255, 135, 0.5);
-    transform: scale(1.05);
+.menu-button, .back-link {
+    background: linear-gradient(45deg, rgba(96, 239, 255, 0.15), rgba(0, 255, 135, 0.15));
+    border: 2px solid rgba(96, 239, 255, 0.5);
+    border-radius: 10px;
+    padding: 0.8rem 1.8rem;
+    font-size: 0.8rem;
+    font-family: 'Press Start 2P', cursive;
+    letter-spacing: 0.5px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 180px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(96, 239, 255, 0.2),
+                inset 0 0 15px rgba(96, 239, 255, 0.1);
+    text-decoration: none;
+    text-align: center;
+}
+
+.menu-button:hover, .back-link:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(45deg, rgba(96, 239, 255, 0.3), rgba(0, 255, 135, 0.3));
+    border-color: rgba(0, 255, 135, 0.8);
+    box-shadow: 0 0 20px rgba(0, 255, 135, 0.4),
+                inset 0 0 20px rgba(0, 255, 135, 0.2);
+    color: white;
+}
+
+.menu-button:active, .back-link:active {
+    transform: translateY(0);
 }
 
 @media (max-width: 768px) {
+    .credits-container {
+        width: 90%;
+        padding: 1rem;
+    }
+    
     .credits-title {
-        font-size: 1.4rem;
+        font-size: 0.7rem;
     }
     
     .credits-section h2 {
-        font-size: 1rem;
+        font-size: 0.7rem;
     }
     
     .members-list {
@@ -128,12 +184,6 @@
     }
     
     .member-card, .developer-card {
-        font-size: 0.9rem;
-    }
-    
-    .menu-buttons .menu-button {
-        font-size: 0.5rem;
-        padding: 0.5rem 1rem;
-        min-width: 120px;
+        font-size: 0.6rem;
     }
 }

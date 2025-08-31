@@ -32,16 +32,14 @@ body[class*="hover-"]::before {
 }
 
 body.hover-letterscapes::before {
-    background-image: url('assets/selection/Lscapesbg.png');
+    background-image: url('assets/selection/Grammarbg.png');
 }
 
 body.hover-grow-word::before {
-    background-image: url('assets/selection/gagbackground.png');
+    background-image: url('assets/selection/vocabbg.png');
 }
 
-body.hover-spell-quest::before {
-    background-image: url('assets/selection/spbeebg.png');
-}
+
 
 .menu-container {
     max-width: 450px;

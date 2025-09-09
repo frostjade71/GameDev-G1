@@ -1,38 +1,28 @@
 // Get all the necessary elements
-const bgmVolumeSlider = document.getElementById('bgmVolume');
-const sfxVolumeSlider = document.getElementById('sfxVolume');
+const bgmToggle = document.getElementById('bgmToggle');
+const sfxToggle = document.getElementById('sfxToggle');
 const difficultySelect = document.getElementById('difficulty');
 const saveButton = document.getElementById('saveSettings');
 const backButton = document.getElementById('backToMenu');
-const volumeValues = document.querySelectorAll('.volume-value');
 
 // Load saved settings from localStorage
 function loadSettings() {
     const settings = JSON.parse(localStorage.getItem('gameSettings')) || {
-        bgmVolume: 100,
-        sfxVolume: 100,
+        bgmEnabled: true,
+        sfxEnabled: true,
         difficulty: 'medium'
     };
 
-    bgmVolumeSlider.value = settings.bgmVolume;
-    sfxVolumeSlider.value = settings.sfxVolume;
+    bgmToggle.checked = settings.bgmEnabled;
+    sfxToggle.checked = settings.sfxEnabled;
     difficultySelect.value = settings.difficulty;
-
-    // Update volume value displays
-    updateVolumeDisplays();
-}
-
-// Update volume displays
-function updateVolumeDisplays() {
-    bgmVolumeSlider.nextElementSibling.textContent = `${bgmVolumeSlider.value}%`;
-    sfxVolumeSlider.nextElementSibling.textContent = `${sfxVolumeSlider.value}%`;
 }
 
 // Save settings to localStorage
 function saveSettings() {
     const settings = {
-        bgmVolume: parseInt(bgmVolumeSlider.value),
-        sfxVolume: parseInt(sfxVolumeSlider.value),
+        bgmEnabled: bgmToggle.checked,
+        sfxEnabled: sfxToggle.checked,
         difficulty: difficultySelect.value
     };
 
@@ -69,22 +59,34 @@ function showToast(message) {
     }, 3000);
 }
 
-// Event listeners
-bgmVolumeSlider.addEventListener('input', updateVolumeDisplays);
-sfxVolumeSlider.addEventListener('input', updateVolumeDisplays);
-saveButton.addEventListener('click', saveSettings);
-backButton.addEventListener('click', () => {
-    playClickSound();
-    addClickEffect(backButton);
-    const container = document.querySelector('.settings-container');
-    
-    // Add slide-out animation
-    container.classList.add('slide-out');
-    
-    // Wait for the slide-out animation to complete, then navigate
-    setTimeout(() => {
-        window.location.href = '../index.html?from=selection';
-    }, 500);
+document.addEventListener('DOMContentLoaded', () => {
+    // Event listeners for save button
+    if (saveButton) {
+        saveButton.addEventListener('click', saveSettings);
+    }
+
+    // Back button handling
+    const backButton = document.getElementById('backToMenu');
+    if (backButton) {
+        backButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Play click sound
+            const clickSound = new Audio('../assets/sounds/clicks/mixkit-stapling-paper-2995.wav');
+            clickSound.play().catch(error => {
+                console.log('Error playing click sound:', error);
+            });
+            
+            // Add visual feedback
+            backButton.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                backButton.style.transform = 'scale(1)';
+            }, 100);
+            
+            // Navigate back to index immediately
+            window.location.replace('../index.html');
+        });
+    }
 });
 
 function playClickSound() {

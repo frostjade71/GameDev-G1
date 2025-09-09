@@ -1,27 +1,26 @@
 body {
-    margin: 0;
-    padding: 0;
     background-image: url('assets/menu/menubg.jpg');
     background-size: cover;
     background-position: center;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     color: white;
     font-family: 'Press Start 2P', cursive;
 }
 
 .credits-container {
-    padding: 1.5rem;
-    border-radius: 15px;
-    width: 60%;
-    max-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 2px solid rgba(96, 239, 255, 0.5);
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    margin-bottom: auto;
+    box-shadow: 0 0 20px rgba(0, 255, 135, 0.2);
     position: relative;
     overflow: hidden;
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-    opacity: 1;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .credits-container.slide-out {
@@ -133,36 +132,25 @@ body {
     margin-top: 2rem;
 }
 
-.menu-button, .back-link {
-    background: linear-gradient(45deg, rgba(96, 239, 255, 0.15), rgba(0, 255, 135, 0.15));
-    border: 2px solid rgba(96, 239, 255, 0.5);
-    border-radius: 10px;
-    padding: 0.8rem 1.8rem;
-    font-size: 0.8rem;
-    font-family: 'Press Start 2P', cursive;
-    letter-spacing: 0.5px;
+.back-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
     color: white;
+    font-size: 0.9rem;
+    font-family: 'Press Start 2P', cursive;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 180px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 15px rgba(96, 239, 255, 0.2),
-                inset 0 0 15px rgba(96, 239, 255, 0.1);
     text-decoration: none;
-    text-align: center;
 }
 
-.menu-button:hover, .back-link:hover {
-    transform: translateY(-2px);
-    background: linear-gradient(45deg, rgba(96, 239, 255, 0.3), rgba(0, 255, 135, 0.3));
-    border-color: rgba(0, 255, 135, 0.8);
-    box-shadow: 0 0 20px rgba(0, 255, 135, 0.4),
-                inset 0 0 20px rgba(0, 255, 135, 0.2);
-    color: white;
-}
-
-.menu-button:active, .back-link:active {
-    transform: translateY(0);
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-5px);
 }
 
 @media (max-width: 768px) {

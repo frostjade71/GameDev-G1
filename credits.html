@@ -4,12 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Credits - Word Weavers</title>
+    <link rel="stylesheet" href="navigation/shared/navigation.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="credits.css">
     <link rel="stylesheet" href="notif/toast.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-    <div class="credits-container">
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-house"></i>
+                <span>Menu</span>
+            </a>
+            <a href="navigation/favorites/favorites.html" class="nav-link">
+                <i class="fas fa-star"></i>
+                <span>Favorites</span>
+            </a>
+            <a href="navigation/profile/profile.html" class="nav-link">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+            <a href="#" class="nav-link" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Header -->
+    <header class="top-header">
+        <div class="header-right">
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">0</span>
+            </div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <span class="greeting">Good Morning</span>
+                    <span class="username">User</span>
+                </div>
+                <a href="navigation/profile/profile.html" class="profile-icon">
+                    <img src="assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="credits-container">
         <div class="credits-title">
             <img src="assets/menu/credits2.png" alt="Credits" class="credits-logo">
         </div>
@@ -29,7 +81,7 @@
             <div class="developer-card">Jaderby Peñaranda</div>
         </div>
             <nav class="menu-buttons">
-                <a href="index.html?from=selection" class="back-link" onclick="goBack(event)">Back to Menu</a>
+                <a href="index.html?from=selection" class="back-button" onclick="goBack(event)"><i class="fas fa-arrow-left back-icon"></i>Back to Menu</a>
             </nav>
         </div>
     </div>

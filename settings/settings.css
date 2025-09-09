@@ -1,26 +1,25 @@
 body {
-    margin: 0;
-    padding: 0;
     background-image: url('../assets/menu/menubg.jpg');
     background-size: cover;
     background-position: center;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     color: white;
     font-family: 'Press Start 2P', cursive;
 }
 
 .settings-container {
-    background-color: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 2px solid rgba(96, 239, 255, 0.5);
     padding: 2rem;
-    border-radius: 15px;
-    width: 80%;
-    max-width: 800px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-    opacity: 1;
+    width: 90%;
+    max-width: 500px;
+    margin-top: 5rem;
+    box-shadow: 0 0 20px rgba(0, 255, 135, 0.2);
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .settings-container.slide-out {
@@ -51,8 +50,8 @@ body {
 }
 
 .setting-item {
-    display: grid;
-    grid-template-columns: minmax(180px, auto) 1fr minmax(60px, auto);
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
     gap: 1rem;
@@ -61,6 +60,52 @@ body {
 
 label {
     font-size: 0.8em;
+}
+
+/* Toggle Switch Styles */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #444;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
 }
 
 input[type="range"] {
@@ -113,4 +158,28 @@ select {
     align-items: center;
     gap: 1rem;
     margin-top: 2rem;
+}
+
+.back-button, .save-settings {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
+    color: white;
+    font-size: 0.9rem;
+    font-family: 'Press Start 2P', cursive;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover, .save-settings:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-5px);
+}
+
+.save-settings:hover {
+    transform: scale(1.05);
 }

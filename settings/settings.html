@@ -4,12 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Weavers - Settings</title>
+    <link rel="stylesheet" href="../navigation/shared/navigation.css">
     <link rel="stylesheet" href="settings.css">
     <link rel="stylesheet" href="../notif/toast.css">
     <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-    <div class="settings-container">
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="../assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
+        </div>
+        <nav class="sidebar-nav">
+            <a href="../index.html" class="nav-link">
+                <i class="fas fa-house"></i>
+                <span>Menu</span>
+            </a>
+            <a href="../navigation/favorites/favorites.html" class="nav-link">
+                <i class="fas fa-star"></i>
+                <span>Favorites</span>
+            </a>
+            <a href="../navigation/profile/profile.html" class="nav-link">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+            <a href="#" class="nav-link" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Header -->
+    <header class="top-header">
+        <div class="header-right">
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">0</span>
+            </div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <span class="greeting">Good Morning</span>
+                    <span class="username">User</span>
+                </div>
+                <a href="../navigation/profile/profile.html" class="profile-icon">
+                    <img src="../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="settings-container">
         <div class="logo-container">
             <img src="../assets/menu/settingsmain.png" alt="Settings" class="settings-logo">
         </div>
@@ -17,14 +69,18 @@
             <div class="settings-section">
                 <h2 class="pixel-font">Audio Settings</h2>
                 <div class="setting-item">
-                    <label for="bgmVolume">Background Music</label>
-                    <input type="range" id="bgmVolume" min="0" max="100" value="100">
-                    <span class="volume-value">100%</span>
+                    <label for="bgmToggle">Background Music</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="bgmToggle" checked>
+                        <span class="slider"></span>
+                    </label>
                 </div>
                 <div class="setting-item">
-                    <label for="sfxVolume">Sound Effects</label>
-                    <input type="range" id="sfxVolume" min="0" max="100" value="100">
-                    <span class="volume-value">100%</span>
+                    <label for="sfxToggle">Sound Effects</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="sfxToggle" checked>
+                        <span class="slider"></span>
+                    </label>
                 </div>
             </div>
             <div class="settings-section">
@@ -41,13 +97,17 @@
                 <p class="about-text">Word Weavers is a Thesis Game Development Project by the Bachelor of Science in Computer Sciences Group 3</p>
             </div>
             <nav class="menu-buttons">
-                <button id="saveSettings" class="menu-button">Save Settings</button>
-                <button id="backToMenu" class="menu-button">Back to Menu</button>
+                <button id="saveSettings" class="save-settings">Save Settings</button>
+                <button id="backToMenu" class="back-button">
+                    <i class="fas fa-arrow-left back-icon"></i>
+                    Back to Menu
+                </button>
             </nav>
         </div>
     </div>
     <div class="toast-overlay"></div>
     <div id="toast" class="toast"></div>
+    <script src="../script.js"></script>
     <script src="settings.js"></script>
 </body>
 </html>

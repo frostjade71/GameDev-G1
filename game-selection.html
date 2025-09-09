@@ -5,35 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Game Mode - Word Weavers</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="navigation/shared/navigation.css">
     <link rel="stylesheet" href="game-selection.css">
     <link rel="stylesheet" href="notif/toast.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-    <div class="menu-container">
-        <div class="menu-content">
-            <h1 class="game-title">Select Game Mode</h1>
-            <div class="game-cards">
-                <div class="game-card" data-game="letterscapes">
-                    <div class="card-content">
-                        <div class="game-logo">
-                            <img src="assets/selection/Grammarlogo.png" alt="Letterscapes Logo">
-                        </div>
-                        <h2>Grammar Heroes</h2>
-                        <p class="game-description">Battle grammar challenges by correcting sentences, and unlock new levels.</p>
-                    </div>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-house"></i>
+                <span>Menu</span>
+            </a>
+            <a href="navigation/favorites/favorites.html" class="nav-link">
+                <i class="fas fa-star"></i>
+                <span>Favorites</span>
+            </a>
+            <a href="navigation/profile/profile.html" class="nav-link">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+            <a href="#" class="nav-link" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Header -->
+    <header class="top-header">
+        <div class="header-right">
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">0</span>
+            </div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <span class="greeting">Good Morning</span>
+                    <span class="username">User</span>
                 </div>
-                <div class="game-card" data-game="grow-word">
-                    <div class="card-content">
-                        <div class="game-logo">
-                            <img src="assets/selection/vocablogo.png" alt="Grow a Word Logo">
+                <a href="navigation/profile/profile.html" class="profile-icon">
+                    <img src="assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="games-carousel-container">
+            <h1 class="game-title">Select Game Mode</h1>
+            
+            <div class="carousel-container">
+                <button class="carousel-button prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="carousel-track">
+                    <div class="game-card" data-game="letterscapes">
+                        <div class="card-content">
+                            <div class="game-logo">
+                                <img src="assets/selection/Grammarlogo.png" alt="Grammar Heroes Logo">
+                            </div>
+                            <h2>Grammar Heroes</h2>
+                            <p class="game-description">Battle grammar challenges by correcting sentences, and unlock new levels.</p>
                         </div>
-                        <h2>Vocabworld</h2>
-                        <p class="game-description">Practice word skills and earn points to customize your character.</p>
+                    </div>
+
+                    <div class="game-card" data-game="grow-word">
+                        <div class="card-content">
+                            <div class="game-logo">
+                                <img src="assets/selection/vocablogo.png" alt="Vocabworld Logo">
+                            </div>
+                            <h2>Vocabworld</h2>
+                            <p class="game-description">Practice word skills and earn points to customize your character.</p>
+                        </div>
+                    </div>
+
+                    <div class="game-card coming-soon">
+                        <div class="card-content">
+                            <div class="game-logo">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            <h2>More Games</h2>
+                            <p class="game-description">New exciting games coming soon! Stay tuned for updates.</p>
+                            <div class="coming-soon-badge">Coming Soon</div>
+                        </div>
                     </div>
                 </div>
 
+                <button class="carousel-button next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <div class="carousel-dots"></div>
             </div>
-            <button class="back-button">Back to Main Menu</button>
+
+            <button class="back-button">
+                <i class="fas fa-arrow-left back-icon"></i>
+                Back to Main Menu
+            </button>
         </div>
     </div>
     <div class="toast-overlay"></div>

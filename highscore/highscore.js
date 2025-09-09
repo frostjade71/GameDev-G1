@@ -1,19 +1,26 @@
-// Get the back button element
-const backButton = document.getElementById('backToMenu');
+document.addEventListener('DOMContentLoaded', () => {
+    // Get the back button element
+    const backButton = document.getElementById('backToMenu');
 
-// Add click event listener to the back button
-backButton.addEventListener('click', () => {
-    playClickSound();
-    addClickEffect(backButton);
-    const container = document.querySelector('.highscore-container');
-    
-    // Add slide-out animation
-    container.classList.add('slide-out');
-    
-    // Wait for the slide-out animation to complete, then navigate
-    setTimeout(() => {
-        window.location.href = '../index.html?from=selection';
-    }, 500);
+    // Add click event listener to the back button
+    if (backButton) {
+        backButton.addEventListener('click', () => {
+            // Play click sound
+            const clickSound = new Audio('../assets/sounds/clicks/mixkit-stapling-paper-2995.wav');
+            clickSound.play().catch(error => {
+                console.log('Error playing click sound:', error);
+            });
+            
+            // Add visual feedback
+            backButton.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                backButton.style.transform = 'scale(1)';
+            }, 100);
+            
+            // Navigate back to index immediately
+            window.location.replace('../index.html');
+        });
+    }
 });
 
 function playClickSound() {

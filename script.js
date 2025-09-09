@@ -1,7 +1,139 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Mobile menu handling
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const sidebar = document.querySelector('.sidebar');
+
+    if (mobileMenuBtn && sidebar) {
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            playClickSound();
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && 
+                !mobileMenuBtn.contains(e.target) && 
+                sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+    }
+
+    // Update greeting based on time of day
+    function updateGreeting() {
+        const greeting = document.querySelector('.greeting');
+        if (greeting) {
+            const hour = new Date().getHours();
+            if (hour >= 0 && hour < 12) {
+                greeting.textContent = "Good Morning";
+            } else if (hour >= 12 && hour < 18) {
+                greeting.textContent = "Good Afternoon";
+            } else {
+                greeting.textContent = "Good Evening";
+            }
+        }
+    }
+
+    // Initial greeting update
+    updateGreeting();
+    
+    // Update greeting every minute
+    setInterval(updateGreeting, 60000);
+    // Game Selection Carousel Logic
+    const carouselTrack = document.querySelector('.carousel-track');
+    const carouselContainer = document.querySelector('.carousel-container');
+    if (carouselTrack && carouselContainer) {
+        const cards = Array.from(carouselTrack.children);
+        const prevButton = document.querySelector('.carousel-button.prev');
+        const nextButton = document.querySelector('.carousel-button.next');
+        const dotsContainer = document.querySelector('.carousel-dots');
+        
+        let currentIndex = 0;
+        
+        // Create dots
+        cards.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('carousel-dot');
+            if (index === 0) dot.classList.add('active');
+            dotsContainer.appendChild(dot);
+            
+            dot.addEventListener('click', () => {
+                moveToSlide(index);
+            });
+        });
+        
+        const dots = Array.from(dotsContainer.children);
+        
+        // Update dots
+        const updateDots = (index) => {
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[index].classList.add('active');
+        };
+        
+        // Move to specific slide
+        const moveToSlide = (index) => {
+            const slideWidth = cards[0].getBoundingClientRect().width;
+            const gap = 32; // 2rem gap
+            carouselTrack.style.transform = `translateX(-${index * (slideWidth + gap)}px)`;
+            currentIndex = index;
+            updateDots(index);
+            
+            // Update button states
+            prevButton.style.opacity = index === 0 ? '0.5' : '1';
+            nextButton.style.opacity = index === cards.length - 1 ? '0.5' : '1';
+        };
+        
+        // Button click handlers
+        prevButton.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                moveToSlide(currentIndex - 1);
+                playClickSound();
+            }
+        });
+        
+        nextButton.addEventListener('click', () => {
+            if (currentIndex < cards.length - 1) {
+                moveToSlide(currentIndex + 1);
+                playClickSound();
+            }
+        });
+        
+        // Initialize button states
+        prevButton.style.opacity = '0.5';
+    }
     // Handle loading screen
     const loadingScreen = document.getElementById('loading-screen');
     const pressStart = document.querySelector('.press-start');
+
+    // Sidebar active link handling
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (this.id === 'logout-btn') {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    // Add logout logic here
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+    });
+
+    // Notification badge handling
+    const notificationIcon = document.querySelector('.notification-icon');
+    let notificationCount = 0;
+    const notificationBadge = document.querySelector('.notification-badge');
+    
+    notificationIcon.addEventListener('click', () => {
+        // Add notification panel logic here
+        showToast('No new notifications');
+    });
+
+    // Profile icon handling
+    const profileIcon = document.querySelector('.profile-icon');
+    profileIcon.addEventListener('click', () => {
+        window.location.href = 'profile.html';
+    });
     
     if (loadingScreen) {
         // Check if we're coming from another page or it's a refresh
@@ -62,45 +194,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Handle navigation
             if (button.textContent === 'Play') {
-                const menuContainer = document.querySelector('.menu-container');
-                menuContainer.classList.add('slide-out');
-                
-                // Wait for the slide-out animation to complete, then navigate
-                setTimeout(() => {
-                    window.location.href = 'game-selection.html';
-                }, 500); // Match this with your CSS transition duration
-                
-                event.preventDefault(); // Prevent immediate navigation
+                window.location.href = 'game-selection.html';
             } else if (button.textContent === 'Credits') {
-                const menuContainer = document.querySelector('.menu-container');
-                menuContainer.classList.add('slide-out');
-                
-                // Wait for the slide-out animation to complete, then navigate
-                setTimeout(() => {
-                    window.location.href = 'credits.html?from=menu';
-                }, 500);
-                
-                event.preventDefault(); // Prevent immediate navigation
+                window.location.href = 'credits.html';
             } else if (button.textContent === 'Settings') {
-                const menuContainer = document.querySelector('.menu-container');
-                menuContainer.classList.add('slide-out');
-                
-                // Wait for the slide-out animation to complete, then navigate
-                setTimeout(() => {
-                    window.location.href = 'settings/settings.html';
-                }, 500);
-                
-                event.preventDefault(); // Prevent immediate navigation
+                window.location.href = 'settings/settings.html';
             } else if (button.textContent === 'High Scores') {
-                const menuContainer = document.querySelector('.menu-container');
-                menuContainer.classList.add('slide-out');
-                
-                // Wait for the slide-out animation to complete, then navigate
-                setTimeout(() => {
-                    window.location.href = 'highscore/highscore.html';
-                }, 500);
-                
-                event.preventDefault(); // Prevent immediate navigation
+                window.location.href = 'highscore/highscore.html';
             }
         });
     });
@@ -110,18 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (backElement) {
         backElement.addEventListener('click', (event) => {
             playClickSound();
-            const container = document.querySelector('.menu-container');
-            
-            // Add slide-out class to trigger animation
-            container.classList.remove('slide-in');
-            container.classList.add('slide-out');
-            
-            // Wait for the slide-out animation to complete, then navigate
-            setTimeout(() => {
-                window.location.href = 'index.html?from=selection';
-            }, 500);
-            
-            event.preventDefault(); // Prevent immediate navigation
+            window.location.href = 'index.html';
         });
     }
 
@@ -144,6 +233,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Set new background
                 body.classList.add('hover-' + gameType);
                 currentBackground = gameType;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                const body = document.body;
+                if (currentBackground) {
+                    body.classList.remove('hover-' + currentBackground);
+                    currentBackground = null;
+                }
             });
 
             card.addEventListener('click', () => {

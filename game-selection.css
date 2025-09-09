@@ -1,50 +1,25 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow-x: hidden;
     background-color: #1a1a2e;
+    overflow-x: hidden;
+    background-image: url('assets/menu/menubg.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    transition: all 0.5s ease;
+    transition: background-image 0.5s ease-in-out;
 }
 
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.4s ease-in-out, background-image 0.8s ease-in-out;
-    z-index: -1;
-    pointer-events: none;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-body[class*="hover-"]::before {
-    opacity: 1;
-}
-
-body.hover-letterscapes::before {
+body.hover-letterscapes {
     background-image: url('assets/selection/Grammarbg.png');
 }
 
-body.hover-grow-word::before {
+body.hover-grow-word {
     background-image: url('assets/selection/vocabbg.png');
 }
 
-
-
-.menu-container {
-    max-width: 450px;
+.games-carousel-container {
+    max-width: 1200px;
     width: 90%;
-    margin: 2rem auto;
+    margin: 1rem auto;
     padding: 2rem;
     background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(10px);
@@ -53,12 +28,7 @@ body.hover-grow-word::before {
     border: 1px solid rgba(255, 255, 255, 0.2);
     height: auto;
     max-height: 90vh;
-    overflow-y: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    transform: translateX(-150%);
-    opacity: 0;
-    transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.6s ease;
+    overflow: hidden;
 }
 
 .menu-container.slide-in {
@@ -77,28 +47,95 @@ body.hover-grow-word::before {
 
 .game-title {
     color: white;
-    margin-bottom: 2rem;
+    margin-bottom: 3.5rem;
     font-family: 'Press Start 2P', cursive;
     font-size: 1.5rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.game-cards {
+.carousel-container {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0 60px;
+    overflow: hidden;
+}
+
+.carousel-track {
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    gap: 2rem;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 .game-card {
+    min-width: calc(33.333% - 1.33rem);
     background: rgba(0, 0, 0, 0.75);
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s ease;
+    transition: all 0.5s ease;
+    transform-origin: center center;
+    margin: 1rem 0;
 }
 
 .game-card:hover {
-    transform: translateY(-5px);
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 255, 135, 0.2);
+    z-index: 3;
+}
+
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 2;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-button.prev {
+    left: 10px;
+}
+
+.carousel-button.next {
+    right: 10px;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+    background: #00ff87;
 }
 
 .card-content {
@@ -310,35 +347,66 @@ body.hover-grow-word::before {
     margin-top: 0.2rem;
 }
 
-.play-now-btn {
-    width: 100%;
-    background: linear-gradient(45deg, #00ff87, #60efff);
-    border: none;
-    padding: 1rem;
-    border-radius: 10px;
-    color: #1a1a2e;
-    font-weight: bold;
-    font-size: 1rem;
-    font-family: 'Press Start 2P', cursive;
-    cursor: pointer;
-    transition: all 0.3s ease;
+
+
+.coming-soon {
+    position: relative;
+    filter: grayscale(0.5);
 }
 
-.play-now-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 255, 135, 0.3);
+.coming-soon-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    color: #1a1a2e;
+    font-weight: bold;
+    font-size: 0.8rem;
+    transform: rotate(15deg);
+}
+
+.coming-soon .fas.fa-gamepad {
+    font-size: 5rem;
+    color: #00ff87;
+    margin: 1rem 0;
+}
+
+@media (max-width: 1024px) {
+    .game-card {
+        min-width: calc(50% - 1rem);
+    }
 }
 
 @media (max-width: 768px) {
-    .game-showcase {
-        grid-template-columns: 1fr;
+    .games-carousel-container {
+        width: 95%;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        justify-content: space-between;
     }
     
-    .mode-title h1 {
-        font-size: 2rem;
+    .game-card {
+        min-width: calc(100% - 1rem);
     }
     
-    .subtitle {
-        font-size: 1rem;
+    .carousel-container {
+        padding: 0 40px;
+        flex-grow: 1;
+    }
+    
+    .game-title {
+        font-size: 1.2rem;
+        text-align: center;
+        margin: 1rem 0 2rem 0;
+    }
+
+    .back-button {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        align-self: center;
     }
 }

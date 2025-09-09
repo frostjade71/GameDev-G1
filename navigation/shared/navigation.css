@@ -1,0 +1,202 @@
+/* Shared navigation styles */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 2rem 1rem;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+/* Mobile menu button */
+.mobile-menu-btn {
+    display: none; /* Hidden by default for desktop */
+    font-size: 24px;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 2000;
+    transition: background-color 0.3s ease;
+    align-items: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: 100%;
+        padding-top: 80px;
+        z-index: 1900; /* Below the hamburger button */
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .mobile-menu-btn {
+        display: flex !important; /* Force display as flex for centering */
+    }
+
+    .mobile-menu-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-menu-btn:active {
+        transform: scale(0.95);
+    }
+    
+    /* Ensure the sidebar is above other content when active */
+    .sidebar.active {
+        transform: translateX(0);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+}
+
+.sidebar-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.sidebar-logo-img {
+    width: 80%;
+    height: auto;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+    text-decoration: none;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-link i {
+    width: 20px;
+    text-align: center;
+}
+
+/* Header styles */
+.top-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 250px;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1800; /* Below the hamburger button but above other content */
+    padding: 0 2rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    transition: left 0.3s ease;
+}
+
+@media screen and (max-width: 768px) {
+    .top-header {
+        left: 0;
+        padding-left: 60px;
+    }
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.notification-icon {
+    position: relative;
+    color: white;
+    cursor: pointer;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff3366;
+    color: white;
+    font-size: 0.8rem;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-icon {
+    cursor: pointer;
+}
+
+.profile-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Main content styling */
+.main-content {
+    position: fixed;
+    left: 250px;
+    top: 60px;
+    right: 0;
+    bottom: 0;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    transition: left 0.3s ease;
+}
+
+@media screen and (max-width: 768px) {
+    .main-content {
+        left: 0;
+        padding-top: calc(60px + 1rem); /* Reduced padding from 2rem to 1rem */
+        align-items: flex-start;
+    }
+    
+    /* Add padding to all container types used in different pages */
+    .dashboard-grid,
+    .settings-container,
+    .highscore-container,
+    .credits-container,
+    .favorites-container,
+    .profile-container,
+    .games-carousel-container {
+        width: 100%;
+        margin-top: 0.5rem; /* Reduced margin from 1rem to 0.5rem */
+    }
+}

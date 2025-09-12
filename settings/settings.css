@@ -15,11 +15,28 @@ body {
     padding: 2rem;
     width: 90%;
     max-width: 500px;
-    margin-top: 5rem;
+    margin: 2rem auto;
     box-shadow: 0 0 20px rgba(0, 255, 135, 0.2);
     position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+}
+
+@media (max-width: 768px) {
+    .settings-container {
+        margin: 1rem auto;
+        padding: 1.5rem;
+        width: 95%;
+        max-width: 100%;
+        border-radius: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-container {
+        margin: 0.5rem auto;
+        padding: 1rem;
+        width: 98%;
+        border-radius: 12px;
+    }
 }
 
 .settings-container.slide-out {
@@ -37,8 +54,32 @@ body {
     height: auto;
 }
 
+@media (max-width: 768px) {
+    .settings-logo {
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-logo {
+        max-width: 200px;
+    }
+}
+
 .settings-section {
     margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .settings-section {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-section {
+        margin-bottom: 1rem;
+    }
 }
 
 .pixel-font {
@@ -47,6 +88,20 @@ body {
     margin-bottom: 1.5rem;
     font-size: 1.0em;
     text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+    .pixel-font {
+        font-size: 0.9em;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .pixel-font {
+        font-size: 0.8em;
+        margin-bottom: 0.8rem;
+    }
 }
 
 .setting-item {
@@ -58,8 +113,36 @@ body {
     max-width: 100%;
 }
 
+@media (max-width: 768px) {
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .setting-item {
+        gap: 0.6rem;
+        margin-bottom: 0.6rem;
+    }
+}
+
 label {
     font-size: 0.8em;
+}
+
+@media (max-width: 768px) {
+    label {
+        font-size: 0.7em;
+    }
+}
+
+@media (max-width: 480px) {
+    label {
+        font-size: 0.6em;
+    }
 }
 
 /* Toggle Switch Styles */
@@ -68,6 +151,20 @@ label {
     display: inline-block;
     width: 60px;
     height: 34px;
+}
+
+@media (max-width: 768px) {
+    .toggle-switch {
+        width: 50px;
+        height: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .toggle-switch {
+        width: 45px;
+        height: 25px;
+    }
 }
 
 .toggle-switch input {
@@ -100,12 +197,42 @@ label {
     border-radius: 50%;
 }
 
+@media (max-width: 768px) {
+    .slider:before {
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .slider:before {
+        height: 17px;
+        width: 17px;
+        left: 4px;
+        bottom: 4px;
+    }
+}
+
 input:checked + .slider {
     background-color: #4CAF50;
 }
 
 input:checked + .slider:before {
     transform: translateX(26px);
+}
+
+@media (max-width: 768px) {
+    input:checked + .slider:before {
+        transform: translateX(22px);
+    }
+}
+
+@media (max-width: 480px) {
+    input:checked + .slider:before {
+        transform: translateX(20px);
+    }
 }
 
 input[type="range"] {
@@ -146,10 +273,38 @@ select {
     font-size: 0.8em;
 }
 
+@media (max-width: 768px) {
+    select {
+        padding: 0.4rem;
+        font-size: 0.7em;
+    }
+}
+
+@media (max-width: 480px) {
+    select {
+        padding: 0.3rem;
+        font-size: 0.6em;
+    }
+}
+
 .about-text {
     font-size: 0.8em;
     line-height: 1.6;
     text-align: center;
+}
+
+@media (max-width: 768px) {
+    .about-text {
+        font-size: 0.7em;
+        line-height: 1.5;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-text {
+        font-size: 0.6em;
+        line-height: 1.4;
+    }
 }
 
 .menu-buttons {
@@ -173,6 +328,21 @@ select {
     gap: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .back-button, .save-settings {
+        padding: 0.4rem 1rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .back-button, .save-settings {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.7rem;
+        gap: 6px;
+    }
 }
 
 .back-button:hover, .save-settings:hover {

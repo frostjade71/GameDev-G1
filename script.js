@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 if (confirm('Are you sure you want to logout?')) {
                     // Add logout logic here
-                    window.location.href = 'index.html';
+                    window.location.href = 'index.html?from=selection';
                 }
             }
         });
@@ -136,17 +136,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     if (loadingScreen) {
-        // Check if we're coming from another page or it's a refresh
+        // Check if user is new (first-time visitor)
+        const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
         const urlParams = new URLSearchParams(window.location.search);
-        const lastPage = sessionStorage.getItem('lastPage');
         const isRefresh = window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_RELOAD;
         
-        if (urlParams.get('from') === 'selection' || lastPage || isRefresh) {
-            // Skip loading screen if coming from another page or if it's a refresh
+        if (hasVisitedBefore || urlParams.get('from') === 'selection' || isRefresh) {
+            // Skip loading screen if user has visited before, coming from another page, or if it's a refresh
             loadingScreen.style.display = 'none';
-            sessionStorage.setItem('lastPage', window.location.pathname);
         } else {
-            // Show loading screen and handle loading completion
+            // Show loading screen for new users only
             setTimeout(() => {
                 if (loadingScreen && pressStart) {
                     // Show the "press start" message
@@ -158,6 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(() => {
                             if (loadingScreen) {
                                 loadingScreen.style.display = 'none';
+                                
+                                // Mark user as having visited before
+                                localStorage.setItem('hasVisitedBefore', 'true');
                                 
                                 // Remove the event listener
                                 loadingScreen.removeEventListener('click', handleStart);
@@ -205,14 +207,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Handle back link/button
-    const backElement = document.querySelector('.back-button, .back-link');
-    if (backElement) {
-        backElement.addEventListener('click', (event) => {
-            playClickSound();
-            window.location.href = 'index.html';
-        });
-    }
+    // Handle back link/button (only for elements without specific onclick handlers)
+    const backElements = document.querySelectorAll('.back-button, .back-link');
+    backElements.forEach(backElement => {
+        // Only add listener if the element doesn't have an onclick handler
+        if (!backElement.onclick) {
+            backElement.addEventListener('click', (event) => {
+                playClickSound();
+                window.location.href = 'index.html?from=selection';
+            });
+        }
+    });
 
     // Handle game cards
     const gameCards = document.querySelectorAll('.game-card');
@@ -296,4 +301,10 @@ function addClickEffect(button) {
     setTimeout(() => {
         button.style.transform = 'scale(1)';
     }, 100);
+}
+
+// Function to handle back to menu navigation from game selection
+function goBackToMenu() {
+    playClickSound();
+    window.location.href = 'index.html?from=selection';
 }

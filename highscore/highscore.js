@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 backButton.style.transform = 'scale(1)';
             }, 100);
             
-            // Navigate back to index immediately
-            window.location.replace('../index.html');
+            // Navigate back to index immediately with parameter to skip loading screen
+            window.location.replace('../index.html?from=selection');
         });
     }
 });

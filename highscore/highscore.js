@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 backButton.style.transform = 'scale(1)';
             }, 100);
             
-            // Navigate back to index immediately with parameter to skip loading screen
-            window.location.replace('../index.html?from=selection');
+            // Navigate back to index
+            window.location.replace('../index.php');
         });
     }
 });
@@ -37,36 +37,30 @@ function addClickEffect(button) {
     }, 100);
 }
 
-// Load highscores from localStorage when page loads
-document.addEventListener('DOMContentLoaded', () => {
-    loadHighScores();
-});
+// High scores are now loaded from PHP/database, no need for localStorage
+// The scores are displayed directly in the PHP template
 
-function loadHighScores() {
-    const games = ['grow-word', 'grammar'];
+// Helper function to save a new high score (for use by games)
+window.saveHighScore = function(gameType, score, level = 1) {
+    const formData = new FormData();
+    formData.append('action', 'save_score');
+    formData.append('game_type', gameType);
+    formData.append('score', score);
+    formData.append('level', level);
     
-    games.forEach(game => {
-        const highScore = localStorage.getItem(`${game}-highscore`) || '0';
-        updateScoreDisplay(game, parseInt(highScore));
-    });
-}
-
-function updateScoreDisplay(game, score) {
-    // Find the corresponding score element
-    const gameSection = document.querySelector(`.game-section:has(h2:contains('${game === 'grow-word' ? 'Grow a Word' : 'Grammar Game'})')`);
-    if (gameSection) {
-        const scoreElement = gameSection.querySelector('.score');
-        if (scoreElement) {
-            scoreElement.textContent = score;
+    fetch('../api/save_score.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Score saved successfully');
+        } else {
+            console.error('Error saving score:', data.message);
         }
-    }
-}
-
-// Helper function to save a new high score
-window.saveHighScore = function(game, score) {
-    const currentHighScore = parseInt(localStorage.getItem(`${game}-highscore`)) || 0;
-    if (score > currentHighScore) {
-        localStorage.setItem(`${game}-highscore`, score.toString());
-        loadHighScores(); // Refresh the display
-    }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }

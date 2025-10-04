@@ -12,6 +12,11 @@
     transition: transform 0.3s ease;
 }
 
+/* Mobile menu toggle checkbox - hidden (legacy support) */
+.mobile-menu-toggle {
+    display: none;
+}
+
 /* Mobile menu button */
 .mobile-menu-btn {
     display: none; /* Hidden by default for desktop */
@@ -37,16 +42,18 @@
         transform: translateX(-100%);
         width: 100%;
         padding-top: 80px;
-        z-index: 1900; /* Below the hamburger button */
+        z-index: 1900;
         transition: transform 0.3s ease-in-out;
     }
     
     .sidebar.active {
         transform: translateX(0);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     }
 
     .mobile-menu-btn {
-        display: flex !important; /* Force display as flex for centering */
+        display: flex;
+        z-index: 2000;
     }
 
     .mobile-menu-btn:hover {
@@ -56,9 +63,9 @@
     .mobile-menu-btn:active {
         transform: scale(0.95);
     }
-    
-    /* Ensure the sidebar is above other content when active */
-    .sidebar.active {
+
+    /* CSS-only mobile menu toggle (legacy support) */
+    .mobile-menu-toggle:checked ~ .sidebar {
         transform: translateX(0);
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     }
@@ -138,6 +145,23 @@
     position: relative;
     color: white;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.notification-icon:hover {
+    color: #60efff;
+    transform: scale(1.1);
+}
+
+.logout-icon {
+    color: white;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.logout-icon:hover {
+    color: #ff6b6b;
 }
 
 .notification-badge {
@@ -164,6 +188,149 @@
     height: 36px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+/* Profile Dropdown Styles */
+.profile-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    min-width: 280px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    z-index: 2000;
+    margin-top: 8px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.profile-dropdown-content.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.profile-dropdown-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-dropdown-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(96, 239, 255, 0.5);
+}
+
+.profile-dropdown-info {
+    flex: 1;
+}
+
+.profile-dropdown-name {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.2;
+}
+
+.profile-dropdown-email {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+    word-break: break-all;
+}
+
+.profile-dropdown-menu {
+    padding: 0.5rem 0;
+}
+
+.profile-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.profile-dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-dropdown-item i {
+    width: 20px;
+    text-align: center;
+    color: rgba(96, 239, 255, 0.8);
+}
+
+.profile-dropdown-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 0;
+}
+
+.profile-dropdown-item.sign-out {
+    color: #ff6b6b;
+}
+
+.profile-dropdown-item.sign-out:hover {
+    background-color: rgba(255, 107, 107, 0.1);
+}
+
+.profile-dropdown-item.sign-out i {
+    color: #ff6b6b;
+}
+
+/* Mobile responsiveness for dropdown */
+@media screen and (max-width: 768px) {
+    .profile-dropdown-content {
+        min-width: 260px;
+        right: -10px;
+    }
+    
+    .profile-dropdown-header {
+        padding: 1.25rem;
+    }
+    
+    .profile-dropdown-avatar {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .profile-dropdown-name {
+        font-size: 1rem;
+    }
+    
+    .profile-dropdown-email {
+        font-size: 0.85rem;
+    }
+    
+    .profile-dropdown-item {
+        padding: 0.7rem 1.25rem;
+        font-size: 0.9rem;
+    }
 }
 
 /* Main content styling */

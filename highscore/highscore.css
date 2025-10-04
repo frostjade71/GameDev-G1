@@ -18,15 +18,17 @@ body {
     max-width: 500px;
     box-shadow: 0 0 20px rgba(0, 255, 135, 0.2);
     position: relative;
+    margin-top: auto;
 }
 
 @media (max-width: 768px) {
     .highscore-container {
-        margin: 1rem auto;
+        margin: 0.5rem auto;
         padding: 1.5rem;
         width: 95%;
         max-width: 100%;
         border-radius: 15px;
+        margin-top: auto;
     }
 }
 
@@ -106,11 +108,11 @@ body {
 }
 
 .game-section.grammar-heroes::before {
-    background-image: url('../assets/selection/Grammarbg.png');
+    background-image: url('../assets/selection/Grammarbg.webp');
 }
 
 .game-section.vocabworld::before {
-    background-image: url('../assets/selection/vocabbg.png');
+    background-image: url('../assets/selection/vocabbg.webp');
 }
 
 .game-section::after {

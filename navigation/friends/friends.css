@@ -1,0 +1,629 @@
+/* Main layout */
+.main-content {
+    position: fixed;
+    top: 60px; /* Adjust based on your header height */
+    left: 250px; /* Adjust based on your sidebar width */
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    padding: 2rem;
+    background: transparent;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(96, 239, 255, 0.5) rgba(0, 0, 0, 0.2);
+}
+
+/* Custom scrollbar for Webkit browsers */
+.main-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.main-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background: rgba(96, 239, 255, 0.5);
+    border-radius: 4px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(96, 239, 255, 0.7);
+}
+
+.friends-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-bottom: 2rem;
+}
+
+/* Section styles */
+.friends-section,
+.suggested-section {
+    margin-bottom: 3rem;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    padding: 2rem;
+    border: 2px solid rgba(96, 239, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.friends-section::before,
+.suggested-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+}
+
+/* Header styles */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-header h2 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.9rem;
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-header h2 i {
+    font-size: 0.8rem;
+    color: #60efff;
+}
+
+/* Grid layouts */
+.friends-grid,
+.suggested-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Friend card styles */
+.friend-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(96, 239, 255, 0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.friend-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(96, 239, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(96, 239, 255, 0.2);
+}
+
+.friend-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #60efff, #00ff87);
+    opacity: 0.8;
+}
+
+.friend-avatar {
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+}
+
+.friend-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(96, 239, 255, 0.3);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.friend-avatar:hover img {
+    transform: scale(1.05);
+    border-color: rgba(96, 239, 255, 0.8);
+}
+
+.friend-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.friend-info h3 {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.friend-status {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    margin: 0;
+    font-style: italic;
+}
+
+/* Action buttons */
+.friend-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.action-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    min-width: 40px;
+    justify-content: center;
+    background: rgba(96, 239, 255, 0.2);
+    color: #60efff;
+}
+
+.action-btn:hover {
+    background: rgba(96, 239, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(96, 239, 255, 0.2);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+.action-btn i {
+    font-size: 1rem;
+}
+
+/* Suggested card styles */
+.suggested-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(96, 239, 255, 0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.suggested-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(96, 239, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(96, 239, 255, 0.2);
+}
+
+.suggested-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #60efff, #00ff87);
+    opacity: 0.8;
+}
+
+.suggested-avatar {
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+}
+
+.suggested-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(96, 239, 255, 0.3);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.suggested-avatar:hover img {
+    transform: scale(1.05);
+    border-color: rgba(96, 239, 255, 0.8);
+}
+
+/* Badge style */
+.user-badge {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    margin-left: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.user-badge:hover {
+    transform: scale(1.1);
+}
+
+.suggested-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.suggested-info h3 {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-details {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0;
+    flex-wrap: wrap;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+.grade-level {
+    color: #60efff;
+    font-weight: 500;
+}
+
+.joined-date {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Friend request buttons */
+.add-friend-btn,
+.cancel-request-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.add-friend-btn {
+    background: linear-gradient(135deg, #00ff87, #00cc6a);
+    color: white;
+}
+
+.add-friend-btn:hover {
+    background: linear-gradient(135deg, #00cc6a, #00aa55);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 135, 0.4);
+}
+
+.add-friend-btn:active {
+    transform: translateY(0);
+}
+
+.cancel-request-btn {
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.cancel-request-btn:hover {
+    background: rgba(255, 107, 107, 0.3);
+    border-color: rgba(255, 107, 107, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+}
+
+.cancel-request-btn:active {
+    transform: translateY(0);
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: rgba(96, 239, 255, 0.5);
+}
+
+.empty-state h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Press Start 2P', cursive;
+}
+
+.empty-state p {
+    font-size: 0.9rem;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Search styles */
+.search-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 250px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(96, 239, 255, 0.3);
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-container:hover,
+.search-container:focus-within {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(96, 239, 255, 0.6);
+    box-shadow: 0 0 10px rgba(96, 239, 255, 0.3);
+}
+
+.search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 0.9rem;
+    width: 100%;
+    padding: 0;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.refresh-button {
+    background: rgba(96, 239, 255, 0.2);
+    border: 1px solid rgba(96, 239, 255, 0.3);
+    color: #60efff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.refresh-button:hover {
+    background: rgba(96, 239, 255, 0.3);
+    border-color: rgba(96, 239, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(96, 239, 255, 0.2);
+}
+
+.refresh-button:active {
+    transform: translateY(0);
+}
+
+.search-icon {
+    color: rgba(96, 239, 255, 0.7);
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .main-content {
+        left: 0;
+        padding: 1rem;
+        top: 70px; /* Adjust for mobile header */
+    }
+    
+    .friends-section,
+    .suggested-section {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 20px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .section-header h2 {
+        font-size: 0.8rem;
+    }
+    
+    .section-header h2 i {
+        font-size: 0.7rem;
+    }
+    
+    .friend-card,
+    .suggested-card {
+        padding: 1rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .friend-avatar img,
+    .suggested-avatar img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .friend-info,
+    .suggested-info {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        align-items: center;
+    }
+
+    .suggested-info h3 {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .user-badge {
+        width: 24px;
+        height: 24px;
+        margin-left: 0;
+    }
+    
+    .friend-actions,
+    .suggested-actions {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .suggested-card .user-details {
+        flex-direction: column;
+        gap: 0.3rem;
+        align-items: center;
+    }
+    
+    .suggested-card .add-friend-btn,
+    .suggested-card .cancel-request-btn {
+        margin: 0 auto;
+        width: 80%;
+        max-width: 200px;
+    }
+
+    .suggested-card .user-details .grade-level {
+        font-size: 0.85rem;
+    }
+
+    .suggested-card .user-details .joined-date {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .action-btn,
+    .add-friend-btn,
+    .cancel-request-btn {
+        flex: 1;
+        min-width: auto;
+    }
+    
+    .search-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+    
+    .search-container {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .refresh-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 0.5rem;
+        top: 60px;
+    }
+    
+    .friends-section,
+    .suggested-section {
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    .section-header h2 {
+        font-size: 0.7rem;
+    }
+    
+    .section-header h2 i {
+        font-size: 0.6rem;
+    }
+    
+    .friend-card,
+    .suggested-card {
+        padding: 1.2rem 0.8rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .friend-avatar img,
+    .suggested-avatar img {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .action-btn,
+    .add-friend-btn,
+    .cancel-request-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+    }
+    
+    .suggested-card .suggested-info {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .suggested-card .suggested-actions {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: auto;
+    }
+}

@@ -8,12 +8,18 @@ body {
     transition: background-image 0.5s ease-in-out;
 }
 
-body.hover-letterscapes {
-    background-image: url('assets/selection/Grammarbg.png');
+body.hover-grammarbg {
+    background-image: url('assets/selection/Grammarbg.webp') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
 }
 
-body.hover-grow-word {
-    background-image: url('assets/selection/vocabbg.png');
+body.hover-vocabbg {
+    background-image: url('assets/selection/vocabbg.webp') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
 }
 
 .games-carousel-container {
@@ -333,12 +339,12 @@ body.hover-grow-word {
 .game-description {
     color: rgba(255, 255, 255, 0.8);
     margin-bottom: 1rem;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
 }
 
 @media (max-width: 768px) {
     .game-description {
-        font-size: 0.85rem;
+        font-size: 0.60rem;
         margin-bottom: 0.8rem;
     }
 }
@@ -363,6 +369,7 @@ body.hover-grow-word {
     gap: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-top: 2rem;
 }
 
 @media (max-width: 768px) {

@@ -1,0 +1,518 @@
+/* Notification Page Styles */
+.notification-container {
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+    margin-top: auto;
+}
+
+/* Header Section */
+.notification-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.notification-header h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2rem;
+    color: #60efff;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.notification-header h1 i {
+    font-size: 1.5rem;
+    color: #ff6b6b;
+}
+
+.notification-header p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Section Styles */
+.friend-requests-section,
+.recent-activity-section {
+    margin-bottom: 3rem;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    padding: 2rem;
+    border: 2px solid rgba(96, 239, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.friend-requests-section::before,
+.recent-activity-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-header h2 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.9rem;
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-header h2 i {
+    font-size: 0.8rem;
+    color: #60efff;
+}
+
+.mark-all-read-btn {
+    background: rgba(96, 239, 255, 0.2);
+    border: 1px solid rgba(96, 239, 255, 0.3);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    color: #60efff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.mark-all-read-btn:hover {
+    background: rgba(96, 239, 255, 0.3);
+    border-color: rgba(96, 239, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+.mark-all-read-btn:active {
+    transform: translateY(0);
+}
+
+.mark-all-read-btn i {
+    transition: transform 0.3s ease;
+}
+
+.mark-all-read-btn:hover i {
+    transform: scale(1.1);
+}
+
+/* Friend Requests List */
+.friend-requests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.friend-request-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(96, 239, 255, 0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.friend-request-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(96, 239, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(96, 239, 255, 0.2);
+}
+
+.friend-request-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #60efff, #00ff87);
+    opacity: 0.8;
+}
+
+.request-avatar {
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+}
+
+.request-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(96, 239, 255, 0.3);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.request-avatar:hover img {
+    transform: scale(1.05);
+    border-color: rgba(96, 239, 255, 0.8);
+}
+
+.request-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.request-info h3 {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.request-details {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 0 0.5rem 0;
+    flex-wrap: wrap;
+}
+
+.grade-level {
+    color: #60efff;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.request-time {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+}
+
+.request-message {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    margin: 0;
+    font-style: italic;
+}
+
+.request-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.accept-btn,
+.decline-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.accept-btn {
+    background: linear-gradient(135deg, #00ff87, #00cc6a);
+    color: white;
+}
+
+.accept-btn:hover {
+    background: linear-gradient(135deg, #00cc6a, #00aa55);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 135, 0.4);
+}
+
+.accept-btn:active {
+    transform: translateY(0);
+}
+
+.decline-btn {
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.decline-btn:hover {
+    background: rgba(255, 107, 107, 0.3);
+    border-color: rgba(255, 107, 107, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+}
+
+.decline-btn:active {
+    transform: translateY(0);
+}
+
+.accept-btn:disabled,
+.decline-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.accept-btn:disabled:hover,
+.decline-btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Loading States */
+.friend-request-card.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.friend-request-card.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #60efff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success/Error States */
+.friend-request-card.success {
+    background: rgba(0, 255, 135, 0.1);
+    border-color: rgba(0, 255, 135, 0.3);
+}
+
+.friend-request-card.error {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: rgba(255, 107, 107, 0.3);
+}
+
+/* Empty States */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: rgba(96, 239, 255, 0.5);
+}
+
+.empty-state h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.empty-state p {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .notification-container {
+        padding: 1rem;
+        margin-top: auto;
+    }
+    
+    .notification-header h1 {
+        font-size: 1.5rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .notification-header h1 i {
+        font-size: 1.2rem;
+    }
+    
+    .notification-header p {
+        font-size: 1rem;
+    }
+    
+    .friend-requests-section,
+    .recent-activity-section {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 20px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .section-header h2 {
+        font-size: 0.8rem;
+    }
+    
+    .section-header h2 i {
+        font-size: 0.7rem;
+    }
+    
+    .friend-request-card {
+        padding: 1rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .request-avatar img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .request-info {
+        text-align: center;
+    }
+    
+    .request-details {
+        justify-content: center;
+    }
+    
+    .request-actions {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .accept-btn,
+    .decline-btn {
+        flex: 1;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .notification-container {
+        padding: 0.5rem;
+        margin-top: auto;
+    }
+    
+    .friend-requests-section,
+    .recent-activity-section {
+        padding: 1rem;
+        border-radius: 15px;
+    }
+    
+    .notification-header h1 {
+        font-size: 1.2rem;
+    }
+    
+    .section-header h2 {
+        font-size: 0.7rem;
+    }
+    
+    .section-header h2 i {
+        font-size: 0.6rem;
+    }
+    
+    .friend-request-card {
+        padding: 0.8rem;
+    }
+    
+    .request-avatar img {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .accept-btn,
+    .decline-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Animation for new notifications */
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.friend-request-card.new {
+    animation: slideInFromRight 0.5s ease-out;
+}
+
+/* Pulse animation for notification badge */
+.notification-badge.pulse {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Hover effects for better UX */
+.friend-request-card:hover .request-avatar img {
+    border-color: rgba(96, 239, 255, 0.6);
+}
+
+.friend-request-card:hover .request-info h3 {
+    color: #60efff;
+}
+
+/* Focus states for accessibility */
+.accept-btn:focus,
+.decline-btn:focus,
+.mark-all-read-btn:focus {
+    outline: 2px solid #60efff;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .friend-request-card {
+        border-width: 2px;
+    }
+    
+    .accept-btn,
+    .decline-btn {
+        border-width: 2px;
+    }
+}

@@ -127,9 +127,9 @@ $notification_count = count($friend_requests);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Weavers - Friends</title>
-    <link rel="stylesheet" href="../../styles.css">
-    <link rel="stylesheet" href="../../navigation/shared/navigation.css">
-    <link rel="stylesheet" href="../../notif/toast.css">
+    <link rel="stylesheet" href="../../styles.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="friends.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
@@ -145,7 +145,7 @@ $notification_count = count($friend_requests);
             <img src="../../assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
         </div>
         <nav class="sidebar-nav">
-            <a href="../../index.php?from=selection" class="nav-link">
+            <a href="../../menu.php" class="nav-link">
                 <i class="fas fa-house"></i>
                 <span>Menu</span>
             </a>

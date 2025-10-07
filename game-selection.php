@@ -41,10 +41,10 @@ while ($row = $stmt->fetch()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Game Mode - Word Weavers</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="navigation/shared/navigation.css">
-    <link rel="stylesheet" href="game-selection.css">
-    <link rel="stylesheet" href="notif/toast.css">
+    <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="navigation/shared/navigation.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="game-selection.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="notif/toast.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -59,7 +59,7 @@ while ($row = $stmt->fetch()) {
             <img src="assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
         </div>
         <nav class="sidebar-nav">
-            <a href="index.php?from=selection" class="nav-link">
+            <a href="menu.php?from=selection" class="nav-link">
                 <i class="fas fa-house"></i>
                 <span>Menu</span>
             </a>
@@ -207,11 +207,11 @@ while ($row = $stmt->fetch()) {
     <!-- Logout Confirmation Modal -->
     <div class="toast-overlay" id="logoutModal">
         <div class="toast" id="logoutConfirmation">
-            <h3 style="margin-bottom: 1rem; color: #ff6b6b;">Logout Confirmation</h3>
-            <p style="margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.8);">Are you sure you want to logout?</p>
-            <div style="display: flex; gap: 1rem; justify-content: center;">
-                <button onclick="confirmLogout()" style="background: #ff6b6b; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Yes, Logout</button>
-                <button onclick="hideLogoutModal()" style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Cancel</button>
+            <h3>Logout Confirmation</h3>
+            <p>Are you sure you want to logout?</p>
+            <div class="modal-buttons">
+                <button class="logout-btn" onclick="confirmLogout()">Yes, Logout</button>
+                <button class="cancel-btn" onclick="hideLogoutModal()">Cancel</button>
             </div>
         </div>
     </div>

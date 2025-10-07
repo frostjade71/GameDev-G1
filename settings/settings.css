@@ -5,40 +5,120 @@ body {
     min-height: 100vh;
     color: white;
     font-family: 'Press Start 2P', cursive;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Main content alignment */
+.main-content {
+    position: fixed;
+    left: 250px;
+    top: 60px;
+    right: 0;
+    bottom: 0;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    transition: left 0.3s ease;
+}
+
+@media screen and (max-width: 768px) {
+    .main-content {
+        left: 0;
+        padding: 1rem;
+        padding-top: 70px;
+    }
+}
+
+.main-content {
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-left: 240px;
+    padding-top: 60px;
+    position: relative;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding-top: 50px;
+        height: 100vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding-top: 40px;
+    }
 }
 
 .settings-container {
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border: 2px solid rgba(96, 239, 255, 0.5);
-    padding: 2rem;
-    width: 90%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    padding: 1.25rem;
+    width: 100%;
     max-width: 500px;
-    margin: 2rem auto;
-    box-shadow: 0 0 20px rgba(0, 255, 135, 0.2);
+    border: 2px solid rgba(96, 239, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     position: relative;
-    margin-top: auto;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.settings-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
 }
 
 @media (max-width: 768px) {
     .settings-container {
-        margin: 1rem auto;
-        padding: 1.5rem;
-        width: 95%;
-        max-width: 100%;
-        border-radius: 15px;
-        margin-top: auto;
+        width: 100%;
+        padding: 1rem;
+        margin: 0;
+        border-radius: 20px;
     }
 }
 
 @media (max-width: 480px) {
     .settings-container {
-        margin: 0.5rem auto;
+        width: 100%;
+        padding: 0.8rem;
+        margin: 0;
+        border-radius: 15px;
+    }
+}
+
+@media (max-width: 360px) {
+    .settings-container {
         padding: 1rem;
-        width: 98%;
-        border-radius: 12px;
-        margin-top: auto;
+        width: 100%;
+        border-radius: 10px;
+        margin: 0 auto 1rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .settings-container {
+        padding: 0.8rem;
+        width: 100%;
+        border-radius: 10px;
+    }
+    
+    body {
+        padding: 0.5rem;
     }
 }
 

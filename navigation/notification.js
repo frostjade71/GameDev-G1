@@ -51,12 +51,9 @@ function acceptFriendRequest(requestId, requesterId, username, buttonElement) {
     const requestCard = buttonElement.closest('.friend-request-card');
     const declineBtn = requestCard.querySelector('.decline-btn');
     
-    // Disable both buttons and show loading state
+    // Show loading state
     buttonElement.disabled = true;
     declineBtn.disabled = true;
-    requestCard.classList.add('loading');
-    
-    // Show loading text
     buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Accepting...';
     
     // Make API call to accept friend request
@@ -74,34 +71,22 @@ function acceptFriendRequest(requestId, requesterId, username, buttonElement) {
     .then(data => {
         if (data.success) {
             // Show success state
-            requestCard.classList.remove('loading');
-            requestCard.classList.add('success');
             buttonElement.innerHTML = '<i class="fas fa-check"></i> Accepted';
             buttonElement.style.background = '#00ff87';
             declineBtn.style.display = 'none';
             
-            // Show success toast with appropriate message
-            const toastMessage = data.data?.already_processed 
-                ? `Accepted friend request.`
-                : `You are now friends with ${username}!`;
-            showToast(toastMessage, 'success');
+            // Show toast message
+            showToast(`You are now friends with ${username}!`, 'success');
             
-            // Remove the card after a delay
+            // Refresh after a short delay
             setTimeout(() => {
-                requestCard.style.opacity = '0';
-                requestCard.style.transform = 'translateY(-20px)';
-                setTimeout(() => {
-                    requestCard.remove();
-                    updateNotificationBadge();
-                    updateRequestCount();
-                }, 300);
-            }, 2000);
+                document.location.reload();
+            }, 1500);
         } else {
             // Show error state
-            requestCard.classList.remove('loading');
-            requestCard.classList.add('error');
             buttonElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
             buttonElement.style.background = '#ff6b6b';
+            buttonElement.disabled = false;
             declineBtn.disabled = false;
             
             // Show error toast
@@ -140,15 +125,13 @@ function acceptFriendRequest(requestId, requesterId, username, buttonElement) {
 }
 
 function declineFriendRequest(requestId, username, buttonElement) {
+    // Get the request card and other elements
     const requestCard = buttonElement.closest('.friend-request-card');
     const acceptBtn = requestCard.querySelector('.accept-btn');
     
     // Disable both buttons and show loading state
     buttonElement.disabled = true;
     acceptBtn.disabled = true;
-    requestCard.classList.add('loading');
-    
-    // Show loading text
     buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Declining...';
     
     // Make API call to decline friend request
@@ -156,6 +139,7 @@ function declineFriendRequest(requestId, username, buttonElement) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({
             request_id: requestId
@@ -164,35 +148,28 @@ function declineFriendRequest(requestId, username, buttonElement) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Show success state
-            requestCard.classList.remove('loading');
-            requestCard.classList.add('success');
-            buttonElement.innerHTML = '<i class="fas fa-check"></i> Declined';
-            buttonElement.style.background = '#28a745';
+            // Show decline success state
+            buttonElement.innerHTML = '<i class="fas fa-times"></i> Declined';
+            buttonElement.style.background = '#ff6b6b';
             acceptBtn.style.display = 'none';
             
-            // Show success toast with appropriate message
+            // Show appropriate toast message
             const toastMessage = data.data?.already_processed 
-                ? `Accepted friend request.`
-                : `Declined friend request.`;
+                ? 'Friend request already processed'
+                : data.message || 'Friend request declined successfully';
             showToast(toastMessage, 'info');
             
-            // Remove the card after a delay
-            setTimeout(() => {
-                requestCard.style.opacity = '0';
-                requestCard.style.transform = 'translateY(-20px)';
-                setTimeout(() => {
-                    requestCard.remove();
-                    updateNotificationBadge();
-                    updateRequestCount();
-                }, 300);
-            }, 2000);
+            // Force immediate page refresh
+            window.location = window.location.href;
         } else {
             // Show error state
-            requestCard.classList.remove('loading');
-            requestCard.classList.add('error');
             buttonElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+            buttonElement.style.background = '#ff6b6b';
+            buttonElement.disabled = false;
             acceptBtn.disabled = false;
+            
+            // Show error toast
+            showToast(data.message || 'Failed to decline friend request', 'error');
             
             // Show error toast
             showToast(data.message || 'Failed to decline friend request. Please try again.', 'error');
@@ -319,22 +296,7 @@ function updateRequestCount() {
     if (countElement) {
         countElement.innerHTML = `<i class="fas fa-user-plus"></i> Friend Requests (${count})`;
     }
-    
-    // Show empty state if no requests
-    if (count === 0) {
-        const requestsList = document.querySelector('.friend-requests-list');
-        const emptyState = document.createElement('div');
-        emptyState.className = 'empty-state';
-        emptyState.innerHTML = `
-            <i class="fas fa-bell-slash"></i>
-            <h3>No New Notifications</h3>
-            <p>You're all caught up! Check back later for new friend requests.</p>
-        `;
-        
-        if (requestsList) {
-            requestsList.appendChild(emptyState);
-        }
-    }
+    // We remove the empty state creation since we'll be reloading the page instead
 }
 
 function setupRealTimeUpdates() {

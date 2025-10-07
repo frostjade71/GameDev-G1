@@ -233,7 +233,7 @@ if ($shard_result['success']) {
 
         // Go to main menu
         function goToMainMenu() {
-            window.location.href = '../index.php';
+            window.location.href = '../../../menu.php';
         }
 
         // Grade selection is now handled by direct links

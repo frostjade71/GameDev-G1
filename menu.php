@@ -21,6 +21,20 @@ if (!$user) {
     exit();
 }
 
+// Get user's game statistics
+$stmt = $pdo->prepare("SELECT 
+    COUNT(*) as games_played,
+    MAX(score) as high_score
+    FROM game_scores 
+    WHERE user_id = ?");
+$stmt->execute([$user_id]);
+$stats = $stmt->fetch();
+
+// Get user's favorites count
+$stmt = $pdo->prepare("SELECT COUNT(*) as favorites_count FROM user_favorites WHERE user_id = ?");
+$stmt->execute([$user_id]);
+$favorites = $stmt->fetch();
+
 // Get pending friend requests for the current user (for notification count)
 $stmt = $pdo->prepare("
     SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level
@@ -34,17 +48,21 @@ $friend_requests = $stmt->fetchAll();
 
 // Get notification count for badge
 $notification_count = count($friend_requests);
+
+$games_played = $stats['games_played'] ?? 0;
+$high_score = $stats['high_score'] ?? 0;
+$favorites_count = $favorites['favorites_count'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credits - Word Weavers</title>
+    <title>Menu - Word Weavers</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="navigation/shared/navigation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="credits.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="notif/toast.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="menu.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -59,7 +77,7 @@ $notification_count = count($friend_requests);
             <img src="assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
         </div>
         <nav class="sidebar-nav">
-            <a href="menu.php" class="nav-link">
+            <a href="./menu.php" class="nav-link active">
                 <i class="fas fa-house"></i>
                 <span>Menu</span>
             </a>
@@ -131,31 +149,65 @@ $notification_count = count($friend_requests);
         </div>
     </header>
 
+    <!-- Main Content -->
     <div class="main-content">
-        <div class="credits-container">
-        <div class="credits-title">
-            <img src="assets/menu/credits2.png" alt="Credits" class="credits-logo">
-        </div>
-        <div class="credits-section members-container">
-            <h2>Group 3 Members</h2>
-            <div class="members-list">
-                <div class="member-card">Alfred Estares</div>
-                <div class="member-card">Loren Mae Pascual</div>
-                <div class="member-card">Jaderby Peñaranda</div>
-                <div class="member-card">Jeric Ganancial</div>
-                <div class="member-card">Ria Jhen Boreres</div>
-                <div class="member-card">Ken Erickson Bacarisas</div>
+        <div class="menu-container">
+            <!-- Banner -->
+            <a href="game-selection.php" class="changelog-banner">
+                <img src="assets/banner/changelog_banner.png" alt="What's New" class="changelog-banner-image">
+            </a>
+
+            <!-- Separator -->
+            <div class="menu-separator"></div>
+
+            <!-- Menu Buttons Grid -->
+            <div class="menu-buttons-grid">
+                <a href="game-selection.php" class="menu-button play-button">
+                    <div class="button-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="button-content">
+                        <h2>Play</h2>
+                        <p>Start your learning adventure</p>
+                    </div>
+                </a>
+                
+                <a href="settings/settings.php" class="menu-button settings-button">
+                    <div class="button-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="button-content">
+                        <h2>Settings</h2>
+                        <p>Customize your experience</p>
+                    </div>
+                </a>
+                
+                <a href="highscore/highscore.php" class="menu-button highscore-button">
+                    <div class="button-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="button-content">
+                        <h2>High Scores</h2>
+                        <p>View your achievements</p>
+                    </div>
+                </a>
+                
+                <a href="credits.php" class="menu-button credits-button">
+                    <div class="button-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="button-content">
+                        <h2>Credits</h2>
+                        <p>Meet the team</p>
+                    </div>
+                </a>
             </div>
         </div>
-        <div class="credits-section developer-container">
-            <h2>Developer</h2>
-            <div class="developer-card">Jaderby Peñaranda</div>
-        </div>
-        </div>
     </div>
+
     <div class="toast-overlay"></div>
     <div id="toast" class="toast"></div>
-    <script src="script.js"></script>
+    
     <!-- Logout Confirmation Modal -->
     <div class="toast-overlay" id="logoutModal">
         <div class="toast" id="logoutConfirmation">
@@ -168,16 +220,20 @@ $notification_count = count($friend_requests);
         </div>
     </div>
 
-    <script src="credits.js"></script>
+    <script src="script.js"></script>
     <script src="navigation/shared/profile-dropdown.js"></script>
     <script src="navigation/shared/notification-badge.js"></script>
+    <script src="menu.js"></script>
     <script>
         // Pass user data to JavaScript
         window.userData = {
             id: <?php echo $user_id; ?>,
             username: '<?php echo htmlspecialchars($user['username']); ?>',
             email: '<?php echo htmlspecialchars($user['email']); ?>',
-            gradeLevel: '<?php echo htmlspecialchars($user['grade_level']); ?>'
+            gradeLevel: '<?php echo htmlspecialchars($user['grade_level']); ?>',
+            gamesPlayed: <?php echo $games_played; ?>,
+            highScore: <?php echo $high_score; ?>,
+            favoritesCount: <?php echo $favorites_count; ?>
         };
 
         // Logout functionality
@@ -205,7 +261,9 @@ $notification_count = count($friend_requests);
 
         function confirmLogout() {
             // Play click sound
-            playClickSound();
+            if (typeof playClickSound === 'function') {
+                playClickSound();
+            }
             
             // Redirect to logout endpoint
             window.location.href = 'onboarding/logout.php';
@@ -213,3 +271,4 @@ $notification_count = count($friend_requests);
     </script>
 </body>
 </html>
+

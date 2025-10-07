@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['grade_level'] = $user['grade_level'];
                 
                 // Redirect to index page
-                header('Location: ../index.php');
+                header('Location: ../menu.php');
                 exit();
             } else {
                 $error_message = 'Invalid email or password.';

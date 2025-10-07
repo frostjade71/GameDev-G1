@@ -370,5 +370,5 @@ function selectGrade(grade) {
 }
 
 function goToMainMenu() {
-    window.location.href = '../index.php';
+    window.location.href = '../../../menu.php';
 }

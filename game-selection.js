@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!backElement.onclick) {
             backElement.addEventListener('click', (event) => {
                 playClickSound();
-                window.location.href = 'index.php?from=selection';
+                window.location.href = 'menu.php?from=selection';
             });
         }
     });
@@ -172,8 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 backButton.style.transform = 'scale(1)';
             }, 100);
             
-            // Navigate back to index
-            window.location.replace('index.php');
+            // Navigate back to menu with from parameter
+            window.location.href = 'menu.php?from=selection';
         });
     }
 });

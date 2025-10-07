@@ -34,7 +34,7 @@ function requireLogin() {
 // Function to redirect to index if already logged in
 function redirectIfLoggedIn() {
     if (isLoggedIn()) {
-        header('Location: ../index.php');
+        header('Location: ../menu.php');
         exit();
     }
 }

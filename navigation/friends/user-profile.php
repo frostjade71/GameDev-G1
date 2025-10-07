@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             <img src="../../assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
         </div>
         <nav class="sidebar-nav">
-            <a href="../../index.php?from=selection" class="nav-link">
+            <a href="../../menu.php" class="nav-link">
                 <i class="fas fa-house"></i>
                 <span>Menu</span>
             </a>

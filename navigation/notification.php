@@ -21,6 +21,8 @@ if (!$user) {
     exit();
 }
 
+
+
 // Get pending friend requests for the current user
 $stmt = $pdo->prepare("
     SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level
@@ -41,11 +43,14 @@ $notification_count = count($friend_requests);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Weavers - Notifications</title>
-    <link rel="stylesheet" href="../navigation/shared/navigation.css">
-    <link rel="stylesheet" href="notification.css">
-    <link rel="stylesheet" href="../notif/toast.css">
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="shared/navigation.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="notification.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../notif/toast.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../styles.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Mobile Menu Button -->
@@ -59,7 +64,7 @@ $notification_count = count($friend_requests);
             <img src="../assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
         </div>
         <nav class="sidebar-nav">
-            <a href="../index.php?from=selection" class="nav-link">
+            <a href="../menu.php" class="nav-link">
                 <i class="fas fa-house"></i>
                 <span>Menu</span>
             </a>
@@ -183,18 +188,6 @@ $notification_count = count($friend_requests);
                 </div>
                 <?php endif; ?>
             </div>
-
-            <!-- Recent Activity Section (for future expansion) -->
-            <div class="recent-activity-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-history"></i> Recent Activity</h2>
-                </div>
-                <div class="empty-state">
-                    <i class="fas fa-clock"></i>
-                    <h3>No Recent Activity</h3>
-                    <p>Your recent activity will appear here.</p>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -204,17 +197,17 @@ $notification_count = count($friend_requests);
     <!-- Logout Confirmation Modal -->
     <div class="toast-overlay" id="logoutModal">
         <div class="toast" id="logoutConfirmation">
-            <h3 style="margin-bottom: 1rem; color:rgb(255, 255, 255);">Logout Confirmation</h3>
-            <p style="margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.8);">Are you sure you want to logout?</p>
-            <div style="display: flex; gap: 1rem; justify-content: center;">
-                <button onclick="confirmLogout()" style="background: #ff6b6b; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Yes, Logout</button>
-                <button onclick="hideLogoutModal()" style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Cancel</button>
+            <h3>Logout Confirmation</h3>
+            <p>Are you sure you want to logout?</p>
+            <div class="modal-buttons">
+                <button class="logout-btn" onclick="confirmLogout()">Yes, Logout</button>
+                <button class="cancel-btn" onclick="hideLogoutModal()">Cancel</button>
             </div>
         </div>
     </div>
 
     <script src="../script.js"></script>
-    <script src="../navigation/shared/profile-dropdown.js"></script>
+    <script src="shared/profile-dropdown.js"></script>
     <script src="notification.js"></script>
     <script>
         // Pass user data to JavaScript
@@ -260,6 +253,141 @@ $notification_count = count($friend_requests);
             
             // Redirect to logout endpoint
             window.location.href = '../onboarding/logout.php';
+        }
+
+        // Friend Request Functions
+        function acceptFriendRequest(requestId, requesterId, username, buttonElement) {
+            // Play click sound
+            playClickSound();
+
+            // Disable button and show loading state
+            buttonElement.disabled = true;
+            const declineBtn = buttonElement.nextElementSibling;
+            declineBtn.disabled = true;
+            buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Accepting...';
+            
+            // Make API call to accept friend request
+            fetch('accept_friend_request.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    request_id: requestId,
+                    requester_id: requesterId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success state
+                    buttonElement.innerHTML = '<i class="fas fa-check"></i> Accepted';
+                    buttonElement.style.background = '#00ff87';
+                    declineBtn.style.display = 'none';
+                    
+                    // Show success message
+                    showToast(`You are now friends with ${username}!`, 'success');
+                    
+                    // Reload page after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    // Reset button state
+                    buttonElement.disabled = false;
+                    declineBtn.disabled = false;
+                    buttonElement.innerHTML = '<i class="fas fa-check"></i> Accept';
+                    
+                    // Show error message
+                    showToast(data.message || 'Failed to accept friend request', 'error');
+                }
+            })
+            .catch(error => {
+                // Reset button state
+                buttonElement.disabled = false;
+                declineBtn.disabled = false;
+                buttonElement.innerHTML = '<i class="fas fa-check"></i> Accept';
+                
+                // Show error message
+                showToast('Network error. Please try again.', 'error');
+            });
+        }
+
+        function declineFriendRequest(requestId, username, buttonElement) {
+            // Play click sound
+            playClickSound();
+
+            // Disable button and show loading state
+            buttonElement.disabled = true;
+            const acceptBtn = buttonElement.previousElementSibling;
+            acceptBtn.disabled = true;
+            buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Declining...';
+            
+            // Make API call to decline friend request
+            fetch('decline_friend_request.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    request_id: requestId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show decline state
+                    buttonElement.innerHTML = '<i class="fas fa-times"></i> Declined';
+                    buttonElement.style.background = '#ff6b6b';
+                    acceptBtn.style.display = 'none';
+                    
+                    // Show success message
+                    showToast(`Friend request from ${username} has been declined`, 'info');
+                    
+                    // Reload page after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    // Reset button state
+                    buttonElement.disabled = false;
+                    acceptBtn.disabled = false;
+                    buttonElement.innerHTML = '<i class="fas fa-times"></i> Decline';
+                    
+                    // Show error message
+                    showToast(data.message || 'Failed to decline friend request', 'error');
+                }
+            })
+            .catch(error => {
+                // Reset button state
+                buttonElement.disabled = false;
+                acceptBtn.disabled = false;
+                buttonElement.innerHTML = '<i class="fas fa-times"></i> Decline';
+                
+                // Show error message
+                showToast('Network error. Please try again.', 'error');
+            });
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastOverlay = document.querySelector('.toast-overlay');
+            
+            if (!toast || !toastOverlay) return;
+            
+            // Set message and type
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            
+            // Show toast
+            toastOverlay.classList.add('show');
+            toast.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toastOverlay.classList.remove('show');
+            }, 3000);
         }
     </script>
 </body>

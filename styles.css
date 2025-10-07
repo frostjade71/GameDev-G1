@@ -1,59 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-/* Search Bar Styles - Added here to ensure they load */
-.suggested-section .search-container,
-.search-container {
-    position: relative;
-    display: flex !important;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1) !important;
-    border: 1px solid rgba(96, 239, 255, 0.3) !important;
-    border-radius: 25px;
-    padding: 0.5rem 1rem;
-    transition: all 0.3s ease;
-    min-width: 250px;
-    flex: 1;
-    box-sizing: border-box;
-}
-
-.suggested-section .search-container:hover,
-.search-container:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(96, 239, 255, 0.6);
-}
-
-.suggested-section .search-container:focus-within,
-.search-container:focus-within {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(96, 239, 255, 0.6);
-    box-shadow: 0 0 10px rgba(96, 239, 255, 0.3);
-}
-
-.suggested-section .search-icon,
-.search-icon {
-    color: rgba(96, 239, 255, 0.7) !important;
-    margin-right: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.suggested-section .search-input,
-.search-input {
-    background: transparent !important;
-    border: none !important;
-    outline: none !important;
-    color: white !important;
-    font-size: 0.9rem;
-    width: 100%;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.suggested-section .search-input::placeholder,
-.search-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
-
 * {
     margin: 0;
     padding: 0;
@@ -68,134 +15,486 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     color: white;
+    overflow-x: hidden;
 }
 
 
+/* What's New Banner */
+.whats-new-banner {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 400px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(96, 239, 255, 0.3);
+    z-index: 10;
+    display: block;
+}
 
+.banner-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
 
+.banner-bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
 
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.8) 100%);
+    z-index: 2;
+}
 
+.banner-content {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
 
-/* Enhanced Mobile Responsiveness */
+.banner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.banner-badge i {
+    font-size: 0.9rem;
+}
+
+.banner-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, #60efff, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.banner-description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+.banner-features {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+.feature-item i {
+    color: #60efff;
+    font-size: 1.1rem;
+}
+
+.banner-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #00ff87, #00d4aa);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0, 255, 135, 0.3);
+}
+
+.banner-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 255, 135, 0.4);
+    background: linear-gradient(135deg, #00d4aa, #00ff87);
+}
+
+.banner-cta i {
+    font-size: 1.2rem;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    z-index: 10;
+    position: relative;
+    display: grid !important;
+}
+
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(96, 239, 255, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(96, 239, 255, 0.1), rgba(0, 255, 135, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.dashboard-card:hover::before {
+    opacity: 1;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 255, 135, 0.6);
+    box-shadow: 0 10px 30px rgba(0, 255, 135, 0.2);
+}
+
+.card-icon {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 1rem;
+}
+
+.card-icon i {
+    font-size: 3rem;
+    color: rgba(96, 239, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+.dashboard-card:hover .card-icon i {
+    color: #00ff87;
+    transform: scale(1.1);
+}
+
+.card-content {
+    position: relative;
+    z-index: 2;
+}
+
+.card-content h2 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.card-content p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Specific card styles */
+.play-card {
+    grid-column: 1 / -1;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('assets/menu/playbg.jpeg');
+    background-size: cover;
+    background-position: center;
+    min-height: 250px;
+}
+
+.settings-card {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/settingsbg.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+.highscore-card {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/highscorebg.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+.credits-card {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/creditsbg.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 1024px) {
-    .dashboard-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-areas: 
-            "play play"
-            "settings highscore"
-            "credits credits";
-        gap: 1.5rem;
+    .main-content {
         padding: 1.5rem;
     }
     
-    .play-card {
-        min-height: 220px;
-        padding: 2.5rem !important;
+    .whats-new-banner {
+        height: 350px;
+    }
+    
+    .banner-title {
+        font-size: 2rem;
+    }
+    
+    .banner-description {
+        font-size: 1rem;
+    }
+    
+    .banner-features {
+        gap: 1.5rem;
+    }
+    
+    .dashboard-grid {
+        gap: 1.5rem;
     }
     
     .dashboard-card {
-        padding: 1.8rem;
+        padding: 1.5rem;
+        min-height: 180px;
     }
     
-    .dashboard-card i {
-        font-size: 2.8rem;
+    .card-icon i {
+        font-size: 2.5rem;
     }
     
-    .dashboard-card h2 {
-        font-size: 1.1rem;
+    .card-content h2 {
+        font-size: 1rem;
     }
 }
 
 @media (max-width: 768px) {
     .main-content {
         padding: 1rem;
-        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    
+    .whats-new-banner {
+        height: 300px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .banner-content {
+        padding: 1.5rem;
+    }
+    
+    .banner-title {
+        font-size: 1.5rem;
+    }
+    
+    .banner-description {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .banner-features {
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .feature-item {
+        font-size: 0.8rem;
+    }
+    
+    .banner-cta {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
     }
     
     .dashboard-grid {
         grid-template-columns: 1fr;
-        grid-template-areas: 
-            "play"
-            "settings"
-            "highscore"
-            "credits";
-        padding: 1rem;
         gap: 1rem;
-        max-width: 100%;
     }
     
     .play-card {
-        min-height: 180px;
-        padding: 2rem !important;
+        grid-column: 1;
     }
     
     .dashboard-card {
-        padding: 1.5rem;
-        min-height: 140px;
+        padding: 1.2rem;
+        min-height: 160px;
     }
     
-    .dashboard-card i {
-        font-size: 2.5rem;
-        margin-bottom: 0.8rem;
+    .card-icon i {
+        font-size: 2.2rem;
     }
     
-    .dashboard-card h2 {
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
+    .card-content h2 {
+        font-size: 0.9rem;
     }
     
-    .dashboard-card p {
-        font-size: 0.85rem;
+    .card-content p {
+        font-size: 0.8rem;
     }
 }
 
 @media (max-width: 480px) {
     .main-content {
         padding: 0.5rem;
+        gap: 1rem;
+    }
+    
+    .whats-new-banner {
+        height: 250px;
+        margin-bottom: 1rem;
+    }
+    
+    .banner-content {
+        padding: 1rem;
+    }
+    
+    .banner-title {
+        font-size: 1.2rem;
+    }
+    
+    .banner-description {
+        font-size: 0.8rem;
+        margin-bottom: 1rem;
+    }
+    
+    .banner-features {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-item {
+        font-size: 0.75rem;
+    }
+    
+    .banner-cta {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
     }
     
     .dashboard-grid {
-        padding: 0.5rem;
         gap: 0.8rem;
     }
     
-    .play-card {
-        min-height: 160px;
-        padding: 1.5rem !important;
-    }
-    
     .dashboard-card {
-        padding: 1.2rem;
-        min-height: 120px;
+        padding: 1rem;
+        min-height: 140px;
     }
     
-    .dashboard-card i {
+    .card-icon i {
         font-size: 2rem;
-        margin-bottom: 0.6rem;
     }
     
-    .dashboard-card h2 {
-        font-size: 0.9rem;
-        margin-bottom: 0.4rem;
-    }
-    
-    .dashboard-card p {
+    .card-content h2 {
         font-size: 0.8rem;
+    }
+    
+    .card-content p {
+        font-size: 0.75rem;
     }
 }
 
+/* Override navigation CSS for proper layout - must be at the end to override navigation.css */
+body .main-content {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    margin-left: 250px;
+    margin-top: 60px;
+    padding: 2rem;
+    min-height: calc(100vh - 60px);
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 2rem;
+    transition: margin-left 0.3s ease;
+    overflow-y: visible !important;
+    width: calc(100% - 250px);
+}
 
+@media screen and (max-width: 768px) {
+    body .main-content {
+        margin-left: 0 !important;
+        margin-top: 60px;
+        padding: 1rem;
+        gap: 1.5rem;
+        width: 100% !important;
+    }
+}
 
+/* Ensure body doesn't have conflicting styles */
+body {
+    overflow-x: hidden;
+    position: relative;
+}
 
+/* Additional overrides to ensure proper layout */
+.main-content {
+    box-sizing: border-box;
+}
 
+/* Debug styles - remove in production */
+.main-content::before {
+    content: "Main Content Area";
+    position: absolute;
+    top: -30px;
+    left: 0;
+    background: rgba(255, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    font-size: 12px;
+    z-index: 9999;
+    display: none; /* Set to block for debugging */
+}
 
-
-
-
-
-
-/* Main Content Area */
+/* User Profile Styles */
 .user-profile {
     display: flex;
     align-items: center;
@@ -224,133 +523,72 @@ body {
     cursor: pointer;
 }
 
-.main-content {
-    grid-area: main;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
+/* Animation for banner entrance */
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-areas: 
-        "play play play"
-        "settings highscore credits";
-    gap: 2rem;
-    padding: 2rem;
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
+.whats-new-banner {
+    animation: slideInFromTop 0.8s ease-out;
 }
 
-.play-card {
-    grid-area: play;
-    min-height: 250px;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('assets/menu/playbg.jpeg');
-    background-size: cover;
-    background-position: bottom 100%;
-    padding: 3rem !important;
-    transition: all 0.5s ease-out;
-    position: relative;
-    overflow: hidden;
-}
-
-.play-card:hover {
-    background-position: center top;
-    transform: none !important;
-}
-
-.settings-card {
-    grid-area: settings;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/settingsbg.jpeg');
-    background-size: cover;
-    background-position: center;
-    transition: all 0.3s ease-out;
-}
-
-.settings-card:hover {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('assets/menu/settingsbg.jpeg');
-}
-
-.highscore-card {
-    grid-area: highscore;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/highscorebg.jpeg');
-    background-size: cover;
-    background-position: center;
-    transition: all 0.3s ease-out;
-}
-
-.highscore-card:hover {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('assets/menu/highscorebg.jpeg');
-}
-
-.credits-card {
-    grid-area: credits;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/creditsbg.jpeg');
-    background-size: cover;
-    background-position: center;
-    transition: all 0.3s ease-out;
-}
-
-.credits-card:hover {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('assets/menu/creditsbg.jpeg');
+/* Animation for dashboard cards */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .dashboard-card {
-    border-radius: 20px;
-    padding: 2rem;
-    text-align: center;
-    color: white;
-    text-decoration: none;
-    border: 2px solid rgba(96, 239, 255, 0.5);
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    cursor: pointer;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    animation: fadeInUp 0.6s ease-out;
 }
 
-.play-card {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('assets/menu/playbg.jpeg');
+.dashboard-card:nth-child(1) { animation-delay: 0.1s; }
+.dashboard-card:nth-child(2) { animation-delay: 0.2s; }
+.dashboard-card:nth-child(3) { animation-delay: 0.3s; }
+.dashboard-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Final override to ensure layout works */
+html body .main-content {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    margin-left: 250px !important;
+    margin-top: 60px !important;
+    padding: 2rem !important;
+    min-height: calc(100vh - 60px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 2rem !important;
+    transition: margin-left 0.3s ease !important;
+    overflow-y: visible !important;
+    width: calc(100% - 250px) !important;
+    box-sizing: border-box !important;
 }
 
-.dashboard-card i {
-    font-size: 3rem;
-    color: rgba(96, 239, 255, 0.8);
-    margin-bottom: 1rem;
-}
-
-.dashboard-card h2 {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 1.2rem;
-    margin: 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.dashboard-card p {
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0;
-    font-size: 0.9rem;
-}
-
-.dashboard-card:not(.play-card):hover {
-    transform: translateY(-5px);
-    border-color: rgba(0, 255, 135, 0.8);
-    box-shadow: 0 0 20px rgba(0, 255, 135, 0.4);
-}
-
-.play-card:hover {
-    border-color: rgba(0, 255, 135, 0.8);
-    box-shadow: 0 0 20px rgba(0, 255, 135, 0.4);
-}
-
-.dashboard-card:active {
-    transform: translateY(0);
+@media screen and (max-width: 768px) {
+    html body .main-content {
+        margin-left: 0 !important;
+        margin-top: 60px !important;
+        padding: 1rem !important;
+        gap: 1.5rem !important;
+        width: 100% !important;
+    }
 }
 

@@ -6,19 +6,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (backButton) {
         backButton.addEventListener('click', () => {
             // Play click sound
+            // Play click sound
             const clickSound = new Audio('../assets/sounds/clicks/mixkit-stapling-paper-2995.wav');
             clickSound.play().catch(error => {
                 console.log('Error playing click sound:', error);
             });
-            
+
             // Add visual feedback
             backButton.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 backButton.style.transform = 'scale(1)';
+                // Navigate back to menu with from parameter
+                window.location.href = '../index.php?from=highscore';
             }, 100);
-            
-            // Navigate back to index
-            window.location.replace('../index.php');
         });
     }
 });

@@ -4,17 +4,17 @@
 /* Force favorites container styling */
 body .main-content .favorites-container,
 .main-content .favorites-container {
-    background: rgba(0, 0, 0, 0.85) !important;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95)) !important;
     backdrop-filter: blur(15px) !important;
-    border-radius: 24px !important;
-    padding: 2.5rem !important;
+    border-radius: 25px !important;
+    padding: 1.25rem !important;
     width: 100% !important;
-    max-width: 1400px !important;
+    max-width: 1200px !important;
     margin: 0 auto !important;
-    border: 2px solid rgba(96, 239, 255, 0.2) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(96, 239, 255, 0.1) !important;
+    border: 2px solid rgba(96, 239, 255, 0.15) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
     position: relative !important;
-    min-height: calc(100vh - 140px) !important;
+    overflow: hidden !important;
     display: block !important;
 }
 
@@ -143,9 +143,9 @@ h1.favorites-title {
 .favorites-container .view-toggle {
     display: flex !important;
     background: rgba(0, 0, 0, 0.4) !important;
-    border-radius: 16px !important;
-    padding: 6px !important;
-    gap: 6px !important;
+    border-radius: 12px !important;
+    padding: 5px !important;
+    gap: 5px !important;
     border: 1px solid rgba(96, 239, 255, 0.3) !important;
 }
 
@@ -154,6 +154,16 @@ h1.favorites-title {
         width: 100%;
         max-width: 400px;
         margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .view-toggle,
+    .favorites-container .view-toggle {
+        flex-direction: column !important;
+        gap: 8px !important;
+        padding: 8px !important;
+        max-width: 200px !important;
     }
 }
 
@@ -194,22 +204,32 @@ h1.favorites-title {
 @media screen and (max-width: 768px) {
     .toggle-btn {
         flex: 1;
-        padding: 0.8rem 1rem;
-        font-size: 0.6rem;
-        gap: 0.5rem;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.55rem;
+        gap: 0.4rem;
         min-width: 0;
+    }
+    
+    .view-toggle {
+        padding: 4px !important;
+        gap: 4px !important;
     }
 }
 
 @media screen and (max-width: 480px) {
     .toggle-btn {
-        padding: 0.7rem 0.5rem;
-        font-size: 0.5rem;
-        gap: 0.3rem;
+        padding: 0.7rem 1rem;
+        font-size: 0.6rem;
+        gap: 0.5rem;
+        width: 100% !important;
+    }
+    
+    .toggle-btn i {
+        font-size: 1em;
     }
     
     .toggle-btn span {
-        display: none;
+        display: inline-block;
     }
 }
 
@@ -273,13 +293,14 @@ h1.favorites-title {
 .browse-game-card,
 .favorites-container .favorite-game-card,
 .favorites-container .browse-game-card {
-    background: rgba(0, 0, 0, 0.6) !important;
-    border-radius: 20px !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-radius: 12px !important;
     overflow: hidden !important;
-    border: 2px solid rgba(96, 239, 255, 0.3) !important;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: 1px solid rgba(96, 239, 255, 0.1) !important;
+    transition: all 0.3s ease !important;
     position: relative !important;
     cursor: pointer !important;
+    padding: 1rem !important;
 }
 
 .favorite-game-card:hover,
@@ -316,13 +337,15 @@ h1.favorites-title {
 .game-content {
     position: relative;
     z-index: 2;
-    padding: 2.5rem;
-    background: rgba(0, 0, 0, 0.8);
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(10px);
     height: 100%;
-    min-height: 220px;
+    min-height: 200px;
     display: flex;
     flex-direction: column;
+    border-radius: 8px;
+    border: 1px solid rgba(96, 239, 255, 0.1);
 }
 
 @media screen and (max-width: 768px) {

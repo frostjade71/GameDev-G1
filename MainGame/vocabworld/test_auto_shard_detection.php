@@ -71,8 +71,12 @@ try {
 }
 
 echo "<hr>";
-echo "<p><a href='index.php'>← Back to VocabWorld</a></p>";
+echo "<p><a href='menu.php'>← Back to VocabWorld</a></p>";
 ?>
+
+
+
+
 
 
 

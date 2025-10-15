@@ -1,0 +1,207 @@
+/* Overview Page Styles */
+body {
+    margin: 0;
+    padding: 0;
+    background: url('../assets/menu/menubg.jpg') center/cover fixed no-repeat;
+    font-family: 'Quicksand', sans-serif;
+    color: #fff;
+    min-height: 100vh;
+}
+
+body.sidebar-open {
+    overflow: hidden;
+}
+
+/* Ensure sidebar shows properly on mobile */
+@media screen and (max-width: 768px) {
+    .sidebar.show {
+        transform: translateX(0);
+    }
+}
+
+.main-content {
+    position: fixed;
+    left: 250px;
+    top: 60px;
+    right: 0;
+    bottom: 0;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.overview-container {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    padding: 1.25rem;
+    width: 100%;
+    max-width: 500px;
+    border: 2px solid rgba(96, 239, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.overview-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+}
+
+.section-header {
+    text-align: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(96, 239, 255, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.overview-title {
+    width: 200px;
+    height: auto;
+    max-width: 80%;
+    object-fit: contain;
+    margin-top: 0.8rem;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+.title-image {
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.title-logo {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    margin-top: 0.4rem;
+}
+
+.text-section {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.8;
+    font-size: 1rem;
+    text-align: justify;
+    width: 100%;
+}
+
+.text-section p {
+    margin-bottom: 1.5rem;
+}
+
+.text-section p:last-child {
+    margin-bottom: 3rem;
+}
+
+.separator {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(96, 239, 255, 0.2), transparent);
+    margin: 1.5rem 0;
+}
+
+/* Override toast.css positioning for logout modal in this page */
+#logoutModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#logoutConfirmation {
+    margin: 0;
+    position: relative;
+    transform: none;
+    left: auto;
+    top: auto;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .main-content {
+        left: 0;
+        padding: 1rem;
+        padding-top: 70px;
+    }
+
+    .overview-container {
+        border-radius: 20px;
+        padding: 1rem;
+    }
+
+    .section-header {
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .overview-title {
+        width: 180px;
+    }
+
+    .content-wrapper {
+        gap: 1.5rem;
+        padding: 0 0.5rem;
+    }
+
+    .title-image {
+        max-width: 250px;
+    }
+
+    .text-section {
+        font-size: 0.95rem;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .main-content {
+        padding: 0.8rem;
+        padding-top: 70px;
+    }
+
+    .overview-container {
+        border-radius: 15px;
+        padding: 0.8rem;
+    }
+
+    .section-header {
+        padding-bottom: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .overview-title {
+        width: 150px;
+    }
+
+    .content-wrapper {
+        gap: 1rem;
+        padding: 0;
+    }
+
+    .title-image {
+        max-width: 200px;
+    }
+
+    .text-section {
+        font-size: 0.9rem;
+    }
+}

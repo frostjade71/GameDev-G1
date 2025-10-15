@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function performSearch() {
         const searchTerm = searchInput.value.toLowerCase();
-        const cards = document.querySelectorAll('.favorite-card');
+        const cards = document.querySelectorAll('.favorite-game-card');
         let hasVisibleCards = false;
 
         cards.forEach(card => {
@@ -35,45 +35,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Show/hide empty state based on search results
-        emptyState.style.display = hasVisibleCards ? 'none' : 'block';
+        if (emptyState) {
+            emptyState.style.display = hasVisibleCards ? 'none' : 'block';
+        }
     }
 
     // Handle remove favorite functionality
-    const removeButtons = document.querySelectorAll('.remove-favorite');
+    const removeButtons = document.querySelectorAll('.remove-favorite-btn');
     removeButtons.forEach(button => {
         button.addEventListener('click', (e) => {
-            const card = e.target.closest('.favorite-card');
+            const card = e.target.closest('.favorite-game-card');
             if (card) {
-                // Add fade-out animation
-                card.style.opacity = '0';
-                card.style.transform = 'scale(0.9)';
-                card.style.transition = 'all 0.3s ease';
-
-                // Remove card after animation
-                setTimeout(() => {
-                    card.remove();
-                    // Check if there are any remaining cards
-                    const remainingCards = document.querySelectorAll('.favorite-card');
-                    if (remainingCards.length === 0) {
-                        emptyState.style.display = 'block';
-                    }
-                }, 300);
-
-                showToast('Game removed from favorites');
+                const gameType = card.dataset.game;
+                removeFavorite(gameType);
             }
         });
     });
 
-    // Handle play button clicks
-    const playButtons = document.querySelectorAll('.play-btn');
-    playButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // This would typically navigate to the game
-            showToast('Launching game...');
-        });
-    });
+    // Play button functionality removed - no longer needed
 
     // Check if there are any favorite cards
-    const hasCards = document.querySelectorAll('.favorite-card').length > 0;
-    emptyState.style.display = hasCards ? 'none' : 'block';
+    const hasCards = document.querySelectorAll('.favorite-game-card').length > 0;
+    if (emptyState) {
+        emptyState.style.display = hasCards ? 'none' : 'block';
+    }
 });

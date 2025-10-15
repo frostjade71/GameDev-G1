@@ -24,33 +24,185 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.9);
-    background: rgba(0, 0, 0, 0.9);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 20, 0.98));
     color: white;
-    padding: 20px 40px;
-    border-radius: 15px;
+    padding: 25px 40px;
+    border-radius: 20px;
     font-family: 'Press Start 2P', cursive;
-    font-size: 1rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    border: 2px solid rgba(255, 0, 0, 0.5);
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3),
-                0 0 40px rgba(255, 0, 0, 0.2),
-                inset 0 0 15px rgba(255, 0, 0, 0.2);
+    border: 2px solid rgba(96, 239, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(96, 239, 255, 0.15),
+                0 4px 16px rgba(0, 255, 135, 0.1),
+                inset 0 2px 15px rgba(96, 239, 255, 0.05);
     text-align: center;
-    min-width: 300px;
-    max-width: 80%;
+    width: 400px;
+    max-width: 90%;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    margin: 0;
+    left: calc(50% + 130px);  /* Adjust for the sidebar width */
 }
 
 .toast.show {
     opacity: 1;
     visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(calc(-50% - 130px), -50%) scale(1);  /* Adjust for the sidebar width */
 }
 
 .toast.hide {
     opacity: 0;
     visibility: hidden;
-    transform: translate(-50%, -50%) scale(0.9);
+    transform: translate(calc(-50% - 130px), -50%) scale(0.9);  /* Adjust for the sidebar width */
+}
+
+/* Toast Types */
+.toast.success {
+    border-color: rgba(0, 255, 135, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 255, 135, 0.15),
+                0 4px 16px rgba(0, 255, 135, 0.1),
+                inset 0 2px 15px rgba(0, 255, 135, 0.05);
+}
+
+.toast.error {
+    border-color: rgba(255, 107, 107, 0.3);
+    box-shadow: 0 8px 32px rgba(255, 107, 107, 0.15),
+                0 4px 16px rgba(255, 107, 107, 0.1),
+                inset 0 2px 15px rgba(255, 107, 107, 0.05);
+}
+
+.toast.info {
+    border-color: rgba(96, 239, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(96, 239, 255, 0.15),
+                0 4px 16px rgba(96, 239, 255, 0.1),
+                inset 0 2px 15px rgba(96, 239, 255, 0.05);
+}
+
+/* Logout Modal Styles */
+#logoutModal {
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+#logoutConfirmation {
+    background: linear-gradient(135deg, rgba(17, 17, 17, 0.95), rgba(35, 35, 35, 0.98));
+    max-width: 400px;
+    border: 2px solid rgba(255, 107, 107, 0.3);
+    box-shadow: 0 0 30px rgba(255, 107, 107, 0.2),
+                inset 0 0 20px rgba(255, 107, 107, 0.1);
+    text-align: center;
+    padding: 2rem;
+}
+
+#logoutConfirmation h3 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    color: #ff6b6b;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+}
+
+#logoutConfirmation p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+#logoutConfirmation .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+#logoutConfirmation .logout-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#logoutConfirmation .logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    background: linear-gradient(135deg, #ff4757, #ff6b6b);
+}
+
+#logoutConfirmation .cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#logoutConfirmation .cancel-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design for Toast */
+@media (max-width: 768px) {
+    .toast {
+        left: 50%;  /* Reset for mobile */
+        width: 90%;
+        padding: 20px;
+    }
+
+    .toast.show,
+    .toast.hide {
+        transform: translate(-50%, -50%) scale(1);  /* Reset transform for mobile */
+    }
+}
+
+/* Responsive Design for Logout Modal */
+@media (max-width: 480px) {
+    #logoutConfirmation {
+        width: 90%;
+        padding: 1.5rem;
+    }
+
+    #logoutConfirmation h3 {
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
+    }
+
+    #logoutConfirmation p {
+        font-size: 0.75rem;
+        margin-bottom: 1.2rem;
+    }
+
+    #logoutConfirmation .modal-buttons {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    #logoutConfirmation .logout-btn,
+    #logoutConfirmation .cancel-btn {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        font-size: 0.7rem;
+    }
 }

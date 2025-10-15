@@ -40,22 +40,24 @@
                 0 4px 16px rgba(0, 255, 135, 0.1),
                 inset 0 2px 15px rgba(96, 239, 255, 0.05);
     text-align: center;
-    min-width: 300px;
-    max-width: 80%;
+    width: 400px;
+    max-width: 90%;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
+    margin: 0;
+    left: calc(50% + 130px);  /* Adjust for the sidebar width */
 }
 
 .toast.show {
     opacity: 1;
     visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(calc(-50% - 130px), -50%) scale(1);  /* Adjust for the sidebar width */
 }
 
 .toast.hide {
     opacity: 0;
     visibility: hidden;
-    transform: translate(-50%, -50%) scale(0.9);
+    transform: translate(calc(-50% - 130px), -50%) scale(0.9);  /* Adjust for the sidebar width */
 }
 
 /* Toast Types */
@@ -159,6 +161,20 @@
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design for Toast */
+@media (max-width: 768px) {
+    .toast {
+        left: 50%;  /* Reset for mobile */
+        width: 90%;
+        padding: 20px;
+    }
+
+    .toast.show,
+    .toast.hide {
+        transform: translate(-50%, -50%) scale(1);  /* Reset transform for mobile */
+    }
 }
 
 /* Responsive Design for Logout Modal */

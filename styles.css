@@ -157,120 +157,9 @@ body {
     font-size: 1.2rem;
 }
 
-/* Dashboard Grid */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    width: 100%;
-    max-width: 1200px;
-    z-index: 10;
-    position: relative;
-    display: grid !important;
-}
 
-.dashboard-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(96, 239, 255, 0.3);
-    border-radius: 20px;
-    padding: 2rem;
-    text-decoration: none;
-    color: white;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    min-height: 200px;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-}
 
-.dashboard-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(96, 239, 255, 0.1), rgba(0, 255, 135, 0.1));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 1;
-}
 
-.dashboard-card:hover::before {
-    opacity: 1;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(0, 255, 135, 0.6);
-    box-shadow: 0 10px 30px rgba(0, 255, 135, 0.2);
-}
-
-.card-icon {
-    position: relative;
-    z-index: 2;
-    margin-bottom: 1rem;
-}
-
-.card-icon i {
-    font-size: 3rem;
-    color: rgba(96, 239, 255, 0.8);
-    transition: all 0.3s ease;
-}
-
-.dashboard-card:hover .card-icon i {
-    color: #00ff87;
-    transform: scale(1.1);
-}
-
-.card-content {
-    position: relative;
-    z-index: 2;
-}
-
-.card-content h2 {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.card-content p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-    line-height: 1.4;
-}
-
-/* Specific card styles */
-.play-card {
-    grid-column: 1 / -1;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('assets/menu/playbg.jpeg');
-    background-size: cover;
-    background-position: center;
-    min-height: 250px;
-}
-
-.settings-card {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/settingsbg.jpeg');
-    background-size: cover;
-    background-position: center;
-}
-
-.highscore-card {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/highscorebg.jpeg');
-    background-size: cover;
-    background-position: center;
-}
-
-.credits-card {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/creditsbg.jpeg');
-    background-size: cover;
-    background-position: center;
-}
 
 /* Mobile Responsiveness */
 @media (max-width: 1024px) {
@@ -539,26 +428,7 @@ body {
     animation: slideInFromTop 0.8s ease-out;
 }
 
-/* Animation for dashboard cards */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-.dashboard-card {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-.dashboard-card:nth-child(1) { animation-delay: 0.1s; }
-.dashboard-card:nth-child(2) { animation-delay: 0.2s; }
-.dashboard-card:nth-child(3) { animation-delay: 0.3s; }
-.dashboard-card:nth-child(4) { animation-delay: 0.4s; }
 
 /* Final override to ensure layout works */
 html body .main-content {

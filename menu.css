@@ -2,7 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-/* Main Container - Using Profile Container Style */
+/* Main Container - Using Profile Container St.highscore-button {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/overview.jpeg') center/cover no-repeat;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}*/
 .menu-container {
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.2), 
@@ -281,13 +284,13 @@
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('assets/menu/settingsbg.jpeg') center/cover no-repeat;
 }
 
-.highscore-button {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/highscorebg.jpeg') center/cover no-repeat;
+.overview-button {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/overview.jpeg') center/cover no-repeat;
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
-.highscore-button:hover {
-    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('assets/menu/highscorebg.jpeg') center/cover no-repeat;
+.overview-button:hover {
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('assets/menu/overview.jpeg') center/cover no-repeat;
 }
 
 .credits-button {

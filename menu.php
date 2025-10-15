@@ -182,13 +182,13 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                     </div>
                 </a>
                 
-                <a href="highscore/highscore.php" class="menu-button highscore-button">
+                <a href="overview/overview.php" class="menu-button overview-button">
                     <div class="button-icon">
-                        <i class="fas fa-trophy"></i>
+                        <i class="fas fa-book"></i>
                     </div>
                     <div class="button-content">
-                        <h2>High Scores</h2>
-                        <p>View your achievements</p>
+                        <h2>Overview</h2>
+                        <p>Project overview</p>
                     </div>
                 </a>
                 

@@ -99,23 +99,28 @@
 
 /* Friend card styles */
 .friend-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    padding: 1.5rem;
-    border: 1px solid rgba(96, 239, 255, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: 
+        "avatar content"
+        "actions actions";
+    gap: 0.5rem 0.75rem;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
     position: relative;
     overflow: hidden;
+    min-height: 80px;
 }
 
 .friend-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(96, 239, 255, 0.5);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(96, 239, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(96, 239, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .friend-card::before {
@@ -123,81 +128,105 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 3px;
     height: 100%;
-    background: linear-gradient(180deg, #60efff, #00ff87);
-    opacity: 0.8;
+    background: linear-gradient(to bottom, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
 }
 
 .friend-avatar {
-    flex-shrink: 0;
+    grid-area: avatar;
     position: relative;
     cursor: pointer;
+    padding: 2px;
+    background: linear-gradient(45deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .friend-avatar img {
-    width: 60px;
-    height: 60px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(96, 239, 255, 0.3);
-    transition: transform 0.3s ease, border-color 0.3s ease;
+    border: 2px solid rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s ease;
 }
 
 .friend-avatar:hover img {
     transform: scale(1.05);
-    border-color: rgba(96, 239, 255, 0.8);
 }
 
 .friend-info {
-    flex: 1;
+    grid-area: content;
     min-width: 0;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
 }
 
 .friend-info h3 {
     color: white;
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem 0;
+    font-size: 0.75rem;
+    font-family: 'Press Start 2P', cursive;
+    margin: 0;
+    transition: color 0.3s ease;
+    line-height: 1.3;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+.friend-info h3:hover {
+    color: rgba(96, 239, 255, 0.9);
+}
+
 .friend-status {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     margin: 0;
-    font-style: italic;
+    display: inline-block;
 }
 
 /* Action buttons */
 .friend-actions {
+    grid-area: actions;
     display: flex;
     gap: 0.75rem;
-    flex-shrink: 0;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
 }
 
 .action-btn {
-    padding: 0.6rem 1.2rem;
-    border: none;
+    padding: 0.4rem 0.8rem;
     border-radius: 8px;
-    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    font-size: 0.7rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    min-width: 40px;
+    gap: 0.3rem;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
     justify-content: center;
-    background: rgba(96, 239, 255, 0.2);
+    background: linear-gradient(45deg, rgba(96, 239, 255, 0.2), rgba(0, 255, 135, 0.2));
     color: #60efff;
+    border: 1px solid rgba(96, 239, 255, 0.3);
+    min-width: 100px;
+    max-width: 140px;
+    flex: 1;
 }
 
 .action-btn:hover {
-    background: rgba(96, 239, 255, 0.3);
     transform: translateY(-2px);
+    background: linear-gradient(45deg, rgba(96, 239, 255, 0.3), rgba(0, 255, 135, 0.3));
+    border-color: rgba(96, 239, 255, 0.5);
     box-shadow: 0 5px 15px rgba(96, 239, 255, 0.2);
 }
 
@@ -206,28 +235,30 @@
 }
 
 .action-btn i {
-    font-size: 1rem;
+    font-size: 0.7rem;
 }
 
 /* Suggested card styles */
 .suggested-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    padding: 1.5rem;
-    border: 1px solid rgba(96, 239, 255, 0.2);
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    min-height: 80px;
 }
 
 .suggested-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(96, 239, 255, 0.5);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(96, 239, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(96, 239, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .suggested-card::before {
@@ -235,25 +266,26 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 3px;
     height: 100%;
-    background: linear-gradient(180deg, #60efff, #00ff87);
-    opacity: 0.8;
+    background: linear-gradient(to bottom, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
 }
 
 .suggested-avatar {
-    flex-shrink: 0;
     position: relative;
     cursor: pointer;
+    padding: 2px;
+    background: linear-gradient(45deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .suggested-avatar img {
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(96, 239, 255, 0.3);
-    transition: transform 0.3s ease, border-color 0.3s ease;
+    border: 2px solid rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s ease;
 }
 
 .suggested-avatar:hover img {
@@ -281,9 +313,12 @@
 
 .suggested-info h3 {
     color: white;
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem 0;
+    font-size: 0.75rem;
+    font-family: 'Press Start 2P', cursive;
+    margin: 0 0 0.3rem 0;
+    transition: color 0.3s ease;
+    line-height: 1.3;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -295,11 +330,10 @@
 .user-details {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.8rem;
     margin: 0;
-    flex-wrap: wrap;
+    font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
 }
 
 .grade-level {
@@ -314,29 +348,33 @@
 /* Friend request buttons */
 .add-friend-btn,
 .cancel-request-btn {
-    padding: 0.6rem 1.2rem;
-    border: none;
+    padding: 0.4rem 0.8rem;
     border-radius: 8px;
-    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    font-size: 0.7rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
+    gap: 0.3rem;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
     min-width: 100px;
     justify-content: center;
 }
 
 .add-friend-btn {
-    background: linear-gradient(135deg, #00ff87, #00cc6a);
-    color: white;
+    background: linear-gradient(45deg, rgba(0, 255, 135, 0.2), rgba(96, 239, 255, 0.2));
+    color: #00ff87;
+    border: 1px solid rgba(0, 255, 135, 0.3);
 }
 
 .add-friend-btn:hover {
-    background: linear-gradient(135deg, #00cc6a, #00aa55);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 255, 135, 0.4);
+    background: linear-gradient(45deg, rgba(0, 255, 135, 0.3), rgba(96, 239, 255, 0.3));
+    border-color: rgba(0, 255, 135, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 255, 135, 0.2);
 }
 
 .add-friend-btn:active {
@@ -344,15 +382,15 @@
 }
 
 .cancel-request-btn {
-    background: rgba(255, 107, 107, 0.2);
+    background: linear-gradient(45deg, rgba(255, 107, 107, 0.2), rgba(255, 0, 0, 0.2));
     color: #ff6b6b;
     border: 1px solid rgba(255, 107, 107, 0.3);
 }
 
 .cancel-request-btn:hover {
-    background: rgba(255, 107, 107, 0.3);
-    border-color: rgba(255, 107, 107, 0.5);
     transform: translateY(-2px);
+    background: linear-gradient(45deg, rgba(255, 107, 107, 0.3), rgba(255, 0, 0, 0.3));
+    border-color: rgba(255, 107, 107, 0.5);
     box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
 }
 
@@ -462,7 +500,7 @@
     .main-content {
         left: 0;
         padding: 1rem;
-        top: 70px; /* Adjust for mobile header */
+        top: 70px;
     }
     
     .friends-section,
@@ -470,6 +508,10 @@
         padding: 1.5rem;
         margin-bottom: 2rem;
         border-radius: 20px;
+    }
+    
+    .suggested-section {
+        margin-top: 3rem;
     }
     
     .section-header {
@@ -485,74 +527,186 @@
     .section-header h2 i {
         font-size: 0.7rem;
     }
-    
+
     .friend-card,
     .suggested-card {
-        padding: 1rem;
-        flex-direction: column;
-        text-align: center;
+        padding: 0.8rem;
+        gap: 0.8rem;
+        min-height: unset;
+    }
+
+    .friend-avatar,
+    .suggested-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .friend-info h3,
+    .suggested-info h3 {
+        font-size: 0.65rem;
+    }
+
+    .friend-status,
+    .user-details {
+        font-size: 0.65rem;
+    }
+
+    .friend-actions,
+    .suggested-actions {
+        justify-content: center;
+    }
+
+    .friend-info h3,
+    .suggested-info h3 {
+        font-size: 0.65rem;
+        margin-bottom: 0.4rem;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+
+    .friend-status,
+    .user-details {
+        font-size: 0.65rem;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+
+    .friend-actions,
+    .suggested-actions {
+        width: 100%;
+        grid-area: actions;
+        display: flex;
+        justify-content: center;
         gap: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .action-btn,
+    .add-friend-btn,
+    .cancel-request-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.65rem;
+        gap: 0.3rem;
+        flex: 1;
+        max-width: 140px;
+        justify-content: center;
     }
     
-    .friend-avatar img,
-    .suggested-avatar img {
-        width: 50px;
-        height: 50px;
+    .friend-card {
+        padding: 1rem;
+        gap: 0.6rem;
+        min-height: auto;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .friend-avatar {
+        width: 40px;
+        height: 40px;
+        padding: 2px;
+    }
+
+    .friend-avatar img {
+        width: 100%;
+        height: 100%;
+        border-width: 1px;
     }
     
-    .friend-info,
-    .suggested-info {
-        text-align: center;
+    .friend-info {
+        flex: 1;
+        min-width: calc(100% - 60px);
+        text-align: left;
+        align-items: flex-start;
+        gap: 0.15rem;
         display: flex;
         flex-direction: column;
-        gap: 0.3rem;
-        align-items: center;
+    }
+
+    .suggested-card {
+        padding: 1rem;
+        gap: 1rem;
+        min-height: auto;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .suggested-avatar {
+        width: 40px;
+        height: 40px;
+        padding: 2px;
+    }
+
+    .suggested-avatar img {
+        width: 100%;
+        height: 100%;
+        border-width: 1px;
+    }
+
+    .suggested-info {
+        flex: 1;
+        min-width: calc(100% - 60px);
+        text-align: left;
+        align-items: flex-start;
     }
 
     .suggested-info h3 {
-        flex-direction: column;
-        gap: 0.5rem;
+        font-size: 0.65rem;
+        margin-bottom: 0.4rem;
+        white-space: normal;
+        word-wrap: break-word;
+        text-align: left;
+        display: inline-flex;
+    }
+
+    .suggested-card .user-details {
+        font-size: 0.65rem;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+        text-align: left;
+        justify-content: flex-start;
+    }
+
+    .suggested-actions {
+        width: 100%;
+        order: 3;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 0.5rem;
     }
 
     .user-badge {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
         margin-left: 0;
     }
     
-    .friend-actions,
-    .suggested-actions {
+    .friend-actions {
         display: flex;
         justify-content: center;
         width: 100%;
         margin-top: 0.5rem;
     }
 
-    .suggested-card .user-details {
-        flex-direction: column;
-        gap: 0.3rem;
-        align-items: center;
-    }
-    
-    .suggested-card .add-friend-btn,
-    .suggested-card .cancel-request-btn {
-        margin: 0 auto;
-        width: 80%;
-        max-width: 200px;
-    }
-
-    .suggested-card .user-details .grade-level {
-        font-size: 0.85rem;
-    }
-
-    .suggested-card .user-details .joined-date {
-        font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.6);
-    }
-    
-    .action-btn,
     .add-friend-btn,
     .cancel-request-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.65rem;
+        gap: 0.3rem;
+        flex: 1;
+        min-width: 100px;
+        max-width: 140px;
+        justify-content: center;
+    }
+
+    .add-friend-btn i,
+    .cancel-request-btn i {
+        font-size: 0.65rem;
+    }
+
+    .action-btn {
         flex: 1;
         min-width: auto;
     }
@@ -595,35 +749,53 @@
     
     .friend-card,
     .suggested-card {
-        padding: 1.2rem 0.8rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        padding: 0.8rem;
+        gap: 0.4rem;
     }
     
+    .friend-avatar,
+    .suggested-avatar {
+        width: 35px;
+        height: 35px;
+        margin: 2px 0;
+    }
+
     .friend-avatar img,
     .suggested-avatar img {
-        width: 45px;
-        height: 45px;
+        width: 100%;
+        height: 100%;
+    }
+
+    .friend-info h3,
+    .suggested-info h3 {
+        font-size: 0.6rem;
+        margin-bottom: 0.3rem;
+        line-height: 1.2;
+    }
+
+    .friend-status,
+    .user-details {
+        font-size: 0.6rem;
+        gap: 0.6rem;
+    }
+
+    .friend-actions,
+    .suggested-actions {
+        padding-top: 0.5rem;
     }
     
     .action-btn,
     .add-friend-btn,
     .cancel-request-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
-        margin-top: 0.5rem;
-    }
-    
-    .suggested-card .suggested-info {
-        width: 100%;
-        margin-bottom: 0.5rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.6rem;
+        min-width: 90px;
+        max-width: 120px;
     }
 
-    .suggested-card .suggested-actions {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        margin-top: auto;
+    .action-btn i,
+    .add-friend-btn i,
+    .cancel-request-btn i {
+        font-size: 0.6rem;
     }
 }

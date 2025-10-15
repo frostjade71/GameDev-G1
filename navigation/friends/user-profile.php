@@ -227,14 +227,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     <!-- Main Content -->
     <div class="main-content">
         <div class="user-profile-container">
-            <!-- Back Button -->
-            <div class="back-button-container">
-                <a href="friends.php" class="back-button">
-                    <i class="fas fa-arrow-left"></i>
-                    Back to Friends
-                </a>
-            </div>
-
             <!-- User Profile Header -->
             <div class="user-profile-header">
                 <div class="profile-avatar">
@@ -367,6 +359,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         <p>No favorite games yet</p>
                     </div>
                 <?php endif; ?>
+            </div>
+            <!-- Back Button -->
+            <div class="back-button-container">
+                <a href="friends.php" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </a>
             </div>
         </div>
     </div>

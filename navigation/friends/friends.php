@@ -224,8 +224,9 @@ $notification_count = count($friend_requests);
             <div class="friends-section">
                 <div class="section-header">
                     <div class="header-content">
-                        <h2><i class="fas fa-user-friends"></i> My Friends (<?php echo count($friends); ?>)</h2>
+                        <img src="../../assets/menu/friendsmain.png" alt="My Friends" style="height: 25px; vertical-align: middle;"> <span style="vertical-align: middle; font-family: 'Press Start 2P', cursive; font-size: 12px;">(<?php echo count($friends); ?>)</span>
                     </div>
+                    <div style="width: 100%; height: 1px; background: rgba(96, 239, 255, 0.3); margin: 15px 0;"></div>
                 </div>
                 
                 <?php if (empty($friends)): ?>
@@ -264,6 +265,7 @@ $notification_count = count($friend_requests);
             <div class="suggested-section">
                 <div class="section-header">
                     <h2><i class="fas fa-user-plus"></i> People You May Know</h2>
+                    <div style="width: 100%; height: 1px; background: rgba(96, 239, 255, 0.3); margin: 15px 0;"></div>
                     <div class="search-actions">
                         <div class="search-container" style="position: relative; display: flex; align-items: center; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(96, 239, 255, 0.3); border-radius: 25px; padding: 0.5rem 1rem; transition: all 0.3s ease; min-width: 250px;" onmouseenter="this.style.background='rgba(255, 255, 255, 0.15)'; this.style.borderColor='rgba(96, 239, 255, 0.6)'" onmouseleave="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(96, 239, 255, 0.3)'">
                             <i class="fas fa-search search-icon" style="color: rgba(96, 239, 255, 0.7); margin-right: 0.5rem; font-size: 0.9rem;"></i>

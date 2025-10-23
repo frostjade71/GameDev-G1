@@ -10,12 +10,16 @@ class EssenceManager {
     }
 
     private function ensureEssenceTableExists() {
+        // First create the table if it doesn't exist
         $sql = "CREATE TABLE IF NOT EXISTS user_essence (
             id INT PRIMARY KEY AUTO_INCREMENT,
             user_id INT NOT NULL,
+            username VARCHAR(50) NOT NULL,
             essence_amount INT DEFAULT 0,
             last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (username) REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE,
+            UNIQUE KEY unique_user (user_id)
         )";
         $this->pdo->exec($sql);
     }
@@ -28,11 +32,24 @@ class EssenceManager {
     }
 
     public function addEssence($user_id, $amount) {
+        // Get the username first
+        $stmt = $this->pdo->prepare("SELECT username FROM users WHERE id = ?");
+        $stmt->execute([$user_id]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$user) {
+            throw new Exception("User not found");
+        }
+        
+        $username = $user['username'];
+        
         $stmt = $this->pdo->prepare("
-            INSERT INTO user_essence (user_id, essence_amount) 
-            VALUES (?, ?) 
-            ON DUPLICATE KEY UPDATE essence_amount = essence_amount + ?");
-        return $stmt->execute([$user_id, $amount, $amount]);
+            INSERT INTO user_essence (user_id, username, essence_amount) 
+            VALUES (?, ?, ?) 
+            ON DUPLICATE KEY UPDATE 
+                essence_amount = essence_amount + VALUES(essence_amount),
+                username = VALUES(username)");
+        return $stmt->execute([$user_id, $username, $amount]);
     }
 
     public function updateGWA($user_id, $score) {

@@ -15,7 +15,7 @@ Word Weavers is a web-based educational application thesis project designed by G
    - Level-based progression
    - Character Customization
 
-2. **Grammar Heroes **
+2. **Grammar Heroes**
    - Grammar exercises and challenges
    - Progress tracking
    - Interactive learning modules
@@ -125,4 +125,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For any questions or feedback, please contact wordweavershccci@gmail.com or jaderbypenaranda@gmail.com
 
 ---
-*Last updated: October 2023*
+*Last updated: October 23rd 2025*

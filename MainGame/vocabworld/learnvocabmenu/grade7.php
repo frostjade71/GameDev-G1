@@ -125,79 +125,106 @@ if ($shard_balance) {
             <div class="menu-container">
                 <!-- Page Header -->
                 <div class="page-header">
-                    <h1 class="page-title">Grade 7 - Philippine Literary Texts</h1>
-                    <p class="page-subtitle">English Language Arts - Unit 1: Exploring Philippine Texts and Everyday Reading Materials</p>
+                    <h1 class="page-title">Grade 7 - Vocabulary Mastery</h1>
+                    <p class="page-subtitle">English Language Arts - Building Word Power for Effective Communication</p>
                 </div>
                 
                 <!-- Lesson Content -->
                 <div class="lesson-content">
                     <div class="lesson-section">
-                        <h2 class="section-title">A. Introduction</h2>
+                        <h2 class="section-title">A. Introduction to Vocabulary Building</h2>
                         <div class="lesson-text">
-                            <p>Welcome to English Language Arts for Grade 7.</p>
-                            <p>In this unit we will explore different kinds of texts that help us understand our culture, our society, and the world around us.</p>
-                            <p><strong>Language is more than words.</strong><br>
-                            It is a tool for storytelling, learning, and connecting with others.</p>
+                            <p>Welcome to your Grade 7 Vocabulary Journey!</p>
+                            <p>In this unit, we will explore the fascinating world of words to enhance your communication skills and reading comprehension.</p>
+                            <p><strong>Words are the building blocks of language.</strong><br>
+                            A rich vocabulary helps you express yourself clearly and understand others better.</p>
                             
-                            <p>This lesson focuses on three important kinds of texts:</p>
+                            <p>This lesson focuses on three key areas of vocabulary development:</p>
                             <ul>
-                                <li><strong>Philippine Literary Texts</strong> – stories and creative works that express Filipino life and traditions.</li>
-                                <li><strong>Informational Texts</strong> – materials that provide facts, ideas, and explanations.</li>
-                                <li><strong>Transactional Texts</strong> – practical reading and writing for real-world communication.</li>
+                                <li><strong>Context Clues</strong> – Understanding words from how they're used in sentences.</li>
+                                <li><strong>Word Relationships</strong> – Exploring synonyms, antonyms, and word families.</li>
+                                <li><strong>Affixes and Roots</strong> – Breaking down words into meaningful parts.</li>
                             </ul>
                             
-                            <p>By learning to read and interpret these text types, we will build skills in:</p>
+                            <p>By the end of this lesson, you will be able to:</p>
                             <ul>
-                                <li>Reading comprehension</li>
-                                <li>Critical thinking</li>
-                                <li>Communicating effectively in English</li>
-                                <li>Appreciating Philippine heritage</li>
+                                <li>Determine the meaning of unfamiliar words using context clues</li>
+                                <li>Understand relationships between words with similar or opposite meanings</li>
+                                <li>Use prefixes, suffixes, and root words to determine word meanings</li>
+                                <li>Expand your vocabulary with commonly used academic words</li>
                             </ul>
                         </div>
                     </div>
 
                     <div class="lesson-section">
-                        <h2 class="section-title">B. Philippine Literary Texts</h2>
+                        <h2 class="section-title">B. Understanding Words Through Context</h2>
                         <div class="lesson-text">
-                            <p><strong>Literature is the heart of a nation's identity.</strong><br>
-                            Philippine literature carries the voices of ancestors, local communities, and contemporary writers.</p>
+                            <p><strong>Context is key to understanding new words.</strong><br>
+                            The words and sentences around an unfamiliar word can help you figure out its meaning.</p>
                             
-                            <p>We will study three main forms of Philippine literary texts:</p>
+                            <h3>1. Types of Context Clues</h3>
+                            <p>Here are different ways context can help you understand new words:</p>
                             
-                            <h3>1. Poetry</h3>
-                            <p>Poetry is language arranged in lines and stanzas to create rhythm, sound, and vivid images.</p>
+                            <h4>Definition Clues</h4>
+                            <p>The sentence defines the word directly or gives a synonym.</p>
+                            <div class="example-box">
+                                <p><em>Example:</em> The <strong>archaeologist</strong>, a scientist who studies ancient cultures, discovered a 2,000-year-old vase.</p>
+                            </div>
                             
-                            <h4>Traditional forms:</h4>
-                            <ul>
-                                <li><strong>Tanaga</strong> – a short, four-line poem with seven syllables in each line, often with a moral lesson.</li>
-                                <li><strong>Dalit</strong> – devotional or religious verse.</li>
-                                <li><strong>Awit and Korido</strong> – long narrative poems sung in traditional tunes.</li>
-                            </ul>
+                            <h4>Example Clues</h4>
+                            <p>The sentence gives examples that help explain the word's meaning.</p>
+                            <div class="example-box">
+                                <p><em>Example:</em> <strong>Amphibians</strong> like frogs, toads, and salamanders can live both on land and in water.</p>
+                            </div>
                             
-                            <h4>Modern Philippine poetry:</h4>
-                            <p>Uses free verse, sometimes in English or Filipino, to express contemporary life, emotions, and ideas.</p>
+                            <h4>Contrast Clues</h4>
+                            <p>The word is contrasted with its opposite.</p>
+                            <div class="example-box">
+                                <p><em>Example:</em> Unlike her <strong>gregarious</strong> sister, Maria was shy and preferred to be alone.</p>
+                            </div>
                             
-                            <h4>Skills to practice in Poetry:</h4>
-                            <ul>
-                                <li>Identifying imagery, rhyme, rhythm, and tone</li>
-                                <li>Understanding the theme or message of the poem</li>
-                                <li>Explaining how poetic devices create emotions or meaning</li>
-                            </ul>
+                            <h3>2. Practice with Context Clues</h3>
+                            <p>Let's practice using context clues with these sentences from Philippine literature:</p>
                             
-                            <h3>2. Prose</h3>
-                            <p>Prose is writing in ordinary sentences and paragraphs, telling stories or sharing information.</p>
+                            <div class="activity-box">
+                                <p><strong>Activity 1:</strong> Determine the meaning of the bolded word in each sentence.</p>
+                                <ol>
+                                    <li>The old man's <strong>gaunt</strong> face showed that he hadn't eaten in days.
+                                        <div class="hint">(Hint: What would someone's face look like if they haven't eaten?)</div>
+                                    </li>
+                                    <li>She spoke in a <strong>monotone</strong> voice, making the lecture difficult to stay awake through.
+                                        <div class="hint">(Hint: What kind of voice would make something boring?)</div>
+                                    </li>
+                                    <li>The <strong>aroma</strong> of adobo cooking in the kitchen made everyone's mouth water.
+                                        <div class="hint">(Hint: What sense is being described here?)</div>
+                                    </li>
+                                </ol>
+                            </div>
                             
-                            <h4>Common prose forms in Philippine literature:</h4>
-                            <ul>
-                                <li>Folktales and legends (e.g., "How the Pineapple Got Its Eyes")</li>
-                                <li>Short stories by writers like Paz Latorena or Manuel Arguilla</li>
-                                <li>Essays about Filipino culture and daily life</li>
-                                <li>Novels written in English or Filipino</li>
-                            </ul>
+                            <h3>3. Common Academic Vocabulary</h3>
+                            <p>Here are some important academic words you'll encounter in Grade 7:</p>
                             
-                            <h4>Skills to practice in Prose:</h4>
-                            <ul>
-                                <li>Recognizing elements of a narrative: setting, characters, plot, conflict, and theme</li>
+                            <div class="vocab-list">
+                                <div class="vocab-card">
+                                    <div class="vocab-word">Analyze</div>
+                                    <div class="vocab-definition">To examine in detail to understand better</div>
+                                    <div class="vocab-example">We will <em>analyze</em> the story's main characters.</div>
+                                </div>
+                                
+                                <div class="vocab-card">
+                                    <div class="vocab-word">Convey</div>
+                                    <div class="vocab-definition">To make an idea or feeling known</div>
+                                    <div class="vocab-example">The author uses similes to <em>convey</em> the character's emotions.</div>
+                                </div>
+                                
+                                <div class="vocab-card">
+                                    <div class="vocab-word">Significant</div>
+                                    <div class="vocab-definition">Important or meaningful</div>
+                                    <div class="vocab-example">The discovery was <em>significant</em> for the research team.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                                 <li>Explaining character traits and motivations</li>
                                 <li>Identifying the author's point of view and style</li>
                             </ul>

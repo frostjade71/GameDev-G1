@@ -131,9 +131,9 @@ $notification_count = $stmt->rowCount();
                             <img src="../assets/menu/Word_weavers.png" alt="Word Weavers" class="title-logo">
                         </div>
                         <div class="text-section">
-                            <p><strong>Word Weavers</strong> is a web-based educational game thesis project created by Group 1, computer science majors at Holy Cross College of Carigara Incorporated. The primary aim of this project is to provide high school students—particularly those in Grades 7 to 10—with a dynamic, engaging, and accessible platform for mastering core English language skills, in alignment with the Philippine K–12 curriculum.</p>
+                            <p><strong>Word Weavers</strong> is a web-based educational game dashboard developed by Group 1, Computer Science students from Holy Cross College of Carigara Incorporated. It is designed to store and organize various educational games that aim to enhance the English language skills of high school students in Grades 7 to 10. The platform also allows teachers and students to monitor their performance through detailed progress reports, interactive scoreboards, and performance analytics.</p>
                             <div class="separator"></div>
-                            <p>This game was developed in response to the growing need for learning tools that not only integrate effective instructional design but also meet the unique cognitive and developmental needs of adolescents, who often thrive on visually stimulating and interactive experiences rather than traditional lecture-based approaches.</p>
+                            <p>This website was developed in response to the growing need for modern learning tools that combine effective teaching methods with the specific learning needs of adolescents. Many students learn better through visual and interactive experiences rather than traditional lectures, so this platform aims to make learning more engaging, enjoyable, and effective for them.</p>
                         </div>
                     </div>
                 </div>

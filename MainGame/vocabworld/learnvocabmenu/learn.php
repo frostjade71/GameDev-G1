@@ -141,28 +141,28 @@ if ($shard_result['success']) {
                     <a href="grade7.php" class="vocabworld-card grade-7-card" style="background-image: url('../assets/menu/learnvocab.webp'); background-size: cover; background-position: center;">
                         <i class="fas fa-graduation-cap"></i>
                         <h2>Grade 7</h2>
-                        <p>Philippine Literary Texts</p>
+                        <p></p>
                     </a>
 
                     <!-- Grade 8 Card -->
                     <a href="grade8.php" class="vocabworld-card grade-8-card" style="background-image: url('../assets/menu/learnvocab.webp'); background-size: cover; background-position: center;">
                         <i class="fas fa-book"></i>
                         <h2>Grade 8</h2>
-                        <p>Afro-Asian Literature</p>
+                        <p></p>
                     </a>
 
                     <!-- Grade 9 Card -->
                     <a href="grade9.php" class="vocabworld-card grade-9-card" style="background-image: url('../assets/menu/learnvocab.webp'); background-size: cover; background-position: center;">
                         <i class="fas fa-trophy"></i>
                         <h2>Grade 9</h2>
-                        <p>Anglo-American Literature</p>
+                        <p></p>
                     </a>
 
                     <!-- Grade 10 Card -->
                     <a href="grade10.php" class="vocabworld-card grade-10-card" style="background-image: url('../assets/menu/learnvocab.webp'); background-size: cover; background-position: center;">
                         <i class="fas fa-star"></i>
                         <h2>Grade 10</h2>
-                        <p>World Literature</p>
+                        <p></p>
                     </a>
 
                     <!-- Back to Menu Card -->

@@ -377,18 +377,6 @@ body {
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-.instructions-card {
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(30, 58, 138, 0.9), rgba(245, 158, 11, 0.3));
-}
-
-.instructions-card:hover {
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.5),
-        0 10px 20px rgba(245, 158, 11, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
 
 .back-to-games-card {
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -631,8 +619,8 @@ body {
     transform: translateY(-2px);
 }
 
-/* Character, Instructions, and Game Over Screen */
-.character-container, .instructions-container, .game-over-container {
+/* Character and Game Over Screen */
+.character-container, .game-over-container {
     max-width: 1000px;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.95);
@@ -643,7 +631,7 @@ body {
 }
 
 
-.character-header, .instructions-header {
+.character-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -652,56 +640,13 @@ body {
     border-bottom: 2px solid var(--royal-blue-light);
 }
 
-.character-header h2, .instructions-header h2 {
+.character-header h2 {
     font-size: 2rem;
     color: var(--royal-blue);
     font-weight: 700;
 }
 
 
-
-/* Instructions Screen */
-.instructions-content {
-    display: grid;
-    gap: 2rem;
-}
-
-.instruction-section {
-    background: var(--light-gray);
-    padding: 1.5rem;
-    border-radius: 12px;
-    border-left: 4px solid var(--royal-blue);
-}
-
-.instruction-section h3 {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    color: var(--royal-blue);
-}
-
-.instruction-section ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.instruction-section li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--royal-blue-light);
-    position: relative;
-    padding-left: 1.5rem;
-}
-
-.instruction-section li:last-child {
-    border-bottom: none;
-}
-
-.instruction-section li::before {
-    content: "✓";
-    position: absolute;
-    left: 0;
-    color: var(--success);
-    font-weight: bold;
-}
 
 /* Game Over Screen */
 .game-over-container {
@@ -784,8 +729,7 @@ body {
         grid-template-areas: 
             "start-game"
             "character"
-            "instructions"
-            "back-to-games";
+                "back-to-games";
         gap: 1.5rem;
         padding: 1rem;
     }
@@ -915,7 +859,7 @@ body {
         display: none; /* Hide text on very small screens */
     }
     
-    .character-container, .instructions-container, .game-over-container {
+    .character-container, .game-over-container {
         padding: 1.5rem;
     }
     

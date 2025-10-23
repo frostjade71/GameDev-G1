@@ -213,16 +213,32 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                     <div class="progress-card transparent-card">
                         <h3>Your Progress</h3>
                         <div class="stat-item">
-                            <span class="stat-label">Average Score:</span>
-                            <span class="stat-value"><?php echo $average_percentage; ?>%</span>
+                            <i class="fas fa-level-up-alt"></i>
+                            <div class="stat-details">
+                                <span class="stat-value">Level <?php echo htmlspecialchars($progress['player_level'] ?? 1); ?></span>
+                                <span class="stat-label">Current Level</span>
+                            </div>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">Total Sessions:</span>
-                            <span class="stat-value"><?php echo $total_sessions; ?></span>
+                            <i class="fas fa-star"></i>
+                            <div class="stat-details">
+                                <span class="stat-value"><?php echo number_format($progress['total_experience_earned'] ?? 0); ?> XP</span>
+                                <span class="stat-label">Total Experience</span>
+                            </div>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">Current Points:</span>
-                            <span class="stat-value" id="current-points">0</span>
+                            <i class="fas fa-skull"></i>
+                            <div class="stat-details">
+                                <span class="stat-value"><?php echo number_format($progress['total_monsters_defeated'] ?? 0); ?></span>
+                                <span class="stat-label">Monsters Defeated</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-award"></i>
+                            <div class="stat-details">
+                                <span class="stat-value"><?php echo number_format($progress['score'] ?? 0, 2); ?></span>
+                                <span class="stat-label">GWA</span>
+                            </div>
                         </div>
                     </div>
                     

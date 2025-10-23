@@ -151,7 +151,7 @@ if ($shard_result['success']) {
                         <h2>Your Character</h2>
                         <p>Customize your avatar</p>
                     </a>
-                    <a href="instructions.php" class="vocabworld-card instructions-card" style="background-image: url('assets/menu/instructionbg.webp'); background-size: cover; background-position: center;">
+                    <a href="instructions/instructions.php" class="vocabworld-card instructions-card" style="background-image: url('assets/menu/instructionbg.webp'); background-size: cover; background-position: center;">
                         <img src="assets/menu/instructionicon.png" alt="Instructions" class="card-icon">
                         <h2>Instructions</h2>
                         <p>Learn how to play</p>

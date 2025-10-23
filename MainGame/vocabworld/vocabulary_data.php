@@ -462,6 +462,194 @@ class VocabularyData {
                 'antonyms' => ['disprove', 'invalidate', 'contradict'],
                 'difficulty' => 5,
                 'grade' => 10
+            ],
+            
+            // Additional Grade 7 Vocabulary
+            [
+                'word' => 'achieve',
+                'definition' => 'successfully reach a desired objective or result',
+                'example' => 'She worked hard to achieve her goals.',
+                'synonyms' => ['accomplish', 'attain', 'reach'],
+                'antonyms' => ['fail', 'lose', 'miss'],
+                'difficulty' => 1,
+                'grade' => 7
+            ],
+            [
+                'word' => 'courage',
+                'definition' => 'the ability to do something that frightens one; bravery',
+                'example' => 'It takes courage to stand up for what is right.',
+                'synonyms' => ['bravery', 'valor', 'boldness'],
+                'antonyms' => ['cowardice', 'fear', 'timidity'],
+                'difficulty' => 1,
+                'grade' => 7
+            ],
+            [
+                'word' => 'describe',
+                'definition' => 'give an account in words of someone or something',
+                'example' => 'Can you describe what you saw at the park?',
+                'synonyms' => ['explain', 'depict', 'portray'],
+                'antonyms' => ['confuse', 'obscure', 'hide'],
+                'difficulty' => 1,
+                'grade' => 7
+            ],
+            [
+                'word' => 'discover',
+                'definition' => 'find something unexpectedly or in the course of a search',
+                'example' => 'Scientists discover new species every year.',
+                'synonyms' => ['find', 'uncover', 'detect'],
+                'antonyms' => ['hide', 'conceal', 'lose'],
+                'difficulty' => 1,
+                'grade' => 7
+            ],
+            [
+                'word' => 'evidence',
+                'definition' => 'facts or information indicating whether something is true',
+                'example' => 'The detective found evidence at the crime scene.',
+                'synonyms' => ['proof', 'confirmation', 'testimony'],
+                'antonyms' => ['disproof', 'refutation', 'denial'],
+                'difficulty' => 1,
+                'grade' => 7
+            ],
+            
+            // Additional Grade 8 Vocabulary
+            [
+                'word' => 'ambitious',
+                'definition' => 'having a strong desire for success or achievement',
+                'example' => 'She is ambitious and wants to become a doctor.',
+                'synonyms' => ['driven', 'determined', 'aspiring'],
+                'antonyms' => ['lazy', 'unmotivated', 'apathetic'],
+                'difficulty' => 2,
+                'grade' => 8
+            ],
+            [
+                'word' => 'collaborate',
+                'definition' => 'work jointly on an activity or project',
+                'example' => 'Students collaborate on group assignments.',
+                'synonyms' => ['cooperate', 'work together', 'partner'],
+                'antonyms' => ['compete', 'oppose', 'conflict'],
+                'difficulty' => 2,
+                'grade' => 8
+            ],
+            [
+                'word' => 'diligent',
+                'definition' => 'having or showing care in one\'s work or duties',
+                'example' => 'A diligent student always completes homework on time.',
+                'synonyms' => ['hardworking', 'industrious', 'conscientious'],
+                'antonyms' => ['lazy', 'careless', 'negligent'],
+                'difficulty' => 2,
+                'grade' => 8
+            ],
+            [
+                'word' => 'efficient',
+                'definition' => 'achieving maximum productivity with minimum wasted effort',
+                'example' => 'This is an efficient way to solve the problem.',
+                'synonyms' => ['effective', 'productive', 'competent'],
+                'antonyms' => ['inefficient', 'wasteful', 'unproductive'],
+                'difficulty' => 2,
+                'grade' => 8
+            ],
+            [
+                'word' => 'persevere',
+                'definition' => 'continue in a course of action despite difficulty',
+                'example' => 'You must persevere even when things get tough.',
+                'synonyms' => ['persist', 'endure', 'continue'],
+                'antonyms' => ['quit', 'surrender', 'give up'],
+                'difficulty' => 2,
+                'grade' => 8
+            ],
+            
+            // Additional Grade 9 Vocabulary
+            [
+                'word' => 'articulate',
+                'definition' => 'having or showing the ability to speak fluently and coherently',
+                'example' => 'She is articulate and expresses her ideas clearly.',
+                'synonyms' => ['eloquent', 'fluent', 'expressive'],
+                'antonyms' => ['inarticulate', 'unclear', 'confused'],
+                'difficulty' => 3,
+                'grade' => 9
+            ],
+            [
+                'word' => 'contemplate',
+                'definition' => 'look thoughtfully for a long time at something',
+                'example' => 'He sat by the window to contemplate his future.',
+                'synonyms' => ['consider', 'ponder', 'reflect'],
+                'antonyms' => ['ignore', 'disregard', 'neglect'],
+                'difficulty' => 3,
+                'grade' => 9
+            ],
+            [
+                'word' => 'eloquent',
+                'definition' => 'fluent or persuasive in speaking or writing',
+                'example' => 'The speaker gave an eloquent speech about peace.',
+                'synonyms' => ['articulate', 'persuasive', 'expressive'],
+                'antonyms' => ['inarticulate', 'unclear', 'awkward'],
+                'difficulty' => 3,
+                'grade' => 9
+            ],
+            [
+                'word' => 'resilient',
+                'definition' => 'able to withstand or recover quickly from difficult conditions',
+                'example' => 'Children are resilient and adapt to change easily.',
+                'synonyms' => ['strong', 'tough', 'adaptable'],
+                'antonyms' => ['weak', 'fragile', 'vulnerable'],
+                'difficulty' => 3,
+                'grade' => 9
+            ],
+            [
+                'word' => 'scrutinize',
+                'definition' => 'examine or inspect closely and thoroughly',
+                'example' => 'The teacher will scrutinize your essay carefully.',
+                'synonyms' => ['examine', 'inspect', 'analyze'],
+                'antonyms' => ['ignore', 'overlook', 'neglect'],
+                'difficulty' => 3,
+                'grade' => 9
+            ],
+            
+            // Additional Grade 10 Vocabulary
+            [
+                'word' => 'ambiguous',
+                'definition' => 'open to more than one interpretation; not clear',
+                'example' => 'The instructions were ambiguous and confusing.',
+                'synonyms' => ['unclear', 'vague', 'uncertain'],
+                'antonyms' => ['clear', 'definite', 'unambiguous'],
+                'difficulty' => 4,
+                'grade' => 10
+            ],
+            [
+                'word' => 'coherent',
+                'definition' => 'logical and consistent; easy to understand',
+                'example' => 'Please write a coherent essay with clear arguments.',
+                'synonyms' => ['logical', 'consistent', 'clear'],
+                'antonyms' => ['incoherent', 'confused', 'illogical'],
+                'difficulty' => 4,
+                'grade' => 10
+            ],
+            [
+                'word' => 'exemplary',
+                'definition' => 'serving as a desirable model; very good',
+                'example' => 'Her behavior is exemplary and worthy of praise.',
+                'synonyms' => ['outstanding', 'excellent', 'model'],
+                'antonyms' => ['poor', 'inadequate', 'unacceptable'],
+                'difficulty' => 4,
+                'grade' => 10
+            ],
+            [
+                'word' => 'meticulous',
+                'definition' => 'showing great attention to detail; very careful',
+                'example' => 'He is meticulous in his research and documentation.',
+                'synonyms' => ['careful', 'precise', 'thorough'],
+                'antonyms' => ['careless', 'sloppy', 'negligent'],
+                'difficulty' => 4,
+                'grade' => 10
+            ],
+            [
+                'word' => 'pragmatic',
+                'definition' => 'dealing with things sensibly and realistically',
+                'example' => 'We need a pragmatic approach to solve this issue.',
+                'synonyms' => ['practical', 'realistic', 'sensible'],
+                'antonyms' => ['impractical', 'idealistic', 'unrealistic'],
+                'difficulty' => 5,
+                'grade' => 10
             ]
         ];
     }

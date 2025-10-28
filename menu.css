@@ -270,14 +270,26 @@
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('assets/menu/playbg.jpeg') center/cover no-repeat;
 }
 
-.play-button .button-icon i {
-    color: rgba(0, 255, 135, 1);
-    font-size: 2rem;
+.play-button .button-icon .play-icon {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+.leaderboards-button .button-icon .trophy-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
 }
 
 .settings-button {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/settingsbg.jpeg') center/cover no-repeat;
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.settings-button .button-icon i {
+    color: #95a5a6; /* Grey */
+    font-size: 1.5rem;
 }
 
 .settings-button:hover {
@@ -289,6 +301,11 @@
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
+.overview-button .button-icon i {
+    color: #1abc9c; /* Cyan */
+    font-size: 1.5rem;
+}
+
 .overview-button:hover {
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('assets/menu/overview.jpeg') center/cover no-repeat;
 }
@@ -296,6 +313,20 @@
 .credits-button {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/creditsbg.jpeg') center/cover no-repeat;
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.leaderboards-button {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/leaderboardsbg.webp') center 30%/cover no-repeat;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.leaderboards-button:hover {
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('assets/menu/leaderboardsbg.webp') center 30%/cover no-repeat;
+}
+
+.leaderboards-button .button-icon i {
+    color: #ffd700;
+    font-size: 1.5rem;
 }
 
 .credits-button:hover {

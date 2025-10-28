@@ -1,0 +1,766 @@
+/* Leaderboards Page Styles */
+body {
+    background-image: url('../../assets/menu/menubg.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    position: fixed;
+    left: 250px;
+    top: 60px;
+    right: 0;
+    bottom: 0;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.leaderboard-container {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    padding: 1.25rem;
+    width: 100%;
+    max-width: 500px;
+    border: 2px solid rgba(96, 239, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.leaderboard-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+}
+
+.settings-header {
+    text-align: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(96, 239, 255, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.section-separator {
+    height: 2px;
+    background: rgba(96, 239, 255, 0.2);
+    margin: 1rem 0;
+    width: 100%;
+}
+
+.settings-logo {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
+}
+
+.leaderboard-section {
+    background: rgba(30, 30, 30, 0.7);
+    border-radius: 15px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(96, 239, 255, 0.1);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(96, 239, 255, 0.2);
+}
+
+.section-header i {
+    font-size: 1.5rem;
+    color: #60efff;
+    margin-right: 0.75rem;
+    text-shadow: 0 0 10px rgba(96, 239, 255, 0.5);
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(96, 239, 255, 0.5);
+}
+
+/* Leaderboard Filters */
+.leaderboard-filters {
+    margin: 0.5rem 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-label {
+    font-size: 0.7rem;
+    color: rgba(96, 239, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.dropdown {
+    position: relative;
+    z-index: 10;
+}
+
+.dropdown-toggle {
+    background: rgba(20, 20, 20, 0.7);
+    border: 1px solid rgba(96, 239, 255, 0.3);
+    border-radius: 4px;
+    color: #60efff;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.2s ease;
+    font-family: 'Press Start 2P', cursive;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dropdown-toggle:hover {
+    background: rgba(96, 239, 255, 0.1);
+    border-color: rgba(96, 239, 255, 0.6);
+}
+
+.dropdown-toggle i {
+    font-size: 0.6rem;
+    transition: transform 0.2s ease;
+}
+
+.dropdown.open .dropdown-toggle i {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 180px;
+    background: rgba(20, 20, 30, 0.95);
+    border: 1px solid rgba(96, 239, 255, 0.2);
+    border-radius: 6px;
+    padding: 0.3rem 0;
+    margin-top: 0.3rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: all 0.2s ease;
+    max-height: 300px;
+    overflow-y: auto;
+    font-size: 0.75rem;
+}
+
+.dropdown.open .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-section {
+    margin-bottom: 0.3rem;
+}
+
+.dropdown-section:not(:last-child) {
+    border-bottom: 1px solid rgba(96, 239, 255, 0.1);
+    padding-bottom: 0.3rem;
+}
+
+.dropdown-header {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.65rem;
+    color: #60efff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+    background: rgba(96, 239, 255, 0.1);
+    margin-bottom: 0.25rem;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.6rem 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+    padding-left: 2rem;
+}
+
+.dropdown-item:hover {
+    background: rgba(96, 239, 255, 0.1);
+    color: #60efff;
+    padding-left: 2.5rem;
+}
+
+.dropdown-item:before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 0 5px 8px;
+    border-color: transparent transparent transparent #60efff;
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover:before {
+    opacity: 1;
+    left: 1.5rem;
+}
+
+/* Sortable Headers */
+th.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-right: 1.5rem !important;
+    transition: background-color 0.2s ease;
+}
+
+th.sortable:hover {
+    background-color: rgba(96, 239, 255, 0.1) !important;
+}
+
+.sort-icon {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(96, 239, 255, 0.5);
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.sort-icon.active {
+    color: #60efff;
+    text-shadow: 0 0 8px rgba(96, 239, 255, 0.5);
+}
+
+/* Game Logo */
+.game-logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.game-logo {
+    height: 50px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .game-logo {
+        height: 45px;
+    }
+}
+
+/* Leaderboard Table */
+.leaderboard-table-container {
+    background: rgba(20, 20, 20, 0.7);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 0;
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9rem;
+    color: #fff;
+    margin-top: 1.5rem;
+    background: rgba(30, 30, 40, 0.6);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    table-layout: fixed; /* Ensures consistent column widths */
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+
+.leaderboard-table th:first-child,
+.leaderboard-table td:first-child {
+    width: 80px; /* Fixed width for rank column */
+    padding-left: 20px;
+}
+
+.leaderboard-table th:nth-child(2),
+.leaderboard-table td:nth-child(2) {
+    padding-left: 10px;
+}
+
+.leaderboard-table th:last-child,
+.leaderboard-table td:last-child {
+    text-align: right;
+    padding-right: 20px;
+}
+
+.leaderboard-table th {
+    background: rgba(96, 239, 255, 0.1);
+    color: #60efff;
+    padding: 1rem;
+    text-align: left;
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    border-bottom: 2px solid rgba(96, 239, 255, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.leaderboard-table tbody tr:hover {
+    background-color: rgba(96, 239, 255, 0.05);
+}
+
+.leaderboard-table tbody tr.current-user {
+    background: linear-gradient(90deg, rgba(0, 255, 135, 0.1), transparent);
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 #00ff87;
+}
+
+.leaderboard-table tbody tr.current-user:hover {
+    background: linear-gradient(90deg, rgba(0, 255, 135, 0.15), transparent);
+}
+
+.player-name {
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.rank {
+    font-weight: 700;
+    color: #60efff;
+    text-shadow: 0 0 10px rgba(96, 239, 255, 0.5);
+}
+
+/* Coming Soon Message */
+.coming-soon {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(20, 20, 20, 0.5);
+    border-radius: 10px;
+    margin: 1rem 0;
+    border: 1px dashed rgba(96, 239, 255, 0.3);
+    font-family: 'Press Start 2P', cursive;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Rank Badges */
+.leaderboard-table .rank {
+    text-align: left;
+    font-weight: bold;
+    padding-left: 20px;
+    width: 80px; /* Fixed width for rank column */
+}
+
+.leaderboard-table tbody tr.rank-1 .rank {
+    color: #ffd700;
+    font-size: 1.1em;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+}
+
+.leaderboard-table tbody tr.rank-2 .rank {
+    color: #c0c0c0;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(192, 192, 192, 0.8);
+}
+
+.leaderboard-table tbody tr.rank-3 .rank {
+    color: #cd7f32;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(205, 127, 50, 0.8);
+}
+
+/* Highlight top 3 rows */
+.leaderboard-table tbody tr.rank-1 {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.05), transparent) !important;
+    box-shadow: inset 3px 0 0 #ffd700, inset 0 -1px 0 rgba(255, 215, 0, 0.2);
+}
+
+.leaderboard-table tbody tr.rank-2 {
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.05), transparent) !important;
+    box-shadow: inset 3px 0 0 #c0c0c0, inset 0 -1px 0 rgba(192, 192, 192, 0.1);
+}
+
+.leaderboard-table tbody tr.rank-3 {
+    background: linear-gradient(90deg, rgba(205, 127, 50, 0.05), transparent) !important;
+    box-shadow: inset 3px 0 0 #cd7f32, inset 0 -1px 0 rgba(205, 127, 50, 0.1);
+}
+
+/* Podium Styles */
+.podium-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 0.5rem;
+    margin: 1rem 0 1.5rem;
+    padding: 0 0.5rem;
+}
+
+.podium-place {
+    position: relative;
+    background: rgba(30, 30, 40, 0.8);
+    border-radius: 8px;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    flex: 1;
+    max-width: 110px;
+    border-top: 3px solid transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.podium-place.current-user {
+    border-color: #60efff;
+    box-shadow: 0 0 15px rgba(96, 239, 255, 0.3);
+}
+
+.podium-place.rank-1 {
+    height: 160px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(30, 30, 40, 0.9));
+    border-top: 3px solid #ffd700;
+    order: 2;
+}
+
+.podium-place.rank-2 {
+    height: 130px;
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(30, 30, 40, 0.9));
+    border-top: 3px solid #c0c0c0;
+    order: 1;
+}
+
+.podium-place.rank-3 {
+    height: 130px;
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), rgba(30, 30, 40, 0.9));
+    border-top: 3px solid #cd7f32;
+    order: 3;
+}
+
+.podium-avatar {
+    width: 50px;
+    height: 50px;
+    margin: -40px auto 5px;
+    border-radius: 50%;
+    border: 2px solid rgba(96, 239, 255, 0.3);
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.podium-place.rank-1 .podium-avatar {
+    border-color: #ffd700;
+    width: 60px;
+    height: 60px;
+    margin-top: -50px;
+}
+
+.podium-place.rank-2 .podium-avatar {
+    border-color: #c0c0c0;
+}
+
+.podium-place.rank-3 .podium-avatar {
+    border-color: #cd7f32;
+}
+
+.podium-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.podium-rank {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+    color: #60efff;
+    text-shadow: 0 0 8px rgba(96, 239, 255, 0.5);
+}
+
+.podium-place.rank-1 .podium-rank {
+    font-size: 1.3rem;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+}
+
+.podium-place.rank-2 .podium-rank {
+    color: #c0c0c0;
+    text-shadow: 0 0 8px rgba(192, 192, 192, 0.5);
+}
+
+.podium-place.rank-3 .podium-rank {
+    color: #cd7f32;
+    text-shadow: 0 0 8px rgba(205, 127, 50, 0.5);
+}
+
+.podium-name {
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin: 0.3rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+}
+
+.podium-score {
+    font-size: 0.7rem;
+    color: #60efff;
+    margin-top: 0.3rem;
+    padding: 0.2rem 0.3rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.podium-place.rank-1 .podium-score {
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.podium-place.rank-2 .podium-score {
+    background: rgba(192, 192, 192, 0.1);
+}
+
+.podium-place.rank-3 .podium-score {
+    background: rgba(205, 127, 50, 0.1);
+}
+
+.podium-score .score-label {
+    display: block;
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.1rem;
+}
+
+.podium-score .score-value {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.leaderboard-table-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(96, 239, 255, 0.2);
+    background: rgba(15, 15, 20, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .podium-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0.5rem 0 1rem;
+    }
+    
+    .podium-place {
+        width: 100%;
+        max-width: 280px;
+        height: auto !important;
+        min-height: 70px;
+        padding: 0.8rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 8px;
+        margin: 0.2rem 0;
+    }
+    
+    /* Specific ordering for mobile */
+    .podium-place.rank-1 {
+        order: 1; /* Top position */
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(30, 30, 40, 0.9)) !important;
+    }
+    
+    .podium-place.rank-2 {
+        order: 2; /* Middle position */
+        background: linear-gradient(135deg, rgba(192, 192, 192, 0.15), rgba(30, 30, 40, 0.9)) !important;
+    }
+    
+    .podium-place.rank-3 {
+        order: 3; /* Bottom position */
+        background: linear-gradient(135deg, rgba(205, 127, 50, 0.15), rgba(30, 30, 40, 0.9)) !important;
+    }
+    
+    .podium-avatar {
+        width: 45px !important;
+        height: 45px !important;
+        margin: 0 !important;
+        order: 1;
+        flex-shrink: 0;
+    }
+    
+    .podium-rank {
+        order: 2;
+        margin: 0 0.5rem;
+        font-size: 1.1rem !important;
+        min-width: 30px;
+        text-align: center;
+    }
+    
+    .podium-name {
+        order: 3;
+        flex: 1;
+        margin: 0 0.8rem;
+        text-align: left;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .podium-score {
+        order: 4;
+        margin: 0;
+        padding: 0.3rem 0.6rem;
+        background: rgba(0, 0, 0, 0.25) !important;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        min-width: 50px;
+        text-align: center;
+    }
+    
+    .podium-score .score-label {
+        display: none;
+    }
+    
+    .podium-place.rank-1 .podium-avatar {
+        width: 50px !important;
+        height: 50px !important;
+        border-width: 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    .leaderboard-filters {
+        justify-content: flex-start;
+        margin-top: 1rem;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .dropdown-toggle {
+        flex: 1;
+        justify-content: space-between;
+    }
+    
+    .dropdown-menu {
+        width: 100%;
+        right: auto;
+        left: 0;
+    }
+    .main-content {
+        left: 0;
+        padding: 1rem;
+        padding-top: 70px;
+    }
+    
+    .leaderboard-container {
+        padding: 1rem;
+        max-width: 100%;
+    }
+    
+    .settings-logo {
+        width: 300px;
+    }
+    
+    .leaderboard-section {
+        padding: 1rem;
+    }
+    
+    .leaderboard-table {
+        display: block;
+        overflow-x: auto;
+        font-size: 0.8rem;
+    }
+    
+    .game-logo {
+        height: 40px;
+    }
+    
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .section-header h3 {
+        font-size: 1rem;
+    }
+    
+    .section-header i {
+        font-size: 1.2rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.leaderboard-table-container {
+    animation: fadeIn 0.3s ease-out;
+}

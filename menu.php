@@ -164,7 +164,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
             <div class="menu-buttons-grid">
                 <a href="game-selection.php" class="menu-button play-button">
                     <div class="button-icon">
-                        <i class="fas fa-play-circle"></i>
+                        <img src="assets/menu/blue-play.png" alt="Play" class="play-icon">
                     </div>
                     <div class="button-content">
                         <h2>Play</h2>
@@ -172,13 +172,13 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                     </div>
                 </a>
                 
-                <a href="settings/settings.php" class="menu-button settings-button">
+                <a href="navigation/leaderboards/leaderboards.php" class="menu-button leaderboards-button">
                     <div class="button-icon">
-                        <i class="fas fa-cog"></i>
+                        <img src="assets/menu/trophy-menu.png" alt="Leaderboards" class="trophy-icon">
                     </div>
                     <div class="button-content">
-                        <h2>Settings</h2>
-                        <p>Customize your experience</p>
+                        <h2>Leaderboards</h2>
+                        <p>Compete with others</p>
                     </div>
                 </a>
                 
@@ -189,6 +189,16 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                     <div class="button-content">
                         <h2>Overview</h2>
                         <p>Project overview</p>
+                    </div>
+                </a>
+                
+                <a href="settings/settings.php" class="menu-button settings-button">
+                    <div class="button-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="button-content">
+                        <h2>Settings</h2>
+                        <p>Customize your experience</p>
                     </div>
                 </a>
                 

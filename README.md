@@ -18,10 +18,7 @@ Word Weavers is a web-based educational application developed by Group 1 College
    - Interactive word challenges
 
 2. **Grammar Heroes**
-   - Engaging grammar exercises
-   - Progress tracking and analytics
-   - Interactive learning modules
-   - Achievement system
+   - soon to be added
 
 ### User Interface
 - Responsive design for all devices
@@ -30,7 +27,7 @@ Word Weavers is a web-based educational application developed by Group 1 College
 - Achievement and reward system
 
 ### Social Features
-- Friends system with chat
+- Friends system 
 - Global highscore leaderboards
 - Achievement sharing
 - Progress comparison
@@ -125,7 +122,7 @@ We welcome contributions! Here's how to get started:
 5. Open a Pull Request
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/frostjade71/GameDev-G1/Deployment/LICENSE.md) file for details.
 
 ## Contact
 For any inquiries or feedback, please contact:

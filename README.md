@@ -1,8 +1,12 @@
 # Word Weavers: Educational Game Platform
 
 ## Overview
+<<<<<<< HEAD
 Word Weavers is an interactive educational web application designed to make learning English fun and engaging through various game modes. The platform features vocabulary and grammar-based games that help users improve their language skills while tracking their progress.
 
+=======
+Word Weavers is a web-based educational application thesis project designed by Group 1 College Seniors of Holy Cross College of Carigara Incorporated. It aims to make learning English fun and engaging through various interactive game modes. The platform features vocabulary and grammar-based games that help users enhance their language skills while allowing both teachers and students to track and monitor learning progress over time.
+>>>>>>> 34c1ac5c078bd5cc276672a97be1e7603331b6d5
 ## Features
 
 ### User Authentication
@@ -10,11 +14,19 @@ Word Weavers is an interactive educational web application designed to make lear
 - Session management
 - User profile management
 
+<<<<<<< HEAD
 ### Game Modes
 1. **Vocabulary World**
    - Word matching exercises
    - Level-based progression
    - Score tracking
+=======
+### Games
+1. **Vocabworld**
+   - Top-down educational vocabulary rpg game
+   - Level-based progression
+   - Character Customization
+>>>>>>> 34c1ac5c078bd5cc276672a97be1e7603331b6d5
 
 2. **Grammar Heroes**
    - Grammar exercises and challenges
@@ -123,7 +135,14 @@ Contributions are welcome! Please follow these steps:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
+<<<<<<< HEAD
 For any questions or feedback, please contact the development team.
 
 ---
 *Last updated: October 2023*
+=======
+For any questions or feedback, please contact wordweavershccci@gmail.com or jaderbypenaranda@gmail.com
+
+---
+*Last updated: October 23rd 2025*
+>>>>>>> 34c1ac5c078bd5cc276672a97be1e7603331b6d5

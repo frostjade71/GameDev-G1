@@ -1,3 +1,48 @@
+/* Loading Indicator */
+#loadingIndicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 20px;
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+}
+
+#loadingIndicator .loading-content {
+    text-align: center;
+    color: #60efff;
+    text-shadow: 0 0 10px rgba(96, 239, 255, 0.5);
+    font-size: 1.2rem;
+    animation: pulse 2s infinite;
+}
+
+#loadingIndicator i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+    color: #60efff;
+    text-shadow: 0 0 15px rgba(96, 239, 255, 0.8);
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; transform: scale(0.98); }
+    50% { opacity: 1; transform: scale(1.02); }
+    100% { opacity: 0.7; transform: scale(0.98); }
+}
+
+#loadingIndicator.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
 /* Leaderboards Page Styles */
 body {
     background-image: url('../../assets/menu/menubg.jpg');
@@ -166,6 +211,7 @@ body {
     position: absolute;
     top: 100%;
     right: 0;
+    min-width: 220px;
     width: 180px;
     background: rgba(20, 20, 30, 0.95);
     border: 1px solid rgba(96, 239, 255, 0.2);
@@ -210,32 +256,31 @@ body {
 
 .dropdown-item {
     display: block;
-    padding: 0.6rem 1rem;
+    padding: 0.4rem 0.8rem;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+    line-height: 1.3;
     text-decoration: none;
     transition: all 0.2s ease;
     position: relative;
-    padding-left: 2rem;
 }
 
 .dropdown-item:hover {
     background: rgba(96, 239, 255, 0.1);
     color: #60efff;
-    padding-left: 2.5rem;
+    padding-left: 1.8rem;
 }
 
 .dropdown-item:before {
     content: '';
     position: absolute;
-    left: 1rem;
+    left: 0.6rem;
     top: 50%;
     transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 5px 0 5px 8px;
-    border-color: transparent transparent transparent #60efff;
+    width: 3px;
+    height: 3px;
+    background: #60efff;
+    border-radius: 50%;
     opacity: 0;
     transition: all 0.2s ease;
 }
@@ -294,40 +339,86 @@ th.sortable:hover {
 
 /* Leaderboard Table */
 .leaderboard-table-container {
-    background: rgba(20, 20, 20, 0.7);
-    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(15, 15, 20, 0.9), rgba(25, 25, 35, 0.9));
+    border-radius: 16px;
     overflow: hidden;
-    margin-bottom: 0;
+    margin: 1.5rem 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(96, 239, 255, 0.1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    backdrop-filter: blur(10px);
+    transform: translateZ(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 0 4px; /* Add padding to accommodate the hover effect */
+    margin-left: -4px; /* Compensate for the left padding */
+    margin-right: -4px; /* Compensate for the right padding */
+    width: calc(100% + 8px); /* Adjust width to account for the negative margins */
+}
+
+.leaderboard-table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        rgba(96, 239, 255, 0) 0%, 
+        rgba(96, 239, 255, 0.6) 20%, 
+        rgba(0, 255, 135, 0.6) 80%, 
+        rgba(0, 255, 135, 0) 100%);
+    animation: borderGlow 3s infinite alternate;
+}
+
+@keyframes borderGlow {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.leaderboard-table-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 .leaderboard-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 0.9rem;
-    color: #fff;
-    margin-top: 1.5rem;
-    background: rgba(30, 30, 40, 0.6);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    table-layout: fixed; /* Ensures consistent column widths */
+    font-size: 0.85rem;
+    color: #e0e0e0;
+    margin: 0;
+    table-layout: fixed;
+    background: rgba(10, 10, 15, 0.4);
+    position: relative;
+    z-index: 1;
 }
 
 .leaderboard-table th,
 .leaderboard-table td {
-    padding: 1rem;
+    padding: 0.7rem 0.8rem; /* Reduced padding */
     text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     vertical-align: middle;
+    font-size: 0.8rem; /* Ensure consistent font size */
 }
 
 .leaderboard-table th:first-child,
 .leaderboard-table td:first-child {
-    width: 80px; /* Fixed width for rank column */
+    width: 80px;
     padding-left: 20px;
+    position: relative;
+}
+
+/* Add subtle left border highlight on hover */
+.leaderboard-table tbody tr:hover td:first-child::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #60efff;
+    box-shadow: 0 0 15px rgba(96, 239, 255, 0.5);
 }
 
 .leaderboard-table th:nth-child(2),
@@ -342,28 +433,63 @@ th.sortable:hover {
 }
 
 .leaderboard-table th {
-    background: rgba(96, 239, 255, 0.1);
+    background: linear-gradient(to bottom, rgba(20, 25, 35, 0.9), rgba(10, 15, 25, 0.9));
     color: #60efff;
-    padding: 1rem;
-    text-align: left;
-    font-weight: normal;
+    padding: 0.8rem 0.8rem; /* Reduced padding */
+    font-size: 0.7rem; /* Smaller font size for headers */
+    font-weight: 600;
     text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    border-bottom: 2px solid rgba(96, 239, 255, 0.2);
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 8px rgba(96, 239, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    border: none;
 }
 
+.leaderboard-table th::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(96, 239, 255, 0.5), 
+        transparent);
+}
+    /* Table header styles are now properly defined above */
+
 .leaderboard-table tbody tr:hover {
-    background-color: rgba(96, 239, 255, 0.05);
+    background-color: rgba(96, 239, 255, 0.08) !important;
+    transform: translateX(4px);
+    box-shadow: -4px 0 0 rgba(96, 239, 255, 0.3);
+    /* Prevent content from being cut off */
+    position: relative;
+    z-index: 2;
 }
 
 .leaderboard-table tbody tr.current-user {
-    background: linear-gradient(90deg, rgba(0, 255, 135, 0.1), transparent);
+    background: linear-gradient(90deg, rgba(0, 255, 135, 0.12), transparent) !important;
     font-weight: 600;
-    box-shadow: inset 3px 0 0 #00ff87;
+    position: relative;
+    box-shadow: inset 4px 0 0 #00ff87, 0 0 20px rgba(0, 255, 135, 0.1);
+}
+
+.leaderboard-table tbody tr.current-user::after {
+    content: 'YOU';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 255, 135, 0.2);
+    color: #00ff87;
+    font-size: 0.55rem;
+    padding: 1px 5px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .leaderboard-table tbody tr.current-user:hover {
@@ -556,12 +682,14 @@ th.sortable:hover {
 
 .podium-score {
     font-size: 0.7rem;
-    color: #60efff;
-    margin-top: 0.3rem;
-    padding: 0.2rem 0.3rem;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
+    color: #fff;
+    margin-top: 3px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 6px;
+    border-radius: 8px;
     display: inline-block;
+    min-width: 30px;
+    line-height: 1.2;
 }
 
 .podium-place.rank-1 .podium-score {
@@ -585,76 +713,252 @@ th.sortable:hover {
 
 .podium-score .score-value {
     display: block;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: bold;
     color: #fff;
+    line-height: 1.1;
 }
 
 .leaderboard-table-container {
     width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 15px 0;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     border-radius: 10px;
     border: 1px solid rgba(96, 239, 255, 0.2);
     background: rgba(15, 15, 20, 0.8);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.leaderboard-table-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.leaderboard-table-container {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .podium-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-        margin: 0.5rem 0 1rem;
+    .leaderboard-container {
+        padding: 0 5px;
+        width: 100%;
+        box-sizing: border-box;
     }
     
-    .podium-place {
+    .leaderboard-table-container {
         width: 100%;
-        max-width: 280px;
-        height: auto !important;
-        min-height: 70px;
-        padding: 0.8rem;
+        max-width: 100%;
+        margin: 10px 0;
+        padding: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .leaderboard-table {
+        width: 100%;
+        font-size: 0.8rem;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+    
+    .leaderboard-table thead {
+        display: none; /* Hide header on mobile */
+    }
+    
+    .leaderboard-table tbody tr {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
-        border-radius: 8px;
-        margin: 0.2rem 0;
+        padding: 8px 0;
+        margin: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .leaderboard-table td {
+        padding: 0;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border: none;
+        line-height: 1.2;
+    }
+    
+    /* Rank column */
+    .leaderboard-table td:first-child {
+        width: 35px;
+        min-width: 35px;
+        text-align: center;
+        padding: 0 5px 0 8px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: bold;
+        flex-shrink: 0;
+        position: relative;
+    }
+    
+    /* Add a subtle separator after rank */
+    .leaderboard-table td:first-child::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 20%;
+        bottom: 20%;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Username column */
+    .leaderboard-table td:nth-child(2) {
+        flex: 1;
+        min-width: 0;
+        padding: 0 8px 0 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.75rem;
+    }
+    
+    /* Score column */
+    .leaderboard-table td:last-child {
+        width: 50px;
+        min-width: 50px;
+        text-align: right;
+        padding: 0 5px 0 0;
+        color: #60efff;
+        font-weight: 600;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+    
+    /* Current user highlight */
+    .leaderboard-table tbody tr.current-user {
+        background: rgba(0, 255, 135, 0.1);
+        border-left: 3px solid #00ff87;
+    }
+    
+    .leaderboard-table tbody tr.current-user::after {
+        right: 5px;
+        font-size: 0.55rem;
+        padding: 1px 5px;
+    }
+    
+    /* Podium styles */
+    .podium-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 0.7rem;
+        margin: 2rem 0 0.5rem;
+        padding: 2.1rem 0.3rem 0;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* For Firefox */
+        transform: scale(0.92);
+        transform-origin: center top;
+        position: relative;
+        margin-top: auto;
+    }
+    
+    .podium-container::-webkit-scrollbar {
+        display: none; /* For Chrome, Safari and Opera */
+    }
+    
+    .podium-place {
+        width: 30%;
+        min-width: 80px;
+        max-width: 90px;
+        height: auto !important;
+        min-height: 120px;
+        padding: 12px 3px 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        border-radius: 6px;
+        margin: 0;
+        position: relative;
+        flex-shrink: 0;
+        overflow: visible;
     }
     
     /* Specific ordering for mobile */
     .podium-place.rank-1 {
-        order: 1; /* Top position */
-        background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(30, 30, 40, 0.9)) !important;
+        order: 2; /* Middle position */
+        height: 140px !important;
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(30, 30, 40, 0.9)) !important;
+        border-top: 2px solid #ffd700;
     }
     
     .podium-place.rank-2 {
-        order: 2; /* Middle position */
-        background: linear-gradient(135deg, rgba(192, 192, 192, 0.15), rgba(30, 30, 40, 0.9)) !important;
+        order: 1; /* Left position */
+        height: 120px !important;
+        background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(30, 30, 40, 0.9)) !important;
+        border-top: 2px solid #c0c0c0;
     }
     
     .podium-place.rank-3 {
-        order: 3; /* Bottom position */
-        background: linear-gradient(135deg, rgba(205, 127, 50, 0.15), rgba(30, 30, 40, 0.9)) !important;
+        order: 3; /* Right position */
+        height: 100px !important;
+        background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), rgba(30, 30, 40, 0.9)) !important;
+        border-top: 2px solid #cd7f32;
     }
     
     .podium-avatar {
-        width: 45px !important;
-        height: 45px !important;
-        margin: 0 !important;
+        width: 42px !important;
+        height: 42px !important;
+        margin: -40px 0 2px !important;
         order: 1;
-        flex-shrink: 0;
+        position: relative;
+        border: 2px solid rgba(96, 239, 255, 0.3) !important;
+        z-index: 1;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .podium-username {
+        font-size: 0.6rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        text-align: center;
+        line-height: 1.2;
+        padding: 0 2px;
+        margin-top: 5px;
+        font-weight: bold;
+    }
+    
+    .podium-details {
+        font-size: 0.5rem;
+        opacity: 0.8;
+        margin-top: 0.1rem;
+        line-height: 1.1;
     }
     
     .podium-rank {
         order: 2;
-        margin: 0 0.5rem;
-        font-size: 1.1rem !important;
-        min-width: 30px;
+        margin: 10px 0 5px 0;
+        font-size: 0.9rem !important;
+        min-width: 24px;
         text-align: center;
+        line-height: 1;
+        position: relative;
+        z-index: 2;
+        background: rgba(20, 20, 30, 0.9);
+        padding: 3px 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(96, 239, 255, 0.3);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
     
     .podium-name {
@@ -662,7 +966,7 @@ th.sortable:hover {
         flex: 1;
         margin: 0 0.8rem;
         text-align: left;
-        font-size: 0.85rem;
+        font-size: 0.6rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -699,17 +1003,54 @@ th.sortable:hover {
     
     .filter-group {
         width: 100%;
+        display: flex;
+        justify-content: flex-end;
     }
     
     .dropdown-toggle {
-        flex: 1;
+        width: auto;
+        min-width: 120px;
         justify-content: space-between;
+        padding: 0.35rem 0.6rem;
+        font-size: 0.7rem;
+        border-radius: 4px;
+        min-height: 30px;
+        max-height: 30px;
+        align-items: center;
+        margin-left: auto;
+    }
+    
+    .dropdown-toggle i {
+        font-size: 0.45rem;
+        margin-left: 0.2rem;
+    }
+    
+    .selected-option {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 80%;
+    }
+    
+    .dropdown {
+        width: 100%;
     }
     
     .dropdown-menu {
-        width: 100%;
-        right: auto;
-        left: 0;
+        width: auto;
+        min-width: 180px;
+        max-width: 100%;
+        right: 0;
+        left: auto;
+        position: absolute;
+        top: 100%;
+        bottom: auto;
+        margin-top: 0.2rem;
+        border-radius: 6px;
+        padding: 0.2rem 0;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        max-height: 50vh;
+        overflow-y: auto;
     }
     .main-content {
         left: 0;

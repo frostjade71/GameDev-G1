@@ -66,8 +66,8 @@ if ($shard_result['success']) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VocabWorld - Word Weavers</title>
-    <link rel="stylesheet" href="style.css?v=2">
-    <link rel="stylesheet" href="navigation/navigation.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="navigation/navigation.css?v=3">
     <link rel="stylesheet" href="../../notif/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -133,8 +133,8 @@ if ($shard_result['success']) {
         </header>
 
         <!-- Main Menu -->
-        <div id="main-menu" class="screen active">
-            <div class="menu-container">
+        <div id="main-menu" class="screen active" style="padding-top: calc(50px + 2rem) !important; padding: 1rem !important;">
+            <div class="menu-container" style="min-height: calc(100vh - 200px) !important; padding: 5rem 0 !important;">
                 <div class="vocabworld-grid">
                     <a href="game.php" class="vocabworld-card start-game-card" style="background-image: url('assets/menu/spaceplay.gif'); background-size: cover; background-position: center;">
                         <img src="assets/menu/playsys.png" alt="Play" class="card-icon">

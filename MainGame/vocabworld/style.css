@@ -180,11 +180,12 @@ body {
     display: none;
     min-height: calc(100vh - 60px);
     padding: 2rem;
-    padding-top: calc(60px + 2rem);
+    padding-top: calc(60px + 3rem);
 }
 
 .screen.active {
     display: block;
+    padding-top: calc(60px + 3rem);
 }
 
 /* Main Menu */
@@ -720,8 +721,17 @@ body {
     
     
     .screen {
-        padding-top: calc(50px + 1rem);
-        padding: 1rem;
+        padding: 1.5rem !important;
+        padding-top: calc(50px + 2rem) !important;
+    }
+    
+    .screen.active {
+        padding-top: calc(50px + 2rem) !important;
+    }
+    
+    .menu-container {
+        min-height: calc(100vh - 200px) !important;
+        padding: 1rem 0 !important;
     }
     
     .vocabworld-grid {

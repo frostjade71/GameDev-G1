@@ -76,6 +76,21 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="leaderboards.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Hide leaderboard content initially */
+        .leaderboard-content {
+            display: none;
+        }
+        
+        /* Show loading indicator by default */
+        #loadingIndicator {
+            display: block;
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
     <!-- Mobile Menu Button -->
@@ -162,7 +177,14 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </header>
 
     <div class="main-content">
-        <div class="leaderboard-container">
+        <div class="leaderboard-container leaderboard-content">
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator">
+                <div class="loading-content">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <div>Loading Leaderboard</div>
+                </div>
+            </div>
             <div class="settings-header">
                 <img src="../../assets/menu/leaderboardsmain.png" alt="Leaderboards" class="settings-logo">
             </div>
@@ -296,8 +318,9 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     alert('An error occurred while loading the leaderboard.');
                 },
                 complete: function() {
-                    $('#loadingIndicator').hide();
-                    $('#vocabworld-leaderboard').fadeIn();
+                    // Show the content
+                    $('.leaderboard-content').fadeIn(300);
+                    // The loading indicator will be hidden by updateLeaderboardUI
                 }
             });
         }
@@ -314,6 +337,19 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             // Update the table (ranks 4-10)
             updateLeaderboardTable(leaderboardData.slice(3, 10));
+            
+            // Hide loading indicator with fade out effect
+            $('#loadingIndicator').addClass('hidden');
+            
+            // Show the content after the first data load
+            if ($('.leaderboard-content').is(':hidden')) {
+                $('.leaderboard-content').show();
+            }
+            
+            // Remove loading indicator from DOM after animation completes
+            setTimeout(() => {
+                $('#loadingIndicator').remove();
+            }, 500);
         }
         
         // Function to update the podium section
@@ -331,17 +367,19 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 const rank = pos + 1;
                 const isCurrentUser = player.user_id == currentUserId;
                 
+                // Get first word of username for mobile
+                const username = player.username.split(' ')[0];
                 const podiumHtml = `
                     <div class="podium-place rank-${rank} ${isCurrentUser ? 'current-user' : ''}" data-rank="${rank}" style="cursor: pointer;" onclick="viewProfile(${player.user_id})">
                         <div class="podium-avatar">
-                            <img src="../../assets/menu/defaultuser.png" alt="${player.username}" class="podium-img">
+                            <img src="../../assets/menu/defaultuser.png" alt="${username}" class="podium-img">
                         </div>
                         <div class="podium-rank">#${rank}</div>
-                        <div class="podium-name">${player.username}</div>
+                        <div class="podium-name" title="${player.username}">${username}</div>
                         <div class="podium-score">
                             <span class="score-value">${formatScore(player[currentSort])}</span>
                         </div>
-                    </a>
+                    </div>
                 `;
                 
                 podiumContainer.append(podiumHtml);

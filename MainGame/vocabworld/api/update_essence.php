@@ -1,6 +1,39 @@
 <?php
-require_once '../../../onboarding/config.php';
-require_once '../api/essence_manager.php';
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// List of possible config file locations to check
+$possibleConfigPaths = [
+    __DIR__ . '/../../onboarding/config.php',
+    __DIR__ . '/../../../onboarding/config.php',
+    '/home/wordweav/domains/wh1487294.ispot.cc/public_html/GameDev-G1/onboarding/config.php',
+    dirname(dirname(__DIR__)) . '/onboarding/config.php'
+];
+
+// Find the config file
+$configPath = '';
+foreach ($possibleConfigPaths as $path) {
+    if (file_exists($path)) {
+        $configPath = $path;
+        break;
+    }
+}
+
+if (empty($configPath)) {
+    http_response_code(500);
+    die('Could not locate the config file. Tried: ' . implode(', ', $possibleConfigPaths));
+}
+
+require_once $configPath;
+
+// Include essence manager
+$essenceManagerPath = __DIR__ . '/essence_manager.php';
+if (!file_exists($essenceManagerPath)) {
+    http_response_code(500);
+    die('Could not locate essence manager file');
+}
+require_once $essenceManagerPath;
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {

@@ -1,8 +1,51 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/GameDev-G1/onboarding/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/GameDev-G1/includes/greeting.php';
-require_once __DIR__ . '/api/essence_manager.php';
-require_once __DIR__ . '/api/level_manager.php';
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Define the base path relative to the current file's location
+$basePath = dirname(dirname(__DIR__)); // This should point to the GameDev-G1 directory
+
+// List of possible config file locations to check
+$possibleConfigPaths = [
+    $basePath . '/onboarding/config.php',
+    dirname($basePath) . '/onboarding/config.php',
+    __DIR__ . '/../../onboarding/config.php',
+    '/home/wordweav/domains/wh1487294.ispot.cc/public_html/GameDev-G1/onboarding/config.php',
+    'onboarding/config.php',
+    '../onboarding/config.php',
+    '../../onboarding/config.php'
+];
+
+// Find the config file
+$configPath = '';
+foreach ($possibleConfigPaths as $path) {
+    if (file_exists($path)) {
+        $configPath = $path;
+        $basePath = dirname(dirname($path)); // Set base path to GameDev-G1 directory
+        break;
+    }
+}
+
+if (empty($configPath)) {
+    die('Could not locate the config file. Tried the following paths:<br>' . 
+        implode('<br>', array_map('htmlspecialchars', $possibleConfigPaths)));
+}
+
+// Include required files
+$requiredFiles = [
+    $configPath,
+    $basePath . '/includes/greeting.php',
+    __DIR__ . '/api/essence_manager.php',
+    __DIR__ . '/api/level_manager.php'
+];
+
+foreach ($requiredFiles as $file) {
+    if (!file_exists($file)) {
+        die("Required file not found: " . htmlspecialchars($file));
+    }
+    require_once $file;
+}
 
 // Check if user is logged in
 requireLogin();

@@ -1,6 +1,39 @@
 <?php
-require_once 'C:/xampp/htdocs/GameDev-G1/onboarding/config.php';
-require_once 'level_manager.php';
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// List of possible config file locations to check
+$possibleConfigPaths = [
+    __DIR__ . '/../../onboarding/config.php',
+    __DIR__ . '/../../../onboarding/config.php',
+    '/home/wordweav/domains/wh1487294.ispot.cc/public_html/GameDev-G1/onboarding/config.php',
+    dirname(dirname(__DIR__)) . '/onboarding/config.php'
+];
+
+// Find the config file
+$configPath = '';
+foreach ($possibleConfigPaths as $path) {
+    if (file_exists($path)) {
+        $configPath = $path;
+        break;
+    }
+}
+
+if (empty($configPath)) {
+    http_response_code(500);
+    die('Could not locate the config file. Tried: ' . implode(', ', $possibleConfigPaths));
+}
+
+require_once $configPath;
+
+// Include level manager
+$levelManagerPath = __DIR__ . '/level_manager.php';
+if (!file_exists($levelManagerPath)) {
+    http_response_code(500);
+    die('Could not locate level manager file');
+}
+require_once $levelManagerPath;
 
 header('Content-Type: application/json');
 

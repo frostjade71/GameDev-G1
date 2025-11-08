@@ -1,4 +1,28 @@
 <?php
+// List of possible config file locations to check
+$possibleConfigPaths = [
+    __DIR__ . '/../../onboarding/config.php',
+    __DIR__ . '/../../../onboarding/config.php',
+    '/home/wordweav/domains/wh1487294.ispot.cc/public_html/GameDev-G1/onboarding/config.php',
+    dirname(dirname(__DIR__)) . '/onboarding/config.php'
+];
+
+// Find the config file
+$configPath = '';
+foreach ($possibleConfigPaths as $path) {
+    if (file_exists($path)) {
+        $configPath = $path;
+        break;
+    }
+}
+
+if (empty($configPath)) {
+    die('Could not locate the config file. Tried the following paths:<br>' . 
+        implode('<br>', array_map('htmlspecialchars', $possibleConfigPaths)));
+}
+
+require_once $configPath;
+
 // Level Manager for VocabWorld
 // Handles player level progression and experience points
 

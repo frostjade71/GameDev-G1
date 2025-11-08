@@ -1,6 +1,44 @@
 <?php
-require_once 'C:/xampp/htdocs/GameDev-G1/MainGame/vocabworld/vocabulary_data.php';
-require_once 'C:/xampp/htdocs/GameDev-G1/onboarding/config.php';
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// List of possible config file locations to check
+$possibleConfigPaths = [
+    __DIR__ . '/../../onboarding/config.php',
+    __DIR__ . '/../../../onboarding/config.php',
+    '/home/wordweav/domains/wh1487294.ispot.cc/public_html/GameDev-G1/onboarding/config.php',
+    dirname(dirname(__DIR__)) . '/onboarding/config.php'
+];
+
+// Find the config file
+$configPath = '';
+foreach ($possibleConfigPaths as $path) {
+    if (file_exists($path)) {
+        $configPath = $path;
+        break;
+    }
+}
+
+if (empty($configPath)) {
+    http_response_code(500);
+    die('Could not locate the config file. Tried: ' . implode(', ', $possibleConfigPaths));
+}
+
+require_once $configPath;
+
+// Include vocabulary data
+$vocabDataPath = __DIR__ . '/../vocabulary_data.php';
+if (!file_exists($vocabDataPath)) {
+    $vocabDataPath = dirname(__DIR__) . '/vocabulary_data.php';
+}
+
+if (!file_exists($vocabDataPath)) {
+    http_response_code(500);
+    die('Could not locate vocabulary data file');
+}
+
+require_once $vocabDataPath;
 
 header('Content-Type: application/json');
 

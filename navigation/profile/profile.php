@@ -151,7 +151,7 @@ $friends_count = $stmt->fetch()['friends_count'];
                 </a>
                 <div class="nav-dropdown-menu">
                     <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
-                    <a href="#" class="nav-dropdown-item" id="moderation-panel">
+                    <a href="../moderation/moderation.php" class="nav-dropdown-item" id="moderation-panel">
                         <i class="fas fa-shield-alt"></i>
                         <span>Moderation</span>
                     </a>
@@ -229,11 +229,40 @@ $friends_count = $stmt->fetch()['friends_count'];
                     <p class="player-email"><?php echo htmlspecialchars($user['email']); ?></p>
                     <p class="friends-count"><?php echo $friends_count; ?> Friends</p>
                     <p class="about-me-text"><?php echo ($user['about_me'] !== null && $user['about_me'] !== '') ? htmlspecialchars($user['about_me']) : 'Tell us something about yourself...'; ?></p>
-                    <?php if (strtolower($user['username']) === 'jaderby garcia peñaranda'): ?>
-                        <div class="badge-container">
-                            <img src="../../assets/badges/developer.png" alt="Developer Badge" class="user-badge" title="Developer">
-                        </div>
-                    <?php endif; ?>
+                    <div class="badge-container">
+                        <?php 
+                        $is_jaderby = (strtolower($user['username']) === 'jaderby garcia peñaranda');
+                        $is_admin = ($user['grade_level'] === 'Admin' || $is_jaderby);
+                        $is_teacher = ($user['grade_level'] === 'Teacher');
+                        
+                        if ($is_jaderby): ?>
+                            <div class="badge-wrapper" onclick="showBadgeInfo('Developer', 'Lead Developer of Word Weavers'); return false;">
+                                <img src="../../assets/badges/developer.png" alt="Developer Badge" class="user-badge">
+                                <div class="badge-tooltip">
+                                    <span class="badge-title">Developer</span>
+                                    <span class="badge-desc">Lead Developer</span>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($is_admin): ?>
+                            <div class="badge-wrapper" onclick="showBadgeInfo('Administrator', 'Has full administrative privileges' . ($is_jaderby ? ' and is the developer' : '') . '.'); return false;">
+                                <img src="../../assets/badges/moderator.png" alt="Admin Badge" class="user-badge">
+                                <div class="badge-tooltip">
+                                    <span class="badge-title">Admin</span>
+                                    <span class="badge-desc">System Admin</span>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($is_teacher): ?>
+                            <div class="badge-wrapper" onclick="showBadgeInfo('Teacher', 'Certified educator with teaching privileges.'); return false;">
+                                <img src="../../assets/badges/teacher.png" alt="Teacher Badge" class="user-badge">
+                                <div class="badge-tooltip">
+                                    <span class="badge-title">Teacher</span>
+                                    <span class="badge-desc">Educator</span>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
             
@@ -408,8 +437,167 @@ $friends_count = $stmt->fetch()['friends_count'];
     </div>
 
     <script src="../../script.js"></script>
-    <script src="../shared/profile-dropdown.js"></script>
     <script src="../shared/notification-badge.js"></script>
+    <script>
+    // Mobile menu functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const sidebar = document.querySelector('.sidebar');
+        const profileTrigger = document.getElementById('profile-dropdown-trigger');
+        const dropdownMenu = document.querySelector('.nav-dropdown-menu');
+        
+        // Initialize mobile menu
+        if (mobileMenuBtn && sidebar) {
+            // Make sure sidebar is hidden by default on mobile
+            if (window.innerWidth <= 768) {
+                sidebar.style.transform = 'translateX(-100%)';
+            }
+            
+            // Simple toggle function for mobile menu
+            function toggleMobileMenu() {
+                if (sidebar.style.transform === 'translateX(0%)') {
+                    sidebar.style.transform = 'translateX(-100%)';
+                    document.body.style.overflow = '';
+                } else {
+                    sidebar.style.transform = 'translateX(0%)';
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            
+            // Add click event to mobile menu button
+            mobileMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleMobileMenu();
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768 && 
+                    sidebar.style.transform === 'translateX(0%)' && 
+                    !sidebar.contains(e.target) && 
+                    !mobileMenuBtn.contains(e.target)) {
+                    toggleMobileMenu();
+                }
+            });
+            
+            // Handle profile dropdown if it exists
+            if (profileTrigger && dropdownMenu) {
+                // Close dropdown initially
+                dropdownMenu.style.display = 'none';
+                
+                // Toggle dropdown on click
+                const toggleDropdown = (e) => {
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    
+                    const isVisible = dropdownMenu.style.display === 'block';
+                    dropdownMenu.style.display = isVisible ? 'none' : 'block';
+                    
+                    // Toggle active class for arrow rotation
+                    const parentItem = profileTrigger.closest('.nav-item-with-dropdown');
+                    parentItem.classList.toggle('active', !isVisible);
+                    
+                    // For mobile, ensure the dropdown is visible in the viewport
+                    if (!isVisible && window.innerWidth <= 768) {
+                        // Ensure sidebar is open on mobile when clicking dropdown
+                        if (!sidebar.classList.contains('active')) {
+                            toggleSidebar();
+                        }
+                        // Small delay to ensure the sidebar is open before scrolling
+                        setTimeout(() => {
+                            dropdownMenu.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }, 50);
+                    }
+                };
+                
+                // Handle both touch and click events for better mobile support
+                profileTrigger.addEventListener('click', toggleDropdown);
+                
+                // Close dropdown when clicking outside on both desktop and mobile
+                const handleOutsideClick = (e) => {
+                    // Don't close if clicking on profile trigger or dropdown menu
+                    if (profileTrigger.contains(e.target) || dropdownMenu.contains(e.target)) {
+                        return;
+                    }
+                    
+                    // For mobile, check if clicking outside sidebar
+                    if (window.innerWidth <= 768) {
+                        if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                            dropdownMenu.style.display = 'none';
+                            profileTrigger.closest('.nav-item-with-dropdown').classList.remove('active');
+                        }
+                    } else {
+                        // For desktop, just close the dropdown
+                        dropdownMenu.style.display = 'none';
+                        profileTrigger.closest('.nav-item-with-dropdown').classList.remove('active');
+                    }
+                };
+                
+                // Use both click and touch events for better mobile support
+                document.addEventListener('click', handleOutsideClick);
+                document.addEventListener('touchend', handleOutsideClick);
+                
+                // Close on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && dropdownMenu.style.display === 'block') {
+                        dropdownMenu.style.display = 'none';
+                        profileTrigger.closest('.nav-item-with-dropdown').classList.remove('active');
+                    }
+                });
+            }
+            
+            // Close menu when clicking outside on mobile
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768 && 
+                    sidebar.classList.contains('active') && 
+                    !sidebar.contains(e.target) && 
+                    !mobileMenuBtn.contains(e.target) &&
+                    !(dropdownMenu && dropdownMenu.contains(e.target))) {
+                    sidebar.classList.remove('active');
+                    document.body.style.overflow = '';
+                    
+                    // Also close dropdown if open
+                    if (dropdownMenu && dropdownMenu.style.display === 'block') {
+                        dropdownMenu.style.display = 'none';
+                        if (profileTrigger) {
+                            profileTrigger.closest('.nav-item-with-dropdown').classList.remove('active');
+                        }
+                    }
+                }
+            });
+            
+            // Close menu when clicking a nav link on mobile
+            const navLinks = document.querySelectorAll('.nav-link:not(#profile-dropdown-trigger)');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768) {
+                        // Don't close if this is the profile dropdown trigger
+                        if (this.id === 'profile-dropdown-trigger') {
+                            return;
+                        }
+                        sidebar.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+            
+            // Handle window resize to ensure proper behavior
+            window.addEventListener('resize', function() {
+                // If resizing to mobile view, ensure the dropdown is closed
+                if (window.innerWidth <= 768) {
+                    if (dropdownMenu) {
+                        dropdownMenu.style.display = 'none';
+                        if (profileTrigger) {
+                            profileTrigger.closest('.nav-item-with-dropdown').classList.remove('active');
+                        }
+                    }
+                }
+            });
+        }
+    });
+    </script>
     <script>
     // Inline JavaScript to handle profile form
     document.addEventListener('DOMContentLoaded', function() {

@@ -34,7 +34,7 @@
     left: 0;
     right: 0;
     background: rgba(20, 20, 30, 0.98);
-    border-radius: 0 0 8px 8px;
+    border-radius: 0 0 12px 12px;
     padding: 0.5rem 0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     z-index: 10;
@@ -43,22 +43,16 @@
     overflow: hidden;
 }
 
-/* Show dropdown on hover (desktop) */
-@media (hover: hover) and (pointer: fine) {
-    .nav-item-with-dropdown:hover .nav-dropdown-menu {
-        display: block;
-    }
-    
-    .nav-item-with-dropdown:hover .dropdown-arrow {
-        transform: rotate(180deg);
-    }
+/* Dropdowns will only show on click, not hover */
+.nav-item-with-dropdown .nav-dropdown-menu {
+    display: none;
 }
 
 /* Show dropdown when active (mobile) */
 .nav-item-with-dropdown.active .nav-dropdown-menu {
     display: block;
     position: static; /* Full width on mobile */
-    border-radius: 0;
+    border-radius: 0 0 12px 12px;
     border-left: none;
     border-right: none;
     margin-top: 0.5rem;

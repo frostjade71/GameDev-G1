@@ -96,19 +96,33 @@ $friends_count = $stmt->fetch()['friends_count'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'send_request') {
         if (!$friend_request) {
-            // Create friend request
-            $stmt = $pdo->prepare("INSERT INTO friend_requests (requester_id, receiver_id, status, created_at) VALUES (?, ?, 'pending', NOW())");
-            $stmt->execute([$current_user_id, $viewed_user_id]);
+            // First, check if there's already a pending request in either direction
+            $stmt = $pdo->prepare("SELECT id, status FROM friend_requests WHERE (requester_id = ? AND receiver_id = ?) OR (requester_id = ? AND receiver_id = ?) LIMIT 1");
+            $stmt->execute([$current_user_id, $viewed_user_id, $viewed_user_id, $current_user_id]);
+            $existing_request = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            // Create notification for the receiver
-            $stmt = $pdo->prepare("INSERT INTO notifications (user_id, type, message, data, created_at) VALUES (?, 'friend_request', ?, ?, NOW())");
-            $message = $current_user['username'] . ' sent you a friend request';
-            $data = json_encode(['requester_id' => $current_user_id, 'requester_name' => $current_user['username']]);
-            $stmt->execute([$viewed_user_id, $message, $data]);
+            if ($existing_request) {
+                // If there's already a request, just update the status to pending if needed
+                if ($existing_request['status'] !== 'pending') {
+                    $stmt = $pdo->prepare("UPDATE friend_requests SET status = 'pending', created_at = NOW() WHERE id = ?");
+                    $stmt->execute([$existing_request['id']]);
+                }
+                // No need to create a notification since one already exists
+            } else {
+                // Only create a new request if one doesn't exist
+                $stmt = $pdo->prepare("INSERT INTO friend_requests (requester_id, receiver_id, status, created_at) VALUES (?, ?, 'pending', NOW())");
+                $stmt->execute([$current_user_id, $viewed_user_id]);
+                
+                // Create notification for the receiver
+                $stmt = $pdo->prepare("INSERT INTO notifications (user_id, type, message, data, created_at) VALUES (?, 'friend_request', ?, ?, NOW())");
+                $message = $current_user['username'] . ' sent you a friend request';
+                $data = json_encode(['requester_id' => $current_user_id, 'requester_name' => $current_user['username']]);
+                $stmt->execute([$viewed_user_id, $message, $data]);
+            }
             
             // Refresh friend request status
-            $stmt = $pdo->prepare("SELECT id, status FROM friend_requests WHERE requester_id = ? AND receiver_id = ?");
-            $stmt->execute([$current_user_id, $viewed_user_id]);
+            $stmt = $pdo->prepare("SELECT id, status FROM friend_requests WHERE (requester_id = ? AND receiver_id = ?) OR (requester_id = ? AND receiver_id = ?) LIMIT 1");
+            $stmt->execute([$current_user_id, $viewed_user_id, $viewed_user_id, $current_user_id]);
             $friend_request = $stmt->fetch();
         }
     }
@@ -119,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../assets/menu/ww_logo_main.webp">
     <title><?php echo htmlspecialchars($viewed_user['username']); ?> - Word Weavers</title>
     <link rel="stylesheet" href="../../navigation/shared/navigation.css">
     <link rel="stylesheet" href="../../notif/toast.css">

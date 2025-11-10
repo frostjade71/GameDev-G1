@@ -41,6 +41,7 @@ $notification_count = $stmt->rowCount();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="../assets/menu/ww_logo_main.webp">
     <title>Settings - Word Weavers</title>
     <link rel="stylesheet" href="../navigation/shared/navigation.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../styles.css?v=<?php echo time(); ?>">

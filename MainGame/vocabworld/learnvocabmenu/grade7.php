@@ -11,6 +11,8 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
+// Access control is now handled in learn.php
+
 // Get user's vocabworld progress
 $stmt = $pdo->prepare("SELECT * FROM game_progress WHERE user_id = ? AND game_type = 'vocabworld'");
 $stmt->execute([$user_id]);
@@ -52,7 +54,8 @@ if ($shard_balance) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 7 - Philippine Literary Texts - VocabWorld</title>
+    <link rel="icon" type="image/webp" href="../assets/menu/vv_logo.webp">
+    <title>Grade 7 - Learning</title>
     <link rel="stylesheet" href="../style.css?v=3">
     <link rel="stylesheet" href="../navigation/navigation.css?v=3">
     <link rel="stylesheet" href="learnvocabmenu.css?v=3">

@@ -58,6 +58,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/menu/ww_logo_main.webp">
     <title>Menu - Word Weavers</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="navigation/shared/navigation.css?v=<?php echo time(); ?>">

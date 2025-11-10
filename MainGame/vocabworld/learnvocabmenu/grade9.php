@@ -52,7 +52,8 @@ if ($shard_balance) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 9 - Anglo-American Literature - VocabWorld</title>
+    <link rel="icon" type="image/webp" href="../assets/menu/vv_logo.webp">
+    <title>Grade 9 - Learning</title>
     <link rel="stylesheet" href="../style.css?v=3">
     <link rel="stylesheet" href="../navigation/navigation.css?v=3">
     <link rel="stylesheet" href="learnvocabmenu.css?v=3">

@@ -147,7 +147,8 @@ if ($shard_result['success']) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VocabWorld - Word Weavers RPG</title>
+    <link rel="icon" type="image/webp" href="assets/menu/vv_logo.webp">
+    <title>Elmvale - Tutorial</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="game.css">
     <link rel="stylesheet" href="navigation/navigation.css">

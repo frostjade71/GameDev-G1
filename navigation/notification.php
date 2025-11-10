@@ -42,6 +42,7 @@ $notification_count = count($friend_requests);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="../assets/menu/ww_logo_main.webp">
     <title>Word Weavers - Notifications</title>
     <link rel="stylesheet" href="shared/navigation.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="notification.css?v=<?php echo time(); ?>">

@@ -111,6 +111,7 @@ $friends_count = $stmt->fetch()['friends_count'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../../assets/menu/ww_logo_main.webp">
     <title>Profile - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="../shared/navigation.css?v=<?php echo time(); ?>">
@@ -142,10 +143,21 @@ $friends_count = $stmt->fetch()['friends_count'];
                 <i class="fas fa-users"></i>
                 <span>Friends</span>
             </a>
-            <a href="profile.php" class="nav-link active">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
-            </a>
+            <div class="nav-item-with-dropdown">
+                <a href="profile.php" class="nav-link active" id="profile-dropdown-trigger">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </a>
+                <div class="nav-dropdown-menu">
+                    <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
+                    <a href="#" class="nav-dropdown-item" id="moderation-panel">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Moderation</span>
+                    </a>
+                    <?php endif; ?>
+                </div>
+            </div>
         </nav>
     </div>
 

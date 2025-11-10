@@ -66,6 +66,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="../assets/menu/vv_logo.webp">
     <title>Shop Characters - VocabWorld</title>
     <link rel="stylesheet" href="../style.css?v=3">
     <link rel="stylesheet" href="charactermenu.css?v=3">

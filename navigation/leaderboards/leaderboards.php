@@ -70,6 +70,7 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="../../assets/menu/ww_logo_main.webp">
     <title>Leaderboards - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../shared/navigation.css?v=<?php echo time(); ?>">

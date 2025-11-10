@@ -40,7 +40,8 @@ while ($row = $stmt->fetch()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Game Mode - Word Weavers</title>
+    <link rel="icon" type="image/webp" href="assets/menu/ww_logo_main.webp">
+    <title>Select Game - Word Weavers</title>
     <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="navigation/shared/navigation.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="game-selection.css?v=<?php echo time(); ?>">
@@ -133,7 +134,7 @@ while ($row = $stmt->fetch()) {
 
     <div class="main-content">
         <div class="games-carousel-container">
-            <h1 class="game-title">Select Game Mode</h1>
+            <h1 class="game-title">Select a Game</h1>
             
             <div class="carousel-container">
                 <button class="carousel-button prev">

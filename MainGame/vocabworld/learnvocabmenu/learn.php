@@ -65,6 +65,7 @@ if ($shard_result['success']) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="../assets/menu/vv_logo.webp">
     <title>Vocabulary - VocabWorld</title>
     <link rel="stylesheet" href="../style.css?v=3">
     <link rel="stylesheet" href="../navigation/navigation.css?v=3">
@@ -72,6 +73,39 @@ if ($shard_result['success']) {
     <link rel="stylesheet" href="../../../notif/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Toast container */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        /* Toast styles */
+        .toast {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .toast-error {
+            border-left: 4px solid #e74c3c;
+        }
+    </style>
 </head>
 <body>
     <div class="game-container">
@@ -137,41 +171,104 @@ if ($shard_result['success']) {
         <div id="main-menu" class="screen active">
             <div class="menu-container">
                 <div class="vocabworld-grid">
-                    <!-- Grade 7 Card -->
-                    <a href="grade7.php" class="vocabworld-card grade-7-card" style="background-image: url('../assets/menu/learnvocab.webp'); background-size: cover; background-position: center;">
-                        <i class="fas fa-graduation-cap"></i>
-                        <h2>Grade 7</h2>
-                        <p></p>
-                    </a>
+                    <?php
+                    // Get user's grade level and convert to number for comparison
+                    $user_grade = (int) filter_var($user['grade_level'], FILTER_SANITIZE_NUMBER_INT);
+                    
+                    // Define grade cards with their properties
+                    $grade_cards = [
+                        7 => [
+                            'icon' => 'fa-graduation-cap',
+                            'title' => 'Grade 7',
+                            'class' => 'grade-7-card'
+                        ],
+                        8 => [
+                            'icon' => 'fa-book',
+                            'title' => 'Grade 8',
+                            'class' => 'grade-8-card'
+                        ],
+                        9 => [
+                            'icon' => 'fa-trophy',
+                            'title' => 'Grade 9',
+                            'class' => 'grade-9-card'
+                        ],
+                        10 => [
+                            'icon' => 'fa-star',
+                            'title' => 'Grade 10',
+                            'class' => 'grade-10-card'
+                        ]
+                    ];
+                    
+                    // Generate grade cards
+                    foreach ($grade_cards as $grade => $card) {
+                        $is_locked = $grade != $user_grade; // Lock all grades except the user's current grade
+                        $card_class = $is_locked ? 'locked' : '';
+                        $card_url = $is_locked ? '#' : "grade{$grade}.php";
+                        $onclick = $is_locked ? "onclick='event.preventDefault(); window.showToast(\"You are not a Grade {$grade} student\", \"error\")'" : '';
+                        
+                        echo "
+                        <div class='grade-card-container {$card_class}'>
+                            <a href='{$card_url}' class='vocabworld-card {$card['class']} {$card_class}' 
+                               style='background-image: url(\"../assets/menu/learnvocab.webp\"); background-size: cover; background-position: center;'
+                               {$onclick}>
+                                <i class='fas {$card['icon']}'></i>
+                                <h2>{$card['title']}</h2>
+                            </a>
+                        </div>";
+                    }
+                    ?>
 
-                    <!-- Grade 8 Card -->
-                    <a href="grade8.php" class="vocabworld-card grade-8-card" style="background-image: url('../assets/menu/learnvocab.webp'); background-size: cover; background-position: center;">
-                        <i class="fas fa-book"></i>
-                        <h2>Grade 8</h2>
-                        <p></p>
-                    </a>
-
-                    <!-- Grade 9 Card -->
-                    <a href="grade9.php" class="vocabworld-card grade-9-card" style="background-image: url('../assets/menu/learnvocab.webp'); background-size: cover; background-position: center;">
-                        <i class="fas fa-trophy"></i>
-                        <h2>Grade 9</h2>
-                        <p></p>
-                    </a>
-
-                    <!-- Grade 10 Card -->
-                    <a href="grade10.php" class="vocabworld-card grade-10-card" style="background-image: url('../assets/menu/learnvocab.webp'); background-size: cover; background-position: center;">
-                        <i class="fas fa-star"></i>
-                        <h2>Grade 10</h2>
-                        <p></p>
-                    </a>
-
-                    <!-- Back to Menu Card -->
-                    <div class="vocabworld-card back-to-menu-card" onclick="goToMainMenu()" style="background-image: url('../assets/menu/backportal.webp'); background-size: cover; background-position: center;">
-                        <i class="fas fa-arrow-left"></i>
-                        <h2>Back to Menu</h2>
-                        <p>Return to main menu</p>
+                    <!-- Back to Menu Button -->
+                    <div class="back-button-container">
+                        <a href="../index.php" style="display: inline-flex; align-items: center; padding: 6px 16px; background: rgba(255, 255, 255, 0.1); color: white; text-decoration: none; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 0.8rem; transition: all 0.3s ease; font-family: 'Poppins', sans-serif;">
+                            <i class="fas fa-arrow-left" style="margin-right: 6px; font-size: 0.9rem;"></i> Back to Menu
+                        </a>
                     </div>
-                </div>
+
+                 </div>
+                 <style>
+                     .vocabworld-grid {
+                         display: grid;
+                         grid-template-columns: 1fr;
+                         gap: 20px;
+                         max-width: 1200px;
+                         margin: 0 auto;
+                         padding: 20px;
+                     }
+                     
+                     .grade-card-container {
+                         width: 100%;
+                     }
+                     
+                     .vocabworld-card {
+                         min-height: 180px;
+                         display: flex;
+                         flex-direction: column;
+                         justify-content: center;
+                         align-items: center;
+                         text-align: center;
+                         width: 100%;
+                     }
+                     
+                     .back-button-container {
+                         display: flex;
+                         justify-content: flex-end;
+                         padding: 10px 0;
+                         margin-top: 10px;
+                     }
+                     
+                     @media (min-width: 768px) {
+                         .vocabworld-grid {
+                             grid-template-columns: repeat(2, 1fr);
+                         }
+                         
+                         .back-button-container {
+                             grid-column: 2;
+                             justify-content: flex-end;
+                             padding-right: 20px;
+                         }
+                     }
+                 </style>
             </div>
         </div>
     </div>
@@ -188,6 +285,8 @@ if ($shard_result['success']) {
         </div>
     </div>
 
+    <script src="../navigation/navigation.js"></script>
+    <script src="grade-access.js"></script>
     <script src="learnvocabmenu.js"></script>
     <script src="../../../navigation/shared/profile-dropdown.js"></script>
     <script>
@@ -250,5 +349,6 @@ if ($shard_result['success']) {
             initializeShardDisplay();
         });
     </script>
+    <script src="grade-access.js"></script>
 </body>
 </html>

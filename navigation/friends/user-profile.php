@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     <link rel="stylesheet" href="../../navigation/shared/navigation.css">
     <link rel="stylesheet" href="../../notif/toast.css">
     <link rel="stylesheet" href="../../styles.css">
-    <link rel="stylesheet" href="user-profile.css">
+    <link rel="stylesheet" href="user-profile.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -281,11 +281,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         <p class="about-me"><?php echo htmlspecialchars($viewed_user['about_me']); ?></p>
                     <?php endif; ?>
                     <p class="member-since">Member since <?php echo date('F j, Y', strtotime($viewed_user['created_at'])); ?></p>
-                    <?php if (strtolower($viewed_user['username']) === 'jaderby garcia peñaranda'): ?>
-                        <div class="badge-container">
-                            <img src="../../assets/badges/developer.png" alt="Developer Badge" class="user-badge" title="Developer">
-                        </div>
-                    <?php endif; ?>
+                    <div class="badge-container">
+                        <?php 
+                        $is_jaderby = (strtolower($viewed_user['username']) === 'jaderby garcia peñaranda');
+                        $is_admin = ($viewed_user['grade_level'] === 'Admin' || $is_jaderby);
+                        $is_teacher = ($viewed_user['grade_level'] === 'Teacher');
+                        
+                        if ($is_jaderby): ?>
+                            <div class="badge-wrapper" onclick="showBadgeInfo('Developer', 'Lead Developer of Word Weavers'); return false;">
+                                <img src="../../assets/badges/developer.png" alt="Developer Badge" class="user-badge">
+                                <div class="badge-tooltip">
+                                    <span class="badge-title">Developer</span>
+                                    <span class="badge-desc">Lead Developer</span>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($is_admin): ?>
+                            <div class="badge-wrapper" onclick="showBadgeInfo('Administrator', 'Has full administrative privileges' . ($is_jaderby ? ' and is the developer' : '') . '.'); return false;">
+                                <img src="../../assets/badges/moderator.png" alt="Admin Badge" class="user-badge">
+                                <div class="badge-tooltip">
+                                    <span class="badge-title">Admin</span>
+                                    <span class="badge-desc">System Admin</span>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($is_teacher): ?>
+                            <div class="badge-wrapper" onclick="showBadgeInfo('Teacher', 'Certified educator with teaching privileges.'); return false;">
+                                <img src="../../assets/badges/teacher.png" alt="Teacher Badge" class="user-badge">
+                                <div class="badge-tooltip">
+                                    <span class="badge-title">Teacher</span>
+                                    <span class="badge-desc">Educator</span>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
 

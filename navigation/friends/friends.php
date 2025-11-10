@@ -96,6 +96,36 @@ $pending_requests = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $suggested_friends = [];
 foreach ($all_users as $suggested_user) {
     $has_pending_request = in_array($suggested_user['id'], $pending_requests);
+    
+    // Determine the highest badge for this user
+    $is_jaderby = (strtolower($suggested_user['username']) === 'jaderby garcia peñaranda');
+    $is_admin = ($suggested_user['grade_level'] === 'Admin' || $is_jaderby);
+    $is_teacher = ($suggested_user['grade_level'] === 'Teacher');
+    
+    $highest_badge = null;
+    if ($is_jaderby) {
+        $highest_badge = [
+            'type' => 'developer',
+            'src' => '../../assets/badges/developer.png',
+            'alt' => 'Developer Badge',
+            'title' => 'Developer'
+        ];
+    } elseif ($is_admin) {
+        $highest_badge = [
+            'type' => 'admin',
+            'src' => '../../assets/badges/moderator.png',
+            'alt' => 'Admin Badge',
+            'title' => 'Admin'
+        ];
+    } elseif ($is_teacher) {
+        $highest_badge = [
+            'type' => 'teacher',
+            'src' => '../../assets/badges/teacher.png',
+            'alt' => 'Teacher Badge',
+            'title' => 'Teacher'
+        ];
+    }
+    
     $suggested_friends[] = [
         'id' => $suggested_user['id'],
         'username' => $suggested_user['username'],
@@ -103,7 +133,8 @@ foreach ($all_users as $suggested_user) {
         'profile_image' => '../../assets/menu/defaultuser.png',
         'grade_level' => $suggested_user['grade_level'],
         'joined_date' => date('M j, Y', strtotime($suggested_user['created_at'])),
-        'has_pending_request' => $has_pending_request
+        'has_pending_request' => $has_pending_request,
+        'highest_badge' => $highest_badge
     ];
 }
 
@@ -298,8 +329,11 @@ $notification_count = count($friend_requests);
                             <div class="suggested-info">
                                 <h3 onclick="viewProfile(<?php echo $suggested['id']; ?>)" style="cursor: pointer;">
                                     <?php echo htmlspecialchars($suggested['username']); ?>
-                                    <?php if ($suggested['grade_level'] === 'Developer'): ?>
-                                        <img src="../../assets/badges/developer.png" alt="Developer Badge" class="user-badge" title="Developer">
+                                    <?php if ($suggested['highest_badge']): ?>
+                                        <img src="<?php echo htmlspecialchars($suggested['highest_badge']['src']); ?>" 
+                                             alt="<?php echo htmlspecialchars($suggested['highest_badge']['alt']); ?>" 
+                                             class="user-badge" 
+                                             title="<?php echo htmlspecialchars($suggested['highest_badge']['title']); ?>">
                                     <?php endif; ?>
                                 </h3>
                                 <p class="user-details">

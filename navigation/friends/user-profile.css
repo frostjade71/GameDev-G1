@@ -428,24 +428,198 @@
 }
 
 .badge-container {
-    margin-top: 0.8rem;
     display: flex;
-    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.badge-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
 }
 
 .user-badge {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
     border: 2px solid rgba(96, 239, 255, 0.3);
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px;
+    cursor: pointer;
 }
 
-.user-badge:hover {
+.badge-tooltip {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute;
+    left: -9999px !important;
+    top: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    color: transparent !important;
+}
+
+.badge-wrapper:hover .badge-tooltip {
+    display: block !important;
+    visibility: visible !important;
+    position: absolute !important;
+    left: 50% !important;
+    top: auto !important;
+    bottom: 140% !important;
+    transform: translateX(-50%) !important;
+    width: auto !important;
+    min-width: 140px !important;
+    height: auto !important;
+    padding: 12px 12px 10px !important;
+    margin: 0 !important;
+    opacity: 1 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+    z-index: 1000 !important;
+    pointer-events: auto !important;
+    background-color: rgba(20, 20, 30, 0.95) !important;
+    color: #fff !important;
+    text-align: center !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(96, 239, 255, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(10px) !important;
+    white-space: normal !important;
+    max-width: 200px !important;
+    overflow: visible !important;
+    font-weight: 500 !important;
+}
+
+.badge-tooltip .badge-title,
+.badge-tooltip .badge-desc {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    opacity: 0 !important;
+    color: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.badge-wrapper:hover .badge-tooltip {
+    font-size: 0.9rem !important;
+}
+
+.badge-wrapper:hover .badge-tooltip .badge-title {
+    display: block !important;
+    visibility: visible !important;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+    font-weight: 600 !important;
+    color: #60efff !important;
+    margin-bottom: 8px !important;
+    padding-bottom: 6px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    text-indent: 0 !important;
+}
+
+.badge-wrapper:hover .badge-tooltip .badge-desc {
+    display: block !important;
+    visibility: visible !important;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    font-size: 0.8rem !important;
+    line-height: 1.4 !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    white-space: normal !important;
+    max-width: 180px !important;
+    margin: 8px auto 0 !important;
+    padding-top: 4px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-indent: 0 !important;
+}
+
+.badge-tooltip .badge-title {
+    font-weight: 600;
+    color: #60efff;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    position: relative;
+}
+
+.badge-tooltip .badge-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 1px;
+    background: rgba(96, 239, 255, 0.5);
+}
+
+.badge-tooltip .badge-desc {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.8);
+    white-space: normal;
+    max-width: 180px;
+    margin: 8px auto 0;
+    padding-top: 4px;
+}
+
+.badge-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(96, 239, 255, 0.3) transparent transparent transparent;
+}
+
+.badge-wrapper:hover .badge-tooltip {
+    display: block !important;
+    opacity: 1;
+    bottom: 140%;
+    pointer-events: auto;
+}
+
+.badge-wrapper:hover .user-badge {
     transform: scale(1.1);
     border-color: rgba(96, 239, 255, 0.8);
-    box-shadow: 0 4px 12px rgba(96, 239, 255, 0.3);
+    box-shadow: 0 0 15px rgba(96, 239, 255, 0.4);
 }
 
 .user-stats-section,

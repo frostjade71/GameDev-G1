@@ -78,6 +78,74 @@ $stmt = $pdo->prepare("SELECT
 $stmt->execute([$viewed_user_id]);
 $game_stats = $stmt->fetchAll();
 
+// Get user's vocabworld progress
+$vocabworld_progress = [
+    'player_level' => 1,
+    'total_experience_earned' => 0,
+    'total_monsters_defeated' => 0,
+    'score' => 0,
+    'current_points' => 0,
+    'total_levels' => 20,
+    'essence' => 0,
+    'shards' => 0
+];
+
+// Get progress from game_progress table
+$stmt = $pdo->prepare("SELECT * FROM game_progress WHERE user_id = ? AND game_type = 'vocabworld'");
+$stmt->execute([$viewed_user_id]);
+$progress = $stmt->fetch();
+
+if ($progress) {
+    // Get data from main progress record
+    $vocabworld_progress = [
+        'player_level' => $progress['player_level'] ?? 1,
+        'total_experience_earned' => $progress['total_experience_earned'] ?? 0,
+        'total_monsters_defeated' => $progress['total_monsters_defeated'] ?? 0,
+        'score' => $progress['score'] ?? 0,
+        'current_points' => $progress['current_points'] ?? 0,
+        'total_levels' => 20,  // Update this with actual total levels if different
+        'essence' => 0,
+        'shards' => 0
+    ];
+    
+    // If we have unlocked_levels data, use it to get more detailed progress
+    if (!empty($progress['unlocked_levels'])) {
+        $vocabworld_data = json_decode($progress['unlocked_levels'], true);
+        if ($vocabworld_data) {
+            $vocabworld_progress['current_points'] = $vocabworld_data['current_points'] ?? $vocabworld_progress['current_points'];
+            
+            // Get highest level completed from levels data if available
+            if (isset($vocabworld_data['levels'])) {
+                $highest_level = 0;
+                foreach ($vocabworld_data['levels'] as $level => $data) {
+                    if (isset($data['completed']) && $data['completed']) {
+                        $highest_level = max($highest_level, $level);
+                    }
+                }
+                if ($highest_level > 0) {
+                    $vocabworld_progress['player_level'] = max($highest_level, $vocabworld_progress['player_level']);
+                }
+            }
+        }
+    }
+}
+
+// Get Essence amount
+$stmt = $pdo->prepare("SELECT essence_amount FROM user_essence WHERE user_id = ?");
+$stmt->execute([$viewed_user_id]);
+$essence = $stmt->fetch();
+if ($essence) {
+    $vocabworld_progress['essence'] = $essence['essence_amount'];
+}
+
+// Get Shards amount
+$stmt = $pdo->prepare("SELECT current_shards FROM user_shards WHERE user_id = ?");
+$stmt->execute([$viewed_user_id]);
+$shards = $stmt->fetch();
+if ($shards) {
+    $vocabworld_progress['shards'] = $shards['current_shards'];
+}
+
 // Get viewed user's favorites
 $stmt = $pdo->prepare("SELECT game_type FROM user_favorites WHERE user_id = ?");
 $stmt->execute([$viewed_user_id]);
@@ -104,19 +172,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             if ($existing_request) {
                 // If there's already a request, just update the status to pending if needed
                 if ($existing_request['status'] !== 'pending') {
-                    $stmt = $pdo->prepare("UPDATE friend_requests SET status = 'pending', created_at = NOW() WHERE id = ?");
-                    $stmt->execute([$existing_request['id']]);
+                    // Get usernames
+                    $stmt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
+                    $stmt->execute([$current_user_id]);
+                    $requester_username = $stmt->fetchColumn();
+                    
+                    $stmt->execute([$viewed_user_id]);
+                    $receiver_username = $stmt->fetchColumn();
+                    
+                    $stmt = $pdo->prepare("
+                        UPDATE friend_requests 
+                        SET status = 'pending', 
+                            requester_username = ?,
+                            receiver_username = ?,
+                            created_at = NOW() 
+                        WHERE id = ?
+                    
+                    ");
+                    $stmt->execute([
+                        $requester_username,
+                        $receiver_username,
+                        $existing_request['id']
+                    ]);
                 }
                 // No need to create a notification since one already exists
             } else {
-                // Only create a new request if one doesn't exist
-                $stmt = $pdo->prepare("INSERT INTO friend_requests (requester_id, receiver_id, status, created_at) VALUES (?, ?, 'pending', NOW())");
-                $stmt->execute([$current_user_id, $viewed_user_id]);
+                // Get usernames
+                $stmt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
+                $stmt->execute([$current_user_id]);
+                $requester_username = $stmt->fetchColumn();
+                
+                $stmt->execute([$viewed_user_id]);
+                $receiver_username = $stmt->fetchColumn();
+                
+                // Create a new request with usernames
+                $stmt = $pdo->prepare("
+                    INSERT INTO friend_requests 
+                    (requester_id, requester_username, receiver_id, receiver_username, status, created_at) 
+                    VALUES (?, ?, ?, ?, 'pending', NOW())
+                
+                ");
+                $stmt->execute([
+                    $current_user_id, 
+                    $requester_username, 
+                    $viewed_user_id, 
+                    $receiver_username
+                ]);
                 
                 // Create notification for the receiver
                 $stmt = $pdo->prepare("INSERT INTO notifications (user_id, type, message, data, created_at) VALUES (?, 'friend_request', ?, ?, NOW())");
                 $message = $current_user['username'] . ' sent you a friend request';
-                $data = json_encode(['requester_id' => $current_user_id, 'requester_name' => $current_user['username']]);
+                $data = json_encode([
+                    'requester_id' => $current_user_id, 
+                    'requester_name' => $current_user['username'],
+                    'receiver_username' => $receiver_username
+                ]);
                 $stmt->execute([$viewed_user_id, $message, $data]);
             }
             
@@ -280,7 +390,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     <?php if (!empty($viewed_user['about_me'])): ?>
                         <p class="about-me"><?php echo htmlspecialchars($viewed_user['about_me']); ?></p>
                     <?php endif; ?>
-                    <p class="member-since">Member since <?php echo date('F j, Y', strtotime($viewed_user['created_at'])); ?></p>
                     <div class="badge-container">
                         <?php 
                         $is_jaderby = (strtolower($viewed_user['username']) === 'jaderby garcia peñaranda');
@@ -336,31 +445,164 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 </div>
             </div>
 
-            <!-- User Stats -->
+            <!-- User Stats Section -->
             <div class="user-stats-section">
-                <h2><i class="fas fa-chart-bar"></i> Game Statistics</h2>
-                <?php if (!empty($game_stats)): ?>
-                    <div class="stats-grid">
-                        <?php foreach ($game_stats as $stat): ?>
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-gamepad"></i>
-                                </div>
-                                <div class="stat-info">
-                                    <h3><?php echo htmlspecialchars(ucfirst($stat['game_type'])); ?></h3>
-                                    <p>GWA: <?php echo number_format($stat['gwa_score'], 1); ?></p>
-                                    <p>Best: <?php echo $stat['best_score']; ?></p>
-                                    <p>Games: <?php echo $stat['play_count']; ?></p>
+                <div class="stats-header">
+                    <h2><i class="fas fa-chart-bar"></i> Game Statistics</h2>
+                    <div class="sort-dropdown">
+                        <div class="custom-select">
+                            <div class="select-selected">
+                                <img src="../../MainGame/vocabworld/assets/vocabworldhead.png" alt="VocabWorld" class="select-logo">
+                                <span>Vocabworld</span>
+                            </div>
+                            <div class="select-items">
+                                <div class="select-option" data-value="vocabworld">
+                                    <img src="../../MainGame/vocabworld/assets/vocabworldhead.png" alt="VocabWorld" class="select-logo">
+                                    <span>Vocabworld</span>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
+                        </div>
+                        <select id="game-stats-filter" class="game-select" style="display: none;">
+                            <option value="vocabworld" selected>Vocabworld</option>
+                        </select>
                     </div>
-                <?php else: ?>
-                    <div class="no-data">
-                        <i class="fas fa-chart-bar"></i>
-                        <p>No game statistics available</p>
-                    </div>
-                <?php endif; ?>
+                </div>
+                
+                <!-- All Games Stats (Hidden by default) -->
+                <div id="all-games-stats" class="stats-view" style="display: none;">
+                    <?php if (!empty($game_stats)): ?>
+                        <div class="stats-grid">
+                            <?php foreach ($game_stats as $stat): ?>
+                                <div class="stat-card" data-game-type="<?php echo htmlspecialchars($stat['game_type']); ?>">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-gamepad"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3><?php echo htmlspecialchars(ucfirst($stat['game_type'])); ?></h3>
+                                        <p>GWA: <?php echo number_format($stat['gwa_score'], 1); ?></p>
+                                        <p>Best: <?php echo $stat['best_score']; ?></p>
+                                        <p>Games: <?php echo $stat['play_count']; ?></p>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="no-data">
+                            <i class="fas fa-chart-bar"></i>
+                            <p>No game statistics available</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                
+                <!-- Vocabworld Progress View (Default View) -->
+                <div id="vocabworld-stats" class="stats-view">
+                    <?php if (!empty($vocabworld_progress)): ?>
+                        <div class="vocabworld-progress">
+                            <div class="stats-layout">
+                                <!-- Character Preview Section -->
+                                <div class="character-card">
+                                    <h3>Character</h3>
+                                    <div class="character-preview">
+                                        <?php
+                                        // Get the viewed user's character selection
+                                        $stmt = $pdo->prepare("SELECT * FROM character_selections WHERE user_id = ? AND game_type = 'vocabworld'");
+                                        $stmt->execute([$viewed_user_id]);
+                                        $character_selection = $stmt->fetch();
+                                        
+                                        $character_image = '../../assets/menu/default_character.png';
+                                        $character_name = 'Character';
+                                        
+                                        if ($character_selection) {
+                                            $character_image = $character_selection['character_image_path'] ?? $character_image;
+                                            $character_name = $character_selection['selected_character'] ?? $character_name;
+                                        }
+                                        ?>
+                                        <img src="<?php echo htmlspecialchars($character_image); ?>" 
+                                             alt="<?php echo htmlspecialchars($character_name); ?>" 
+                                             class="character-image"
+                                             title="<?php echo htmlspecialchars($character_name); ?>">
+                                    </div>
+                                </div>
+                                
+                                <!-- Stats Section -->
+                                <div class="stats-container">
+                                    <div class="stat-card">
+                                        <div class="stat-header">
+                                            <h3>Progress</h3>
+                                        </div>
+                                        
+                                        <div class="stat-group">
+                                            <div class="stat-item">
+                                                <div class="stat-icon-container">
+                                                    <img src="../../MainGame/vocabworld/assets/stats/level.png" alt="Level" class="stat-icon">
+                                                </div>
+                                                <div class="stat-details">
+                                                    <span class="stat-label">Level</span>
+                                                    <span class="stat-value"><?php echo htmlspecialchars($vocabworld_progress['player_level'] ?? 1); ?></span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="stat-item">
+                                                <div class="stat-icon-container">
+                                                    <img src="../../MainGame/vocabworld/assets/stats/total_xp.png" alt="XP" class="stat-icon">
+                                                </div>
+                                                <div class="stat-details">
+                                                    <span class="stat-label">Total XP</span>
+                                                    <span class="stat-value"><?php echo number_format($vocabworld_progress['total_experience_earned']); ?></span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="stat-item">
+                                                <div class="stat-icon-container">
+                                                    <img src="../../MainGame/vocabworld/assets/stats/attack.png" alt="Monsters" class="stat-icon">
+                                                </div>
+                                                <div class="stat-details">
+                                                    <span class="stat-label">Monsters Defeated</span>
+                                                    <span class="stat-value"><?php echo number_format($vocabworld_progress['total_monsters_defeated'] ?? 0); ?></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="stat-group">
+                                            <h4>Resources</h4>
+                                            <div class="resource-stats">
+                                                <div class="resource-item">
+                                                    <div class="resource-icon">
+                                                        <img src="../../MainGame/vocabworld/assets/currency/essence.png" alt="Essence">
+                                                    </div>
+                                                    <span class="resource-value"><?php echo htmlspecialchars($vocabworld_progress['essence'] ?? 0); ?></span>
+                                                </div>
+                                                <div class="resource-item">
+                                                    <div class="resource-icon">
+                                                        <img src="../../MainGame/vocabworld/assets/currency/shard1.png" alt="Shards">
+                                                    </div>
+                                                    <span class="resource-value"><?php echo htmlspecialchars($vocabworld_progress['shards'] ?? 0); ?></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="stat-group">
+                                            <div class="stat-item highlight">
+                                                <div class="stat-icon-container">
+                                                    <img src="../../MainGame/vocabworld/assets/stats/gwa.png" alt="GWA Score" class="stat-icon">
+                                                </div>
+                                                <div class="stat-details">
+                                                    <span class="stat-label">GWA Score</span>
+                                                    <span class="stat-value"><?php echo number_format($vocabworld_progress['score'] ?? 0, 2); ?></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div class="no-data">
+                            <i class="fas fa-book"></i>
+                            <p>No Vocabworld progress data available</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <!-- User Favorites -->
@@ -403,6 +645,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         <p>No favorite games yet</p>
                     </div>
                 <?php endif; ?>
+            </div>
+
+            <!-- Member Since -->
+            <div class="member-since-section">
+                <i class="fas fa-calendar-alt"></i>
+                <p>Member Since</p>
+                <p class="member-since-date">
+                    <i class="far fa-calendar-alt"></i>
+                    <?php 
+                    $registration_date = new DateTime($viewed_user['created_at']);
+                    echo $registration_date->format('M j, Y');
+                    ?>
+                </p>
             </div>
             <!-- Back Button -->
             <div class="back-button-container">
@@ -456,8 +711,142 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     <script src="../../script.js"></script>
     <script src="../../navigation/shared/profile-dropdown.js"></script>
+    <script>
+        // Handle game stats filter dropdown
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterSelect = document.getElementById('game-stats-filter');
+            const allGamesView = document.getElementById('all-games-stats');
+            const vocabworldView = document.getElementById('vocabworld-stats');
+            
+            if (filterSelect) {
+                // Show Vocabworld view by default
+                if (vocabworldView) vocabworldView.style.display = 'block';
+                if (allGamesView) allGamesView.style.display = 'none';
+                
+                filterSelect.addEventListener('change', function() {
+                    const selectedValue = this.value;
+                    
+                    // Hide all views first
+                    document.querySelectorAll('.stats-view').forEach(view => {
+                        view.style.display = 'none';
+                    });
+                    
+                    // Show the selected view (only Vocabworld in this case)
+                    if (selectedValue === 'vocabworld' && vocabworldView) {
+                        vocabworldView.style.display = 'block';
+                    }
+                });
+            }
+        });
+    </script>
     <script src="user-profile.js"></script>
     <script>
+        // Initialize mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (mobileMenuBtn && sidebar) {
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    sidebar.classList.toggle('active');
+                });
+                
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', function(event) {
+                    if (window.innerWidth <= 768) {
+                        if (!sidebar.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                            sidebar.classList.remove('active');
+                        }
+                    }
+                });
+                
+                // Close sidebar when window is resized to desktop
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+        // Custom Dropdown Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const customSelects = document.querySelectorAll('.custom-select');
+            
+            customSelects.forEach(select => {
+                const selected = select.querySelector('.select-selected');
+                const options = select.querySelectorAll('.select-option');
+                const hiddenSelect = select.nextElementSibling;
+                
+                // Toggle dropdown
+                selected.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    document.querySelectorAll('.select-items').forEach(dropdown => {
+                        if (dropdown !== select.querySelector('.select-items')) {
+                            dropdown.style.maxHeight = '0';
+                            dropdown.style.opacity = '0';
+                            dropdown.closest('.custom-select').classList.remove('active');
+                        }
+                    });
+                    
+                    select.classList.toggle('active');
+                    const items = select.querySelector('.select-items');
+                    if (select.classList.contains('active')) {
+                        items.style.maxHeight = items.scrollHeight + 'px';
+                        items.style.opacity = '1';
+                    } else {
+                        items.style.maxHeight = '0';
+                        items.style.opacity = '0';
+                    }
+                });
+                
+                // Handle option selection
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const value = this.getAttribute('data-value');
+                        const text = this.textContent.trim();
+                        const img = this.querySelector('img').cloneNode(true);
+                        
+                        // Update selected display
+                        const selectedImg = selected.querySelector('img');
+                        if (selectedImg) selectedImg.remove();
+                        selected.insertBefore(img, selected.firstChild);
+                        selected.querySelector('span').textContent = text;
+                        
+                        // Update hidden select
+                        hiddenSelect.value = value;
+                        
+                        // Close dropdown
+                        select.classList.remove('active');
+                        select.querySelector('.select-items').style.maxHeight = '0';
+                        select.querySelector('.select-items').style.opacity = '0';
+                        
+                        // Trigger change event
+                        const event = new Event('change');
+                        hiddenSelect.dispatchEvent(event);
+                    });
+                });
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function() {
+                document.querySelectorAll('.select-items').forEach(dropdown => {
+                    dropdown.style.maxHeight = '0';
+                    dropdown.style.opacity = '0';
+                    dropdown.closest('.custom-select').classList.remove('active');
+                });
+            });
+            
+            // Prevent dropdown from closing when clicking inside
+            document.querySelectorAll('.select-items, .select-selected').forEach(el => {
+                el.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        });
+        
         // Pass user data to JavaScript
         window.userData = {
             id: <?php echo $current_user_id; ?>,

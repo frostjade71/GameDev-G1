@@ -213,12 +213,29 @@ $notification_count = count($friend_requests);
 
     <!-- Decline All Confirmation Modal -->
     <div class="toast-overlay" id="declineAllModal">
-        <div class="toast" id="declineAllConfirmation">
-            <h3>Decline All Requests</h3>
-            <p>Are you sure you want to decline all friend requests? This action cannot be undone.</p>
+        <div class="toast warning" id="declineAllConfirmation">
+            <div class="modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <h3>Decline All Requests?</h3>
+            <p class="modal-description">Are you sure you want to decline all pending friend requests? This action cannot be undone.</p>
             <div class="modal-buttons">
-                <button class="decline-all-confirm-btn" onclick="confirmDeclineAll()">Yes, Decline All</button>
-                <button class="cancel-btn" onclick="hideDeclineAllModal()">Cancel</button>
+                <button class="btn btn-cancel" onclick="hideDeclineAllModal()">
+                    <span class="btn-text">Cancel</span>
+                </button>
+                <button class="btn btn-decline" onclick="confirmDeclineAll()">
+                    <span class="btn-text">Decline All</span>
+                    <span class="btn-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </span>
+                </button>
             </div>
         </div>
     </div>
@@ -329,30 +346,8 @@ $notification_count = count($friend_requests);
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Show success state
-                    buttonElement.innerHTML = '<i class="fas fa-check"></i> Accepted';
-                    buttonElement.style.background = '#00ff87';
-                    declineBtn.style.display = 'none';
-                    
-                    // Show success message in modal
-                    const modal = document.getElementById('notificationModal');
-                    const content = document.getElementById('notificationContent');
-                    
-                    if (modal && content) {
-                        content.innerHTML = `
-                            <h3>Friend Request Accepted</h3>
-                            <p>You are now friends with ${username}!</p>
-                            <div class="modal-buttons">
-                                <button class="confirm-btn" onclick="location.reload()">OK</button>
-                            </div>
-                        `;
-                        content.className = 'toast success';
-                        modal.style.display = 'flex';
-                        setTimeout(() => {
-                            modal.classList.add('show');
-                            content.classList.add('show');
-                        }, 10);
-                    }
+                    // Show success state and reload the page
+                    location.reload();
                 } else {
                     // Reset button state
                     buttonElement.disabled = false;
@@ -391,6 +386,19 @@ $notification_count = count($friend_requests);
             }
         }
 
+        function hideNotificationModal() {
+            const modal = document.getElementById('notificationModal');
+            const content = document.getElementById('notificationContent');
+            
+            if (modal && content) {
+                content.classList.remove('show');
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+
         function hideDeclineAllModal() {
             const modal = document.getElementById('declineAllModal');
             const confirmation = document.getElementById('declineAllConfirmation');
@@ -417,30 +425,45 @@ $notification_count = count($friend_requests);
             declineAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Declining All...';
 
             // Make API call to decline all requests
-            fetch('decline_all_requests.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+            fetch('decline_all_requests.php')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
+                return response.json();
             })
-            .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Show success message
-                    showToast('All friend requests have been declined', 'info');
-                    
-                    // Reload page after a short delay
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
+                    // Reload the page immediately on success
+                    window.location.reload();
                 } else {
                     // Reset button states
                     declineAllBtn.disabled = false;
                     actionButtons.forEach(btn => btn.disabled = false);
                     declineAllBtn.innerHTML = '<i class="fas fa-times"></i> Decline All';
                     
-                    // Show error message
-                    showToast(data.message || 'Failed to decline all requests', 'error');
+                    // Show error message in modal
+                    const modal = document.getElementById('notificationModal');
+                    const content = document.getElementById('notificationContent');
+                    
+                    if (modal && content) {
+                        content.innerHTML = `
+                            <h3>Error</h3>
+                            <p>${data.message || 'Failed to decline all requests'}</p>
+                            <div class="modal-buttons">
+                                <button class="confirm-btn" onclick="hideNotificationModal()">OK</button>
+                            </div>
+                        `;
+                        content.className = 'toast error';
+                        modal.style.display = 'flex';
+                        setTimeout(() => {
+                            modal.classList.add('show');
+                            content.classList.add('show');
+                        }, 10);
+                    } else {
+                        // Fallback in case modal elements are not found
+                        alert(data.message || 'Failed to decline all requests');
+                    }
                 }
             })
             .catch(error => {
@@ -449,8 +472,28 @@ $notification_count = count($friend_requests);
                 actionButtons.forEach(btn => btn.disabled = false);
                 declineAllBtn.innerHTML = '<i class="fas fa-times"></i> Decline All';
                 
-                // Show error message
-                showToast('Network error. Please try again.', 'error');
+                // Show error message in modal
+                const modal = document.getElementById('notificationModal');
+                const content = document.getElementById('notificationContent');
+                
+                if (modal && content) {
+                    content.innerHTML = `
+                        <h3>Error</h3>
+                        <p>Network error. Please try again.</p>
+                        <div class="modal-buttons">
+                            <button class="confirm-btn" onclick="hideNotificationModal()">OK</button>
+                        </div>
+                    `;
+                    content.className = 'toast error';
+                    modal.style.display = 'flex';
+                    setTimeout(() => {
+                        modal.classList.add('show');
+                        content.classList.add('show');
+                    }, 10);
+                } else {
+                    // Fallback in case modal elements are not found
+                    alert('Network error. Please try again.');
+                }
             });
         }
 
@@ -477,30 +520,8 @@ $notification_count = count($friend_requests);
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Show decline state
-                    buttonElement.innerHTML = '<i class="fas fa-times"></i> Declined';
-                    buttonElement.style.background = '#ff6b6b';
-                    acceptBtn.style.display = 'none';
-                    
-                    // Show success message in modal
-                    const modal = document.getElementById('notificationModal');
-                    const content = document.getElementById('notificationContent');
-                    
-                    if (modal && content) {
-                        content.innerHTML = `
-                            <h3>Friend Request Declined</h3>
-                            <p>Friend request from ${username} has been declined</p>
-                            <div class="modal-buttons">
-                                <button class="confirm-btn" onclick="location.reload()">OK</button>
-                            </div>
-                        `;
-                        content.className = 'toast info';
-                        modal.style.display = 'flex';
-                        setTimeout(() => {
-                            modal.classList.add('show');
-                            content.classList.add('show');
-                        }, 10);
-                    }
+                    // Show decline state and reload the page
+                    location.reload();
                 } else {
                     // Reset button state
                     buttonElement.disabled = false;

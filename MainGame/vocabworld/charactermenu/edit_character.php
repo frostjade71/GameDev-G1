@@ -360,15 +360,41 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
         // Save character selection to database
         function saveCharacterSelection(characterType) {
-            fetch('../save_character.php', {
+            console.log('Sending character selection:', characterType);
+            
+            // Create a form element to handle the submission
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'save_character.php';
+            form.style.display = 'none';
+            
+            // Add the character type as a hidden input
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'selectedCharacter';
+            input.value = characterType;
+            
+            // Add CSRF token if available
+            const token = document.querySelector('meta[name="csrf-token"]')?.content;
+            if (token) {
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrf_token';
+                csrfInput.value = token;
+                form.appendChild(csrfInput);
+            }
+            
+            form.appendChild(input);
+            document.body.appendChild(form);
+            
+            // Submit the form
+            return fetch(form.action, {
                 method: 'POST',
+                body: new URLSearchParams(new FormData(form)),
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify({
-                    selectedCharacter: characterType,
-                    characterData: window.userData.characterData || {}
-                })
+                credentials: 'same-origin'
             })
             .then(response => response.json())
             .then(data => {

@@ -84,12 +84,29 @@ try {
     // Start transaction
     $pdo->beginTransaction();
     
-    // Insert friend request
-    $stmt = $pdo->prepare("
-        INSERT INTO friend_requests (requester_id, receiver_id, status) 
-        VALUES (?, ?, 'pending')
-    ");
+    // Get usernames
+    $stmt = $pdo->prepare("SELECT username FROM users WHERE id IN (?, ?)");
     $stmt->execute([$user_id, $receiver_id]);
+    $usernames = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    
+    // Determine which username is the requester and which is the receiver
+    $requester_username = '';
+    $receiver_username = '';
+    
+    $stmt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
+    $stmt->execute([$user_id]);
+    $requester_username = $stmt->fetchColumn();
+    
+    $stmt->execute([$receiver_id]);
+    $receiver_username = $stmt->fetchColumn();
+    
+    // Insert friend request with usernames
+    $stmt = $pdo->prepare("
+        INSERT INTO friend_requests 
+        (requester_id, requester_username, receiver_id, receiver_username, status) 
+        VALUES (?, ?, ?, ?, 'pending')
+    ");
+    $stmt->execute([$user_id, $requester_username, $receiver_id, $receiver_username]);
     $request_id = $pdo->lastInsertId();
     
     // Create notification for the receiver

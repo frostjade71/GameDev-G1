@@ -1,6 +1,9 @@
 <?php
 require_once '../onboarding/config.php';
 
+// Set content type to JSON
+header('Content-Type: application/json');
+
 // Check if user is logged in
 session_start();
 if (!isset($_SESSION['user_id'])) {
@@ -10,32 +13,42 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
+$response = [];
 
 try {
     // Start transaction
     $pdo->beginTransaction();
 
-    // Get all pending friend requests for the user
-    $stmt = $pdo->prepare("SELECT id FROM friend_requests WHERE receiver_id = ? AND status = 'pending'");
+    // Delete all pending friend requests for the user
+    $stmt = $pdo->prepare("DELETE FROM friend_requests WHERE receiver_id = ? AND status = 'pending'");
     $stmt->execute([$user_id]);
-    $requests = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-    if (empty($requests)) {
-        echo json_encode(['success' => false, 'message' => 'No pending requests found']);
-        exit();
-    }
-
-    // Update all pending requests to declined
-    $stmt = $pdo->prepare("UPDATE friend_requests SET status = 'declined' WHERE receiver_id = ? AND status = 'pending'");
-    $stmt->execute([$user_id]);
+    $deletedCount = $stmt->rowCount();
 
     // Commit transaction
     $pdo->commit();
 
-    echo json_encode(['success' => true, 'message' => 'All friend requests declined successfully']);
+    $response = [
+        'success' => true,
+        'message' => $deletedCount > 0 
+            ? 'Successfully declined all friend requests' 
+            : 'No pending friend requests to decline',
+        'count' => $deletedCount
+    ];
 } catch (Exception $e) {
     // Rollback transaction on error
-    $pdo->rollBack();
-    echo json_encode(['success' => false, 'message' => 'An error occurred while declining requests']);
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    
+    http_response_code(500);
+    $response = [
+        'success' => false,
+        'message' => 'An error occurred while processing your request',
+        'error' => $e->getMessage()
+    ];
 }
+
+// Ensure no output before this
+ob_clean();
+echo json_encode($response);
 ?>

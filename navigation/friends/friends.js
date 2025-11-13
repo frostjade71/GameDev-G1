@@ -72,13 +72,16 @@ function addFriend(friendId, friendName, buttonElement) {
     buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
     
     // Make API call to send friend request
-    fetch('../send_friend_request.php', {
+    fetch('../../send-friend-request', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
         },
+        credentials: 'same-origin',
         body: JSON.stringify({
-            receiver_id: friendId
+            receiver_id: friendId,
+            _method: 'POST'
         })
     })
     .then(response => {
@@ -147,13 +150,16 @@ function cancelFriendRequest(friendId, friendName, buttonElement) {
     buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
     
     // Make API call to cancel friend request
-    fetch('../cancel_friend_request.php', {
+    fetch('../../cancel-friend-request', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
         },
+        credentials: 'same-origin',
         body: JSON.stringify({
-            receiver_id: friendId
+            receiver_id: friendId,
+            _method: 'POST'
         })
     })
     .then(response => response.json())

@@ -177,6 +177,118 @@
     }
 }
 
+/* Decline All Modal Styles */
+#declineAllConfirmation {
+    background: linear-gradient(135deg, rgba(17, 17, 17, 0.95), rgba(35, 35, 35, 0.98));
+    max-width: 360px;
+    border: 2px solid rgba(0, 255, 135, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 135, 0.15),
+                inset 0 0 15px rgba(0, 255, 135, 0.1);
+    text-align: center;
+    padding: 1.5rem;
+}
+
+#declineAllConfirmation .modal-icon {
+    margin-bottom: 0.8rem;
+    color: #ff4d4d;
+    display: flex;
+    justify-content: center;
+    transform: scale(0.9);
+    filter: drop-shadow(0 0 6px rgba(255, 77, 77, 0.5));
+}
+
+#declineAllConfirmation h3 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.85rem;
+    color: #00ff87;
+    margin: 0.5rem 0 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0, 255, 135, 0.3);
+}
+
+#declineAllConfirmation .modal-description {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.75rem;
+    margin: 0 auto 1.2rem;
+    line-height: 1.5;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    max-width: 280px;
+}
+
+#declineAllConfirmation .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+#declineAllConfirmation .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0.6rem 1.1rem;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#declineAllConfirmation .btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+#declineAllConfirmation .btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#declineAllConfirmation .btn-cancel:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+}
+
+#declineAllConfirmation .btn-decline {
+    background: linear-gradient(135deg, #00c853, #00a344);
+    color: white;
+    box-shadow: 0 3px 10px rgba(0, 200, 83, 0.25);
+    padding-right: 1rem;
+}
+
+#declineAllConfirmation .btn-decline:hover {
+    background: linear-gradient(135deg, #00b34a, #008f3a);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 200, 83, 0.35);
+}
+
+#declineAllConfirmation .btn-decline:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 5px rgba(0, 200, 83, 0.25);
+}
+
+#declineAllConfirmation .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 3px;
+    transition: transform 0.15s ease;
+}
+
+#declineAllConfirmation .btn:hover .btn-icon {
+    transform: translateX(1px);
+}
+
 /* Responsive Design for Logout Modal */
 @media (max-width: 480px) {
     #logoutConfirmation {

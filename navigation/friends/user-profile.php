@@ -929,7 +929,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
              buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
              
              // Make API call to cancel friend request
-             fetch('../cancel_friend_request.php', {
+             fetch('../../navigation/cancel_friend_request.php', {
                  method: 'POST',
                  headers: {
                      'Content-Type': 'application/json',

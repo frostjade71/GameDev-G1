@@ -2,11 +2,11 @@ RewriteEngine On
 
 # Handle send-friend-request
 RewriteCond %{REQUEST_METHOD} POST
-RewriteRule ^send-friend-request$ send_friend_request.php [L]
+RewriteRule ^send-friend-request$ send-friend-request.php [L]
 
 # Handle cancel-friend-request
 RewriteCond %{REQUEST_METHOD} POST
-RewriteRule ^cancel-friend-request$ cancel_friend_request.php [L]
+RewriteRule ^cancel-friend-request$ cancel-friend-request.php [L]
 
 # Remove .php extension from URLs
 RewriteCond %{REQUEST_FILENAME} !-d

@@ -1,5 +1,15 @@
 RewriteEngine On
 
+# Set the base directory (adjust this if your site is in a subdirectory)
+RewriteBase /GameDev-G1/
+
+# Handle API endpoints first
+RewriteRule ^navigation/send-friend-request$ navigation/send-friend-request.php [L]
+RewriteRule ^navigation/cancel-friend-request$ navigation/cancel-friend-request.php [L]
+
+# Handle other API endpoints if needed
+# RewriteRule ^api/([^/]+)/?$ api/$1.php [L]
+
 # Remove .php extension from URLs
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
@@ -7,4 +17,8 @@ RewriteRule ^([^\.]+)$ $1.php [NC,L]
 
 # Redirect .php URLs to clean URLs (optional)
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(.+?)\.php[\s?] [NC]
-RewriteRule ^ /%1 [R=301,L,NE]
+RewriteRule ^ %1 [R=301,L,NE]
+
+# Ensure Authorization header is passed through
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]

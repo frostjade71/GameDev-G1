@@ -72,7 +72,7 @@ function addFriend(friendId, friendName, buttonElement) {
     buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
     
     // Make API call to send friend request
-    fetch('../../send-friend-request', {
+    fetch('../send-friend-request', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ function cancelFriendRequest(friendId, friendName, buttonElement) {
     buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
     
     // Make API call to cancel friend request
-    fetch('../../cancel-friend-request', {
+    fetch('../cancel-friend-request', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

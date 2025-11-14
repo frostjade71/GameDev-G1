@@ -360,7 +360,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 <div class="profile-info">
                     <div class="profile-name-section">
                         <h1><?php echo htmlspecialchars($viewed_user['username']); ?></h1>
-                        <form method="POST" class="friend-request-form">
+                        <form method="POST" class="friend-request-form" onsubmit="return handleFriendRequest(event, <?php echo $viewed_user_id; ?>, '<?php echo htmlspecialchars($viewed_user['username']); ?>', this);">
                             <input type="hidden" name="action" value="send_request">
                              <?php if ($are_friends): ?>
                                  <button type="button" class="friend-request-btn remove-friend" onclick="removeFriend(<?php echo $viewed_user_id; ?>, '<?php echo htmlspecialchars($viewed_user['username']); ?>', this)">
@@ -378,9 +378,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                      Cancel Request
                                  </button>
                              <?php else: ?>
-                                 <button type="submit" class="friend-request-btn">
+                                 <button type="submit" class="friend-request-btn" id="addFriendBtn">
                                      <i class="fas fa-user-plus"></i>
-                                     Add Friend
+                                     <span>Add Friend</span>
                                  </button>
                              <?php endif; ?>
                         </form>
@@ -929,7 +929,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
              buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
              
              // Make API call to cancel friend request
-             fetch('../cancel_friend_request.php', {
+             fetch('../../navigation/cancel-friend-request', {
                  method: 'POST',
                  headers: {
                      'Content-Type': 'application/json',
@@ -1083,6 +1083,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
          }
 
          // Toast notification system
+         // Handle friend request form submission
+         function handleFriendRequest(event, userId, username, formElement) {
+             event.preventDefault();
+             
+             const button = formElement.querySelector('button[type="submit"]');
+             const originalHtml = button.innerHTML;
+             
+             // Disable button and show loading state
+             button.disabled = true;
+             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+             
+             // Get form data
+             const formData = new FormData(formElement);
+             
+             // Send AJAX request
+             fetch('../../navigation/send-friend-request', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json',
+                     'X-Requested-With': 'XMLHttpRequest'
+                 },
+                 body: JSON.stringify({
+                     receiver_id: userId,
+                     _method: 'POST'
+                 })
+             })
+             .then(response => response.json())
+             .then(data => {
+                 if (data.success) {
+                     showToast(`Friend request sent to ${username}!`, 'success');
+                     // Update button to show cancel request
+                     button.outerHTML = `
+                         <button type="button" class="friend-request-btn cancel-request" 
+                                 onclick="cancelFriendRequest(${userId}, '${username.replace(/'/g, '\'')}', this)">
+                             <i class="fas fa-times"></i>
+                             Cancel Request
+                         </button>`;
+                 } else {
+                     showToast(data.message || 'Failed to send friend request', 'error');
+                     button.disabled = false;
+                     button.innerHTML = originalHtml;
+                 }
+             })
+             .catch(error => {
+                 console.error('Error sending friend request:', error);
+                 showToast('Network error. Please try again.', 'error');
+                 button.disabled = false;
+                 button.innerHTML = originalHtml;
+             });
+             
+             return false;
+         }
+         
+         // Show toast notification
          function showToast(message, type = 'info') {
              const toast = document.getElementById('toast');
              const toastOverlay = document.querySelector('.toast-overlay');

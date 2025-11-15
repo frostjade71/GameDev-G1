@@ -199,6 +199,11 @@ $notification_count = count($friend_requests);
         <div class="toast" id="notificationContent"></div>
     </div>
     
+    <!-- Notification Toast -->
+    <div class="toast-overlay" id="notificationModal" style="display: none;">
+        <div class="toast" id="notificationContent"></div>
+    </div>
+    
     <!-- Logout Confirmation Modal -->
     <div class="toast-overlay" id="logoutModal">
         <div class="toast" id="logoutConfirmation">
@@ -214,14 +219,123 @@ $notification_count = count($friend_requests);
     <!-- Decline All Confirmation Modal -->
     <div class="toast-overlay" id="declineAllModal">
         <div class="toast" id="declineAllConfirmation">
-            <h3>Decline All Requests</h3>
-            <p>Are you sure you want to decline all friend requests? This action cannot be undone.</p>
+            <h3>Decline All</h3>
+            <p>Delete all pending friend requests?</p>
             <div class="modal-buttons">
-                <button class="decline-all-confirm-btn" onclick="confirmDeclineAll()">Yes, Decline All</button>
                 <button class="cancel-btn" onclick="hideDeclineAllModal()">Cancel</button>
+                <button class="decline-all-btn" onclick="confirmDeclineAll()">Decline All</button>
             </div>
         </div>
     </div>
+    <style>
+    /* Decline All Modal Styles */
+    #declineAllConfirmation {
+        background: linear-gradient(135deg, rgba(17, 17, 17, 0.95), rgba(35, 35, 35, 0.98));
+        max-width: 280px;
+        border: 2px solid rgba(255, 107, 107, 0.3);
+        box-shadow: 0 0 30px rgba(255, 107, 107, 0.2),
+                    inset 0 0 20px rgba(255, 107, 107, 0.1);
+        text-align: center;
+        padding: 1.2rem;
+        margin: 0 auto;
+    }
+
+    #declineAllConfirmation h3 {
+        font-family: 'Press Start 2P', cursive;
+        font-size: 0.9rem;
+        color: #ff6b6b;
+        margin: 0 0 0.8rem 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+    }
+
+    #declineAllConfirmation p {
+        color: rgba(255, 255, 255, 0.9);
+        font-family: 'Press Start 2P', cursive;
+        font-size: 0.6rem;
+        margin: 0 0 1.2rem 0;
+        line-height: 1.4;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    #declineAllConfirmation .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 0.8rem;
+        margin-top: 0.5rem;
+    }
+
+    #declineAllConfirmation .decline-all-btn,
+    #declineAllConfirmation .cancel-btn {
+        flex: 1;
+        padding: 0.6rem 0.8rem;
+        border-radius: 8px;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 0.6rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        white-space: nowrap;
+    }
+
+    #declineAllConfirmation .decline-all-btn {
+        background: linear-gradient(135deg, #ff6b6b, #ff4757);
+        color: white;
+        border: none;
+        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+    }
+
+    #declineAllConfirmation .decline-all-btn:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 4px rgba(255, 107, 107, 0.2);
+    }
+
+    #declineAllConfirmation .cancel-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #declineAllConfirmation .cancel-btn:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 480px) {
+        #declineAllConfirmation {
+            width: 85%;
+            max-width: 260px;
+            padding: 1rem 0.8rem;
+        }
+
+        #declineAllConfirmation h3 {
+            font-size: 0.75rem;
+            margin-bottom: 0.6rem;
+        }
+
+        #declineAllConfirmation p {
+            font-size: 0.55rem;
+            margin-bottom: 1rem;
+            padding: 0 0.5rem;
+        }
+
+        #declineAllConfirmation .modal-buttons {
+            flex-direction: row;
+            gap: 0.6rem;
+            margin-top: 0.3rem;
+        }
+
+        #declineAllConfirmation .decline-all-btn,
+        #declineAllConfirmation .cancel-btn {
+            padding: 0.5rem 0.6rem;
+            font-size: 0.5rem;
+            min-width: 80px;
+        }
+    }
+    </style>
 
     <script src="../script.js"></script>
     <script src="shared/profile-dropdown.js"></script>
@@ -312,7 +426,7 @@ $notification_count = count($friend_requests);
             // Disable button and show loading state
             buttonElement.disabled = true;
             const declineBtn = buttonElement.nextElementSibling;
-            declineBtn.disabled = true;
+            if (declineBtn) declineBtn.disabled = true;
             buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Accepting...';
             
             // Make API call to accept friend request
@@ -329,48 +443,21 @@ $notification_count = count($friend_requests);
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Show success state
-                    buttonElement.innerHTML = '<i class="fas fa-check"></i> Accepted';
-                    buttonElement.style.background = '#00ff87';
-                    declineBtn.style.display = 'none';
-                    
-                    // Show success message in modal
-                    const modal = document.getElementById('notificationModal');
-                    const content = document.getElementById('notificationContent');
-                    
-                    if (modal && content) {
-                        content.innerHTML = `
-                            <h3>Friend Request Accepted</h3>
-                            <p>You are now friends with ${username}!</p>
-                            <div class="modal-buttons">
-                                <button class="confirm-btn" onclick="location.reload()">OK</button>
-                            </div>
-                        `;
-                        content.className = 'toast success';
-                        modal.style.display = 'flex';
-                        setTimeout(() => {
-                            modal.classList.add('show');
-                            content.classList.add('show');
-                        }, 10);
-                    }
+                    // Reload the page immediately
+                    window.location.reload();
                 } else {
-                    // Reset button state
-                    buttonElement.disabled = false;
-                    declineBtn.disabled = false;
-                    buttonElement.innerHTML = '<i class="fas fa-check"></i> Accept';
-                    
-                    // Show error message in modal
-                    showErrorModal(data.message || 'Failed to accept friend request');
+                    throw new Error(data.message || 'Failed to accept friend request');
                 }
             })
             .catch(error => {
+                console.error('Error:', error);
                 // Reset button state
                 buttonElement.disabled = false;
-                declineBtn.disabled = false;
+                if (declineBtn) declineBtn.disabled = false;
                 buttonElement.innerHTML = '<i class="fas fa-check"></i> Accept';
                 
-                // Show error message in modal
-                showErrorModal('Network error. Please try again.');
+                // Show error message
+                alert('Error: ' + (error.message || 'Failed to accept friend request'));
             });
         }
 
@@ -407,50 +494,57 @@ $notification_count = count($friend_requests);
         }
 
         function confirmDeclineAll() {
-            hideDeclineAllModal();
+            // Hide the modal
+            const modal = document.getElementById('declineAllModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
 
             // Disable all buttons
             const declineAllBtn = document.querySelector('.decline-all-btn');
             const actionButtons = document.querySelectorAll('.accept-btn, .decline-btn');
-            declineAllBtn.disabled = true;
-            actionButtons.forEach(btn => btn.disabled = true);
-            declineAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Declining All...';
+            
+            if (declineAllBtn) {
+                declineAllBtn.disabled = true;
+                declineAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Declining...';
+            }
+            
+            actionButtons.forEach(btn => {
+                if (btn) btn.disabled = true;
+            });
 
             // Make API call to decline all requests
             fetch('decline_all_requests.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                }
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=decline_all'
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    // Show success message
-                    showToast('All friend requests have been declined', 'info');
-                    
-                    // Reload page after a short delay
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
+                if (data && data.success) {
+                    // Reload the page
+                    window.location.reload();
                 } else {
-                    // Reset button states
-                    declineAllBtn.disabled = false;
-                    actionButtons.forEach(btn => btn.disabled = false);
-                    declineAllBtn.innerHTML = '<i class="fas fa-times"></i> Decline All';
-                    
-                    // Show error message
-                    showToast(data.message || 'Failed to decline all requests', 'error');
+                    throw new Error(data ? data.message : 'Failed to process request');
                 }
             })
             .catch(error => {
+                console.error('Error:', error);
+                
                 // Reset button states
-                declineAllBtn.disabled = false;
-                actionButtons.forEach(btn => btn.disabled = false);
-                declineAllBtn.innerHTML = '<i class="fas fa-times"></i> Decline All';
+                if (declineAllBtn) {
+                    declineAllBtn.disabled = false;
+                    declineAllBtn.innerHTML = 'Decline All';
+                }
+                
+                actionButtons.forEach(btn => {
+                    if (btn) btn.disabled = false;
+                });
                 
                 // Show error message
-                showToast('Network error. Please try again.', 'error');
+                alert('Error: ' + (error.message || 'Failed to decline all requests. Please try again.'));
             });
         }
 
@@ -461,7 +555,7 @@ $notification_count = count($friend_requests);
             // Disable button and show loading state
             buttonElement.disabled = true;
             const acceptBtn = buttonElement.previousElementSibling;
-            acceptBtn.disabled = true;
+            if (acceptBtn) acceptBtn.disabled = true;
             buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Declining...';
             
             // Make API call to decline friend request
@@ -477,48 +571,21 @@ $notification_count = count($friend_requests);
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Show decline state
-                    buttonElement.innerHTML = '<i class="fas fa-times"></i> Declined';
-                    buttonElement.style.background = '#ff6b6b';
-                    acceptBtn.style.display = 'none';
-                    
-                    // Show success message in modal
-                    const modal = document.getElementById('notificationModal');
-                    const content = document.getElementById('notificationContent');
-                    
-                    if (modal && content) {
-                        content.innerHTML = `
-                            <h3>Friend Request Declined</h3>
-                            <p>Friend request from ${username} has been declined</p>
-                            <div class="modal-buttons">
-                                <button class="confirm-btn" onclick="location.reload()">OK</button>
-                            </div>
-                        `;
-                        content.className = 'toast info';
-                        modal.style.display = 'flex';
-                        setTimeout(() => {
-                            modal.classList.add('show');
-                            content.classList.add('show');
-                        }, 10);
-                    }
+                    // Reload the page immediately
+                    window.location.reload();
                 } else {
-                    // Reset button state
-                    buttonElement.disabled = false;
-                    acceptBtn.disabled = false;
-                    buttonElement.innerHTML = '<i class="fas fa-times"></i> Decline';
-                    
-                    // Show error message in modal
-                    showErrorModal(data.message || 'Failed to decline friend request');
+                    throw new Error(data.message || 'Failed to decline friend request');
                 }
             })
             .catch(error => {
+                console.error('Error:', error);
                 // Reset button state
                 buttonElement.disabled = false;
-                acceptBtn.disabled = false;
+                if (acceptBtn) acceptBtn.disabled = false;
                 buttonElement.innerHTML = '<i class="fas fa-times"></i> Decline';
                 
-                // Show error message in modal
-                showErrorModal('Network error. Please try again.');
+                // Show error message
+                alert('Error: ' + (error.message || 'Failed to decline friend request'));
             });
         }
 

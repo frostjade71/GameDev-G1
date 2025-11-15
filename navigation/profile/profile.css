@@ -184,6 +184,13 @@
     flex-wrap: wrap;
 }
 
+@media (max-width: 768px) {
+    .badge-container {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
 .badge-wrapper {
     position: relative;
     display: inline-block;
@@ -273,6 +280,58 @@
     bottom: 140%;
 }
 
+/* Info icon and tooltip styles */
+.info-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 5px;
+    color: #60efff;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.info-icon:hover {
+    color: #00ff87;
+}
+
+.info-icon .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 6px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 200%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.75rem;
+    line-height: 1.3;
+    border: 1px solid rgba(96, 239, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.info-icon .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+.info-icon.show-tooltip .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
 .badge-wrapper:hover .user-badge {
     transform: scale(1.1);
     border-color: rgba(96, 239, 255, 0.8);
@@ -348,9 +407,9 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 0;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+    background: none;
 }
 
 .stat-card:hover {
@@ -359,10 +418,27 @@
     border-color: rgba(96, 239, 255, 0.3);
 }
 
-.stat-card i {
-    font-size: 1.5rem;
-    color: rgba(0, 255, 135, 0.8);
-    transition: transform 0.3s ease;
+.stat-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+    padding: 0.25rem;
+}
+
+.stat-icon-img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover .stat-icon-img {
+    transform: scale(1.1);
 }
 
 @media (max-width: 768px) {
@@ -734,22 +810,103 @@
     background: linear-gradient(to bottom, rgba(255, 193, 7, 0.8), rgba(255, 152, 0, 0.8));
 }
 
-.grade-section-content {
+/* New Grade Section Grid Layout */
+.grade-section-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1.2rem;
 }
 
-.grade-info,
-.section-info {
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 10px;
-    padding: 1rem;
-    border: 1px solid rgba(255, 193, 7, 0.1);
+.grade-section-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 1.2rem;
+    border: 1px solid rgba(96, 239, 255, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s ease;
+}
+
+.grade-section-item:hover {
+    border-color: rgba(96, 239, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.grade-section-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255, 193, 7, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #FFC107;
+    font-size: 1.1rem;
+}
+
+.grade-section-details {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
+    gap: 0.2rem;
+}
+
+.grade-section-label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.grade-section-value {
+    color: #FFC107;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0.1rem;
+    word-break: break-word;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .grade-section-grid {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+    
+    .grade-section-item {
+        padding: 1rem;
+    }
+    
+    .grade-section-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+    
+    .grade-section-label {
+        font-size: 0.75rem;
+    }
+    
+    .grade-section-value {
+        font-size: 1rem;
+    }
+}
+
+/* Game Stats Card Styles */
+.gamestats-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .info-label {
@@ -847,149 +1004,738 @@
     }
 }
 
-/* GWA Section */
-.gwa-section {
-    background: rgba(255, 255, 255, 0.03);
+/* Player Stats Section */
+/* Player Stats Section - Hidden since we moved content to Game Stats */
+.player-stats-section {
+    display: none;
+}
+
+.player-stats-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6bff, #60efff);
+}
+
+/* Character Preview */
+.character-preview-container {
+    flex: 0 0 280px;
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 15px;
     padding: 1.5rem;
-    margin: 2rem 0;
     border: 1px solid rgba(96, 239, 255, 0.1);
     position: relative;
     overflow: hidden;
 }
 
-.gwa-section::before {
+.character-preview-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.character-sprite-container {
+    position: relative;
+    width: 150px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.character-sprite {
+    height: 100%;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
+    object-position: center;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    z-index: 2;
+}
+
+.character-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(96, 239, 255, 0.3) 0%, rgba(96, 239, 255, 0) 70%);
+    border-radius: 50%;
+    filter: blur(10px);
+    z-index: 1;
+}
+
+.character-info {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.character-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.25rem;
+}
+
+.character-level {
+    font-size: 1rem;
+    color: #60efff;
+    background: rgba(96, 239, 255, 0.1);
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    margin-top: 0.5rem;
+}
+
+.stats-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.6rem;
+    width: 100%;
+}
+
+.stats-grid-resources {
+    margin-top: 0.5rem;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #60efff;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid rgba(96, 239, 255, 0.2);
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Stats subtitle with custom icon */
+.stats-container > .section-subtitle::before {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background: url('../../MainGame/vocabworld/assets/stats/stats1.png') no-repeat center center;
+    background-size: contain;
+    margin-right: 0.1px;
+    position: relative;
+    top: 1px;
+}
+
+/* Resources subtitle with custom icon */
+.stats-grid + .section-subtitle::before {
+    content: '';
+    display: inline-block;
+    width: 30px;
+    height: 40px;
+    background: url('../../MainGame/vocabworld/assets/stats/shard2.png') no-repeat center center;
+    background-size: contain;
+    margin-right: 0.1px;
+    position: relative;
+    top: 1px;
+}
+
+/* Ratings subtitle with custom icon */
+.stats-grid + .section-subtitle + .stats-grid + .section-subtitle::before {
+    content: '';
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background: url('../../MainGame/vocabworld/assets/stats/ratings1.png') no-repeat center center;
+    background-size: contain;
+    margin-right: 8px;
+    position: relative;
+    top: 5px;
+}
+
+/* Stats Container */
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.stat-card {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+    padding: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.rank-badge {
+    position: absolute;
+    top: 9px;
+    right: 7px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    z-index: 2;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transform: scale(0.9);
+    transform-origin: top right;
+    min-width: 24px;
+    height: 20px;
+}
+
+.rank-badge i {
+    font-size: 0.7rem;
+}
+
+.rank-1 {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    border: 1px solid #FFD700;
+}
+
+.rank-2 {
+    background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+    color: #000;
+    border: 1px solid #C0C0C0;
+}
+
+.rank-3 {
+    background: linear-gradient(135deg, #CD7F32, #A0522D);
+    color: #fff;
+    border: 1px solid #CD7F32;
+}
+
+.rank-other {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: #fff;
+    border: 1px solid #6c757d;
+    font-size: 0.65rem;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border-color: rgba(96, 239, 255, 0.3);
+}
+
+/* GWA Stat Card - Compact */
+.gwa-stat-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(96, 239, 255, 0.1), rgba(0, 255, 135, 0.1));
+    border: 1px solid rgba(96, 239, 255, 0.3);
+    box-shadow: 0 0 10px rgba(96, 239, 255, 0.1);
+    transition: all 0.2s ease;
+    overflow: hidden;
+    padding: 0.6rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-height: auto;
+}
+
+.gwa-stat-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, #60efff, #00ff87);
+}
+
+.gwa-stat-card .stat-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 8px;
+    padding: 6px;
+    background: rgba(96, 239, 255, 0.15);
+}
+
+.gwa-stat-card .stat-icon-img {
+    width: 24px;
+    height: 24px;
+}
+
+.gwa-stat-card .stat-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.gwa-stat-card .stat-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #60efff;
+    margin-bottom: 0.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gwa-stat-card .gwa-value {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+    display: inline-block;
+    margin: 0;
+    line-height: 1;
+}
+
+.gwa-description {
+    display: none; /* Hide description in compact mode */
+}
+
+.gwa-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: linear-gradient(135deg, #60efff, #00ff87);
+    color: #0a192f;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+.gwa-stat-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(96, 239, 255, 0.2);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(96, 239, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #60efff;
+    flex-shrink: 0;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-label {
+    display: block;
+    color: rgba(96, 239, 255, 0.9);
+    font-size: 0.6rem;
+    margin-bottom: 0.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1px;
+    font-weight: 500;
+}
+
+.gwa-stat-card .stat-label {
+    color: #60efff;
+    font-size: 0.6rem;
+}
+
+.stat-value {
+    display: block;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 992px) {
+    .gamestats-layout {
+        flex-direction: column;
+    }
+    
+    .gamestats-section .character-preview-container {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .gamestats-section .character-preview-container {
+        max-width: 100%;
+        padding: 1rem;
+    }
+    
+    .gamestats-section .character-sprite-container {
+        width: 140px;
+        height: 180px;
+        margin: 0 auto 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    
+    .gamestats-section .character-sprite {
+        height: 100%;
+        width: auto;
+        max-width: none;
+        object-fit: contain;
+        object-position: center;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .stat-label {
+        font-size: 0.75rem;
+    }
+    
+    .stat-value {
+        font-size: 1.1rem;
+    }
+}
+
+/* Game Stats Section */
+.gamestats-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1rem 0;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.gamestats-layout {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+/* Character Preview in Game Stats */
+.gamestats-section .character-preview-container {
+    flex: 0 0 220px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 0.75rem;
+    height: fit-content;
+}
+
+.gamestats-section .character-preview-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gamestats-section .character-sprite-container {
+    width: 140px;
+    height: 180px;
+    margin: 0 auto 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.gamestats-section .character-sprite {
     height: 100%;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
+    object-position: center;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    z-index: 2;
+}
+
+.gamestats-section .character-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(96, 239, 255, 0.3) 0%, rgba(96, 239, 255, 0) 70%);
+    border-radius: 50%;
+    filter: blur(10px);
+    z-index: 1;
+}
+
+.gamestats-section .character-info {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.gamestats-section .character-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.1rem;
+}
+
+.gamestats-section .character-level {
+    font-size: 0.85rem;
+    color: #60efff;
+    background: rgba(96, 239, 255, 0.1);
+    display: inline-block;
+    padding: 0.25rem 1rem;
+    border-radius: 15px;
+    margin-top: 0.5rem;
+}
+
+/* Stats Container */
+.gamestats-section .stats-container {
+    flex: 1;
+    margin: 0;
+}
+
+.gamestats-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+}
+
+.gamestats-section .header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.gamestats-section .header-title i {
+    font-size: 1.8rem;
+    color: rgba(0, 255, 135, 0.8);
+    margin-left: 0.5rem;
+}
+
+.gamestats-section .sort-dropdown {
+    position: relative;
+    z-index: 10;
+}
+
+.gamestats-section .sort-dropdown select {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(96, 239, 255, 0.3);
+    color: #fff;
+    padding: 0.3rem 1.5rem 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2360efff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 10px;
+    transition: all 0.3s ease;
+    height: 32px;
+}
+
+.gamestats-section .sort-dropdown select:hover,
+.gamestats-section .sort-dropdown select:focus {
+    border-color: #60efff;
+    box-shadow: 0 0 0 2px rgba(96, 239, 255, 0.2);
+}
+
+.gamestats-section .sort-dropdown select option {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 0.5rem;
+}
+
+.gamestats-section .stats-container {
+    margin-top: 1rem;
+}
+
+.gamestats-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 3px;
     background: linear-gradient(to bottom, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
 }
 
-.gwa-container {
+.game-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    width: 100%;
 }
 
-.gwa-card {
-    background: rgba(255, 255, 255, 0.05);
+.gamestats-card {
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 12px;
     padding: 1.2rem;
     display: flex;
     align-items: center;
     gap: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid rgba(96, 239, 255, 0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
 }
 
-.gwa-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 3px;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(96, 239, 255, 0.6), rgba(0, 255, 135, 0.6));
-}
-
-.gwa-card:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.08);
+.gamestats-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     border-color: rgba(96, 239, 255, 0.3);
-    box-shadow: 0 8px 25px rgba(0, 255, 135, 0.1);
 }
 
 .game-logo-container {
-    flex-shrink: 0;
     width: 60px;
     height: 60px;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 2px solid rgba(96, 239, 255, 0.3);
+    border-radius: 12px;
+    background: rgba(96, 239, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 1px solid rgba(96, 239, 255, 0.15);
 }
 
 .game-logo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
 }
 
-.game-logo:hover {
-    transform: scale(1.05);
-}
-
-.gwa-info {
+.gamestats-info {
     flex: 1;
 }
 
-.gwa-info h4 {
+.gamestats-info h4 {
     color: white;
-    margin: 0 0 0.8rem 0;
+    margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
 }
 
-.gwa-stats {
+.gamestats-stats {
     display: flex;
     gap: 1rem;
-    flex-wrap: wrap;
 }
 
-.gwa-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
+.stat-item {
+    text-align: center;
 }
 
-.gwa-label {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.gwa-value {
-    color: rgba(96, 239, 255, 1);
-    font-weight: bold;
-    font-size: 1rem;
+.stat-value {
+    display: block;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
 }
 
 @media (max-width: 768px) {
-    .gwa-section {
-        padding: 1.2rem;
-        margin: 1.5rem 0;
+    .gamestats-section {
+        padding: 0.8rem;
+        margin: 1rem 0;
     }
     
-    .gwa-container {
+    .gamestats-section .section-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.7rem;
+    }
+    
+    .gamestats-section .header-title {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .gamestats-section .sort-dropdown {
+        align-self: center;
+        margin: 0.2rem 0 0;
+        width: 100%;
+        max-width: 150px;
+    }
+    
+    .gamestats-section .sort-dropdown select {
+        padding: 0.15rem 1.8rem 0.15rem 0.6rem;
+        font-size: 0.7rem;
+        height: 26px;
+        width: 100%;
+        text-align: center;
+        text-align-last: center;
+    }
+    
+    .gamestats-section .sort-dropdown select option {
+        text-align: left;
+    }
+    
+    .gamestats-container {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
     
-    .gwa-card {
+    .gamestats-card {
         padding: 1rem;
-        gap: 0.8rem;
-        flex-direction: column;
-        text-align: center;
     }
     
     .game-logo-container {
         width: 50px;
         height: 50px;
-        align-self: center;
     }
     
-    .gwa-stats {
+    .gamestats-info h4 {
+        font-size: 1rem;
+    }
+    
+    .gamestats-stats {
         gap: 0.8rem;
-        justify-content: center;
+    }
+    
+    /* Removed duplicate .stat-label media query */
+    
+    .stat-value {
+        font-size: 1rem;
     }
 }
 

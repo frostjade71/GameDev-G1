@@ -159,18 +159,10 @@ function cancelFriendRequest(friendId, friendName, buttonElement) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Show success message
+            // Show success message and reload the page after a short delay
             showToast(`Friend request to ${friendName} has been cancelled.`, 'success');
             
-            // Update button back to "Add Friend"
-            buttonElement.innerHTML = '<i class="fas fa-user-plus"></i> Add Friend';
-            buttonElement.className = 'add-friend-btn';
-            buttonElement.onclick = function() {
-                addFriend(friendId, friendName, this);
-            };
-            buttonElement.disabled = false;
-            
-            // Refresh the page after a short delay to ensure UI is in sync
+            // Reload the page after the toast is shown (toast duration is 3 seconds)
             setTimeout(() => {
                 window.location.reload();
             }, 1500);

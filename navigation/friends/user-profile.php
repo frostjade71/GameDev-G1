@@ -66,17 +66,83 @@ $stmt->execute([$current_user_id]);
 $notification_result = $stmt->fetch();
 $notification_count = $notification_result['count'];
 
+// Get viewed user's rank from leaderboard
+$rank_stmt = $pdo->prepare("
+    SELECT position FROM (
+        SELECT 
+            u.id as user_id,
+            ROW_NUMBER() OVER (ORDER BY COALESCE(gp.player_level, 1) DESC, 
+                              COALESCE(gp.total_monsters_defeated, 0) DESC,
+                              (SELECT AVG(score) FROM game_scores WHERE user_id = u.id) DESC) as position
+        FROM users u
+        LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
+    ) as ranked_users
+    WHERE user_id = ?
+");
+$rank_stmt->execute([$viewed_user_id]);
+$user_rank = $rank_stmt->fetchColumn();
+
 // Get viewed user's game statistics
 $stmt = $pdo->prepare("SELECT 
     game_type,
     AVG(score) as gwa_score,
     COUNT(*) as play_count,
-    MAX(score) as best_score
+    MAX(score) as best_score,
+    SUM(score) as total_score
     FROM game_scores 
     WHERE user_id = ?
     GROUP BY game_type");
 $stmt->execute([$viewed_user_id]);
 $game_stats = $stmt->fetchAll();
+
+// Get player level, experience, and monsters defeated
+$stmt = $pdo->prepare("
+    SELECT 
+        COALESCE(SUM(player_level), 1) as total_level,
+        COALESCE(SUM(total_experience_earned), 0) as total_experience,
+        COALESCE(SUM(total_monsters_defeated), 0) as total_monsters_defeated,
+        COALESCE(SUM(total_play_time), 0) as total_play_time_seconds
+    FROM game_progress 
+    WHERE user_id = ?
+");
+$stmt->execute([$viewed_user_id]);
+$player_stats = $stmt->fetch();
+
+// Get character selection data for JavaScript
+// Debug: Check if user has a character selection
+$character_stmt = $pdo->prepare("
+    SELECT character_image_path, selected_character 
+    FROM character_selections 
+    WHERE user_id = ? AND game_type = 'vocabworld' 
+    LIMIT 1
+");
+$character_stmt->execute([$viewed_user_id]);
+$character_result = $character_stmt->fetch();
+
+// Debug output
+// echo "<pre>Character Result: "; print_r($character_result); echo "</pre>";
+
+// Set default values for JavaScript
+$character_image = '../../MainGame/vocabworld/assets/characters/boy_char/character_ethan.png';
+$character_name = 'Ethan';
+
+if ($character_result) {
+    // Debug: Check what's in the result
+    // echo "<pre>Character Result: "; print_r($character_result); echo "</pre>";
+    // echo "<p>Image Path: " . ($character_result['character_image_path'] ?? 'Not set') . "</p>";
+    if (!empty($character_result['character_image_path'])) {
+        $character_image = $character_result['character_image_path'];
+    }
+    if (!empty($character_result['selected_character'])) {
+        $character_name = $character_result['selected_character'];
+    } else if (preg_match('/character_([^.]+)\./', $character_image, $matches)) {
+        $character_name = ucfirst($matches[1]);
+    }
+}
+
+// Initialize essence and shards with default values
+$essence = 0;
+$shards = 0;
 
 // Get viewed user's favorites
 $stmt = $pdo->prepare("SELECT game_type FROM user_favorites WHERE user_id = ?");
@@ -143,12 +209,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 </head>
 <body>
     <!-- Mobile Menu Button -->
-    <button class="mobile-menu-btn" aria-label="Open menu">
+    <button class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
         <i class="fas fa-bars"></i>
     </button>
 
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <img src="../../assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
         </div>
@@ -280,7 +346,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     <?php if (!empty($viewed_user['about_me'])): ?>
                         <p class="about-me"><?php echo htmlspecialchars($viewed_user['about_me']); ?></p>
                     <?php endif; ?>
-                    <p class="member-since">Member since <?php echo date('F j, Y', strtotime($viewed_user['created_at'])); ?></p>
                     <div class="badge-container">
                         <?php 
                         $is_jaderby = (strtolower($viewed_user['username']) === 'jaderby garcia peñaranda');
@@ -336,34 +401,214 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 </div>
             </div>
 
-            <!-- User Stats -->
-            <div class="user-stats-section">
-                <h2><i class="fas fa-chart-bar"></i> Game Statistics</h2>
-                <?php if (!empty($game_stats)): ?>
-                    <div class="stats-grid">
-                        <?php foreach ($game_stats as $stat): ?>
+            <!-- Game Stats Section -->
+            <div class="gamestats-section">
+                <div class="section-header">
+                    <div class="header-title">
+                        <i class="fas fa-gamepad"></i>
+                        <h3>Game Stats</h3>
+                    </div>
+                    <div class="sort-dropdown">
+                        <select id="game-stats-sort">
+                            <option value="vocabworld" selected>Vocabworld</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="gamestats-layout">
+                    <!-- Character Preview -->
+                    <div class="character-preview-container">
+                        <div class="character-preview-content">
+                            <div class="character-sprite-container">
+                                <?php 
+                                // Determine the correct character image based on the character name
+                                $character_images = [
+                                    'emma' => '../../MainGame/vocabworld/assets/characters/girl_char/character_emma.png',
+                                    'ethan' => '../../MainGame/vocabworld/assets/characters/boy_char/character_ethan.png',
+                                    'amber' => '../../MainGame/vocabworld/assets/characters/amber_char/amber.png',
+                                    'girl' => '../../MainGame/vocabworld/assets/characters/girl_char/character_emma.png',
+                                    'boy' => '../../MainGame/vocabworld/assets/characters/boy_char/character_ethan.png'
+                                ];
+
+                                // Convert character name to lowercase for case-insensitive matching
+                                $char_key = strtolower($character_name);
+                                
+                                // If we have a direct match, use it
+                                if (isset($character_images[$char_key])) {
+                                    $character_image = $character_images[$char_key];
+                                } 
+                                // Otherwise, check if the path contains a character name
+                                else {
+                                    foreach ($character_images as $char => $path) {
+                                        if (stripos($character_image, $char) !== false) {
+                                            $character_image = $path;
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                // Final fallback to Ethan if still not found
+                                if (!isset($character_images[strtolower($character_name)]) && !file_exists($_SERVER['DOCUMENT_ROOT'] . '/GameDev-G1/' . ltrim($character_image, '/'))) {
+                                    $character_image = $character_images['ethan'];
+                                }
+                                
+                                // Output the image with the correct path
+                                echo '<img src="' . htmlspecialchars($character_image) . '" 
+                                     alt="' . htmlspecialchars($character_name) . '" 
+                                     class="character-sprite"
+                                     data-character="' . strtolower($character_name) . '">';
+                                ?>
+                                <div class="character-glow"></div>
+                            </div>
+                            <div class="character-info">
+                                <div class="character-name"><?php echo htmlspecialchars($character_name); ?></div>
+                                <div class="character-level">Level <?php echo number_format($player_stats ? $player_stats['total_level'] : 1); ?></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Player Stats -->
+                    <div class="stats-container">
+                        <div class="section-subtitle">Stats</div>
+                        <div class="stats-grid">
                             <div class="stat-card">
+                                <?php if (isset($user_rank)): ?>
+                                    <div class="rank-badge <?php echo $user_rank <= 3 ? 'rank-' . $user_rank : 'rank-other'; ?>">
+                                        <?php if ($user_rank <= 3): ?>
+                                            <i class="fas fa-trophy"></i>
+                                        <?php endif; ?>
+                                        #<?php echo $user_rank; ?>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="stat-icon">
-                                    <i class="fas fa-gamepad"></i>
+                                    <img src="../../MainGame/vocabworld/assets/stats/level.png" alt="Level" class="stat-icon-img">
                                 </div>
                                 <div class="stat-info">
-                                    <h3><?php echo htmlspecialchars(ucfirst($stat['game_type'])); ?></h3>
-                                    <p>GWA: <?php echo number_format($stat['gwa_score'], 1); ?></p>
-                                    <p>Best: <?php echo $stat['best_score']; ?></p>
-                                    <p>Games: <?php echo $stat['play_count']; ?></p>
+                                    <span class="stat-label">Level</span>
+                                    <span class="stat-value"><?php echo number_format($player_stats ? $player_stats['total_level'] : 1); ?></span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <?php if (isset($user_rank)): ?>
+                                    <div class="rank-badge <?php echo $user_rank <= 3 ? 'rank-' . $user_rank : 'rank-other'; ?>">
+                                        <?php if ($user_rank <= 3): ?>
+                                            <i class="fas fa-trophy"></i>
+                                        <?php endif; ?>
+                                        #<?php echo $user_rank; ?>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/total_xp.png" alt="Experience" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">Experience</span>
+                                    <span class="stat-value"><?php echo number_format($player_stats ? $player_stats['total_experience'] : 0); ?></span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <?php if (isset($user_rank)): ?>
+                                    <div class="rank-badge <?php echo $user_rank <= 3 ? 'rank-' . $user_rank : 'rank-other'; ?>">
+                                        <?php if ($user_rank <= 3): ?>
+                                            <i class="fas fa-trophy"></i>
+                                        <?php endif; ?>
+                                        #<?php echo $user_rank; ?>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/sword1.png" alt="Monsters Defeated" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">Monsters Defeated</span>
+                                    <span class="stat-value"><?php echo number_format($player_stats ? $player_stats['total_monsters_defeated'] : 0); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-subtitle">Resources</div>
+                        
+                        <div class="stats-grid stats-grid-resources">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/currency/essence.png" alt="Essence" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">Essence</span>
+                                    <span class="stat-value"><?php echo number_format($essence); ?></span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/currency/shard1.png" alt="Shards" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">Shards</span>
+                                    <span class="stat-value"><?php echo number_format($shards); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-subtitle">Ratings</div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card gwa-stat-card">
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/gwa.png" alt="GWA" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">GWA</span>
+                                    <span class="stat-value gwa-value"><?php echo number_format(($player_stats ? $player_stats['total_level'] : 1) * 1.5, 2); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <?php if (!empty($game_stats)): ?>
+                    <div class="game-cards-grid">
+                        <?php foreach ($game_stats as $game): ?>
+                            <?php
+                            $game_name = '';
+                            $game_icon = 'fa-gamepad';
+                            
+                            switch ($game['game_type']) {
+                                case 'vocabworld':
+                                    $game_name = 'Vocab World';
+                                    $game_icon = 'fa-book';
+                                    break;
+                                case 'grammar-heroes':
+                                    $game_name = 'Grammar Heroes';
+                                    $game_icon = 'fa-spell-check';
+                                    break;
+                                default:
+                                    $game_name = ucwords(str_replace('-', ' ', $game['game_type']));
+                            }
+                            ?>
+                            <div class="game-card">
+                                <div class="game-card-header">
+                                    <i class="fas <?php echo $game_icon; ?>"></i>
+                                    <h4><?php echo $game_name; ?></h4>
+                                </div>
+                                <div class="game-card-stats">
+                                    <div class="game-stat">
+                                        <span class="stat-label">GWA:</span>
+                                        <span class="stat-value"><?php echo number_format($game['gwa_score'], 1); ?></span>
+                                    </div>
+                                    <div class="game-stat">
+                                        <span class="stat-label">Best:</span>
+                                        <span class="stat-value"><?php echo $game['best_score']; ?></span>
+                                    </div>
+                                    <div class="game-stat">
+                                        <span class="stat-label">Plays:</span>
+                                        <span class="stat-value"><?php echo $game['play_count']; ?></span>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
-                <?php else: ?>
-                    <div class="no-data">
-                        <i class="fas fa-chart-bar"></i>
-                        <p>No game statistics available</p>
-                    </div>
                 <?php endif; ?>
             </div>
 
-            <!-- User Favorites -->
+<!-- User Favorites -->
             <div class="user-favorites-section">
                 <h2><i class="fas fa-star"></i> Favorite Games</h2>
                 <?php if (!empty($favorites)): ?>
@@ -404,6 +649,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     </div>
                 <?php endif; ?>
             </div>
+
+            <!-- Member Since Section -->
+            <div class="member-since-section">
+                <div class="member-since-content">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Member since <?php echo date('F j, Y', strtotime($viewed_user['created_at'])); ?></span>
+                </div>
+            </div>
+
             <!-- Back Button -->
             <div class="back-button-container">
                 <a href="friends.php" class="back-button">
@@ -458,6 +712,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     <script src="../../navigation/shared/profile-dropdown.js"></script>
     <script src="user-profile.js"></script>
     <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const sidebar = document.querySelector('.sidebar');
+
+            if (mobileMenuBtn && sidebar) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    this.setAttribute('aria-expanded', 
+                        this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'
+                    );
+                    this.querySelector('i').classList.toggle('fa-times');
+                    this.querySelector('i').classList.toggle('fa-bars');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    const isClickInside = sidebar.contains(event.target) || 
+                                        mobileMenuBtn.contains(event.target);
+                    
+                    if (!isClickInside && sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                        mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+                        mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+                    }
+                });
+            }
+        });
+
         // Pass user data to JavaScript
         window.userData = {
             id: <?php echo $current_user_id; ?>,

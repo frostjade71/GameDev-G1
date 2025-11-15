@@ -418,7 +418,7 @@ $notification_count = $stmt->rowCount();
                 <button type="submit" class="save-button">Save Settings</button>
             </form>
             <div class="settings-separator"></div>
-            <div class="about-text">Word Weavers is a Thesis Game Development Project by the Bachelor of Science in Computer Sciences Group 3</div>
+            <div class="about-text">Word Weavers is a Thesis Game Development Project by the Bachelor of Science in Computer Sciences Group 1</div>
         </div>
     </div>
     <div class="toast-overlay"></div>

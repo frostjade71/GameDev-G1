@@ -64,17 +64,104 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'update_profile') 
     exit();
 }
 
-// Get user's GWA (General Weighted Average) for each game
+// Get user's rank from leaderboard
+$rank_stmt = $pdo->prepare("
+    SELECT position FROM (
+        SELECT 
+            u.id as user_id,
+            ROW_NUMBER() OVER (ORDER BY COALESCE(gp.player_level, 1) DESC, 
+                              COALESCE(gp.total_monsters_defeated, 0) DESC,
+                              (SELECT AVG(score) FROM game_scores WHERE user_id = u.id) DESC) as position
+        FROM users u
+        LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
+    ) as ranked_users
+    WHERE user_id = ?
+");
+$rank_stmt->execute([$user_id]);
+$user_rank = $rank_stmt->fetchColumn();
+
+// Get user's game stats
 $stmt = $pdo->prepare("SELECT 
     game_type,
     AVG(score) as gwa_score,
     COUNT(*) as play_count,
-    MAX(score) as best_score
+    MAX(score) as best_score,
+    SUM(score) as total_score
     FROM game_scores 
     WHERE user_id = ?
     GROUP BY game_type");
 $stmt->execute([$user_id]);
-$game_gwa = $stmt->fetchAll();
+$game_stats = $stmt->fetchAll();
+
+// Get player level, experience, and monsters defeated
+$stmt = $pdo->prepare("
+    SELECT 
+        COALESCE(SUM(player_level), 1) as total_level,
+        COALESCE(SUM(total_experience_earned), 0) as total_experience,
+        COALESCE(SUM(total_monsters_defeated), 0) as total_monsters_defeated,
+        COALESCE(SUM(total_play_time), 0) as total_play_time_seconds
+    FROM game_progress 
+    WHERE user_id = ?
+");
+$stmt->execute([$user_id]);
+$player_stats = $stmt->fetch();
+
+// Get character selection data for JavaScript
+$character_stmt = $pdo->prepare("
+    SELECT character_image_path, selected_character 
+    FROM character_selections 
+    WHERE user_id = ? AND game_type = 'vocabworld' 
+    LIMIT 1
+");
+$character_stmt->execute([$user_id]);
+$character_result = $character_stmt->fetch();
+
+// Set default values for JavaScript
+$character_images = [
+    'emma' => '../../MainGame/vocabworld/assets/characters/girl_char/character_emma.png',
+    'ethan' => '../../MainGame/vocabworld/assets/characters/boy_char/character_ethan.png',
+    'amber' => '../../MainGame/vocabworld/assets/characters/amber_char/amber.png',
+    'girl' => '../../MainGame/vocabworld/assets/characters/girl_char/character_emma.png',
+    'boy' => '../../MainGame/vocabworld/assets/characters/boy_char/character_ethan.png'
+];
+
+$character_image = $character_images['ethan'];
+$character_name = 'Ethan';
+
+if ($character_result) {
+    // If we have a character selection in the database
+    if (!empty($character_result['selected_character'])) {
+        $character_name = $character_result['selected_character'];
+        $char_key = strtolower($character_name);
+        
+        // If we have a direct match in our character images array
+        if (isset($character_images[$char_key])) {
+            $character_image = $character_images[$char_key];
+        } 
+        // Otherwise try to find a matching character in the paths
+        else if (!empty($character_result['character_image_path'])) {
+            $character_image = $character_result['character_image_path'];
+            foreach ($character_images as $char => $path) {
+                if (stripos($character_image, $char) !== false) {
+                    $character_image = $path;
+                    break;
+                }
+            }
+        }
+    } 
+    // Fallback to extracting name from image path if no selected_character
+    else if (!empty($character_result['character_image_path'])) {
+        $character_image = $character_result['character_image_path'];
+        if (preg_match('/character_([^.]+)\./', $character_image, $matches)) {
+            $character_name = ucfirst($matches[1]);
+        }
+    }
+}
+
+
+// Initialize essence and shards with default values since tables don't exist
+$essence = 0;
+$shards = 0;
 
 // Get user's favorites with game info
 $stmt = $pdo->prepare("SELECT game_type FROM user_favorites WHERE user_id = ?");
@@ -272,32 +359,166 @@ $friends_count = $stmt->fetch()['friends_count'];
                     <i class="fas fa-graduation-cap"></i>
                     <h3>Grade & Section</h3>
                 </div>
-                <div class="grade-section-content">
-                    <div class="grade-info">
-                        <span class="info-label">Grade:</span>
-                        <span class="info-value"><?php echo htmlspecialchars($user['grade_level']); ?></span>
+                <div class="grade-section-grid">
+                    <div class="grade-section-item">
+                        <div class="grade-section-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="grade-section-details">
+                            <span class="grade-section-label">Grade Level</span>
+                            <span class="grade-section-value"><?php echo htmlspecialchars($user['grade_level']); ?></span>
+                        </div>
                     </div>
-                    <div class="section-info">
-                        <span class="info-label">Section:</span>
-                        <span class="info-value"><?php echo !empty($user['section']) ? htmlspecialchars($user['section']) : 'Not specified'; ?></span>
+                    <div class="grade-section-item">
+                        <div class="grade-section-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="grade-section-details">
+                            <span class="grade-section-label">Section</span>
+                            <span class="grade-section-value"><?php echo !empty($user['section']) ? htmlspecialchars($user['section']) : 'Not specified'; ?></span>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <!-- GWA Section -->
-            <div class="gwa-section">
+            <!-- Player Stats Section (Empty, will be moved to Game Stats) -->
+            <div class="player-stats-section" style="display: none;"></div>
+            
+            <!-- Game Stats Section -->
+            <div class="gamestats-section">
                 <div class="section-header">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>General Weighted Average (GWA)</h3>
+                    <div class="header-title">
+                        <i class="fas fa-gamepad"></i>
+                        <h3>Game Stats</h3>
+                    </div>
+                    <div class="sort-dropdown">
+                        <select id="game-stats-sort">
+                            <option value="vocabworld" selected>Vocabworld</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="gwa-container">
-                    <?php if (empty($game_gwa)): ?>
-                        <div class="no-data">
-                            <i class="fas fa-chart-bar"></i>
-                            <p>No game data available yet. Play some games to see your GWA!</p>
+                
+                <div class="gamestats-layout">
+                    <!-- Character Preview -->
+                    <div class="character-preview-container">
+                        <div class="character-preview-content">
+                            <div class="character-sprite-container">
+                                <?php 
+                                // Output the character image directly in PHP to avoid JavaScript dependency
+                                echo '<img src="' . htmlspecialchars($character_image) . '" 
+                                     alt="' . htmlspecialchars($character_name) . '" 
+                                     class="character-sprite"
+                                     id="character-sprite"
+                                     data-character="' . strtolower($character_name) . '">';
+                                ?>
+                                <div class="character-glow"></div>
+                            </div>
+                            <div class="character-info">
+                                <div class="character-name" id="character-name"><?php echo htmlspecialchars($character_name); ?></div>
+                                <div class="character-level">Level <?php echo number_format($player_stats['total_level']); ?></div>
+                            </div>
                         </div>
-                    <?php else: ?>
-                        <?php foreach ($game_gwa as $game): ?>
+                    </div>
+                    
+                    <!-- Player Stats -->
+                    <div class="stats-container">
+                        <div class="section-subtitle">Stats</div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <?php if (isset($user_rank)): ?>
+                                    <div class="rank-badge <?php echo $user_rank <= 3 ? 'rank-' . $user_rank : 'rank-other'; ?>">
+                                        <?php if ($user_rank <= 3): ?>
+                                            <i class="fas fa-trophy"></i>
+                                        <?php endif; ?>
+                                        #<?php echo $user_rank; ?>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/level.png" alt="Level" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">Level</span>
+                                    <span class="stat-value"><?php echo number_format($player_stats['total_level']); ?></span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <?php if (isset($user_rank)): ?>
+                                    <div class="rank-badge <?php echo $user_rank <= 3 ? 'rank-' . $user_rank : 'rank-other'; ?>">
+                                        <?php if ($user_rank <= 3): ?>
+                                            <i class="fas fa-trophy"></i>
+                                        <?php endif; ?>
+                                        #<?php echo $user_rank; ?>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/total_xp.png" alt="Experience" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">Experience</span>
+                                    <span class="stat-value"><?php echo number_format($player_stats['total_experience']); ?></span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <?php if (isset($user_rank)): ?>
+                                    <div class="rank-badge <?php echo $user_rank <= 3 ? 'rank-' . $user_rank : 'rank-other'; ?>">
+                                        <?php if ($user_rank <= 3): ?>
+                                            <i class="fas fa-trophy"></i>
+                                        <?php endif; ?>
+                                        #<?php echo $user_rank; ?>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/sword1.png" alt="Monsters Defeated" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">Monsters Defeated</span>
+                                    <span class="stat-value"><?php echo number_format($player_stats['total_monsters_defeated']); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-subtitle">Resources</div>
+                        
+                        <div class="stats-grid stats-grid-resources">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/currency/essence.png" alt="Essence" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">Essence</span>
+                                    <span class="stat-value"><?php echo number_format($essence); ?></span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/currency/shard1.png" alt="Shards" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">Shards</span>
+                                    <span class="stat-value"><?php echo number_format($shards); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-subtitle">Ratings</div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card gwa-stat-card">
+                                <div class="stat-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/gwa.png" alt="GWA" class="stat-icon-img">
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-label">GWA</span>
+                                    <span class="stat-value gwa-value"><?php echo number_format($player_stats['total_level'] * 1.5, 2); ?></span>
+                                    <div class="gwa-description">Your overall performance score</div>
+                                </div>
+                                <div class="gwa-badge">GWA</div>
+                            </div>
+                        </div>
+                </div>
+                <?php if (!empty($game_stats)): ?>
+                    <div class="game-cards-grid">
+                        <?php foreach ($game_stats as $game): ?>
                             <?php
                             $game_name = '';
                             $game_logo = '';
@@ -315,24 +536,24 @@ $friends_count = $stmt->fetch()['friends_count'];
                                     $game_logo = '../../assets/selection/vocablogo.webp';
                             }
                             ?>
-                            <div class="gwa-card">
+                            <div class="gamestats-card">
                                 <div class="game-logo-container">
                                     <img src="<?php echo $game_logo; ?>" alt="<?php echo $game_name; ?>" class="game-logo">
                                 </div>
-                                <div class="gwa-info">
+                                <div class="gamestats-info">
                                     <h4><?php echo $game_name; ?></h4>
-                                    <div class="gwa-stats">
-                                        <div class="gwa-item">
-                                            <span class="gwa-label">GWA:</span>
-                                            <span class="gwa-value"><?php echo number_format($game['gwa_score'], 1); ?></span>
+                                    <div class="gamestats-stats">
+                                        <div class="stat-item">
+                                            <span class="stat-label">Average:</span>
+                                            <span class="stat-value"><?php echo number_format($game['gwa_score'], 1); ?></span>
                                         </div>
-                                        <div class="gwa-item">
-                                            <span class="gwa-label">Best:</span>
-                                            <span class="gwa-value"><?php echo number_format($game['best_score']); ?></span>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Best:</span>
+                                            <span class="stat-value"><?php echo number_format($game['best_score']); ?></span>
                                         </div>
-                                        <div class="gwa-item">
-                                            <span class="gwa-label">Plays:</span>
-                                            <span class="gwa-value"><?php echo $game['play_count']; ?></span>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Plays:</span>
+                                            <span class="stat-value"><?php echo $game['play_count']; ?></span>
                                         </div>
                                     </div>
                                 </div>
@@ -400,8 +621,14 @@ $friends_count = $stmt->fetch()['friends_count'];
                         <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
                     </div>
                     <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                        <label>
+                            Email 
+                            <span class="info-icon" onclick="showEmailTooltip(this)">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">Contact the Developer if you want to change your email</span>
+                            </span>
+                        </label>
+                        <input type="email" value="<?php echo htmlspecialchars($user['email']); ?>" readonly>
                     </div>
                     <div class="form-group">
                         <label>About Me</label>
@@ -599,6 +826,51 @@ $friends_count = $stmt->fetch()['friends_count'];
     });
     </script>
     <script>
+    // Define logout modal functions in global scope
+    function showLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        const confirmation = document.getElementById('logoutConfirmation');
+        
+        if (modal && confirmation) {
+            modal.classList.add('show');
+            confirmation.classList.remove('hide');
+            confirmation.classList.add('show');
+        }
+    }
+
+    function hideLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        const confirmation = document.getElementById('logoutConfirmation');
+        
+        if (modal && confirmation) {
+            modal.classList.remove('show');
+            confirmation.classList.remove('show');
+            confirmation.classList.add('hide');
+        }
+    }
+    
+    // Function to show/hide email tooltip
+    function showEmailTooltip(element) {
+        element.classList.toggle('show-tooltip');
+        
+        // Close tooltip when clicking outside
+        const closeTooltip = (e) => {
+            if (!element.contains(e.target)) {
+                element.classList.remove('show-tooltip');
+                document.removeEventListener('click', closeTooltip);
+            }
+        };
+        
+        // Add event listener to close on outside click
+        if (element.classList.contains('show-tooltip')) {
+            setTimeout(() => {
+                document.addEventListener('click', closeTooltip);
+            }, 0);
+        } else {
+            document.removeEventListener('click', closeTooltip);
+        }
+    }
+    
     // Inline JavaScript to handle profile form
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('.settings-form');
@@ -610,7 +882,8 @@ $friends_count = $stmt->fetch()['friends_count'];
                 const formData = new FormData();
                 formData.append('action', 'update_profile');
                 formData.append('username', document.querySelector('input[name="username"]').value);
-                formData.append('email', document.querySelector('input[name="email"]').value);
+                // Get email from the readonly input
+                formData.append('email', document.querySelector('input[type="email"][readonly]').value);
                 formData.append('about_me', document.querySelector('textarea[name="about_me"]').value);
                 formData.append('section', document.querySelector('input[name="section"]').value);
                 
@@ -648,12 +921,9 @@ $friends_count = $stmt->fetch()['friends_count'];
                             });
                         }
                         
-                        // Fallback: if the text didn't update properly, reload after a short delay
+                        // Reload the page after a short delay to ensure all updates are reflected
                         setTimeout(() => {
-                            const currentText = aboutMeElement?.textContent;
-                            if (data.about_me && data.about_me.trim() !== '' && currentText === 'Tell us something about yourself...') {
-                                window.location.reload();
-                            }
+                            window.location.reload();
                         }, 500);
                         
                     } else {
@@ -684,7 +954,7 @@ $friends_count = $stmt->fetch()['friends_count'];
             favorites: <?php echo json_encode($favorites); ?>
         };
 
-        // Logout functionality
+        // Logout functionality is now in global scope
         function showLogoutModal() {
             const modal = document.getElementById('logoutModal');
             const confirmation = document.getElementById('logoutConfirmation');
@@ -696,17 +966,6 @@ $friends_count = $stmt->fetch()['friends_count'];
             }
         }
 
-        function hideLogoutModal() {
-            const modal = document.getElementById('logoutModal');
-            const confirmation = document.getElementById('logoutConfirmation');
-            
-            if (modal && confirmation) {
-                confirmation.classList.remove('show');
-                confirmation.classList.add('hide');
-                modal.classList.remove('show');
-            }
-        }
-
         function confirmLogout() {
             // Play click sound
             playClickSound();
@@ -714,6 +973,12 @@ $friends_count = $stmt->fetch()['friends_count'];
             // Redirect to logout endpoint
             window.location.href = '../../onboarding/logout.php';
         }
+
+        // Game stats filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // No need for game stats sort functionality as there's only one option
+            }
+        });
     </script>
 </body>
 </html>

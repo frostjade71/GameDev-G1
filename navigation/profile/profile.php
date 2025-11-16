@@ -1,6 +1,7 @@
 <?php
 require_once '../../onboarding/config.php';
 require_once '../../includes/greeting.php';
+require_once '../../includes/gwa_updater.php';
 
 // Check if user is logged in, redirect to login if not
 if (!isLoggedIn()) {
@@ -80,18 +81,30 @@ $rank_stmt = $pdo->prepare("
 $rank_stmt->execute([$user_id]);
 $user_rank = $rank_stmt->fetchColumn();
 
-// Get user's game stats
+// Update all user GWAs first
+updateAllUserGWAs($pdo, $user_id);
+
+// Get user's game stats with stored GWA
 $stmt = $pdo->prepare("SELECT 
-    game_type,
-    AVG(score) as gwa_score,
-    COUNT(*) as play_count,
-    MAX(score) as best_score,
-    SUM(score) as total_score
-    FROM game_scores 
-    WHERE user_id = ?
-    GROUP BY game_type");
+    gp.game_type,
+    ug.gwa as gwa_score,
+    gp.player_level,
+    gp.total_experience_earned,
+    gp.total_monsters_defeated,
+    gp.total_play_time as total_play_time_seconds
+    FROM game_progress gp
+    LEFT JOIN user_gwa ug ON gp.user_id = ug.user_id AND gp.game_type = ug.game_type
+    WHERE gp.user_id = ?");
 $stmt->execute([$user_id]);
-$game_stats = $stmt->fetchAll();
+$game_stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// For backward compatibility, ensure gwa_score is set (fallback to calculation if not in user_gwa)
+foreach ($game_stats as &$stat) {
+    if (!isset($stat['gwa_score']) || $stat['gwa_score'] === null) {
+        $stat['gwa_score'] = $stat['player_level'] * 1.5;
+    }
+}
+unset($stat); // Break the reference
 
 // Get player level, experience, and monsters defeated
 $stmt = $pdo->prepare("
@@ -516,51 +529,7 @@ $friends_count = $stmt->fetch()['friends_count'];
                             </div>
                         </div>
                 </div>
-                <?php if (!empty($game_stats)): ?>
-                    <div class="game-cards-grid">
-                        <?php foreach ($game_stats as $game): ?>
-                            <?php
-                            $game_name = '';
-                            $game_logo = '';
-                            switch ($game['game_type']) {
-                                case 'grammar-heroes':
-                                    $game_name = 'Grammar Heroes';
-                                    $game_logo = '../../assets/selection/Grammarlogo.webp';
-                                    break;
-                                case 'vocabworld':
-                                    $game_name = 'Vocabworld';
-                                    $game_logo = '../../assets/selection/vocablogo.webp';
-                                    break;
-                                default:
-                                    $game_name = ucfirst(str_replace('-', ' ', $game['game_type']));
-                                    $game_logo = '../../assets/selection/vocablogo.webp';
-                            }
-                            ?>
-                            <div class="gamestats-card">
-                                <div class="game-logo-container">
-                                    <img src="<?php echo $game_logo; ?>" alt="<?php echo $game_name; ?>" class="game-logo">
-                                </div>
-                                <div class="gamestats-info">
-                                    <h4><?php echo $game_name; ?></h4>
-                                    <div class="gamestats-stats">
-                                        <div class="stat-item">
-                                            <span class="stat-label">Average:</span>
-                                            <span class="stat-value"><?php echo number_format($game['gwa_score'], 1); ?></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Best:</span>
-                                            <span class="stat-value"><?php echo number_format($game['best_score']); ?></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Plays:</span>
-                                            <span class="stat-value"><?php echo $game['play_count']; ?></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </div>
+                <!-- Game stats cards have been removed as they are redundant with the main GWA stat card -->
             </div>
 
             <!-- Favorites Section -->

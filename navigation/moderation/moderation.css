@@ -82,16 +82,19 @@
 /* Table Styles */
 .table-responsive {
     overflow-x: auto;
-    margin-top: 20px;
-	position: relative; /* for loading overlay positioning */
+    margin-top: 10px;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
 }
 
 .user-table {
     width: 100%;
+    min-width: 600px; /* Ensure table is wide enough to be scrolled */
     border-collapse: collapse;
     background: #1e1e1e;
-    border-radius: 6px;
-    overflow: hidden;
+    margin: 0;
+    font-size: 0.85em;
 }
 
 /* Loading overlay (reuse leaderboards style) */
@@ -191,47 +194,145 @@
 
 /* Responsive Table */
 @media (max-width: 768px) {
+    .moderation-container {
+        padding: 8px;
+        margin: 8px auto;
+        font-size: 0.85em;
+    }
+    
     .table-controls {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .grade-filter {
+        width: 100%;
+        justify-content: center;
+        margin: 0 0 10px 0;
     }
     
     .search-box {
         width: 100%;
+        margin: 0 0 10px 0;
     }
     
     .user-table {
         display: block;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
     }
     
     .user-table thead {
-        display: none;
+        display: table-header-group;
+        position: sticky;
+        top: 0;
+        z-index: 10;
     }
     
     .user-table tbody tr {
-        display: block;
-        margin-bottom: 15px;
-        border: 1px solid #333;
-        border-radius: 6px;
-    }
-    
-    .user-table tbody td {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px 15px;
-        text-align: right;
+        display: table-row;
         border-bottom: 1px solid #333;
     }
     
-    .user-table tbody td:before {
-        content: attr(data-label);
-        font-weight: bold;
-        margin-right: 10px;
-        color: #888;
+    .user-table tbody tr:nth-child(even) {
+        background-color: #252525;
     }
     
-    .user-table tbody td.actions {
+    .user-table tbody tr:hover {
+        background-color: #2d2d2d;
+    }
+    
+    .user-table th,
+    .user-table td {
+        padding: 8px 10px;
+        font-size: 0.8em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+        border-right: 1px solid #333;
+    }
+    
+    .user-table th {
+        background-color: #2a2a2a;
+        color: #4cc9f0;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.7em;
+        letter-spacing: 0.5px;
+        position: sticky;
+        top: 0;
+    }
+    
+    .user-table thead th {
+        position: sticky;
+        top: 0;
+        background: #2a2a2a;
+        z-index: 10;
+        padding: 8px 6px;
+        font-size: 0.7em;
+        white-space: nowrap;
+    }
+    
+    .user-table td:last-child {
+        border-bottom: none;
+    }
+    
+    .actions {
+        display: flex;
         justify-content: flex-end;
+        gap: 3px;
+        padding: 0;
+    }
+    
+    .actions button {
+        padding: 2px 4px;
+        font-size: 0.7em;
+        margin: 0;
+        min-width: 24px;
+    }
+    
+    /* Make the grade filter more compact */
+    .grade-filter {
+        width: 100%;
+        margin: 0 0 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .grade-filter label {
+        font-size: 0.8em;
+        white-space: nowrap;
+        color: #a0a0a0;
+    }
+    
+    .grade-filter select {
+        padding: 4px 6px;
+        font-size: 0.85em;
+        height: 28px;
+        flex-grow: 1;
+        max-width: 150px;
+    }
+    
+    /* Adjust header for mobile */
+    .moderation-header {
+        padding: 10px 0;
+        margin: 8px auto;
+        font-size: 0.85em;
+        margin-bottom: 15px;
+    }
+    
+    .moderation-header h2 {
+        font-size: 1rem;
+    }
+    
+    .header-logo {
+        width: 30px;
+        height: 30px;
     }
 }
 

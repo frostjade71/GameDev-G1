@@ -1,6 +1,7 @@
 <?php
 require_once '../../onboarding/config.php';
 require_once '../../includes/greeting.php';
+require_once '../../includes/gwa_updater.php';
 
 // Check if user is logged in, redirect to login if not
 if (!isLoggedIn()) {
@@ -32,6 +33,52 @@ if (!$viewed_user_id) {
 $stmt = $pdo->prepare("SELECT id, username, email, grade_level, section, about_me, created_at FROM users WHERE id = ?");
 $stmt->execute([$viewed_user_id]);
 $viewed_user = $stmt->fetch();
+
+// Update all user GWAs first
+updateAllUserGWAs($pdo, $viewed_user_id);
+
+// Get user's game stats with stored GWA
+$stmt = $pdo->prepare("SELECT 
+    gp.game_type,
+    ug.gwa as gwa_score,
+    gp.player_level,
+    gp.total_experience_earned,
+    gp.total_monsters_defeated,
+    gp.total_play_time as total_play_time_seconds
+    FROM game_progress gp
+    LEFT JOIN user_gwa ug ON gp.user_id = ug.user_id AND gp.game_type = ug.game_type
+    WHERE gp.user_id = ?");
+$stmt->execute([$viewed_user_id]);
+$game_stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// For backward compatibility, ensure gwa_score is set (fallback to calculation if not in user_gwa)
+foreach ($game_stats as &$stat) {
+    if (!isset($stat['gwa_score']) || $stat['gwa_score'] === null) {
+        $stat['gwa_score'] = $stat['player_level'] * 1.5;
+    }
+}
+unset($stat); // Break the reference
+
+// Calculate player stats
+$player_stats = [
+    'total_level' => 1,
+    'total_experience' => 0,
+    'total_monsters_defeated' => 0,
+    'total_play_time_seconds' => 0
+];
+
+// Calculate totals from game stats
+if (!empty($game_stats)) {
+    $player_stats['total_level'] = array_sum(array_column($game_stats, 'player_level'));
+    $player_stats['total_experience'] = array_sum(array_column($game_stats, 'total_experience_earned'));
+    $player_stats['total_monsters_defeated'] = array_sum(array_column($game_stats, 'total_monsters_defeated'));
+    $player_stats['total_play_time_seconds'] = array_sum(array_column($game_stats, 'total_play_time_seconds'));
+}
+
+// Calculate overall GWA (average of all game GWAs)
+$overall_gwa = !empty($game_stats) ? 
+    array_sum(array_column($game_stats, 'gwa_score')) / count($game_stats) : 
+    0;
 
 if (!$viewed_user) {
     header('Location: friends.php');
@@ -556,7 +603,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                 </div>
                                 <div class="stat-info">
                                     <span class="stat-label">GWA</span>
-                                    <span class="stat-value gwa-value"><?php echo number_format(($player_stats ? $player_stats['total_level'] : 1) * 1.5, 2); ?></span>
+                                    <span class="stat-value gwa-value"><?php echo number_format($overall_gwa, 2); ?></span>
                                 </div>
                             </div>
                         </div>

@@ -50,15 +50,12 @@ $stmt = $pdo->prepare("
             FROM character_selections 
             WHERE user_id = u.id
         ), 0) as characters_owned,
-        COALESCE((
-            SELECT AVG(score) 
-            FROM game_scores 
-            WHERE user_id = u.id
-        ), 0) as gwa
+        COALESCE(ug.gwa, 0) as gwa
     FROM users u
     LEFT JOIN user_essence ue ON u.id = ue.user_id
     LEFT JOIN user_shards us ON u.id = us.user_id
     LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
+    LEFT JOIN user_gwa ug ON u.id = ug.user_id AND ug.game_type = 'vocabworld'
     ORDER BY level DESC, monsters_defeated DESC, gwa DESC
     LIMIT 100
 ");
@@ -68,6 +65,7 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/webp" href="../../assets/menu/ww_logo_main.webp">
@@ -201,17 +199,35 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="leaderboard-filters">
                     <div class="filter-group">
                         <div class="dropdown">
-                            <button class="dropdown-toggle" id="sortByDropdown" data-sort="level" data-sort-dir="desc">
-                                <span class="selected-option">Level</span>
+                            <button class="dropdown-toggle" id="sortByDropdown" data-sort="level" data-sort-dir="desc" title="Sort by Level">
+                                <img src="../../MainGame/vocabworld/assets/stats/level.png" alt="Level" class="dropdown-icon">
                                 <i class="fas fa-chevron-down"></i>
                             </button>
                             <div class="dropdown-menu">
-                                <a href="#" class="dropdown-item" data-sort="level" data-sort-dir="desc">Level</a>
-                                <a href="#" class="dropdown-item" data-sort="monsters_defeated" data-sort-dir="desc">Monsters Defeated</a>
-                                <a href="#" class="dropdown-item" data-sort="essence" data-sort-dir="desc">Essence</a>
-                                <a href="#" class="dropdown-item" data-sort="shards" data-sort-dir="desc">Shards</a>
-                                <a href="#" class="dropdown-item" data-sort="characters_owned" data-sort-dir="desc">Characters Owned</a>
-                                <a href="#" class="dropdown-item" data-sort="gwa" data-sort-dir="desc">GWA</a>
+                                <a href="#" class="dropdown-item" data-sort="level" data-sort-dir="desc">
+                                    <img src="../../MainGame/vocabworld/assets/stats/level.png" alt="Level">
+                                    <span>Level</span>
+                                </a>
+                                <a href="#" class="dropdown-item" data-sort="monsters_defeated" data-sort-dir="desc">
+                                    <img src="../../MainGame/vocabworld/assets/stats/sword1.png" alt="Monsters Defeated">
+                                    <span>Monsters Defeated</span>
+                                </a>
+                                <a href="#" class="dropdown-item" data-sort="essence" data-sort-dir="desc">
+                                    <img src="../../MainGame/vocabworld/assets/currency/essence.png" alt="Essence">
+                                    <span>Essence</span>
+                                </a>
+                                <a href="#" class="dropdown-item" data-sort="shards" data-sort-dir="desc">
+                                    <img src="../../MainGame/vocabworld/assets/currency/shard1.png" alt="Shards">
+                                    <span>Shards</span>
+                                </a>
+                                <a href="#" class="dropdown-item" data-sort="characters_owned" data-sort-dir="desc">
+                                    <img src="../../MainGame/vocabworld/assets/stats/characters_owned.png" alt="Characters Owned">
+                                    <span>Characters Owned</span>
+                                </a>
+                                <a href="#" class="dropdown-item" data-sort="gwa" data-sort-dir="desc">
+                                    <img src="../../MainGame/vocabworld/assets/stats/gwa.png" alt="GWA">
+                                    <span>GWA</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -239,7 +255,8 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <div class="podium-rank">#<?php echo $rank; ?></div>
                             <div class="podium-name"><?php echo htmlspecialchars($player['username']); ?></div>
                             <div class="podium-score">
-                                <span class="score-value"><?php echo number_format($player['level'] ?? 1, 0); ?></span>
+                                <span class="score-value"><?php echo number_format($player['gwa'] ?? 0, 2); ?></span>
+                                <span class="score-label">GWA</span>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -252,7 +269,7 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <tr>
                                 <th>Rank</th>
                                 <th>Player</th>
-                                <th class="sortable" data-sort="level">Level <i class="sort-icon"></i></th>
+                                <th class="sortable" data-sort="gwa">GWA <i class="sort-icon"></i></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -267,15 +284,31 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <tr class="<?php echo implode(' ', $rowClass); ?>" onclick="viewProfile(<?php echo $player['user_id']; ?>)" style="cursor: pointer;">
                                 <td class="rank"><?php echo $index + 4; ?></td>
                                 <td class="player-name"><?php echo htmlspecialchars($player['username']); ?></td>
-                                <td><?php echo number_format($player['level'] ?? 1, 0); ?></td>
+                                <td><?php echo number_format($player['gwa'] ?? 0, 2); ?></td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
-                </div> <!-- Close leaderboard-section -->
-            </div> <!-- Close leaderboard-container -->
-        </div> <!-- Close main-content -->
+                
+                <!-- Separator Line -->
+                <div class="leaderboard-separator"></div>
+                
+                <!-- Personal Rank Section -->
+                <div class="personal-rank-section" style="margin: 10px auto 0; max-width: 600px; width: 95%; text-align: center;">
+                    <div class="personal-rank-container" style="background: rgba(0, 0, 0, 0.3); border: 1px solid #4da6ff; border-radius: 4px; padding: 3px; margin: 0 auto; max-width: 200px; box-shadow: 0 0 4px rgba(77, 166, 255, 0.3); transition: all 0.3s ease;">
+                        <div id="personal-rank-title" style="font-family: 'Press Start 2P', monospace; font-size: 0.7em; color: #fff; text-align: center; padding: 2px; letter-spacing: -0.5px; line-height: 1.2;">
+                            Loading...
+                        </div>
+                    </div>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+            </div> <!-- Close leaderboard-section -->
+        </div> <!-- Close leaderboard-container -->
+    </div> <!-- Close main-content -->
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../shared/navigation.js?v=<?php echo time(); ?>"></script>
@@ -307,11 +340,15 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 },
                 dataType: 'json',
                 success: function(response) {
-                    if (response.success) {
-                        updateLeaderboardUI(response.data);
+                    console.log('Leaderboard response:', response); // Debug log
+                    if (response && response.success) {
+                        updateLeaderboardUI(response);
                     } else {
-                        console.error('Error loading leaderboard:', response.message);
+                        console.error('Error loading leaderboard:', response ? response.message : 'No response');
                         alert('Failed to load leaderboard. Please try again.');
+                        // Hide loading indicator on error
+                        $('#loadingIndicator').hide();
+                        $('.leaderboard-content').show();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -327,17 +364,26 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
         
         // Function to update the UI with new leaderboard data
-        function updateLeaderboardUI(leaderboardData) {
-            if (!leaderboardData || leaderboardData.length === 0) {
+        function updateLeaderboardUI(response) {
+            console.log('Updating UI with data:', response); // Debug log
+            if (!response || !response.data) {
                 console.warn('No leaderboard data received');
+                // Hide loading indicator
+                $('#loadingIndicator').hide();
+                $('.leaderboard-content').show();
                 return;
             }
+            
+            const leaderboardData = response.data || [];
             
             // Update the podium (top 3)
             updatePodium(leaderboardData.slice(0, 3));
             
             // Update the table (ranks 4-10)
             updateLeaderboardTable(leaderboardData.slice(3, 10));
+            
+            // Update the personal rank
+            updatePersonalRank(response.user_rank);
             
             // Hide loading indicator with fade out effect
             $('#loadingIndicator').addClass('hidden');
@@ -351,6 +397,57 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             setTimeout(() => {
                 $('#loadingIndicator').remove();
             }, 500);
+        }
+        
+        // Function to update the personal rank section
+        function updatePersonalRank(userRank) {
+            const titleElement = $('#personal-rank-title');
+            
+            if (!userRank) {
+                titleElement.text('Rank not available');
+                return;
+            }
+            
+            // Get the current sort column name for display
+            const sortNames = {
+                'level': 'Level',
+                'gwa': 'GWA',
+                'essence': 'Essence',
+                'shards': 'Shards',
+                'monsters_defeated': 'Monsters Defeated',
+                'characters_owned': 'Characters Owned'
+            };
+            
+            const sortName = sortNames[currentSort] || currentSort;
+            let rankColor, borderColor, shadowColor;
+            
+            // Set colors based on rank
+            if (userRank.rank === 1) {
+                rankColor = '#FFD700'; // Gold
+                borderColor = 'rgba(255, 215, 0, 0.8)';
+                shadowColor = 'rgba(255, 215, 0, 0.4)';
+            } else if (userRank.rank === 2) {
+                rankColor = '#C0C0C0'; // Silver
+                borderColor = 'rgba(192, 192, 192, 0.8)';
+                shadowColor = 'rgba(192, 192, 192, 0.4)';
+            } else if (userRank.rank === 3) {
+                rankColor = '#CD7F32'; // Bronze
+                borderColor = 'rgba(205, 127, 50, 0.8)';
+                shadowColor = 'rgba(205, 127, 50, 0.4)';
+            } else {
+                rankColor = '#fff'; // Default white
+                borderColor = 'rgba(77, 166, 255, 0.8)';
+                shadowColor = 'rgba(77, 166, 255, 0.3)';
+            }
+            
+            // Update container styles
+            $('.personal-rank-container').css({
+                'border-color': borderColor,
+                'box-shadow': `0 0 4px ${shadowColor}`
+            });
+            
+            // Update rank text with color
+            titleElement.html(`<span style="font-family: 'Press Start 2P', monospace; color: ${rankColor};">Rank #${userRank.rank}</span> in <span style="font-family: 'Press Start 2P', monospace;">${sortName}</span>`);
         }
         
         // Function to update the podium section
@@ -407,13 +504,16 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 return;
             }
             
-            players.forEach((player, index) => {
+            // Only show up to 7 players (ranks 4-10)
+            const playersToShow = players.slice(0, 7);
+            
+            playersToShow.forEach((player, index) => {
                 const rank = index + 4; // Start from rank 4
                 const isCurrentUser = player.user_id == currentUserId;
                 
                 const rowHtml = `
-                    <tr class="rank-${index + 4} ${isCurrentUser ? 'current-user' : ''}" style="cursor: pointer;" onclick="viewProfile(${player.user_id})">
-                        <td class="rank">${index + 4}</td>
+                    <tr class="rank-${rank} ${isCurrentUser ? 'current-user' : ''}" style="cursor: pointer;" onclick="viewProfile(${player.user_id})">
+                        <td class="rank">${rank}</td>
                         <td class="player-name">${player.username}</td>
                         <td>${formatScore(player[currentSort])}</td>
                     </tr>
@@ -436,8 +536,11 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return value;
         }
 
-        // Tab switching functionality
+        // Load initial data when the page loads
         $(document).ready(function() {
+            // Initial load of leaderboard data
+            loadLeaderboard(currentSort, currentSortDir);
+            
             // Handle tab switching
             $('.game-tab').on('click', function() {
                 const tabName = $(this).data('tab');
@@ -465,6 +568,7 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $(document).on('click', '.dropdown-toggle', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
+                $('.dropdown').not($(this).closest('.dropdown')).removeClass('open');
                 $(this).closest('.dropdown').toggleClass('open');
             });
 
@@ -484,12 +588,17 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 const sortDir = 'desc'; // Default to descending
                 const columnName = $(this).text().trim();
 
-                // Update dropdown button text
+                // Update dropdown button content
                 const $dropdown = $(this).closest('.dropdown');
                 const $dropdownToggle = $dropdown.find('.dropdown-toggle');
+                const iconSrc = $(this).find('img').attr('src');
+                const iconAlt = $(this).find('img').attr('alt');
+                
+                // Update toggle button content
                 $dropdownToggle.attr('data-sort', sortBy);
                 $dropdownToggle.attr('data-sort-dir', sortDir);
-                $dropdownToggle.find('.selected-option').text(columnName);
+                $dropdownToggle.attr('title', 'Sort by ' + columnName);
+                $dropdownToggle.find('img').attr('src', iconSrc).attr('alt', iconAlt);
 
                 // Close dropdown
                 $dropdown.removeClass('open');

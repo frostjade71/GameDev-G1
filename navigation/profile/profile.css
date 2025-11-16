@@ -955,15 +955,7 @@
     text-align: center;
 }
 
-.member-since-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
-}
+/* Removed vertical line from member-since-section */
 
 .member-since-section .member-since {
     color: rgba(255, 255, 255, 0.8);
@@ -1586,9 +1578,6 @@
     background: #1a1a2e;
     color: #fff;
     padding: 0.5rem;
-}
-
-.gamestats-section .stats-container {
     margin-top: 1rem;
 }
 
@@ -1598,7 +1587,7 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: 3px;
+    width: 0px;
     background: linear-gradient(to bottom, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
 }
 
@@ -1748,6 +1737,12 @@
     border: 1px solid rgba(96, 239, 255, 0.1);
     position: relative;
     overflow: hidden;
+    text-align: left;
+}
+
+.favorites-section .section-header {
+    justify-content: flex-start;
+    text-align: left;
 }
 
 .favorites-section::before {

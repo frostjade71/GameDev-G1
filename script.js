@@ -47,6 +47,13 @@ function addClickEffect(button) {
     }, 100);
 }
 
+// View user profile
+function viewProfile(userId) {
+    if (userId) {
+        window.location.href = 'navigation/profile/profile.php?user_id=' + userId;
+    }
+}
+
 // Mobile menu functionality
 document.addEventListener('DOMContentLoaded', () => {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');

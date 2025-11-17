@@ -47,20 +47,31 @@
 .title-container {
     display: flex;
     align-items: center;
-    gap: 0.1rem;
+    gap: 0.5rem;
 }
 
-.notification-logo {
-    width: 200px;
-    height: auto;
-    max-width: 80%;
-    object-fit: contain;
+.friend-requests-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(97, 1, 1, 0.132);
+    margin: 0;
+    white-space: nowrap;
+    margin-top: 0.3rem;
+}
+
+@media (max-width: 768px) {
+    .friend-requests-title {
+        font-size: 0.6rem;
+    }
 }
 
 .request-count {
     color: #fff;
     font-family: 'Press Start 2P', cursive;
-    font-size: 0.8rem;
+    font-size: 0.6rem;
     letter-spacing: 1px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -293,54 +304,62 @@
 /* Empty State Styles */
 .empty-state {
     text-align: center;
-    padding: 3rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 15px;
-    border: 1px solid rgba(96, 239, 255, 0.1);
+    padding: 0.8rem 0.5rem;
+    color: rgba(255, 255, 255, 0.6);
     position: relative;
-    overflow: hidden;
-}
-
-.empty-state::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+    margin: 0.5rem 0;
 }
 
 .empty-state i {
-    font-size: 3.5rem;
-    color: rgba(96, 239, 255, 0.3);
-    margin-bottom: 1.5rem;
-    opacity: 0.8;
-    background: linear-gradient(45deg, rgba(96, 239, 255, 1), rgba(0, 255, 135, 1));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: rgba(96, 239, 255, 0.4);
+    display: block;
 }
 
 .empty-state h3 {
-    color: #fff;
-    margin: 0 0 1rem 0;
-    font-size: 1rem;
-    font-family: 'Press Start 2P', cursive;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 0.2rem 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
 }
 
 .empty-state p {
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.5;
-    max-width: 400px;
+    font-size: 0.6rem; /* Smaller than the heading */
+    max-width: 240px;
     margin: 0 auto;
+    line-height: 1.2;
+    opacity: 0.6;
+    font-weight: 400;
+    letter-spacing: 0.1px;
 }
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .empty-state {
+        padding: 0.6rem 0.3rem;
+    }
+    
+    .empty-state i {
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .empty-state h3 {
+        font-size: 0.65rem;
+        margin-bottom: 0.1rem;
+    }
+    
+    .empty-state p {
+        font-size: 0.55rem; /* Even smaller on mobile */
+        max-width: 220px;
+        opacity: 0.6;
+    }
+}
+
+/* Left green vertical line removed as requested */
 
 /* Responsive Design */
 @media (max-width: 768px) {

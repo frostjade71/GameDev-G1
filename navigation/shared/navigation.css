@@ -224,11 +224,21 @@
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-size: 1.2rem; /* Smaller icon size */
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-icon i {
+    font-size: 1.2rem; /* Match the icon size to the container */
 }
 
 .notification-icon:hover {
     color: #60efff;
-    transform: scale(1.1);
+    transform: scale(1.05); /* More subtle hover effect */
 }
 
 .logout-icon {

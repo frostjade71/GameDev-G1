@@ -1,0 +1,80 @@
+# Enable rewrite engine
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+</IfModule>
+
+# Enable expirations
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Default expiration: 1 hour after request
+    ExpiresDefault "access plus 1 hour"
+    
+    # HTML and PHP documents: 5 minutes
+    ExpiresByType text/html "access plus 5 minutes"
+    ExpiresByType application/x-httpd-php "access plus 5 minutes"
+    
+    # CSS and JavaScript: 1 year
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    
+    # Media files: 2 days
+    ExpiresByType image/jpg "access plus 2 days"
+    ExpiresByType image/jpeg "access plus 2 days"
+    ExpiresByType image/gif "access plus 2 days"
+    ExpiresByType image/png "access plus 2 days"
+    ExpiresByType image/svg+xml "access plus 2 days"
+    ExpiresByType image/webp "access plus 2 days"
+    ExpiresByType audio/ogg "access plus 2 days"
+    ExpiresByType video/mp4 "access plus 2 days"
+    ExpiresByType video/ogg "access plus 2 days"
+    ExpiresByType video/webm "access plus 2 days"
+    
+    # Web fonts
+    ExpiresByType application/font-woff "access plus 2 days"
+    ExpiresByType application/x-font-ttf "access plus 2 days"
+    ExpiresByType font/opentype "access plus 2 days"
+    ExpiresByType font/woff2 "access plus 2 days"
+    
+    # Favicon and app icons
+    ExpiresByType image/x-icon "access plus 1 week"
+    ExpiresByType image/vnd.microsoft.icon "access plus 1 week"
+</IfModule>
+
+# Enable ETags
+FileETag MTime Size
+
+# Set cache control headers
+<IfModule mod_headers.c>
+    # 2 Days for static assets
+    <filesMatch "\.(jpg|jpeg|png|gif|ico|svg|webp|woff|woff2|ttf|eot|mp4|webm|ogg)$">
+        Header set Cache-Control "max-age=172800, public"
+    </filesMatch>
+    
+    # 5 Minutes for HTML and PHP
+    <filesMatch "\.(html|htm|php)$">
+        Header set Cache-Control "max-age=300, must-revalidate"
+    </filesMatch>
+    
+    # Prevent caching for API endpoints and dynamic content
+    <FilesMatch "\.(php|json)$">
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+    </FilesMatch>
+</IfModule>
+
+# GZIP compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/x-font-ttf
+    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+    AddOutputFilterByType DEFLATE font/opentype font/ttf font/eot font/otf
+</IfModule>

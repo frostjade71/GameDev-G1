@@ -51,7 +51,11 @@
 }
 
 .friend-requests-title {
+<<<<<<< HEAD
     font-family: var(--font-pixel);
+=======
+    font-family: 'Press Start 2P', cursive;
+>>>>>>> e0d19cbe55f114bea539b9a8a9623692554160c8
     font-size: 0.8rem;
     color: #ffffff;
     text-transform: uppercase;
@@ -70,7 +74,11 @@
 
 .request-count {
     color: #fff;
+<<<<<<< HEAD
     font-family: var(--font-pixel);
+=======
+    font-family: 'Press Start 2P', cursive;
+>>>>>>> e0d19cbe55f114bea539b9a8a9623692554160c8
     font-size: 0.6rem;
     letter-spacing: 1px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);

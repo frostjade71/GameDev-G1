@@ -145,9 +145,8 @@ $notification_count = count($friend_requests);
             <div class="friend-requests-section">
                 <div class="section-header">
                     <div class="title-container">
-                        <img src="../assets/menu/friend_requestmain.png" alt="Friend Requests" class="notification-logo">
-                        <span class="request-count">(<?php echo count($friend_requests); ?>)</span>
-                    </div>
+                    <h2 class="friend-requests-title">FRIEND REQUESTS <span class="request-count">(<?php echo $notification_count; ?>)</span></h2>
+                </div>
                     <?php if (!empty($friend_requests)): ?>
                     <button class="decline-all-btn" onclick="showDeclineAllModal()" aria-label="Decline All Requests">
                         <i class="fas fa-times"></i>

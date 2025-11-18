@@ -28,7 +28,7 @@
     color: white;
     padding: 25px 40px;
     border-radius: 20px;
-    font-family: 'Press Start 2P', cursive;
+    font-family: var(--font-pixel);
     font-size: 0.8rem;
     line-height: 1.6;
     z-index: 1000;
@@ -99,7 +99,7 @@
 }
 
 #logoutConfirmation h3 {
-    font-family: 'Press Start 2P', cursive;
+    font-family: var(--font-pixel);
     font-size: 1rem;
     color: #ff6b6b;
     margin-bottom: 1rem;
@@ -128,7 +128,7 @@
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 12px;
-    font-family: 'Press Start 2P', cursive;
+    font-family: var(--font-pixel);
     font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -148,7 +148,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 0.8rem 1.5rem;
     border-radius: 12px;
-    font-family: 'Press Start 2P', cursive;
+    font-family: var(--font-pixel);
     font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.3s ease;

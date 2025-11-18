@@ -1,6 +1,5 @@
 /* Menu Page Styles - Based on Profile Page Design */
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+/* Fonts are imported in styles.css */
 
 /* Main Container - Using Profile Container St.highscore-button {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('assets/menu/overview.jpeg') center/cover no-repeat;
@@ -222,7 +221,7 @@
     color: white;
     margin-bottom: 0.5rem;
     font-size: 1rem;
-    font-family: 'Press Start 2P', cursive;
+    font-family: var(--font-pixel);
 }
 
 @media (max-width: 768px) {

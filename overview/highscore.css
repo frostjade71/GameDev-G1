@@ -4,7 +4,7 @@ body {
     background-position: center;
     min-height: 100vh;
     color: white;
-    font-family: 'Press Start 2P', cursive;
+    font-family: var(--font-pixel);
 }
 
 .highscore-container {
@@ -163,7 +163,7 @@ body {
 }
 
 .pixel-font {
-    font-family: 'Press Start 2P', cursive;
+    font-family: var(--font-pixel);
     color: #ffffff;
     margin: 0;
     font-size: 0.8em;
@@ -252,7 +252,7 @@ body {
     border-radius: 25px;
     color: white;
     font-size: 0.9rem;
-    font-family: 'Press Start 2P', cursive;
+    font-family: var(--font-pixel);
     display: flex;
     align-items: center;
     gap: 8px;

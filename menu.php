@@ -1,4 +1,19 @@
 <?php
+// Start output buffering
+ob_start();
+
+// Set security headers
+header('X-Frame-Options: SAMEORIGIN');
+header('X-Content-Type-Options: nosniff');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+
+// Set cache control headers
+$cache_time = 3600; // 1 hour
+header('Cache-Control: private, max-age=' . $cache_time);
+header('Pragma: cache');
+header_remove('Expires');
+
 require_once 'onboarding/config.php';
 require_once 'includes/greeting.php';
 
@@ -8,63 +23,95 @@ if (!isLoggedIn()) {
     exit();
 }
 
-// Get user information
-$user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT username, email, grade_level FROM users WHERE id = ?");
-$stmt->execute([$user_id]);
-$user = $stmt->fetch();
+try {
+    $user_id = $_SESSION['user_id'];
+    
+    // Combine database queries for better performance
+    $stmt = $pdo->prepare("
+        SELECT 
+            u.username, 
+            u.email, 
+            u.grade_level,
+            (SELECT COUNT(*) FROM game_scores WHERE user_id = ?) as games_played,
+            (SELECT MAX(score) FROM game_scores WHERE user_id = ?) as high_score,
+            (SELECT COUNT(*) FROM user_favorites WHERE user_id = ?) as favorites_count
+        FROM users u 
+        WHERE u.id = ?
+        LIMIT 1
+    ");
+    $stmt->execute([$user_id, $user_id, $user_id, $user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$user) {
-    // User not found, destroy session and redirect to login
-    session_destroy();
-    header('Location: onboarding/login.php');
-    exit();
+    if (!$user) {
+        // User not found, destroy session and redirect to login
+        session_destroy();
+        header('Location: onboarding/login.php');
+        exit();
+    }
+
+    // Get pending friend requests count in a single query
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) as request_count 
+        FROM friend_requests 
+        WHERE receiver_id = ? AND status = 'pending'
+    ");
+    $stmt->execute([$user_id]);
+    $notification_count = $stmt->fetchColumn();
+
+    // Set default values if null
+    $games_played = (int)($user['games_played'] ?? 0);
+    $high_score = (int)($user['high_score'] ?? 0);
+    $favorites_count = (int)($user['favorites_count'] ?? 0);
+    
+    // Free the result
+    $user['games_played'] = $games_played;
+    $user['high_score'] = $high_score;
+    $user['favorites_count'] = $favorites_count;
+    
+} catch (PDOException $e) {
+    // Log error and show generic message
+    error_log('Database error in menu.php: ' . $e->getMessage());
+    die('An error occurred while loading the page. Please try again later.');
 }
-
-// Get user's game statistics
-$stmt = $pdo->prepare("SELECT 
-    COUNT(*) as games_played,
-    MAX(score) as high_score
-    FROM game_scores 
-    WHERE user_id = ?");
-$stmt->execute([$user_id]);
-$stats = $stmt->fetch();
-
-// Get user's favorites count
-$stmt = $pdo->prepare("SELECT COUNT(*) as favorites_count FROM user_favorites WHERE user_id = ?");
-$stmt->execute([$user_id]);
-$favorites = $stmt->fetch();
-
-// Get pending friend requests for the current user (for notification count)
-$stmt = $pdo->prepare("
-    SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level
-    FROM friend_requests fr
-    JOIN users u ON fr.requester_id = u.id
-    WHERE fr.receiver_id = ? AND fr.status = 'pending'
-    ORDER BY fr.created_at DESC
-");
-$stmt->execute([$user_id]);
-$friend_requests = $stmt->fetchAll();
-
-// Get notification count for badge
-$notification_count = count($friend_requests);
-
-$games_played = $stats['games_played'] ?? 0;
-$high_score = $stats['high_score'] ?? 0;
-$favorites_count = $favorites['favorites_count'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="assets/menu/ww_logo_main.webp">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="icon" type="image/webp" href="assets/menu/ww_logo_main.webp" sizes="any">
     <title>Menu - Word Weavers</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="navigation/shared/navigation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="notif/toast.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="menu.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="navigation/shared/navigation.css" as="style">
+    <link rel="preload" href="menu.css" as="style">
+    
+    <!-- Load styles -->
+    <link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="navigation/shared/navigation.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="menu.css" media="print" onload="this.media='all'">
+    
+    <!-- Load non-critical CSS asynchronously -->
+    <link rel="stylesheet" href="notif/toast.css" media="print" onload="this.media='all'">
+    
+    <!-- Preconnect to CDN -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <!-- Load Font Awesome with integrity check -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
+          integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
+          crossorigin="anonymous" 
+          referrerpolicy="no-referrer" />
+    
+    <!-- Preload critical above-the-fold images -->
+    <link rel="preload" as="image" href="assets/menu/Word-Weavers.png" imagesrcset="assets/menu/Word-Weavers.png" fetchpriority="high">
+    <link rel="preload" as="image" href="assets/menu/blue-play.png" imagesrcset="assets/menu/blue-play.png" fetchpriority="high">
+    
+    <!-- Preload other important images -->
+    <link rel="preload" as="image" href="assets/banner/changelog_banner.png" imagesrcset="assets/banner/changelog_banner.png" fetchpriority="low">
+    <link rel="preload" as="image" href="assets/menu/trophy-menu.png" imagesrcset="assets/menu/trophy-menu.png" fetchpriority="low">
 </head>
 <body>
     <!-- Mobile Menu Button -->
@@ -75,7 +122,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-logo">
-            <img src="assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
+            <img src="assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img" width="200" height="50" loading="eager" decoding="async">
         </div>
         <nav class="sidebar-nav">
             <a href="./menu.php" class="nav-link active">

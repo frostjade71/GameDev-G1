@@ -1,15 +1,16 @@
 .profile-container {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
-    backdrop-filter: blur(15px);
+    background: rgba(10, 10, 15, 0.95); /* Solid color instead of gradient */
     border-radius: 25px;
     padding: 1.25rem;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     border: 2px solid rgba(96, 239, 255, 0.15);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
+    will-change: transform; /* Optimize for animations */
+    transform: translateZ(0); /* Force GPU acceleration */
 }
 
 @media (max-width: 768px) {
@@ -19,6 +20,32 @@
         margin: 0;
         border-radius: 20px;
     }
+    
+    .character-preview-container {
+        flex: 0 0 auto;
+        width: 100%;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .character-sprite-container {
+        width: 100px;
+        height: 150px;
+    }
+    
+    .character-name {
+        font-size: 1.2rem;
+    }
+    
+    .character-level {
+        font-size: 0.9rem;
+        padding: 0.15rem 0.5rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -27,6 +54,28 @@
         padding: 0.8rem;
         margin: 0;
         border-radius: 15px;
+    }
+    
+    .character-preview-container {
+        padding: 0.8rem;
+    }
+    
+    .character-sprite-container {
+        width: 90px;
+        height: 130px;
+    }
+    
+    .character-name {
+        font-size: 1.1rem;
+    }
+    
+    .character-level {
+        font-size: 0.8rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
     }
 }
 
@@ -798,6 +847,9 @@
     border: 1px solid rgba(96, 239, 255, 0.1);
     position: relative;
     overflow: hidden;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .grade-section-container::before {
@@ -827,6 +879,9 @@
     align-items: center;
     gap: 1rem;
     transition: all 0.2s ease;
+    will-change: transform, border-color;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .grade-section-item:hover {
@@ -907,6 +962,9 @@
     gap: 1.5rem;
     width: 100%;
     box-sizing: border-box;
+    will-change: transform, border-color;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .info-label {
@@ -953,6 +1011,9 @@
     position: relative;
     overflow: hidden;
     text-align: center;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 /* Removed vertical line from member-since-section */
@@ -1013,14 +1074,50 @@
 }
 
 /* Character Preview */
-.character-preview-container {
-    flex: 0 0 280px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 15px;
-    padding: 1.5rem;
-    border: 1px solid rgba(96, 239, 255, 0.1);
+.gamestats-layout > .character-preview-container {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 15px !important;
+    padding: 1.5rem !important;
+    border: 1px solid rgba(96, 239, 255, 0.1) !important;
+    width: 500px !important;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
     position: relative;
     overflow: hidden;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .gamestats-layout > .character-preview-container {
+        width: 300px !important;
+        height: 200px !important;
+        padding: 1rem !important;
+        margin: 0.5rem auto !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .character-preview-container {
+        padding: 0.5rem !important;
+        width: 300px !important;
+        height: 120px !important;
+        margin: 0.2rem auto !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .character-preview-container {
+        padding: 0.3rem !important;
+        width: 210px !important;
+        height: 100px !important;
+        margin: 0.1rem auto !important;
+        border-radius: 8px !important;
+    }
 }
 
 .character-preview-content {
@@ -1031,12 +1128,57 @@
 
 .character-sprite-container {
     position: relative;
-    width: 150px;
+    width: 100%;
     height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border-radius: 15px;
     overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(96, 239, 255, 0.2);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .character-sprite-container {
+        width: 90% !important;
+        height: 150px !important;
+        margin: 0.5rem auto !important;
+        border-radius: 12px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .character-sprite-container {
+        width: 90% !important;
+        height: 140px !important;
+        margin: 0 auto 0.5rem !important;
+        padding: 0 !important;
+    }
+    
+    .character-name {
+        font-size: 1.1rem !important;
+        margin: 0.3rem 0 !important;
+    }
+    
+    .character-level {
+        font-size: 0.7rem !important;
+        padding: 0.15rem 0.5rem !important;
+        margin: 0.1rem 0 0.3rem 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .character-sprite-container {
+        width: 95% !important;
+        height: 120px !important;
+        border-radius: 8px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
 }
 
 .character-sprite {
@@ -1071,6 +1213,31 @@
     font-weight: 600;
     color: #fff;
     margin-bottom: 0.25rem;
+    
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .character-name {
+        font-size: 1.2rem !important;
+        margin: 0.3rem 0 0.1rem !important;
+        line-height: 1.2 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .character-name {
+        font-size: 1rem !important;
+        margin: 0.1rem 0 !important;
+        line-height: 1 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .character-name {
+        font-size: 1rem !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+    }
 }
 
 .character-level {
@@ -1081,6 +1248,36 @@
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
     margin-top: 0.5rem;
+    
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .character-level {
+        font-size: 0.8rem !important;
+        padding: 0.2rem 0.5rem !important;
+        margin: 0.2rem 0 0 0 !important;
+        line-height: 1.2 !important;
+        border-radius: 10px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .character-level {
+        font-size: 0.6rem !important;
+        padding: 0.1rem 0.3rem !important;
+        margin: 0.1rem 0 0 0 !important;
+        line-height: 1 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .character-level {
+        font-size: 0.65rem !important;
+        padding: 0.1rem 0.2rem !important;
+        margin: 0 !important;
+        border-radius: 4px !important;
+        line-height: 1 !important;
+    }
 }
 
 .stats-container {
@@ -1170,16 +1367,16 @@
 }
 
 .stat-card {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 15px;
-    padding: 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(96, 239, 255, 0.1);
+    background: rgba(30, 30, 40, 0.6);
+    border: 1px solid rgba(96, 239, 255, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    will-change: transform, border-color;
+    backface-visibility: hidden;
+    transform: translateZ(0);
     position: relative;
     overflow: hidden;
+    transition: transform 0.2s ease-out, border-color 0.2s ease-out;
 }
 
 .rank-badge {
@@ -1250,6 +1447,9 @@
     align-items: center;
     gap: 0.8rem;
     min-height: auto;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .gwa-stat-card::before {
@@ -1432,15 +1632,15 @@
 
 /* Game Stats Section */
 .gamestats-section {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
-    padding: 1rem;
-    margin: 1rem 0;
-    position: relative;
-    overflow: hidden;
+    background: rgba(20, 20, 30, 0.7);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
     border: 1px solid rgba(96, 239, 255, 0.1);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .gamestats-layout {

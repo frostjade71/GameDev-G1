@@ -54,7 +54,7 @@ $notification_count = $stmt->rowCount();
             background-position: center;
             min-height: 100vh;
             color: white;
-            font-family: 'Press Start 2P', cursive;
+            font-family: var(--font-pixel);
             margin: 0;
             padding: 0;
         }
@@ -157,7 +157,7 @@ $notification_count = $stmt->rowCount();
             font-size: 0.9rem;
             transition: all 0.3s ease;
             cursor: pointer;
-            font-family: 'Press Start 2P', cursive;
+            font-family: var(--font-pixel);
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
@@ -204,7 +204,7 @@ $notification_count = $stmt->rowCount();
             background: rgba(20, 20, 20, 0.95);
             color: white;
             padding: 1rem;
-            font-family: 'Press Start 2P', cursive;
+            font-family: var(--font-pixel);
             font-size: 0.85rem;
         }
 
@@ -259,7 +259,7 @@ $notification_count = $stmt->rowCount();
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 1rem;
-            font-family: 'Press Start 2P', cursive;
+            font-family: var(--font-pixel);
         }
         .save-button:hover {
             transform: translateY(-2px);

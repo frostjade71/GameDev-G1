@@ -1,5 +1,20 @@
+/* Google Fonts - Quicksand */
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Local Font - Press Start 2P */
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url('fonts/PressStart2P-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Global Font Variables */
+:root {
+    --font-primary: 'Quicksand', sans-serif;
+    --font-pixel: 'Press Start 2P', monospace;
+}
 
 * {
     margin: 0;

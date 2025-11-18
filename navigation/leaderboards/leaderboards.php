@@ -536,6 +536,38 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return value;
         }
 
+        // Function to handle sort button click
+        function sortBy(criteria) {
+            // Don't do anything if already sorting
+            if ($('#loadingIndicator').is(':visible')) return;
+            
+            // Show loading indicator
+            $('.leaderboard-content').fadeOut(200, function() {
+                $('#loadingIndicator').fadeIn(200);
+                
+                // Toggle sort direction if clicking the same criteria
+                if (currentSort === criteria) {
+                    currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+                } else {
+                    // Default to descending for most sorts, ascending for GWA (lower is better)
+                    currentSortDir = criteria === 'gwa' ? 'asc' : 'desc';
+                    currentSort = criteria;
+                }
+                
+                // Update the active state of sort buttons
+                $('.sort-btn').removeClass('active');
+                $(`.sort-btn[data-sort="${criteria}"]`).addClass('active');
+                
+                // Update sort direction indicator
+                $('.sort-direction').remove();
+                const directionIcon = currentSortDir === 'asc' ? '↑' : '↓';
+                $(`.sort-btn[data-sort="${criteria}"]`).append(`<span class="sort-direction">${directionIcon}</span>`);
+                
+                // Reload leaderboard with new sort
+                loadLeaderboard(criteria, currentSortDir);
+            });
+        }
+
         // Load initial data when the page loads
         $(document).ready(function() {
             // Initial load of leaderboard data

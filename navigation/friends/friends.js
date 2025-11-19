@@ -29,10 +29,14 @@ function initializeFriendActions() {
     messageBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
-            const friendCard = this.closest('.friend-card');
-            const friendName = friendCard.querySelector('.friend-info h3').textContent;
+            // Create a link element for the font
+            const fontLink = document.createElement('link');
+            fontLink.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
+            fontLink.rel = 'stylesheet';
+            document.head.appendChild(fontLink);
             
-            showToast(`Messaging feature coming soon! You would message ${friendName} here.`, 'info');
+            // Show toast with the styled message
+            showToast('<div style="text-align: center;"><img src="../../assets/pixels/hammer.png" style="width: 24px; height: 24px; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;"><span style="font-family: \'Press Start 2P\', monospace; font-size: 0.7rem;">Messaging feature coming soon!</span></div>', 'info');
         });
     });
     
@@ -284,19 +288,37 @@ function showToast(message, type = 'info') {
     
     if (!toast || !toastOverlay) return;
     
-    // Set message and type
-    toast.textContent = message;
-    toast.className = `toast ${type}`;
+    // Only show one toast at a time
+    if (toast.classList.contains('show')) {
+        toast.classList.remove('show');
+        toastOverlay.classList.remove('show');
+        setTimeout(() => {
+            showToast(message, type);
+        }, 300);
+        return;
+    }
+    
+    // Set message and type - using innerHTML to render HTML content
+    toast.innerHTML = message;
+    toast.className = 'toast';
+    toast.classList.add(type);
     
     // Show toast
     toastOverlay.classList.add('show');
     toast.classList.add('show');
     
-    // Hide after 3 seconds
+    // Hide after delay
     setTimeout(() => {
-        toast.classList.remove('show');
-        toastOverlay.classList.remove('show');
+        hideToast();
     }, 3000);
+}
+
+function hideToast() {
+    const toast = document.getElementById('toast');
+    const toastOverlay = document.querySelector('.toast-overlay');
+    
+    toast.classList.remove('show');
+    toastOverlay.classList.remove('show');
 }
 
 // Search functionality (for future implementation)

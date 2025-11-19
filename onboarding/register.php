@@ -410,6 +410,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             position: relative;
         }
 
+        .auth-links p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
         .auth-links::before {
             content: '';
             position: absolute;

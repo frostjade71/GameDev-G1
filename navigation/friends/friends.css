@@ -112,11 +112,11 @@
     padding: 1rem;
     margin-bottom: 0.8rem;
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 1fr auto;
     grid-template-areas: 
-        "avatar content"
-        "actions actions";
-    gap: 0.5rem 0.75rem;
+        "avatar content actions";
+    align-items: center;
+    gap: 1rem;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -169,23 +169,48 @@
 .friend-info {
     grid-area: content;
     min-width: 0;
+    max-width: calc(100% - 60px); /* Slightly more space for the chat button */
     align-self: center;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.05rem;
+    margin-right: 0.5rem;
+    flex: 1; /* Allow it to take available space */
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 .friend-info h3 {
     color: white;
     font-size: 0.75rem;
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Press Start 2P', monospace;
     margin: 0;
+    padding: 0;
     transition: color 0.3s ease;
-    line-height: 1.3;
+    line-height: 1.1;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal; /* Changed from nowrap */
+    word-break: break-word; /* Allow long words to break */
+    display: block; /* Changed from flex */
+    width: 100%;
+}
+
+.friend-info h3 .username-text {
+    white-space: normal;
+    word-break: break-word;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.75rem;
+    display: block;
+    width: 100%;
+}
+
+.user-badge {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
+    position: relative;
+    top: -1px;
 }
 
 .friend-info h3:hover {
@@ -193,10 +218,12 @@
 }
 
 .friend-status {
-    color: rgba(255, 255, 255, 0.8);
+    color: #9CA3AF; /* A neutral grey color */
     font-size: 0.7rem;
-    margin: 0;
-    display: inline-block;
+    margin: -2px 0 0 0; /* Negative top margin to pull up */
+    padding: 0;
+    line-height: 1.1;
+    display: block;
 }
 
 /* Action buttons */
@@ -205,7 +232,9 @@
     display: flex;
     gap: 0.75rem;
     justify-content: flex-end;
-    margin-top: 0.5rem;
+    align-self: center;
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
 .action-btn {
@@ -213,32 +242,30 @@
     border-radius: 8px;
     cursor: pointer;
     font-size: 0.7rem;
+    background: linear-gradient(45deg, rgba(96, 239, 255, 0.15), rgba(0, 255, 135, 0.15));
+    border: 1px solid rgba(96, 239, 255, 0.3);
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    text-transform: uppercase;
-    line-height: 1;
-    white-space: nowrap;
     justify-content: center;
-    background: linear-gradient(45deg, rgba(96, 239, 255, 0.2), rgba(0, 255, 135, 0.2));
+    width: 36px;
+    height: 36px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     color: #60efff;
-    border: 1px solid rgba(96, 239, 255, 0.3);
-    min-width: 100px;
-    max-width: 140px;
-    flex: 1;
+    min-width: 36px;
+    max-width: 36px;
 }
 
 .action-btn:hover {
-    transform: translateY(-2px);
     background: linear-gradient(45deg, rgba(96, 239, 255, 0.3), rgba(0, 255, 135, 0.3));
-    border-color: rgba(96, 239, 255, 0.5);
+    border-color: rgba(96, 239, 255, 0.6);
+    transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(96, 239, 255, 0.2);
 }
 
 .action-btn:active {
     transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .action-btn i {
@@ -302,10 +329,10 @@
 
 /* Badge style */
 .user-badge {
-    width: 24px;
-    height: 24px;
+    width: 18px;  /* Reduced from 24px */
+    height: 18px; /* Reduced from 24px */
     object-fit: contain;
-    margin-left: 0.5rem;
+    margin-left: 0.3rem; /* Reduced from 0.5rem */
     transition: transform 0.3s ease;
 }
 
@@ -510,6 +537,10 @@
         top: 70px;
     }
     
+    .friend-info {
+        gap: 0.05rem;
+    }
+    
     .friends-section,
     .suggested-section {
         padding: 1.5rem;
@@ -551,6 +582,11 @@
     .friend-info h3,
     .suggested-info h3 {
         font-size: 0.65rem;
+    }
+    
+    .friend-info h3 .username-text,
+    .suggested-info h3 {
+        font-size: 0.6rem;
     }
 
     .friend-status,
@@ -685,9 +721,9 @@
     }
 
     .user-badge {
-        width: 20px;
-        height: 20px;
-        margin-left: 0;
+        width: 16px;  /* Reduced from 20px */
+        height: 16px; /* Reduced from 20px */
+        margin-left: 0.2rem;
     }
     
     .friend-actions {
@@ -797,6 +833,11 @@
         margin-bottom: 0.3rem;
         line-height: 1.2;
     }
+    
+    .friend-info h3 .username-text,
+    .suggested-info h3 {
+        font-size: 0.55rem;
+    }
 
     .friend-status,
     .user-details {
@@ -809,18 +850,89 @@
         padding-top: 0.5rem;
     }
     
-    .action-btn,
-    .add-friend-btn,
-    .cancel-request-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.6rem;
-        min-width: 90px;
-        max-width: 120px;
+    .action-btn {
+        padding: 0.2rem 0.4rem;
+        min-width: 26px;
+        max-width: 26px;
+        height: 26px;
+    }
+    
+    .action-btn img {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .action-btn i {
+        font-size: 0.55rem;
+    }
+}
+
+/* Second media query for smaller screens */
+@media (max-width: 480px) {
+    .friend-card,
+    .suggested-card {
+        padding: 0.8rem;
+        gap: 0.4rem; /* Increased from 0.2rem */
+        
+        /* Add margin to the right of the avatar */
+        .friend-avatar {
+            margin-right: 0.5rem;
+        }
+    }
+    
+    .friend-info {
+        gap: 0.02rem;
+    }
+    
+    .friend-avatar,
+    .suggested-avatar {
+        width: 35px;
+        height: 35px;
+        margin: 2px 0;
     }
 
-    .action-btn i,
-    .add-friend-btn i,
-    .cancel-request-btn i {
+    .friend-avatar img,
+    .suggested-avatar img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .friend-info h3,
+    .suggested-info h3 {
         font-size: 0.6rem;
+        margin-bottom: 0.3rem;
+        line-height: 1.2;
+    }
+    
+    .friend-info h3 .username-text,
+    .suggested-info h3 {
+        font-size: 0.55rem;
+    }
+
+    .friend-status,
+    .user-details {
+        font-size: 0.6rem;
+        gap: 0.6rem;
+    }
+
+    .friend-actions,
+    .suggested-actions {
+        padding-top: 0.5rem;
+    }
+    
+    .action-btn {
+        padding: 0.2rem 0.4rem;
+        min-width: 26px;
+        max-width: 26px;
+        height: 26px;
+    }
+    
+    .action-btn img {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .action-btn i {
+        font-size: 0.55rem;
     }
 }

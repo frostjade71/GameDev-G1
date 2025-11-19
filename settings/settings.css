@@ -436,3 +436,68 @@ select {
 .save-settings:hover {
     transform: scale(1.05);
 }
+
+.reset-progress-button {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.8), rgba(255, 87, 51, 0.8));
+    border: 2px solid rgba(255, 59, 48, 0.5);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.7rem;
+    font-family: var(--font-pixel);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 1rem auto;
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+}
+
+@media (max-width: 768px) {
+    .reset-progress-button {
+        padding: 0.35rem 0.9rem;
+        font-size: 0.65rem;
+        margin: 0.8rem auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .reset-progress-button {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.6rem;
+        margin: 0.6rem auto;
+    }
+}
+
+.reset-progress-button:hover {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.9), rgba(255, 87, 51, 0.9));
+    border-color: rgba(255, 59, 48, 0.7);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 59, 48, 0.4);
+}
+
+.reset-progress-button:active {
+    transform: scale(0.98);
+}
+
+.button-separator {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    .button-separator {
+        margin: 1.2rem 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .button-separator {
+        margin: 1rem 0;
+    }
+}

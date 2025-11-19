@@ -1,5 +1,5 @@
 <?php
-require_once 'onboarding/config.php';
+require_once '../onboarding/config.php';
 
 try {
     // Check if user_gwa table exists

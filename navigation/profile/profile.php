@@ -67,18 +67,15 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'update_profile') 
 
 // Get user's rank from leaderboard
 $rank_stmt = $pdo->prepare("
-    SELECT position FROM (
-        SELECT 
-            u.id as user_id,
-            ROW_NUMBER() OVER (ORDER BY COALESCE(gp.player_level, 1) DESC, 
-                              COALESCE(gp.total_monsters_defeated, 0) DESC,
-                              (SELECT AVG(score) FROM game_scores WHERE user_id = u.id) DESC) as position
-        FROM users u
-        LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
-    ) as ranked_users
-    WHERE user_id = ?
+    SELECT COUNT(*) + 1 as user_rank
+    FROM users u
+    LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
+    WHERE u.id != ?
+    AND (COALESCE(gp.player_level, 1) > COALESCE((SELECT player_level FROM game_progress WHERE user_id = ? AND game_type = 'vocabworld'), 1)
+         OR (COALESCE(gp.player_level, 1) = COALESCE((SELECT player_level FROM game_progress WHERE user_id = ? AND game_type = 'vocabworld'), 1)
+             AND COALESCE(gp.total_monsters_defeated, 0) > COALESCE((SELECT total_monsters_defeated FROM game_progress WHERE user_id = ? AND game_type = 'vocabworld'), 0)))
 ");
-$rank_stmt->execute([$user_id]);
+$rank_stmt->execute([$user_id, $user_id, $user_id, $user_id]);
 $user_rank = $rank_stmt->fetchColumn();
 
 // Update all user GWAs first
@@ -817,6 +814,14 @@ $friends_count = $stmt->fetch()['friends_count'];
             confirmation.classList.add('hide');
         }
     }
+
+    function confirmLogout() {
+        // Play click sound
+        playClickSound();
+        
+        // Redirect to logout endpoint
+        window.location.href = '../../onboarding/logout.php';
+    }
     
     // Function to show/hide email tooltip
     function showEmailTooltip(element) {
@@ -923,25 +928,7 @@ $friends_count = $stmt->fetch()['friends_count'];
             favorites: <?php echo json_encode($favorites); ?>
         };
 
-        // Logout functionality is now in global scope
-        function showLogoutModal() {
-            const modal = document.getElementById('logoutModal');
-            const confirmation = document.getElementById('logoutConfirmation');
-            
-            if (modal && confirmation) {
-                modal.classList.add('show');
-                confirmation.classList.remove('hide');
-                confirmation.classList.add('show');
-            }
-        }
-
-        function confirmLogout() {
-            // Play click sound
-            playClickSound();
-            
-            // Redirect to logout endpoint
-            window.location.href = '../../onboarding/logout.php';
-        }
+        // Logout functionality is now in global scope above
 
         // Game stats filter functionality
         document.addEventListener('DOMContentLoaded', function() {

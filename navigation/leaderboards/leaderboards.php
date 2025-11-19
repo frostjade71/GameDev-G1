@@ -185,7 +185,7 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
             <div class="settings-header">
-                <img src="../../assets/menu/leaderboardsmain.png" alt="Leaderboards" class="settings-logo">
+                <h1 class="settings-title">Leaderboards</h1>
             </div>
 
             <div class="leaderboard-section">

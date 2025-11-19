@@ -32,7 +32,7 @@ $notification_count = $stmt->rowCount();
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="../navigation/shared/navigation.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../notif/toast.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="overview.css">
+    <link rel="stylesheet" href="overview.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -122,7 +122,7 @@ $notification_count = $stmt->rowCount();
     <div class="main-content">
         <div class="overview-container">
             <div class="section-header">
-                <img src="../assets/menu/overviewmain.png" alt="Overview" class="overview-title">
+                <h1 class="overview-title">Overview</h1>
             </div>
 
             <div class="overview-content">

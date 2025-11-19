@@ -117,6 +117,15 @@
     white-space: nowrap;
 }
 
+/* Import Press Start 2P Font */
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url('../../fonts/PressStart2P-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* Leaderboards Page Styles */
 body {
     background-image: url('../../assets/menu/menubg.jpg');
@@ -175,18 +184,25 @@ body {
 
 .section-separator {
     height: 2px;
-    background: rgba(96, 239, 255, 0.2);
+    background: rgba(36, 78, 246, 0.6);
     margin: 1rem 0;
     width: 100%;
 }
 
-.settings-logo {
+.settings-title {
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 1.5rem;
+    color: #ffffff;
+    text-align: center;
+    margin: 0.8rem 0;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+    background-image: url('../../assets/pixels/trophy.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    padding: 20px 0;
+    display: inline-block;
     width: 100%;
-    max-width: 300px;
-    height: auto;
-    object-fit: contain;
-    margin: 0 auto;
-    display: block;
 }
 
 .leaderboard-section {
@@ -1136,8 +1152,9 @@ th.sortable:hover {
         max-width: 100%;
     }
     
-    .settings-logo {
-        width: 300px;
+    .settings-title {
+        font-size: 1.2rem;
+        padding: 15px 0;
     }
     
     .leaderboard-section {

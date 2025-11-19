@@ -1,10 +1,10 @@
 <?php
-require_once 'onboarding/config.php';
-require_once 'includes/greeting.php';
+require_once '../onboarding/config.php';
+require_once '../includes/greeting.php';
 
 // Check if user is logged in, redirect to login if not
 if (!isLoggedIn()) {
-    header('Location: onboarding/login.php');
+    header('Location: ../onboarding/login.php');
     exit();
 }
 
@@ -17,35 +17,24 @@ $user = $stmt->fetch();
 if (!$user) {
     // User not found, destroy session and redirect to login
     session_destroy();
-    header('Location: onboarding/login.php');
+    header('Location: ../onboarding/login.php');
     exit();
 }
 
 // Get user's game progress
-$stmt = $pdo->prepare("SELECT game_type, MAX(level) as max_level, MAX(score) as best_score 
-                      FROM game_scores 
-                      WHERE user_id = ? 
-                      GROUP BY game_type");
-$stmt->execute([$user_id]);
 $game_progress = [];
-while ($row = $stmt->fetch()) {
-    $game_progress[$row['game_type']] = [
-        'max_level' => $row['max_level'],
-        'best_score' => $row['best_score']
-    ];
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="assets/menu/ww_logo_main.webp">
+    <link rel="icon" type="image/webp" href="../assets/menu/ww_logo_main.webp">
     <title>Select Game - Word Weavers</title>
-    <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="navigation/shared/navigation.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../styles.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../navigation/shared/navigation.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="game-selection.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="notif/toast.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../notif/toast.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -57,22 +46,22 @@ while ($row = $stmt->fetch()) {
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-logo">
-            <img src="assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
+            <img src="../assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
         </div>
         <nav class="sidebar-nav">
-            <a href="menu.php?from=selection" class="nav-link">
+            <a href="../menu.php?from=selection" class="nav-link">
                 <i class="fas fa-house"></i>
                 <span>Menu</span>
             </a>
-            <a href="navigation/favorites/favorites.php" class="nav-link">
+            <a href="../navigation/favorites/favorites.php" class="nav-link">
                 <i class="fas fa-star"></i>
                 <span>Favorites</span>
             </a>
-            <a href="navigation/friends/friends.php" class="nav-link">
+            <a href="../navigation/friends/friends.php" class="nav-link">
                 <i class="fas fa-users"></i>
                 <span>Friends</span>
             </a>
-            <a href="navigation/profile/profile.php" class="nav-link">
+            <a href="../navigation/profile/profile.php" class="nav-link">
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </a>
@@ -82,7 +71,7 @@ while ($row = $stmt->fetch()) {
     <!-- Header -->
     <header class="top-header">
         <div class="header-right">
-            <div class="notification-icon" onclick="window.location.href='navigation/notification.php'">
+            <div class="notification-icon" onclick="window.location.href='../navigation/notification.php'">
                 <i class="fas fa-bell"></i>
                 <span class="notification-badge">0</span>
             </div>
@@ -96,26 +85,26 @@ while ($row = $stmt->fetch()) {
                 </div>
                 <div class="profile-dropdown">
                     <a href="#" class="profile-icon">
-                        <img src="assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                        <img src="../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
                     </a>
                     <div class="profile-dropdown-content">
                         <div class="profile-dropdown-header">
-                            <img src="assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                            <img src="../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
                             <div class="profile-dropdown-info">
                                 <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
                                 <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
                             </div>
                         </div>
                         <div class="profile-dropdown-menu">
-                            <a href="navigation/profile/profile.php" class="profile-dropdown-item">
+                            <a href="../navigation/profile/profile.php" class="profile-dropdown-item">
                                 <i class="fas fa-user"></i>
                                 <span>View Profile</span>
                             </a>
-                            <a href="navigation/favorites/favorites.php" class="profile-dropdown-item">
+                            <a href="../navigation/favorites/favorites.php" class="profile-dropdown-item">
                                 <i class="fas fa-star"></i>
                                 <span>My Favorites</span>
                             </a>
-                            <a href="settings/settings.php" class="profile-dropdown-item">
+                            <a href="../settings/settings.php" class="profile-dropdown-item">
                                 <i class="fas fa-cog"></i>
                                 <span>Settings</span>
                             </a>
@@ -145,7 +134,7 @@ while ($row = $stmt->fetch()) {
                     <div class="game-card" data-game="grammarbg">
                         <div class="card-content">
                             <div class="game-logo">
-                                <img src="assets/selection/Grammarlogo.webp" alt="Grammar Heroes Logo">
+                                <img src="../assets/selection/Grammarlogo.webp" alt="Grammar Heroes Logo">
                             </div>
                             <h2>Grammar Heroes</h2>
                             <p class="game-description">Battle grammar challenges by correcting sentences, and unlock new levels.</p>
@@ -158,10 +147,10 @@ while ($row = $stmt->fetch()) {
                         </div>
                     </div>
 
-                    <div class="game-card" data-game="vocabbg" onclick="playClickSound(); window.location.href='MainGame/vocabworld/index.php'">
+                    <div class="game-card" data-game="vocabbg">
                         <div class="card-content">
                             <div class="game-logo">
-                                <img src="assets/selection/vocablogo.webp" alt="Vocabworld Logo">
+                                <img src="../assets/selection/vocablogo.webp" alt="Vocabworld Logo">
                             </div>
                             <h2>Vocabworld</h2>
                             <p class="game-description">Practice word skills and earn points to customize your character.</p>
@@ -174,7 +163,7 @@ while ($row = $stmt->fetch()) {
                         </div>
                     </div>
 
-                    <div class="game-card coming-soon">
+                    <div class="game-card coming-soon" data-game="coming-soon">
                         <div class="card-content">
                             <div class="game-logo">
                                 <i class="fas fa-gamepad"></i>
@@ -196,15 +185,15 @@ while ($row = $stmt->fetch()) {
             <nav class="menu-buttons">
                 <button id="backToMenu" class="back-button">
                     <i class="fas fa-arrow-left back-icon"></i>
-                    Back to Menu
+                    Back
                 </button>
             </nav>
         </div>
     </div>
     <div class="toast-overlay"></div>
     <div id="toast" class="toast"></div>
-    <script src="script.js"></script>
-    <script src="navigation/shared/notification-badge.js"></script>
+    <script src="../script.js"></script>
+    <script src="../navigation/shared/notification-badge.js"></script>
     <!-- Logout Confirmation Modal -->
     <div class="toast-overlay" id="logoutModal">
         <div class="toast" id="logoutConfirmation">
@@ -218,7 +207,105 @@ while ($row = $stmt->fetch()) {
     </div>
 
     <script src="game-selection.js?v=<?php echo time(); ?>"></script>
-    <script src="navigation/shared/profile-dropdown.js"></script>
+    <script src="../navigation/shared/profile-dropdown.js"></script>
+    <script>
+        // Override sound paths for this page
+        const originalShowToast = window.showToast;
+        const originalPlayClickSound = window.playClickSound;
+        
+        window.showToast = function(message, iconPath = null) {
+            const toast = document.getElementById('toast');
+            const overlay = document.querySelector('.toast-overlay');
+            
+            if (toast && overlay) {
+                // Play toast notification sound with correct path
+                const toastSound = new Audio('../assets/sounds/toast/toastnotifwarn.mp3');
+                toastSound.volume = 0.5;
+                toastSound.play().catch(error => {
+                    console.log('Error playing toast sound:', error);
+                });
+                
+                // Clear previous content
+                toast.innerHTML = '';
+                
+                // Create container for vertical layout
+                const container = document.createElement('div');
+                container.style.cssText = 'display: flex; flex-direction: column; align-items: center; text-align: center;';
+                
+                // Add icon if provided
+                if (iconPath) {
+                    const icon = document.createElement('img');
+                    icon.src = iconPath;
+                    icon.alt = 'Icon';
+                    icon.style.cssText = 'width: 24px; height: 24px; margin-bottom: 8px;';
+                    container.appendChild(icon);
+                }
+                
+                // Add message
+                const messageSpan = document.createElement('span');
+                messageSpan.textContent = message;
+                messageSpan.style.cssText = 'font-family: "Press Start 2P", cursive; font-size: 14px;';
+                container.appendChild(messageSpan);
+                
+                toast.appendChild(container);
+                
+                // Show overlay and toast
+                overlay.classList.add('show');
+                toast.classList.remove('hide');
+                toast.classList.add('show');
+                
+                // Hide after delay
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    toast.classList.add('hide');
+                    overlay.classList.remove('show');
+                }, 1500);
+            } else {
+                console.error('Toast or overlay elements not found');
+            }
+        };
+        
+        window.playClickSound = function() {
+            const clickSound = new Audio('../assets/sounds/clicks/mixkit-stapling-paper-2995.wav');
+            clickSound.play().catch(error => {
+                console.log('Error playing click sound:', error);
+            });
+        };
+        
+        // Override notification badge path for this page
+        const originalUpdateNotificationBadge = updateNotificationBadge;
+        updateNotificationBadge = function() {
+            const badge = document.querySelector('.notification-badge');
+            if (!badge) return;
+            
+            // Make API call to get notification count
+            fetch('../navigation/get_notification_count.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const count = data.count;
+                        badge.textContent = count;
+                        
+                        // Add pulse animation if there are new notifications
+                        if (count > 0) {
+                            badge.classList.add('pulse');
+                        } else {
+                            badge.classList.remove('pulse');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating notification badge:', error);
+                });
+        };
+        
+        // Initialize notification badge
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNotificationBadge();
+            // Update every 30 seconds
+            setInterval(updateNotificationBadge, 30000);
+        });
+    </script>
     <script>
         // Pass user data to JavaScript
         window.userData = {

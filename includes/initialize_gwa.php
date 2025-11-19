@@ -1,5 +1,5 @@
 <?php
-require_once 'onboarding/config.php';
+require_once '../onboarding/config.php';
 
 // Get all users who have game scores but no GWA records
 $stmt = $pdo->query("
@@ -19,7 +19,7 @@ if (empty($usersToInitialize)) {
 echo "Initializing GWA records for " . count($usersToInitialize) . " user-game combinations...\n";
 
 // Include the update_gwa function
-require_once 'includes/update_gwa.php';
+require_once 'update_gwa.php';
 
 $updated = 0;
 $errors = 0;

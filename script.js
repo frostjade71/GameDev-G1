@@ -61,9 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (mobileMenuBtn && sidebar) {
         mobileMenuBtn.addEventListener('click', () => {
-            // Play click sound
-            playClickSound();
-            
             // Add visual feedback
             addClickEffect(mobileMenuBtn);
             

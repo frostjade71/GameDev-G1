@@ -145,11 +145,11 @@ $notification_count = count($friend_requests);
             <div class="friend-requests-section">
                 <div class="section-header">
                     <div class="title-container">
-                    <h2 class="friend-requests-title">FRIEND REQUESTS <span class="request-count">(<?php echo $notification_count; ?>)</span></h2>
+                    <h2 class="friend-requests-title"><img src="../assets/pixels/redbook.png" alt="Friend Request" class="friend-request-icon"> FRIEND REQUESTS <span class="request-count">(<?php echo $notification_count; ?>)</span></h2>
                 </div>
                     <?php if (!empty($friend_requests)): ?>
                     <button class="decline-all-btn" onclick="showDeclineAllModal()" aria-label="Decline All Requests">
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-ban"></i>
                         <span>Decline All</span>
                     </button>
                     <?php endif; ?>
@@ -333,6 +333,46 @@ $notification_count = count($friend_requests);
             font-size: 0.5rem;
             min-width: 80px;
         }
+
+        /* Mobile decline all button - circular with no sign (only header button) */
+        .friend-requests-section .decline-all-btn {
+            width: 30px !important;
+            height: 30px !important;
+            border-radius: 50% !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 30px !important;
+            font-size: 0 !important;
+        }
+
+        .friend-requests-section .decline-all-btn i {
+            font-size: 14px !important;
+            margin: 0 !important;
+        }
+
+        .friend-requests-section .decline-all-btn span {
+            display: none !important;
+        }
+
+        /* Mobile accept and decline buttons - smaller size */
+        .accept-btn, .decline-btn {
+            padding: 0.3rem 0.5rem !important;
+            font-size: 0.7rem !important;
+            min-width: 60px !important;
+        }
+
+        .accept-btn i, .decline-btn i {
+            font-size: 10px !important;
+            margin-right: 3px !important;
+        }
+    }
+
+    .friend-request-icon {
+        width: 32px;
+        height: 32px;
+        vertical-align: middle;
     }
     </style>
 

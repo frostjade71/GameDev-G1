@@ -1,74 +1,68 @@
 /* User Profile Viewing Page Styles */
-.user-profile-container {
-    max-width: 1000px;
-    width: 100%;
+/* Main content wrapper */
+.main-content {
+    padding: 1rem;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
-    margin-top: auto;
+    width: 100%;
 }
 
 .member-since-section {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
     backdrop-filter: blur(15px);
-    border-radius: 12px;
-    padding: 0.75rem 1.25rem;
-    margin: 1rem 0;
+    border-radius: 10px;
+    padding: 0.6rem 1.25rem;
+    margin: 0 auto 1rem;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(96, 239, 255, 0.15);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    background: rgba(20, 20, 30, 0.6);
+    max-width: fit-content;
+    display: table;
 }
 
 .member-since-content {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.85rem;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
     font-weight: 400;
-    padding: 0.25rem 0;
+    padding: 0;
+    white-space: nowrap;
 }
 
 .member-since-content i {
     color: #60efff;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    opacity: 0.9;
 }
 
 @media (max-width: 768px) {
     .member-since-section {
         padding: 0.6rem 1rem;
-        margin: 0.8rem 0;
-        border-radius: 10px;
-    }
-    
-    .member-since-content {
-        font-size: 0.8rem;
-        gap: 0.5rem;
+        margin: 0 auto 0.75rem;
+        border-radius: 8px;
+        display: table;
     }
 }
 
 @media (max-width: 480px) {
     .member-since-section {
-        padding: 0.5rem 0.8rem;
-        margin: 0.5rem 0;
-        border-radius: 8px;
-    }
-    
-    .member-since-content {
+        padding: 0.5rem 1rem;
+        margin: 0 auto 0.75rem;
+        border-radius: 6px;
+        display: table;
         font-size: 0.75rem;
-        gap: 0.4rem;
-    }
-    
-    .member-since-content i {
-        font-size: 0.8rem;
     }
 }
 
 .back-button-container {
-    margin-top: 2rem;
+    margin: 1rem auto 2rem;
     display: flex;
     justify-content: flex-end;
+    max-width: 1100px;
+    width: calc(100% - 2rem);
+    padding: 0 1rem;
 }
 
 .back-button {
@@ -97,22 +91,21 @@
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
-.user-profile-header {
+.user-profile-container {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
     backdrop-filter: blur(15px);
-    border-radius: 25px;
-    padding: 2rem;
-    border: 2px solid rgba(96, 239, 255, 0.15);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    padding: 0 0 1.5rem 0;
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 2rem;
+    margin: 1.5rem auto 0.5rem;
+    max-width: 1100px;
+    width: calc(100% - 2rem);
 }
 
-.user-profile-header::before {
+.user-profile-container::before {
     content: '';
     position: absolute;
     top: 0;
@@ -120,21 +113,32 @@
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+    z-index: 1;
+}
+
+.user-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(96, 239, 255, 0.1);
 }
 
 .profile-avatar {
     position: relative;
-    padding: 3px;
+    padding: 2px;
     background: linear-gradient(45deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
     border-radius: 50%;
     flex-shrink: 0;
 }
 
 .large-avatar {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    border: 3px solid rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(0, 0, 0, 0.8);
     object-fit: cover;
 }
 
@@ -145,16 +149,17 @@
 .profile-name-section {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
     flex-wrap: wrap;
 }
 
 .profile-info h1 {
     color: white;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     margin: 0;
     font-weight: 600;
+    line-height: 1.2;
 }
 
 .friend-request-form {
@@ -165,16 +170,16 @@
     background: linear-gradient(135deg, #00ff87, #00cc6a);
     color: white;
     border: none;
-    border-radius: 6px;
-    padding: 0.4rem 0.9rem;
+    border-radius: 5px;
+    padding: 0.35rem 0.8rem;
     cursor: pointer;
     font-weight: 500;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
+    gap: 0.3rem;
+    font-size: 0.8rem;
 }
 
 .friend-request-btn:hover {
@@ -470,10 +475,10 @@
 }
 
 .player-email {
-    color: rgba(96, 239, 255, 1);
-    font-size: 1rem;
+    color: rgba(96, 239, 255, 0.9);
+    font-size: 0.9rem;
     font-style: italic;
-    margin: 0.5rem 0;
+    margin: 0.25rem 0 0.5rem;
 }
 
 .friends-count {
@@ -484,11 +489,11 @@
 }
 
 .about-me {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-    margin: 0.5rem 0;
-    font-style: italic;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    margin: 0.5rem 0 0;
     line-height: 1.4;
+    font-style: italic;
     max-width: 300px;
 }
 
@@ -703,19 +708,17 @@
 
 .user-stats-section,
 .user-favorites-section {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
     backdrop-filter: blur(15px);
-    border-radius: 25px;
-    padding: 2rem;
-    border: 2px solid rgba(96, 239, 255, 0.15);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 1.5rem 1.75rem;
+    border: 1px solid rgba(96, 239, 255, 0.1);
     position: relative;
     overflow: hidden;
-    margin-bottom: 2rem;
+    margin: 0 1.25rem 1.25rem;
+    background: rgba(20, 20, 30, 0.6);
 }
 
-.user-stats-section::before,
-.user-favorites-section::before {
+.user-stats-section::before {
     content: '';
     position: absolute;
     top: 0;
@@ -821,15 +824,7 @@
     overflow: hidden;
 }
 
-.favorite-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(255, 20, 147, 0.8), rgba(220, 20, 60, 0.8));
-}
+/* Removed the pink vertical line from favorite cards */
 
 .favorite-card:hover {
     transform: translateY(-2px);
@@ -1031,14 +1026,17 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .user-profile-container {
-        padding: 1rem;
+        padding: 0;
+        margin: 0.75rem auto;
+        border-radius: 12px;
+        width: calc(100% - 1.5rem);
     }
     
     .user-profile-header {
         flex-direction: column;
         text-align: center;
-        gap: 1.5rem;
-        padding: 1.5rem;
+        gap: 1rem;
+        padding: 1.25rem;
     }
     
     .profile-name-section {
@@ -1051,23 +1049,45 @@
     }
     
     .large-avatar {
-        width: 100px;
-        height: 100px;
+        width: 90px;
+        height: 90px;
     }
     
     .user-stats-section,
-    .user-favorites-section {
-        padding: 1.5rem;
+    .user-favorites-section,
+    .grade-section-container,
+    .gamestats-section {
+        padding: 1.25rem 1.25rem;
+        margin: 0 1rem 1rem;
+        border-radius: 10px;
+    }
+    
+    .gamestats-section .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding-bottom: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .gamestats-section .section-header h3 {
+        font-size: 1.25rem;
     }
     
     .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important; /* Much larger gap */
+        margin: 1.5rem 0 0 !important;
+        padding: 0 1rem !important; /* More side padding */
     }
     
     .favorites-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 0.8rem;
+        gap: 1rem;
+    }
+    
+    .game-logo-container {
+        width: 60px;
+        height: 60px;
     }
     
     .notification-dropdown {
@@ -1078,11 +1098,14 @@
 
 @media (max-width: 480px) {
     .user-profile-container {
-        padding: 0.5rem;
+        padding: 0;
+        margin: 0.5rem auto;
+        border-radius: 8px;
+        width: calc(100% - 1rem);
     }
     
     .user-profile-header {
-        padding: 1rem;
+        padding: 1rem 0.75rem 0.75rem;
     }
     
     .profile-info h1 {
@@ -1090,20 +1113,53 @@
     }
     
     .large-avatar {
-        width: 80px;
-        height: 80px;
+        width: 75px;
+        height: 75px;
     }
     
     .user-stats-section,
-    .user-favorites-section {
-        padding: 1rem;
+    .user-favorites-section,
+    .grade-section-container {
+        padding: 1rem 1.25rem;
+        margin: 0 0.75rem 0.75rem;
+    }
+    
+    .gamestats-section {
+        padding: 2rem 2rem !important; /* Significantly increased padding */
+        margin: 0 0.5rem 2rem !important; /* Increased bottom margin */
+        border-radius: 12px !important;
+        background: rgba(20, 20, 30, 0.8) !important;
+    }
+    
+    .gamestats-section .section-header {
+        gap: 1rem !important;
+        padding: 1rem 1.5rem !important;
+        margin: -2rem -2rem 1.5rem -2rem !important;
+        border-bottom: 2px solid rgba(96, 239, 255, 0.15) !important;
+        background: rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    .gamestats-section .section-header h3 {
+        font-size: 1.4rem !important; /* Even larger */
+        margin: 0.5rem 0 0 !important;
+        padding: 0 1.5rem 0.5rem !important; /* More padding */
+        border-bottom: 2px solid rgba(96, 239, 255, 0.3) !important;
+        width: 100%;
+    }
+    
+    .gamestats-section .section-header i {
+        font-size: 1.2rem;
     }
     
     .stat-card {
-        padding: 1rem;
+        padding: 1.5rem 1.25rem !important; /* Larger padding */
+        margin: 0.5rem 0 !important; /* Added vertical margin */
+        border-radius: 10px !important;
+        background: rgba(40, 40, 60, 0.5) !important;
         flex-direction: column;
         text-align: center;
-        gap: 1rem;
+        gap: 0.5rem;
+        margin: 0;
     }
     
     .notification-dropdown {
@@ -1112,13 +1168,13 @@
     }
     
     .grade-section-container {
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+        padding: 1rem 0.75rem;
+        margin-bottom: 1rem;
     }
     
     .grade-section-content {
         grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 0.75rem;
     }
     
     .grade-info,
@@ -1131,17 +1187,78 @@
     }
 }
 
-/* Grade & Section Container */
-.grade-section-container {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
+/* Favorites Section */
+.user-favorites-section {
     backdrop-filter: blur(15px);
-    border-radius: 25px;
-    padding: 2rem;
-    border: 2px solid rgba(96, 239, 255, 0.15);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 1.5rem 1.75rem;
+    margin: 0 1.5rem 1.5rem;
     position: relative;
     overflow: hidden;
-    margin-bottom: 2rem;
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    background: rgba(20, 20, 30, 0.6);
+}
+
+/* Removed the top gradient line */
+
+.user-favorites-section h2 {
+    color: white;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.user-favorites-section h2 i {
+    color: #60efff;
+    font-size: 1.2em;
+}
+
+.favorites-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.favorite-card {
+    display: contents; /* Remove the card container from layout */
+}
+
+.game-logo-container {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.game-logo-container:hover {
+    transform: scale(1.1);
+}
+
+.game-logo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Grade & Section Container */
+.grade-section-container {
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 1.5rem 1.75rem;
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    margin: 0 1.25rem 1.25rem;
+    background: rgba(20, 20, 30, 0.6);
 }
 
 .grade-section-container::before {
@@ -1156,11 +1273,17 @@
 
 .grade-section-container h3 {
     color: white;
-    font-size: 1.3rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.6rem;
+}
+
+.grade-section-container .section-content {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
 }
 
 .grade-section-container h3 i {
@@ -1170,33 +1293,85 @@
 
 .grade-section-content {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
 }
 
 .grade-info,
 .section-info {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    padding: 1rem;
-    border: 1px solid rgba(255, 193, 7, 0.1);
+    padding: 1.25rem 1.25rem 1.25rem 1rem;
+    border: 1px solid rgba(255, 193, 7, 0.15);
+    transition: all 0.3s ease;
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.info-icon {
+    background: rgba(255, 193, 7, 0.1);
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: rgba(255, 193, 7, 0.9);
+    font-size: 1.1rem;
+    margin-top: 0.2rem;
+}
+
+.info-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.grade-info:hover,
+.section-info:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 193, 7, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .info-label {
+    display: block;
+    font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    margin-bottom: 0.25rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .info-value {
-    color: rgba(255, 193, 7, 1);
-    font-size: 1.2rem;
-    font-weight: bold;
+    display: block;
+    font-size: 1rem;
+    color: #fff;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+@media (max-width: 768px) {
+    .grade-section-content {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .grade-info,
+    .section-info {
+        padding: 0.7rem 0.9rem;
+    }
+    
+    .info-label {
+        font-size: 0.7rem;
+    }
+    
+    .info-value {
+        font-size: 0.85rem;
+    }
 }
 
 /* Game Logo Styles for Favorites */
@@ -1314,10 +1489,29 @@
 
 /* Game Stats Section */
 .gamestats-section {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
     backdrop-filter: blur(15px);
-    border-radius: 25px;
-    padding: 2rem;
+    border-radius: 15px;
+    padding: 1.5rem 1.75rem;
+    margin: 0 1.25rem 1.25rem;
+    position: relative;
+    margin: 0 1.25rem 1.25rem;
+    background: rgba(20, 20, 30, 0.6);
+    border: 1px solid rgba(96, 239, 255, 0.1);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.gamestats-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+}
+
+.gamestats-section {
     margin-bottom: 2rem;
     border: 2px solid rgba(96, 239, 255, 0.15);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -1334,16 +1528,19 @@
     @media (max-width: 480px) {
         padding: 1rem;
         border-radius: 15px;
+        width: 90%;
+        margin-right: 20rem;
     }
 }
 
 .gamestats-section .section-header {
+    margin: 0 0 1.25rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(96, 239, 255, 0.2);
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(96, 239, 255, 0.1);
+    flex-wrap: wrap;
 }
 
 .gamestats-section .header-title {
@@ -1382,7 +1579,7 @@
 .character-preview-container {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 15px;
-    padding: 1.5rem;
+    padding: 1.75rem;
     border: 1px solid rgba(96, 239, 255, 0.1);
     width: 300px;
     height: 300px;
@@ -1392,13 +1589,13 @@
     margin: 0 auto;
     
     @media (max-width: 768px) {
-        padding: 1.25rem;
+        padding: 1.5rem;
         width: 250px;
         height: 250px;
     }
     
     @media (max-width: 480px) {
-        padding: 1rem;
+        padding: 1.25rem;
         width: 200px;
         height: 200px;
     }
@@ -1497,7 +1694,7 @@
 .stats-container {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 15px;
-    padding: 1.5rem;
+    padding: 1.75rem;
     border: 1px solid rgba(96, 239, 255, 0.1);
 }
 
@@ -1521,8 +1718,9 @@
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 0.75rem;
+    gap: 1rem;
     width: 100%;
+    margin: 1rem 0 0;
     
     @media (max-width: 1200px) {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -1784,8 +1982,8 @@
 .game-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
+    gap: 1.25rem;
+    margin: 1rem 0 0;
     
     @media (max-width: 768px) {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

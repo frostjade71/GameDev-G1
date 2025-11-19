@@ -46,6 +46,7 @@ $notification_count = $stmt->rowCount();
     <link rel="stylesheet" href="../navigation/shared/navigation.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../styles.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../notif/toast.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="settings.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body {
@@ -417,8 +418,8 @@ $notification_count = $stmt->rowCount();
                 </div>
                 <button type="submit" class="save-button">Save Settings</button>
             </form>
-            <div class="settings-separator"></div>
-            <div class="about-text">Word Weavers is a Thesis Game Development Project by the Bachelor of Science in Computer Sciences Group 1</div>
+            <div class="button-separator"></div>
+            <button class="reset-progress-button" id="resetProgressBtn">Reset Game Progress</button>
         </div>
     </div>
     <div class="toast-overlay"></div>
@@ -433,6 +434,58 @@ $notification_count = $stmt->rowCount();
             </div>
         </div>
     </div>
+    <script>
+        // Direct event listener for reset button
+        document.getElementById('resetProgressBtn').addEventListener('click', function() {
+            // Add visual feedback to the button
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 100);
+            
+            // Create a new toast element to avoid CSS conflicts
+            const newToast = document.createElement('div');
+            newToast.innerHTML = '<div style="text-align: center;"><img src="../assets/pixels/hammer.png" style="width: 20px; height: 20px; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;"> not yet working.. it couldve been worse if it was working lol</div>';
+            newToast.style.cssText = `
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                background: rgba(0, 0, 0, 0.95) !important;
+                color: white !important;
+                padding: 15px 25px !important;
+                border-radius: 10px !important;
+                z-index: 99999 !important;
+                font-size: 14px !important;
+                font-family: Arial, sans-serif !important;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+                border: 1px solid rgba(255, 255, 255, 0.2) !important;
+                opacity: 0 !important;
+                transition: opacity 0.3s ease !important;
+                pointer-events: none !important;
+                text-align: center !important;
+                max-width: 80% !important;
+                word-wrap: break-word !important;
+            `;
+            
+            document.body.appendChild(newToast);
+            
+            // Fade in
+            setTimeout(() => {
+                newToast.style.opacity = '1';
+            }, 50);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                newToast.style.opacity = '0';
+                setTimeout(() => {
+                    if (newToast.parentNode) {
+                        newToast.parentNode.removeChild(newToast);
+                    }
+                }, 300);
+            }, 3000);
+        });
+    </script>
     <script src="../script.js"></script>
     <script src="settings.js"></script>
     <script src="../navigation/shared/profile-dropdown.js"></script>

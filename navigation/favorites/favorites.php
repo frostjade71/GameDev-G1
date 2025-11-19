@@ -187,16 +187,16 @@ $notification_count = count($friend_requests);
             <div class="favorites-header">
                 <div class="header-left">
                     <h1 class="favorites-title" id="section-title">
-                        <i class="fas fa-star"></i> My Favorites
+                        <img src="../../assets/pixels/star.png" alt="Star" style="width: 24px; height: 24px; vertical-align: middle;"> My Favorites
                     </h1>
                 </div>
                 <div class="header-right">
                     <div class="view-toggle">
                         <button class="toggle-btn active" id="favorites-view-btn" onclick="showFavoritesView()">
-                            <i class="fas fa-star"></i> My Favorites
+                            <img src="../../assets/pixels/star.png" alt="Star" style="width: 16px; height: 16px; vertical-align: middle;"> My Favorites
                         </button>
                         <button class="toggle-btn" id="browse-view-btn" onclick="showBrowseView()">
-                            <i class="fas fa-gamepad"></i> Browse Games
+                            <img src="../../assets/pixels/diamondsword.png" alt="Diamond Sword" style="width: 16px; height: 16px; vertical-align: middle;"> Browse Games
                         </button>
                     </div>
                 </div>
@@ -458,7 +458,7 @@ $notification_count = count($friend_requests);
             document.getElementById('browse-section').classList.remove('active');
             document.getElementById('favorites-view-btn').classList.add('active');
             document.getElementById('browse-view-btn').classList.remove('active');
-            document.getElementById('section-title').innerHTML = '<i class="fas fa-star"></i> My Favorites';
+            document.getElementById('section-title').innerHTML = '<img src="../../assets/pixels/star.png" alt="Star" style="width: 24px; height: 24px; vertical-align: middle;"> My Favorites';
         }
 
         function showBrowseView() {
@@ -466,7 +466,7 @@ $notification_count = count($friend_requests);
             document.getElementById('browse-section').classList.add('active');
             document.getElementById('favorites-view-btn').classList.remove('active');
             document.getElementById('browse-view-btn').classList.add('active');
-            document.getElementById('section-title').innerHTML = '<i class="fas fa-gamepad"></i> Browse Games';
+            document.getElementById('section-title').innerHTML = '<img src="../../assets/pixels/diamondsword.png" alt="Diamond Sword" style="width: 24px; height: 24px; vertical-align: middle;"> Browse Games';
         }
 
         // Logout functionality

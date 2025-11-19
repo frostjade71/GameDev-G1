@@ -43,19 +43,80 @@ function saveSettings(event) {
 
 // Show toast notification
 function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
+    console.log('showToast called with message:', message);
     
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
+    // Create a simple toast element if needed
+    let toast = document.getElementById('toast');
+    console.log('Toast element found:', toast);
+    
+    if (toast) {
+        toast.textContent = message;
+        toast.style.position = 'fixed';
+        toast.style.top = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.background = 'rgba(0, 0, 0, 0.9)';
+        toast.style.color = 'white';
+        toast.style.padding = '15px 25px';
+        toast.style.borderRadius = '10px';
+        toast.style.zIndex = '9999';
+        toast.style.fontSize = '14px';
+        toast.style.fontFamily = 'Arial, sans-serif';
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        toast.style.display = 'block';
+        toast.style.visibility = 'visible';
+        
+        // Show the toast
+        setTimeout(() => {
+            toast.style.opacity = '1';
+        }, 100);
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 300);
+        }, 3000);
+        
+        console.log('Toast should be visible now');
+    } else {
+        console.error('Toast element not found!');
+        // Create a fallback toast
+        const fallbackToast = document.createElement('div');
+        fallbackToast.textContent = message;
+        fallbackToast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 9999;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        `;
+        document.body.appendChild(fallbackToast);
+        
+        setTimeout(() => {
+            fallbackToast.remove();
+        }, 3000);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     // Event listeners for form submission
     if (settingsForm) {
         settingsForm.addEventListener('submit', saveSettings);
+    }
+
+    // Reset Game Progress button
+    const resetProgressBtn = document.getElementById('resetProgressBtn');
+    if (resetProgressBtn) {
+        resetProgressBtn.addEventListener('click', resetGameProgress);
     }
 
     // Back button handling

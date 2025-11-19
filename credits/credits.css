@@ -1,7 +1,12 @@
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url('../fonts/PressStart2P-Regular.ttf') format('truetype');
+}
+
 body {
-    background-image: url('assets/menu/menubg.jpg');
-    background-size: cover;
-    background-position: center;
+    background-image: url('../assets/menu/menubg.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
     min-height: 100vh;
     color: white;
     font-family: 'Press Start 2P', cursive;
@@ -23,20 +28,20 @@ body {
 
 @media (max-width: 768px) {
     .credits-container {
-        margin: 1rem auto;
-        padding: 1.5rem;
-        width: 95%;
+        margin: 0.5rem auto;
+        padding: 1rem;
+        width: 85%;
         max-width: 100%;
-        border-radius: 15px;
+        border-radius: 12px;
     }
 }
 
 @media (max-width: 480px) {
     .credits-container {
-        margin: 0.5rem auto;
-        padding: 1rem;
-        width: 98%;
-        border-radius: 12px;
+        margin: 0.25rem auto;
+        padding: 0.75rem;
+        width: 80%;
+        border-radius: 10px;
     }
 }
 
@@ -52,7 +57,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('assets/menu/hcccibg.jpg');
+    background-image: url('../assets/menu/hcccibg.jpg');
     background-size: cover;
     background-position: center;
     z-index: -1;
@@ -74,13 +79,13 @@ body {
 
 @media (max-width: 768px) {
     .credits-logo {
-        max-width: 150px;
+        max-width: 100px;
     }
 }
 
 @media (max-width: 480px) {
     .credits-logo {
-        max-width: 120px;
+        max-width: 110px;
     }
 }
 
@@ -113,15 +118,15 @@ body {
 
 @media (max-width: 768px) {
     .credits-section h2 {
-        font-size: 0.7rem;
-        margin-bottom: 0.8rem;
+        font-size: 0.5rem;
+        margin-bottom: 0.6rem;
     }
 }
 
 @media (max-width: 480px) {
     .credits-section h2 {
-        font-size: 0.6rem;
-        margin-bottom: 0.6rem;
+        font-size: 0.4rem;
+        margin-bottom: 0.4rem;
     }
 }
 
@@ -177,15 +182,15 @@ body {
 
 @media (max-width: 768px) {
     .member-card, .developer-card {
-        font-size: 0.6rem;
-        line-height: 1.3;
+        font-size: 0.4rem;
+        line-height: 1.2;
     }
 }
 
 @media (max-width: 480px) {
     .member-card, .developer-card {
-        font-size: 0.5rem;
-        line-height: 1.2;
+        font-size: 0.3rem;
+        line-height: 1.1;
     }
 }
 
@@ -196,7 +201,7 @@ body {
 
 @media (max-width: 768px) {
     .credits-title {
-        font-size: 1.4rem;
+        font-size: 0.6rem;
     }
     
     .credits-section h2 {
@@ -208,11 +213,11 @@ body {
     }
     
     .member-card, .developer-card {
-        font-size: 0.7rem;
+        font-size: 0.4rem;
     }
     
     .developer-card {
-        font-size: 0.8rem;
+        font-size: 0.5rem;
     }
     
     .members-container,

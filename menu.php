@@ -22,13 +22,8 @@ if (!$user) {
 }
 
 // Get user's game statistics
-$stmt = $pdo->prepare("SELECT 
-    COUNT(*) as games_played,
-    MAX(score) as high_score
-    FROM game_scores 
-    WHERE user_id = ?");
-$stmt->execute([$user_id]);
-$stats = $stmt->fetch();
+$games_played = 0;
+$high_score = 0;
 
 // Get user's favorites count
 $stmt = $pdo->prepare("SELECT COUNT(*) as favorites_count FROM user_favorites WHERE user_id = ?");
@@ -49,8 +44,6 @@ $friend_requests = $stmt->fetchAll();
 // Get notification count for badge
 $notification_count = count($friend_requests);
 
-$games_played = $stats['games_played'] ?? 0;
-$high_score = $stats['high_score'] ?? 0;
 $favorites_count = $favorites['favorites_count'] ?? 0;
 ?>
 <!DOCTYPE html>
@@ -154,7 +147,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
     <div class="main-content">
         <div class="menu-container">
             <!-- Banner -->
-            <a href="game-selection.php" class="changelog-banner">
+            <a href="play/game-selection.php" class="changelog-banner">
                 <img src="assets/banner/changelog_banner.png" alt="What's New" class="changelog-banner-image">
             </a>
 
@@ -163,9 +156,9 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
 
             <!-- Menu Buttons Grid -->
             <div class="menu-buttons-grid">
-                <a href="game-selection.php" class="menu-button play-button">
+                <a href="play/game-selection.php" class="menu-button play-button">
                     <div class="button-icon">
-                        <img src="assets/menu/blue-play.png" alt="Play" class="play-icon">
+                        <img src="assets/pixels/diamondsword.png" alt="Play" class="play-icon">
                     </div>
                     <div class="button-content">
                         <h2>Play</h2>
@@ -175,7 +168,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                 
                 <a href="navigation/leaderboards/leaderboards.php" class="menu-button leaderboards-button">
                     <div class="button-icon">
-                        <img src="assets/menu/trophy-menu.png" alt="Leaderboards" class="trophy-icon">
+                        <img src="assets/pixels/trophy.png" alt="Leaderboards" class="trophy-icon">
                     </div>
                     <div class="button-content">
                         <h2>Leaderboards</h2>
@@ -185,7 +178,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                 
                 <a href="overview/overview.php" class="menu-button overview-button">
                     <div class="button-icon">
-                        <i class="fas fa-book"></i>
+                        <img src="assets/pixels/blueorb.png" alt="Overview" class="overview-icon">
                     </div>
                     <div class="button-content">
                         <h2>Overview</h2>
@@ -195,7 +188,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                 
                 <a href="settings/settings.php" class="menu-button settings-button">
                     <div class="button-icon">
-                        <i class="fas fa-cog"></i>
+                        <img src="assets/pixels/fix.png" alt="Settings" class="settings-icon">
                     </div>
                     <div class="button-content">
                         <h2>Settings</h2>
@@ -203,9 +196,9 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                     </div>
                 </a>
                 
-                <a href="credits.php" class="menu-button credits-button">
+                <a href="credits/credits.php" class="menu-button credits-button">
                     <div class="button-icon">
-                        <i class="fas fa-info-circle"></i>
+                        <img src="assets/pixels/greenbook.png" alt="Credits" class="credits-icon">
                     </div>
                     <div class="button-content">
                         <h2>Credits</h2>

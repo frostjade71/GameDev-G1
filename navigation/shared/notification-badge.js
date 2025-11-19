@@ -6,8 +6,35 @@ function updateNotificationBadge() {
     if (!badge) return;
     
     // Make API call to get notification count
-    fetch('navigation/get_notification_count.php')
-        .then(response => response.json())
+    // Use a base path that works from any location
+    // Try different possible paths until we find the right one
+    const possiblePaths = [
+        'navigation/get_notification_count.php',
+        '../navigation/get_notification_count.php',
+        '../../navigation/get_notification_count.php'
+    ];
+    
+    // Use the first path that matches the current directory structure
+    let apiPath = possiblePaths[0]; // default
+    const currentPath = window.location.pathname;
+    
+    if (currentPath.includes('/play/') || currentPath.includes('/settings/') || currentPath.includes('/credits/') || currentPath.includes('/overview/')) {
+        apiPath = '../navigation/get_notification_count.php';
+    } else if (currentPath.includes('/navigation/') && !currentPath.includes('/navigation/shared/')) {
+        apiPath = '../get_notification_count.php';
+    } else if (currentPath.includes('/navigation/friends/')) {
+        apiPath = '../../navigation/get_notification_count.php';
+    }
+    
+    console.log('Notification badge API path:', apiPath);
+    
+    fetch(apiPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 const count = data.count;

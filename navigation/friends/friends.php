@@ -40,6 +40,35 @@ $friends_data = $stmt->fetchAll();
 // Format friends data for display
 $friends = [];
 foreach ($friends_data as $friend_data) {
+    // Determine the highest badge for this user
+    $is_jaderby = (strtolower($friend_data['username']) === 'jaderby garcia peñaranda');
+    $is_admin = ($friend_data['grade_level'] === 'Admin' || $is_jaderby);
+    $is_teacher = ($friend_data['grade_level'] === 'Teacher');
+    
+    $highest_badge = null;
+    if ($is_jaderby) {
+        $highest_badge = [
+            'type' => 'developer',
+            'src' => '../../assets/badges/developer.png',
+            'alt' => 'Developer Badge',
+            'title' => 'Developer'
+        ];
+    } elseif ($is_admin) {
+        $highest_badge = [
+            'type' => 'admin',
+            'src' => '../../assets/badges/moderator.png',
+            'alt' => 'Admin Badge',
+            'title' => 'Admin'
+        ];
+    } elseif ($is_teacher) {
+        $highest_badge = [
+            'type' => 'teacher',
+            'src' => '../../assets/badges/teacher.png',
+            'alt' => 'Teacher Badge',
+            'title' => 'Teacher'
+        ];
+    }
+
     $friends[] = [
         'id' => $friend_data['id'],
         'username' => $friend_data['username'],
@@ -49,7 +78,8 @@ foreach ($friends_data as $friend_data) {
         'joined_date' => date('M j, Y', strtotime($friend_data['created_at'])),
         'friendship_date' => date('M j, Y', strtotime($friend_data['friendship_date'])),
         'is_online' => false, // TODO: Implement online status
-        'last_seen' => 'Recently active'
+        'last_seen' => 'Recently active',
+        'highest_badge' => $highest_badge
     ];
 }
 
@@ -276,15 +306,12 @@ $notification_count = count($friend_requests);
                             <div class="online-status <?php echo $friend['is_online'] ? 'online' : 'offline'; ?>"></div>
                         </div>
                         <div class="friend-info">
-                            <h3><?php echo htmlspecialchars($friend['username']); ?></h3>
+                            <h3 class="username-text"><?php echo htmlspecialchars($friend['username']); ?></h3>
                             <p class="friend-status"><?php echo htmlspecialchars($friend['last_seen']); ?></p>
                         </div>
                         <div class="friend-actions">
                             <button class="action-btn message-btn" title="Send Message" onclick="event.stopPropagation();">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                            <button class="action-btn play-btn" title="Challenge to Play" onclick="event.stopPropagation();">
-                                <i class="fas fa-gamepad"></i>
+                                <img src="../../assets/pixels/chat.png" alt="Chat" style="width: 20px; height: 20px; object-fit: contain;">
                             </button>
                         </div>
                     </div>

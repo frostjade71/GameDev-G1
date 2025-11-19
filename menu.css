@@ -270,14 +270,14 @@
 }
 
 .play-button .button-icon .play-icon {
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
     object-fit: contain;
 }
 
 .leaderboards-button .button-icon .trophy-icon {
-    width: 60px;
-    height: 60px;
+    width: 44px;
+    height: 44px;
     object-fit: contain;
 }
 
@@ -289,6 +289,24 @@
 .settings-button .button-icon i {
     color: #95a5a6; /* Grey */
     font-size: 1.5rem;
+}
+
+.overview-button .button-icon .overview-icon {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+.settings-button .button-icon .settings-icon {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+.credits-button .button-icon .credits-icon {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
 }
 
 .settings-button:hover {

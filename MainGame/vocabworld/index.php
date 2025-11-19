@@ -157,7 +157,7 @@ if ($shard_result['success']) {
                         <h2>Instructions</h2>
                         <p>Learn how to play</p>
                     </a>
-                    <a href="../../game-selection.php" class="vocabworld-card back-to-games-card" style="background-image: url('assets/menu/backportal.webp'); background-size: cover; background-position: center;">
+                    <a href="../../play/game-selection.php" class="vocabworld-card back-to-games-card" style="background-image: url('assets/menu/backportal.webp'); background-size: cover; background-position: center;">
                         <img src="assets/menu/portal1.png" alt="Back" class="card-icon">
                         <h2>Back to Games</h2>
                         <p>Return to game selection</p>

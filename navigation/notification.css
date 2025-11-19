@@ -51,11 +51,7 @@
 }
 
 .friend-requests-title {
-<<<<<<< HEAD
-    font-family: var(--font-pixel);
-=======
-    font-family: 'Press Start 2P', cursive;
->>>>>>> e0d19cbe55f114bea539b9a8a9623692554160c8
+    font-family: var(--font-pixel, 'Press Start 2P', monospace);
     font-size: 0.8rem;
     color: #ffffff;
     text-transform: uppercase;
@@ -74,11 +70,7 @@
 
 .request-count {
     color: #fff;
-<<<<<<< HEAD
-    font-family: var(--font-pixel);
-=======
-    font-family: 'Press Start 2P', cursive;
->>>>>>> e0d19cbe55f114bea539b9a8a9623692554160c8
+    font-family: var(--font-pixel, 'Press Start 2P', monospace);
     font-size: 0.6rem;
     letter-spacing: 1px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -312,32 +304,36 @@
 /* Empty State Styles */
 .empty-state {
     text-align: center;
-    padding: 0.8rem 0.5rem;
-    color: rgba(255, 255, 255, 0.6);
-    position: relative;
+    padding: 1.5rem 1rem;
+    color: rgba(255, 255, 255, 0.8);
     margin: 0.5rem 0;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    border: 1px dashed rgba(96, 239, 255, 0.2);
 }
 
 .empty-state i {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: rgba(96, 239, 255, 0.4);
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    color: rgba(96, 239, 255, 0.6);
     display: block;
+    text-shadow: 0 0 8px rgba(96, 239, 255, 0.3);
 }
 
 .empty-state h3 {
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0 0 0.2rem 0;
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.2px;
-    line-height: 1.2;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 0.4rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.3;
+    font-family: var(--font-pixel, 'Press Start 2P', monospace);
 }
 
 .empty-state p {
-    font-size: 0.6rem; /* Smaller than the heading */
-    max-width: 240px;
+    font-size: 0.8rem;
+    max-width: 260px;
     margin: 0 auto;
+    color: rgba(255, 255, 255, 0.7);
     line-height: 1.2;
     opacity: 0.6;
     font-weight: 400;
@@ -346,28 +342,29 @@
 
 /* Mobile styles */
 @media (max-width: 768px) {
-    .empty-state {
-        padding: 0.6rem 0.3rem;
+   .empty-state {
+        padding: 0.8rem 0.6rem;
+        margin: 0.4rem 0;
+        border-radius: 8px;
     }
     
-    .empty-state i {
-        font-size: 1.1rem;
-        margin-bottom: 0.3rem;
+   .empty-state i {
+        font-size: 1.25rem;
+        margin-bottom: 0.4rem;
     }
     
-    .empty-state h3 {
+   .empty-state h3 {
         font-size: 0.65rem;
-        margin-bottom: 0.1rem;
+        margin-bottom: 0.2rem;
     }
     
-    .empty-state p {
-        font-size: 0.55rem; /* Even smaller on mobile */
-        max-width: 220px;
-        opacity: 0.6;
+   .empty-state p {
+        font-size: 0.6rem;
+        max-width: 200px;
+        opacity: 0.8;
+        line-height: 1.1;
     }
 }
-
-/* Left green vertical line removed as requested */
 
 /* Responsive Design */
 @media (max-width: 768px) {

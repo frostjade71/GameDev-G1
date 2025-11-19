@@ -1,9 +1,9 @@
 <?php
-// Database configuration
-$host = 'localhost';
+// Database configuration for Docker
+$host = 'db';
 $dbname = 'school_portal';
-$username = 'root'; // Change this to your MySQL username
-$password = ''; // Change this to your MySQL password
+$username = 'root';
+$password = 'rootpassword';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);

@@ -1,10 +1,10 @@
 <?php
-require_once 'onboarding/config.php';
-require_once 'includes/greeting.php';
+require_once '../onboarding/config.php';
+require_once '../includes/greeting.php';
 
 // Check if user is logged in, redirect to login if not
 if (!isLoggedIn()) {
-    header('Location: onboarding/login.php');
+    header('Location: ../onboarding/login.php');
     exit();
 }
 
@@ -17,7 +17,7 @@ $user = $stmt->fetch();
 if (!$user) {
     // User not found, destroy session and redirect to login
     session_destroy();
-    header('Location: onboarding/login.php');
+    header('Location: ../onboarding/login.php');
     exit();
 }
 
@@ -40,12 +40,12 @@ $notification_count = count($friend_requests);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="assets/menu/ww_logo_main.webp">
+    <link rel="icon" type="image/webp" href="../assets/menu/ww_logo_main.webp">
     <title>Credits - Word Weavers</title>
-    <link rel="stylesheet" href="navigation/shared/navigation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="styles.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../navigation/shared/navigation.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../styles.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="credits.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="notif/toast.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../notif/toast.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -57,22 +57,22 @@ $notification_count = count($friend_requests);
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-logo">
-            <img src="assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
+            <img src="../assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
         </div>
         <nav class="sidebar-nav">
-            <a href="menu.php" class="nav-link">
+            <a href="../menu.php" class="nav-link">
                 <i class="fas fa-house"></i>
                 <span>Menu</span>
             </a>
-            <a href="navigation/favorites/favorites.php" class="nav-link">
+            <a href="../navigation/favorites/favorites.php" class="nav-link">
                 <i class="fas fa-star"></i>
                 <span>Favorites</span>
             </a>
-            <a href="navigation/friends/friends.php" class="nav-link">
+            <a href="../navigation/friends/friends.php" class="nav-link">
                 <i class="fas fa-users"></i>
                 <span>Friends</span>
             </a>
-            <a href="navigation/profile/profile.php" class="nav-link">
+            <a href="../navigation/profile/profile.php" class="nav-link">
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </a>
@@ -82,7 +82,7 @@ $notification_count = count($friend_requests);
     <!-- Header -->
     <header class="top-header">
         <div class="header-right">
-            <div class="notification-icon" onclick="window.location.href='navigation/notification.php'">
+            <div class="notification-icon" onclick="window.location.href='../navigation/notification.php'">
                 <i class="fas fa-bell"></i>
                 <span class="notification-badge"><?php echo $notification_count; ?></span>
             </div>
@@ -96,26 +96,26 @@ $notification_count = count($friend_requests);
                 </div>
                 <div class="profile-dropdown">
                     <a href="#" class="profile-icon">
-                        <img src="assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                        <img src="../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
                     </a>
                     <div class="profile-dropdown-content">
                         <div class="profile-dropdown-header">
-                            <img src="assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                            <img src="../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
                             <div class="profile-dropdown-info">
                                 <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
                                 <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
                             </div>
                         </div>
                         <div class="profile-dropdown-menu">
-                            <a href="navigation/profile/profile.php" class="profile-dropdown-item">
+                            <a href="../navigation/profile/profile.php" class="profile-dropdown-item">
                                 <i class="fas fa-user"></i>
                                 <span>View Profile</span>
                             </a>
-                            <a href="navigation/favorites/favorites.php" class="profile-dropdown-item">
+                            <a href="../navigation/favorites/favorites.php" class="profile-dropdown-item">
                                 <i class="fas fa-star"></i>
                                 <span>My Favorites</span>
                             </a>
-                            <a href="settings/settings.php" class="profile-dropdown-item">
+                            <a href="../settings/settings.php" class="profile-dropdown-item">
                                 <i class="fas fa-cog"></i>
                                 <span>Settings</span>
                             </a>
@@ -135,7 +135,7 @@ $notification_count = count($friend_requests);
     <div class="main-content">
         <div class="credits-container">
         <div class="credits-title">
-            <img src="assets/menu/credits2.png" alt="Credits" class="credits-logo">
+            <img src="../assets/menu/credits2.png" alt="Credits" class="credits-logo">
         </div>
         <div class="credits-section members-container">
             <h2>Group 3 Members</h2>
@@ -156,7 +156,7 @@ $notification_count = count($friend_requests);
     </div>
     <div class="toast-overlay"></div>
     <div id="toast" class="toast"></div>
-    <script src="script.js"></script>
+    <script src="../script.js"></script>
     <!-- Logout Confirmation Modal -->
     <div class="toast-overlay" id="logoutModal">
         <div class="toast" id="logoutConfirmation">
@@ -170,8 +170,8 @@ $notification_count = count($friend_requests);
     </div>
 
     <script src="credits.js"></script>
-    <script src="navigation/shared/profile-dropdown.js"></script>
-    <script src="navigation/shared/notification-badge.js"></script>
+    <script src="../navigation/shared/profile-dropdown.js"></script>
+    <script src="../navigation/shared/notification-badge.js"></script>
     <script>
         // Pass user data to JavaScript
         window.userData = {
@@ -209,7 +209,7 @@ $notification_count = count($friend_requests);
             playClickSound();
             
             // Redirect to logout endpoint
-            window.location.href = 'onboarding/logout.php';
+            window.location.href = '../onboarding/logout.php';
         }
     </script>
 </body>

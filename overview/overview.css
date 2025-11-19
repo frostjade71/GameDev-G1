@@ -1,4 +1,15 @@
 /* Overview Page Styles */
+
+/* Import Press Start 2P Font */
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url('../fonts/PressStart2P-Regular.ttf') format('truetype'),
+         url('../../fonts/PressStart2P-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -64,11 +75,19 @@ body.sidebar-open {
 }
 
 .overview-title {
-    width: 200px;
-    height: auto;
-    max-width: 80%;
-    object-fit: contain;
-    margin-top: 0.8rem;
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 1.5rem;
+    color: #ffffff;
+    text-align: center;
+    margin: 0.8rem 0;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+    background-image: url('../assets/pixels/blueorb.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    padding: 20px 0;
+    display: inline-block;
+    width: 100%;
 }
 
 .content-wrapper {
@@ -151,7 +170,8 @@ body.sidebar-open {
     }
 
     .overview-title {
-        width: 180px;
+        font-size: 1.2rem;
+        padding: 15px 0;
     }
 
     .content-wrapper {
@@ -189,7 +209,8 @@ body.sidebar-open {
     }
 
     .overview-title {
-        width: 150px;
+        font-size: 1rem;
+        padding: 12px 0;
     }
 
     .content-wrapper {

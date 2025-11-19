@@ -465,7 +465,6 @@ if ($shard_result['success']) {
                 const essence = Math.floor(Math.random() * 6) + 5; // Random 5-10 essence
                 tempEssenceGained += essence;
                 await updateEssence(essence);
-                await updateScore(100);
                 
                 // Award experience for correct answer
                 const levelResult = await updateLevel(true);
@@ -654,18 +653,7 @@ if ($shard_result['success']) {
             }
         }
 
-        async function updateScore(score) {
-            try {
-                await fetch('api/save_score.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ score })
-                });
-            } catch (error) {
-                console.error('Error saving score:', error);
-            }
-        }
-
+        
         async function showVictoryScreen() {
             // Save level progress before showing victory screen
             await saveLevelProgress();

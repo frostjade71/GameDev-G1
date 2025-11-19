@@ -1,5 +1,5 @@
 <?php
-require_once '../../onboarding/config.php';
+require_once __DIR__ . '/../../onboarding/config.php';
 
 // Set JSON content type
 header('Content-Type: application/json');
@@ -54,60 +54,66 @@ try {
         ORDER BY $sortBy $sortDir, username ASC
     ";
     
-    // Get the top 10 for the leaderboard
+    // Get the leaderboard data with simpler approach
+    $orderByClause = $sortBy . ' ' . $sortDir;
+    if ($sortBy === 'level') {
+        $orderByClause = 'COALESCE(gp.player_level, 1) ' . $sortDir;
+    } elseif ($sortBy === 'monsters_defeated') {
+        $orderByClause = 'COALESCE(gp.total_monsters_defeated, 0) ' . $sortDir;
+    } elseif ($sortBy === 'essence') {
+        $orderByClause = 'COALESCE(ue.essence_amount, 0) ' . $sortDir;
+    } elseif ($sortBy === 'shards') {
+        $orderByClause = 'COALESCE(us.current_shards, 0) ' . $sortDir;
+    } elseif ($sortBy === 'characters_owned') {
+        $orderByClause = 'characters_owned ' . $sortDir;
+    } elseif ($sortBy === 'gwa') {
+        $orderByClause = 'COALESCE(ug.gwa, 0) ' . $sortDir;
+    }
+    
     $query = "
-        SELECT * FROM (
-            SELECT 
-                u.id as user_id,
-                u.username,
-                COALESCE(ue.essence_amount, 0) as essence,
-                COALESCE(us.current_shards, 0) as shards,
-                COALESCE(gp.player_level, 1) as level,
-                COALESCE(gp.total_monsters_defeated, 0) as monsters_defeated,
-                COALESCE((
-                    SELECT COUNT(*) 
-                    FROM character_selections 
-                    WHERE user_id = u.id
-                ), 0) as characters_owned,
-                COALESCE(ug.gwa, 0) as gwa,
-                @rank := @rank + 1 as rank
-            FROM (SELECT @rank := 0) r,
-                 users u
-            LEFT JOIN user_essence ue ON u.id = ue.user_id
-            LEFT JOIN user_shards us ON u.id = us.user_id
-            LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
-            LEFT JOIN user_gwa ug ON u.id = ug.user_id AND ug.game_type = 'vocabworld'
-            ORDER BY $sortBy $sortDir, username ASC
-            LIMIT 10
-        ) as leaderboard
+        SELECT 
+            u.id as user_id,
+            u.username,
+            COALESCE(ue.essence_amount, 0) as essence,
+            COALESCE(us.current_shards, 0) as shards,
+            COALESCE(gp.player_level, 1) as level,
+            COALESCE(gp.total_monsters_defeated, 0) as monsters_defeated,
+            COALESCE((
+                SELECT COUNT(*) 
+                FROM character_selections 
+                WHERE user_id = u.id
+            ), 0) as characters_owned,
+            COALESCE(ug.gwa, 0) as gwa
+        FROM users u
+        LEFT JOIN user_essence ue ON u.id = ue.user_id
+        LEFT JOIN user_shards us ON u.id = us.user_id
+        LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
+        LEFT JOIN user_gwa ug ON u.id = ug.user_id AND ug.game_type = 'vocabworld'
+        ORDER BY $orderByClause, u.username ASC
+        LIMIT 10
     ";
     
-    // Get the current user's rank
+    // Get the current user's rank with simpler approach
     $userRankQuery = "
-        SELECT * FROM (
-            SELECT 
-                u.id as user_id,
-                u.username,
-                COALESCE(ue.essence_amount, 0) as essence,
-                COALESCE(us.current_shards, 0) as shards,
-                COALESCE(gp.player_level, 1) as level,
-                COALESCE(gp.total_monsters_defeated, 0) as monsters_defeated,
-                COALESCE((
-                    SELECT COUNT(*) 
-                    FROM character_selections 
-                    WHERE user_id = u.id
-                ), 0) as characters_owned,
-                COALESCE(ug.gwa, 0) as gwa,
-                @user_rank := @user_rank + 1 as rank
-            FROM (SELECT @user_rank := 0) r,
-                 users u
-            LEFT JOIN user_essence ue ON u.id = ue.user_id
-            LEFT JOIN user_shards us ON u.id = us.user_id
-            LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
-            LEFT JOIN user_gwa ug ON u.id = ug.user_id AND ug.game_type = 'vocabworld'
-            ORDER BY $sortBy $sortDir, username ASC
-        ) as ranked_users
-        WHERE user_id = :user_id
+        SELECT 
+            u.id as user_id,
+            u.username,
+            COALESCE(ue.essence_amount, 0) as essence,
+            COALESCE(us.current_shards, 0) as shards,
+            COALESCE(gp.player_level, 1) as level,
+            COALESCE(gp.total_monsters_defeated, 0) as monsters_defeated,
+            COALESCE((
+                SELECT COUNT(*) 
+                FROM character_selections 
+                WHERE user_id = u.id
+            ), 0) as characters_owned,
+            COALESCE(ug.gwa, 0) as gwa
+        FROM users u
+        LEFT JOIN user_essence ue ON u.id = ue.user_id
+        LEFT JOIN user_shards us ON u.id = us.user_id
+        LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
+        LEFT JOIN user_gwa ug ON u.id = ug.user_id AND ug.game_type = 'vocabworld'
+        WHERE u.id = :user_id
     ";
 
     // Get the leaderboard data
@@ -120,10 +126,22 @@ try {
     $userRankStmt->execute(['user_id' => $userId]);
     $userRankData = $userRankStmt->fetch(PDO::FETCH_ASSOC);
     
-    // Format the data
+    // Format the data and calculate ranks
     $formattedData = [];
-    foreach ($leaderboardData as $row) {
-        // Ensure all required fields have values
+    $rank = 1;
+    foreach ($leaderboardData as $index => $row) {
+        // Calculate rank based on sort criteria
+        if ($index > 0) {
+            $prevRow = $leaderboardData[$index - 1];
+            $prevValue = $prevRow[$sortBy];
+            $currentValue = $row[$sortBy];
+            
+            // If same value as previous, same rank; otherwise increment
+            if ($prevValue != $currentValue) {
+                $rank = $index + 1;
+            }
+        }
+        
         $formattedData[] = [
             'user_id' => (int)$row['user_id'],
             'username' => $row['username'],
@@ -133,13 +151,32 @@ try {
             'shards' => (int)($row['shards'] ?? 0),
             'characters_owned' => (int)($row['characters_owned'] ?? 0),
             'gwa' => (float)($row['gwa'] ?? 0),
-            'rank' => (int)($row['rank'] ?? 0)
+            'rank' => $rank
         ];
     }
     
-    // Format user rank data
+    // Calculate user rank
     $userRank = null;
     if ($userRankData) {
+        // Simple rank calculation - get all users sorted and find position
+        $allUsersQuery = "
+            SELECT u.id as user_id
+            FROM users u
+            LEFT JOIN user_essence ue ON u.id = ue.user_id
+            LEFT JOIN user_shards us ON u.id = us.user_id
+            LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
+            LEFT JOIN user_gwa ug ON u.id = ug.user_id AND ug.game_type = 'vocabworld'
+            ORDER BY $orderByClause, u.username ASC
+        ";
+        
+        $allUsersStmt = $pdo->prepare($allUsersQuery);
+        $allUsersStmt->execute();
+        $allUsers = $allUsersStmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        
+        // Find user's position in the sorted list
+        $userPosition = array_search($userId, $allUsers);
+        $rank = $userPosition !== false ? $userPosition + 1 : 1;
+        
         $userRank = [
             'user_id' => (int)$userRankData['user_id'],
             'username' => $userRankData['username'],
@@ -149,7 +186,7 @@ try {
             'shards' => (int)($userRankData['shards'] ?? 0),
             'characters_owned' => (int)($userRankData['characters_owned'] ?? 0),
             'gwa' => (float)($userRankData['gwa'] ?? 0),
-            'rank' => (int)($userRankData['rank'] ?? 0)
+            'rank' => $rank
         ];
     }
 

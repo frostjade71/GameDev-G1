@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!backElement.onclick) {
             backElement.addEventListener('click', (event) => {
                 playClickSound();
-                window.location.href = 'menu.php?from=selection';
+                window.location.href = '../menu.php?from=selection';
             });
         }
     });
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     playClickSound();
                     // Try immediate redirect
                     setTimeout(() => {
-                        window.location.href = 'MainGame/vocabworld/index.php';
+                        window.location.href = '../MainGame/vocabworld/index.php';
                     }, 100);
                 } else if (gameType === 'grammarbg') {
                     showToast('Grammar Heroes - Coming Soon!');
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     showToast('Coming Soon!');
                 } else {
                     console.log('Unknown game type:', gameType);
-                    showToast('Game not found!');
+                    showToast('more games soon', '../assets/pixels/hammer.png');
                 }
             };
             
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 100);
             
             // Navigate back to menu with from parameter
-            window.location.href = 'menu.php?from=selection';
+            window.location.href = '../menu.php?from=selection';
         });
     }
 });

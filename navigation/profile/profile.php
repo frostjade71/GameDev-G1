@@ -169,16 +169,35 @@ if ($character_result) {
 }
 
 
-// Initialize essence and shards with default values since tables don't exist
-$essence = 0;
-$shards = 0;
+// Get Essence
+$essence_manager_path = '../../MainGame/vocabworld/api/essence_manager.php';
+if (file_exists($essence_manager_path)) {
+    require_once $essence_manager_path;
+    if (class_exists('EssenceManager')) {
+        $essenceManager = new EssenceManager($pdo);
+        $essence = $essenceManager->getEssence($user_id);
+    }
+}
+
+// Get Shards
+$shard_manager_path = '../../MainGame/vocabworld/shard_manager.php';
+if (file_exists($shard_manager_path)) {
+    require_once $shard_manager_path;
+    if (class_exists('ShardManager')) {
+        $shardManager = new ShardManager($pdo);
+        $shard_result = $shardManager->getShardBalance($user_id);
+        if ($shard_result && isset($shard_result['current_shards'])) {
+            $shards = $shard_result['current_shards'];
+        }
+    }
+}
 
 // Get user's favorites with game info
 $stmt = $pdo->prepare("SELECT game_type FROM user_favorites WHERE user_id = ?");
 $stmt->execute([$user_id]);
 $favorites = $stmt->fetchAll();
 
-// Get pending friend requests for the current user (for notification count)
+// Get pending friend requests for the current user
 $stmt = $pdo->prepare("
     SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level
     FROM friend_requests fr
@@ -189,8 +208,17 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $friend_requests = $stmt->fetchAll();
 
-// Get notification count for badge
-$notification_count = count($friend_requests);
+// Get crescent notifications
+$stmt = $pdo->prepare("
+    SELECT id, type, message, data, created_at
+    FROM notifications
+    WHERE user_id = ? AND type = 'cresent_received'
+");
+$stmt->execute([$user_id]);
+$cresent_notifications = $stmt->fetchAll();
+
+// Get notification count for badge (both friend requests and crescent notifications)
+$notification_count = count($friend_requests) + count($cresent_notifications);
 
 // Get user's friends count
 $stmt = $pdo->prepare("
@@ -401,132 +429,125 @@ $friends_count = $stmt->fetch()['friends_count'];
                         <i class="fas fa-gamepad"></i>
                         <h3>Game Stats</h3>
                     </div>
-                    <div class="sort-dropdown">
-                        <select id="game-stats-sort">
-                            <option value="vocabworld" selected>Vocabworld</option>
-                        </select>
-                    </div>
                 </div>
-                
-                <div class="gamestats-layout">
-                    <!-- Character Preview -->
-                    <div class="character-preview-container">
-                        <div class="character-preview-content">
-                            <div class="character-sprite-container">
-                                <?php 
-                                // Output the character image directly in PHP to avoid JavaScript dependency
-                                echo '<img src="' . htmlspecialchars($character_image) . '" 
-                                     alt="' . htmlspecialchars($character_name) . '" 
-                                     class="character-sprite"
+
+                <div class="game-stats-body">
+                    <!-- Player Profile Section -->
+                    <div class="player-profile-section">
+                        <div class="character-display">
+                            <div class="character-avatar-wrapper">
+                                <div class="character-avatar-glow"></div>
+                                <img src="<?php echo htmlspecialchars($character_image); ?>" 
+                                     alt="<?php echo htmlspecialchars($character_name); ?>" 
+                                     class="character-avatar"
                                      id="character-sprite"
-                                     data-character="' . strtolower($character_name) . '">';
-                                ?>
-                                <div class="character-glow"></div>
+                                     data-character="<?php echo strtolower($character_name); ?>">
                             </div>
-                            <div class="character-info">
-                                <div class="character-name" id="character-name"><?php echo htmlspecialchars($character_name); ?></div>
-                                <div class="character-level">Level <?php echo number_format($player_stats['total_level']); ?></div>
+                            <div class="character-details">
+                                <h3 class="character-name" id="character-name"><?php echo htmlspecialchars($character_name); ?></h3>
+                                <div class="character-level-badge">
+                                    <i class="fas fa-star"></i>
+                                    <span>Level <?php echo number_format($player_stats['total_level']); ?></span>
+                                </div>
+                            </div>
+                            <?php if (isset($user_rank)): ?>
+                                <div class="character-rank-badge rank-<?php echo $user_rank <= 3 ? $user_rank : 'other'; ?>">
+                                    <?php if ($user_rank <= 3): ?>
+                                        <i class="fas fa-trophy"></i>
+                                    <?php endif; ?>
+                                    <span>Rank #<?php echo $user_rank; ?></span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="stats-sections">
+                        <!-- Combat Stats -->
+                        <div class="stats-category">
+                            <div class="category-header">
+                                <img src="../../assets/pixels/blueorb.png" alt="Stats" style="width: 24px; height: 24px; margin-right: 8px;">
+                                <h4>Stats</h4>
+                            </div>
+                            <div class="stats-cards-grid">
+                                <div class="stat-card-modern">
+                                    <div class="stat-card-icon">
+                                        <img src="../../MainGame/vocabworld/assets/stats/level.png" alt="Level">
+                                    </div>
+                                    <div class="stat-card-content">
+                                        <span class="stat-card-label">Level</span>
+                                        <span class="stat-card-value"><?php echo number_format($player_stats['total_level']); ?></span>
+                                    </div>
+                                </div>
+                                <div class="stat-card-modern">
+                                    <div class="stat-card-icon">
+                                        <img src="../../MainGame/vocabworld/assets/stats/total_xp.png" alt="Experience">
+                                    </div>
+                                    <div class="stat-card-content">
+                                        <span class="stat-card-label">Experience</span>
+                                        <span class="stat-card-value"><?php echo number_format($player_stats['total_experience']); ?></span>
+                                    </div>
+                                </div>
+                                <div class="stat-card-modern">
+                                    <div class="stat-card-icon">
+                                        <img src="../../MainGame/vocabworld/assets/stats/sword1.png" alt="Monsters">
+                                    </div>
+                                    <div class="stat-card-content">
+                                        <span class="stat-card-label">Monsters Defeated</span>
+                                        <span class="stat-card-value"><?php echo number_format($player_stats['total_monsters_defeated']); ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resources -->
+                        <div class="stats-category">
+                            <div class="category-header">
+                                <img src="../../assets/pixels/bluedias.png" alt="Resources" style="width: 24px; height: 24px; margin-right: 8px;">
+                                <h4>Resources</h4>
+                            </div>
+                            <div class="stats-cards-grid resources-grid">
+                                <div class="stat-card-modern resource-card">
+                                    <div class="stat-card-icon">
+                                        <img src="../../MainGame/vocabworld/assets/currency/essence.png" alt="Essence">
+                                    </div>
+                                    <div class="stat-card-content">
+                                        <span class="stat-card-label">Essence</span>
+                                        <span class="stat-card-value essence-value"><?php echo number_format($essence); ?></span>
+                                    </div>
+                                </div>
+                                <div class="stat-card-modern resource-card">
+                                    <div class="stat-card-icon">
+                                        <img src="../../MainGame/vocabworld/assets/currency/shard1.png" alt="Shards">
+                                    </div>
+                                    <div class="stat-card-content">
+                                        <span class="stat-card-label">Shards</span>
+                                        <span class="stat-card-value shard-value"><?php echo number_format($shards); ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance -->
+                        <div class="stats-category">
+                            <div class="category-header">
+                                <img src="../../MainGame/vocabworld/assets/menu/instructionicon.png" alt="Performance" style="width: 24px; height: 24px; margin-right: 8px;">
+                                <h4>Performance</h4>
+                            </div>
+                            <div class="stats-cards-grid">
+                                <div class="stat-card-modern gwa-card">
+                                    <div class="stat-card-icon gwa-icon">
+                                        <img src="../../MainGame/vocabworld/assets/stats/gwa.png" alt="GWA">
+                                    </div>
+                                    <div class="stat-card-content">
+                                        <span class="stat-card-label">GWA</span>
+                                        <span class="stat-card-value gwa-value-display"><?php echo number_format($player_stats['total_level'] * 1.5, 2); ?></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Player Stats -->
-                    <div class="stats-container">
-                        <div class="section-subtitle">Stats</div>
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <?php if (isset($user_rank)): ?>
-                                    <div class="rank-badge <?php echo $user_rank <= 3 ? 'rank-' . $user_rank : 'rank-other'; ?>">
-                                        <?php if ($user_rank <= 3): ?>
-                                            <i class="fas fa-trophy"></i>
-                                        <?php endif; ?>
-                                        #<?php echo $user_rank; ?>
-                                    </div>
-                                <?php endif; ?>
-                                <div class="stat-icon">
-                                    <img src="../../MainGame/vocabworld/assets/stats/level.png" alt="Level" class="stat-icon-img">
-                                </div>
-                                <div class="stat-info">
-                                    <span class="stat-label">Level</span>
-                                    <span class="stat-value"><?php echo number_format($player_stats['total_level']); ?></span>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <?php if (isset($user_rank)): ?>
-                                    <div class="rank-badge <?php echo $user_rank <= 3 ? 'rank-' . $user_rank : 'rank-other'; ?>">
-                                        <?php if ($user_rank <= 3): ?>
-                                            <i class="fas fa-trophy"></i>
-                                        <?php endif; ?>
-                                        #<?php echo $user_rank; ?>
-                                    </div>
-                                <?php endif; ?>
-                                <div class="stat-icon">
-                                    <img src="../../MainGame/vocabworld/assets/stats/total_xp.png" alt="Experience" class="stat-icon-img">
-                                </div>
-                                <div class="stat-info">
-                                    <span class="stat-label">Experience</span>
-                                    <span class="stat-value"><?php echo number_format($player_stats['total_experience']); ?></span>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <?php if (isset($user_rank)): ?>
-                                    <div class="rank-badge <?php echo $user_rank <= 3 ? 'rank-' . $user_rank : 'rank-other'; ?>">
-                                        <?php if ($user_rank <= 3): ?>
-                                            <i class="fas fa-trophy"></i>
-                                        <?php endif; ?>
-                                        #<?php echo $user_rank; ?>
-                                    </div>
-                                <?php endif; ?>
-                                <div class="stat-icon">
-                                    <img src="../../MainGame/vocabworld/assets/stats/sword1.png" alt="Monsters Defeated" class="stat-icon-img">
-                                </div>
-                                <div class="stat-info">
-                                    <span class="stat-label">Monsters Defeated</span>
-                                    <span class="stat-value"><?php echo number_format($player_stats['total_monsters_defeated']); ?></span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="section-subtitle">Resources</div>
-                        
-                        <div class="stats-grid stats-grid-resources">
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <img src="../../MainGame/vocabworld/assets/currency/essence.png" alt="Essence" class="stat-icon-img">
-                                </div>
-                                <div class="stat-info">
-                                    <span class="stat-label">Essence</span>
-                                    <span class="stat-value"><?php echo number_format($essence); ?></span>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <img src="../../MainGame/vocabworld/assets/currency/shard1.png" alt="Shards" class="stat-icon-img">
-                                </div>
-                                <div class="stat-info">
-                                    <span class="stat-label">Shards</span>
-                                    <span class="stat-value"><?php echo number_format($shards); ?></span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="section-subtitle">Ratings</div>
-                        
-                        <div class="stats-grid">
-                            <div class="stat-card gwa-stat-card">
-                                <div class="stat-icon">
-                                    <img src="../../MainGame/vocabworld/assets/stats/gwa.png" alt="GWA" class="stat-icon-img">
-                                </div>
-                                <div class="stat-info">
-                                    <span class="stat-label">GWA</span>
-                                    <span class="stat-value gwa-value"><?php echo number_format($player_stats['total_level'] * 1.5, 2); ?></span>
-                                    <div class="gwa-description">Your overall performance score</div>
-                                </div>
-                                <div class="gwa-badge">GWA</div>
-                            </div>
-                        </div>
                 </div>
-                <!-- Game stats cards have been removed as they are redundant with the main GWA stat card -->
             </div>
 
             <!-- Favorites Section -->
@@ -561,13 +582,7 @@ $friends_count = $stmt->fetch()['friends_count'];
                             }
                             ?>
                             <div class="favorite-card">
-                                <div class="game-logo-container">
-                                    <img src="<?php echo $game_logo; ?>" alt="<?php echo $game_name; ?>" class="game-logo">
-                                </div>
-                                <div class="favorite-info">
-                                    <h4><?php echo $game_name; ?></h4>
-                                    <i class="fas fa-heart favorite-icon"></i>
-                                </div>
+                                <img src="<?php echo $game_logo; ?>" alt="<?php echo $game_name; ?>" class="game-logo" title="<?php echo $game_name; ?>">
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -924,7 +939,6 @@ $friends_count = $stmt->fetch()['friends_count'];
             gradeLevel: '<?php echo htmlspecialchars($user['grade_level']); ?>',
             section: '<?php echo htmlspecialchars($user['section'] ?? ''); ?>',
             aboutMe: '<?php echo htmlspecialchars($user['about_me'] ?? ''); ?>',
-            gameGWA: <?php echo json_encode($game_gwa); ?>,
             favorites: <?php echo json_encode($favorites); ?>
         };
 
@@ -933,7 +947,6 @@ $friends_count = $stmt->fetch()['friends_count'];
         // Game stats filter functionality
         document.addEventListener('DOMContentLoaded', function() {
             // No need for game stats sort functionality as there's only one option
-            }
         });
     </script>
 </body>

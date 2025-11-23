@@ -16,19 +16,9 @@ $stmt = $pdo->prepare("SELECT * FROM game_progress WHERE user_id = ? AND game_ty
 $stmt->execute([$user_id]);
 $progress = $stmt->fetch();
 
-// Get user's vocabworld scores
-$stmt = $pdo->prepare("SELECT * FROM game_scores WHERE user_id = ? AND game_type = 'vocabworld' ORDER BY created_at DESC LIMIT 10");
-$stmt->execute([$user_id]);
-$scores = $stmt->fetchAll();
-
-// Calculate average percentage
-$total_sessions = count($scores);
+// Note: game_scores table has been removed
+$total_sessions = 0;
 $average_percentage = 0;
-if ($total_sessions > 0) {
-    $total_score = array_sum(array_column($scores, 'score'));
-    $max_possible_score = $total_sessions * 1000; // Assuming max 1000 points per session
-    $average_percentage = round(($total_score / $max_possible_score) * 100, 1);
-}
 
 // Get character customization data
 $character_data = null;

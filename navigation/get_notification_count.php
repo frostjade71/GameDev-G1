@@ -18,9 +18,19 @@ try {
         WHERE receiver_id = ? AND status = 'pending'
     ");
     $stmt->execute([$user_id]);
-    $result = $stmt->fetch();
+    $friend_requests_count = $stmt->fetch()['count'];
     
-    $notification_count = $result['count'];
+    // Get count of crescent notifications for the current user
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) as count
+        FROM notifications
+        WHERE user_id = ? AND type = 'cresent_received'
+    ");
+    $stmt->execute([$user_id]);
+    $cresent_notifications_count = $stmt->fetch()['count'];
+    
+    // Total notification count
+    $notification_count = $friend_requests_count + $cresent_notifications_count;
     
     echo json_encode([
         'success' => true,

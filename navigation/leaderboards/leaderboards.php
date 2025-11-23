@@ -22,7 +22,7 @@ if (!$user) {
     exit();
 }
 
-// Get pending friend requests for the current user (for notification count)
+// Get pending friend requests for the current user
 $stmt = $pdo->prepare("
     SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level
     FROM friend_requests fr
@@ -33,8 +33,17 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $friend_requests = $stmt->fetchAll();
 
-// Get notification count for badge
-$notification_count = count($friend_requests);
+// Get crescent notifications
+$stmt = $pdo->prepare("
+    SELECT id, type, message, data, created_at
+    FROM notifications
+    WHERE user_id = ? AND type = 'cresent_received'
+");
+$stmt->execute([$user_id]);
+$cresent_notifications = $stmt->fetchAll();
+
+// Get notification count for badge (both friend requests and crescent notifications)
+$notification_count = count($friend_requests) + count($cresent_notifications);
 
 // Get user's game statistics for leaderboard
 $stmt = $pdo->prepare("
@@ -801,8 +810,8 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script>
         // View profile function to match the one in friends.php
         function viewProfile(userId) {
-            // Navigate to user profile page with full path
-            window.location.href = `/GameDev-G1/navigation/friends/user-profile.php?id=${userId}`;
+            // Navigate to user profile page with relative path
+            window.location.href = `../friends/user-profile.php?id=${userId}`;
         }
     </script>
 </body>

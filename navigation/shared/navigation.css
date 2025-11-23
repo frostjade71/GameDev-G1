@@ -51,7 +51,8 @@
 /* Show dropdown when active (mobile) */
 .nav-item-with-dropdown.active .nav-dropdown-menu {
     display: block;
-    position: static; /* Full width on mobile */
+    position: static;
+    /* Full width on mobile */
     border-radius: 0 0 12px 12px;
     border-left: none;
     border-right: none;
@@ -91,7 +92,8 @@
 
 /* Mobile menu button */
 .mobile-menu-btn {
-    display: none; /* Hidden by default for desktop */
+    display: none;
+    /* Hidden by default for desktop */
     font-size: 24px;
     color: white;
     background: rgba(0, 0, 0, 0.5);
@@ -119,7 +121,7 @@
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
-    
+
     .sidebar.active {
         transform: translateX(0);
         position: fixed;
@@ -143,7 +145,7 @@
     }
 
     /* CSS-only mobile menu toggle (legacy support) */
-    .mobile-menu-toggle:checked ~ .sidebar {
+    .mobile-menu-toggle:checked~.sidebar {
         transform: translateX(0);
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     }
@@ -198,7 +200,8 @@
     height: 60px;
     background-color: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
-    z-index: 1800; /* Below the hamburger button but above other content */
+    z-index: 1800;
+    /* Below the hamburger button but above other content */
     padding: 0 2rem;
     display: flex;
     justify-content: flex-end;
@@ -224,7 +227,8 @@
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 1.2rem; /* Smaller icon size */
+    font-size: 1.2rem;
+    /* Smaller icon size */
     width: 24px;
     height: 24px;
     display: flex;
@@ -233,12 +237,14 @@
 }
 
 .notification-icon i {
-    font-size: 1.2rem; /* Match the icon size to the container */
+    font-size: 1.2rem;
+    /* Match the icon size to the container */
 }
 
 .notification-icon:hover {
     color: #60efff;
-    transform: scale(1.05); /* More subtle hover effect */
+    transform: scale(1.05);
+    /* More subtle hover effect */
 }
 
 .logout-icon {
@@ -292,8 +298,8 @@
     background-color: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    min-width: 280px;
+    border-radius: 10px;
+    min-width: 220px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     z-index: 2000;
     margin-top: 8px;
@@ -310,16 +316,16 @@
 }
 
 .profile-dropdown-header {
-    padding: 1.5rem;
+    padding: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .profile-dropdown-avatar {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(96, 239, 255, 0.5);
@@ -331,28 +337,28 @@
 
 .profile-dropdown-name {
     color: white;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    margin: 0 0 0.25rem 0;
+    margin: 0 0 0.2rem 0;
     line-height: 1.2;
 }
 
 .profile-dropdown-email {
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     margin: 0;
     word-break: break-all;
 }
 
 .profile-dropdown-menu {
-    padding: 0.5rem 0;
+    padding: 0.25rem 0;
 }
 
 .profile-dropdown-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.5rem;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
     color: white;
     text-decoration: none;
     transition: background-color 0.2s ease;
@@ -361,7 +367,7 @@
     width: 100%;
     text-align: left;
     cursor: pointer;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
 }
 
 .profile-dropdown-item:hover {
@@ -369,14 +375,15 @@
 }
 
 .profile-dropdown-item i {
-    width: 20px;
+    width: 16px;
+    font-size: 0.9rem;
     text-align: center;
     color: rgba(96, 239, 255, 0.8);
 }
 
 .profile-dropdown-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.5rem 0;
+    padding: 0.25rem 0;
 }
 
 .profile-dropdown-item.sign-out {
@@ -394,30 +401,30 @@
 /* Mobile responsiveness for dropdown */
 @media screen and (max-width: 768px) {
     .profile-dropdown-content {
-        min-width: 260px;
+        min-width: 200px;
         right: -10px;
     }
-    
+
     .profile-dropdown-header {
-        padding: 1.25rem;
+        padding: 0.9rem;
     }
-    
+
     .profile-dropdown-avatar {
-        width: 45px;
-        height: 45px;
+        width: 36px;
+        height: 36px;
     }
-    
+
     .profile-dropdown-name {
-        font-size: 1rem;
-    }
-    
-    .profile-dropdown-email {
-        font-size: 0.85rem;
-    }
-    
-    .profile-dropdown-item {
-        padding: 0.7rem 1.25rem;
         font-size: 0.9rem;
+    }
+
+    .profile-dropdown-email {
+        font-size: 0.7rem;
+    }
+
+    .profile-dropdown-item {
+        padding: 0.55rem 1rem;
+        font-size: 0.8rem;
     }
 }
 
@@ -449,7 +456,7 @@
         width: 100%;
         align-items: center;
     }
-    
+
     /* Add padding to all container types used in different pages */
     .dashboard-grid,
     .settings-container,
@@ -459,7 +466,8 @@
     .profile-container,
     .games-carousel-container {
         width: 100%;
-        margin-top: 0.5rem; /* Reduced margin from 1rem to 0.5rem */
+        margin-top: 0.5rem;
+        /* Reduced margin from 1rem to 0.5rem */
     }
 }
 
@@ -537,11 +545,11 @@
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
     .play-card {
         grid-column: 1;
     }
-    
+
     .whats-new-banner {
         height: 300px;
     }

@@ -41,8 +41,17 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $friend_requests = $stmt->fetchAll();
 
-// Get notification count for badge
-$notification_count = count($friend_requests);
+// Get crescent notifications
+$stmt = $pdo->prepare("
+    SELECT id, type, message, data, created_at
+    FROM notifications
+    WHERE user_id = ? AND type = 'cresent_received'
+");
+$stmt->execute([$user_id]);
+$cresent_notifications = $stmt->fetchAll();
+
+// Get notification count for badge (both friend requests and crescent notifications)
+$notification_count = count($friend_requests) + count($cresent_notifications);
 
 $favorites_count = $favorites['favorites_count'] ?? 0;
 ?>
@@ -188,7 +197,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                 
                 <a href="settings/settings.php" class="menu-button settings-button">
                     <div class="button-icon">
-                        <img src="assets/pixels/fix.png" alt="Settings" class="settings-icon">
+                        <img src="assets/pixels/settings.png" alt="Settings" class="settings-icon">
                     </div>
                     <div class="button-content">
                         <h2>Settings</h2>
@@ -198,7 +207,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                 
                 <a href="credits/credits.php" class="menu-button credits-button">
                     <div class="button-icon">
-                        <img src="assets/pixels/greenbook.png" alt="Credits" class="credits-icon">
+                        <img src="assets/pixels/leaf.png" alt="Credits" class="credits-icon">
                     </div>
                     <div class="button-content">
                         <h2>Credits</h2>

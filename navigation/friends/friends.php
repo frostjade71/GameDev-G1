@@ -168,7 +168,7 @@ foreach ($all_users as $suggested_user) {
     ];
 }
 
-// Get pending friend requests for the current user (for notification count)
+// Get pending friend requests for the current user
 $stmt = $pdo->prepare("
     SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level
     FROM friend_requests fr
@@ -179,8 +179,17 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $friend_requests = $stmt->fetchAll();
 
-// Get notification count for badge
-$notification_count = count($friend_requests);
+// Get crescent notifications
+$stmt = $pdo->prepare("
+    SELECT id, type, message, data, created_at
+    FROM notifications
+    WHERE user_id = ? AND type = 'cresent_received'
+");
+$stmt->execute([$user_id]);
+$cresent_notifications = $stmt->fetchAll();
+
+// Get notification count for badge (both friend requests and crescent notifications)
+$notification_count = count($friend_requests) + count($cresent_notifications);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -285,9 +294,7 @@ $notification_count = count($friend_requests);
             <!-- My Friends Section -->
             <div class="friends-section">
                 <div class="section-header">
-                    <div class="header-content">
-                        <img src="../../assets/menu/friendsmain.png" alt="My Friends" style="height: 25px; vertical-align: middle;"> <span style="vertical-align: middle; font-family: 'Press Start 2P', cursive; font-size: 12px;">(<?php echo count($friends); ?>)</span>
-                    </div>
+                    <h2><img src="../../assets/pixels/friendss.png" alt="Friends" style="height: 20px; vertical-align: middle; margin-right: 8px;"> Friends <span style="font-family: 'Press Start 2P', cursive; font-size: 12px;">(<?php echo count($friends); ?>)</span></h2>
                     <div style="width: 100%; height: 1px; background: rgba(96, 239, 255, 0.3); margin: 15px 0;"></div>
                 </div>
                 

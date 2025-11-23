@@ -445,14 +445,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 padding: 1rem;
             }
             
+            .form-group label {
+                font-size: 0.7rem;
+            }
+            
             .form-group input {
                 padding: 0.8rem;
                 font-size: 0.95rem;
             }
             
             .auth-button {
-                padding: 0.9rem;
-                font-size: 0.95rem;
+                padding: 0.7rem;
+                font-size: 0.85rem;
             }
         }
 
@@ -475,14 +479,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 padding: 0.8rem;
             }
             
+            .form-group label {
+                font-size: 0.65rem;
+            }
+            
             .form-group input {
                 padding: 0.7rem;
                 font-size: 0.9rem;
             }
             
             .auth-button {
-                padding: 0.8rem;
-                font-size: 0.9rem;
+                padding: 0.6rem;
+                font-size: 0.8rem;
             }
         }
 

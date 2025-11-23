@@ -29,13 +29,45 @@ $stmt = $pdo->prepare("
     FROM friend_requests fr
     JOIN users u ON fr.requester_id = u.id
     WHERE fr.receiver_id = ? AND fr.status = 'pending'
-    ORDER BY fr.created_at DESC
 ");
 $stmt->execute([$user_id]);
 $friend_requests = $stmt->fetchAll();
 
+// Get crescent notifications
+$stmt = $pdo->prepare("
+    SELECT id, type, message, data, created_at
+    FROM notifications
+    WHERE user_id = ? AND type = 'cresent_received'
+");
+$stmt->execute([$user_id]);
+$cresent_notifications = $stmt->fetchAll();
+
+// Merge and sort all notifications
+$all_notifications = [];
+
+foreach ($friend_requests as $fr) {
+    $all_notifications[] = [
+        'type' => 'friend_request',
+        'timestamp' => strtotime($fr['created_at']),
+        'data' => $fr
+    ];
+}
+
+foreach ($cresent_notifications as $cn) {
+    $all_notifications[] = [
+        'type' => 'cresent_received',
+        'timestamp' => strtotime($cn['created_at']),
+        'data' => $cn
+    ];
+}
+
+// Sort by timestamp DESC
+usort($all_notifications, function($a, $b) {
+    return $b['timestamp'] - $a['timestamp'];
+});
+
 // Get notification count for badge
-$notification_count = count($friend_requests);
+$notification_count = count($all_notifications);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -141,51 +173,78 @@ $notification_count = count($friend_requests);
     <div class="main-content">
         <div class="notification-container">
 
-            <!-- Friend Requests Section -->
+            <!-- Notifications Section -->
             <div class="friend-requests-section">
                 <div class="section-header">
                     <div class="title-container">
-                    <h2 class="friend-requests-title"><img src="../assets/pixels/redbook.png" alt="Friend Request" class="friend-request-icon"> FRIEND REQUESTS <span class="request-count">(<?php echo $notification_count; ?>)</span></h2>
+                    <h2 class="friend-requests-title"><img src="../assets/pixels/redbook.png" alt="Notification" class="friend-request-icon"> NOTIFICATIONS <span class="request-count">(<?php echo $notification_count; ?>)</span></h2>
                 </div>
                     <?php if (!empty($friend_requests)): ?>
                     <button class="decline-all-btn" onclick="showDeclineAllModal()" aria-label="Decline All Requests">
                         <i class="fas fa-ban"></i>
-                        <span>Decline All</span>
+                        <span>Decline All Requests</span>
                     </button>
                     <?php endif; ?>
                 </div>
                 
-                <?php if (empty($friend_requests)): ?>
+                <?php if (empty($all_notifications)): ?>
                 <div class="empty-state">
                     <i class="fas fa-bell-slash"></i>
                     <h3>No New Notifications</h3>
-                    <p>You're all caught up! Check back later for new friend requests.</p>
+                    <p>You're all caught up! Check back later for new updates.</p>
                 </div>
                 <?php else: ?>
                 <div class="friend-requests-list">
-                    <?php foreach ($friend_requests as $request): ?>
-                    <div class="friend-request-card" data-request-id="<?php echo $request['id']; ?>">
-                        <div class="request-avatar" onclick="viewProfile(<?php echo $request['requester_id']; ?>)">
-                            <img src="../assets/menu/defaultuser.png" alt="<?php echo htmlspecialchars($request['username']); ?>">
-                        </div>
-                        <div class="request-info">
-                            <h3 onclick="viewProfile(<?php echo $request['requester_id']; ?>)" style="cursor: pointer;"><?php echo htmlspecialchars($request['username']); ?></h3>
-                            <p class="request-details">
-                                <span class="grade-level"><?php echo htmlspecialchars($request['grade_level']); ?></span>
-                                <span class="request-time"><?php echo timeAgo($request['created_at']); ?></span>
-                            </p>
-                        </div>
-                        <div class="request-actions">
-                            <button class="accept-btn" onclick="acceptFriendRequest(<?php echo $request['id']; ?>, <?php echo $request['requester_id']; ?>, '<?php echo htmlspecialchars($request['username']); ?>', this)">
-                                <i class="fas fa-check"></i>
-                                Accept
-                            </button>
-                            <button class="decline-btn" onclick="declineFriendRequest(<?php echo $request['id']; ?>, '<?php echo htmlspecialchars($request['username']); ?>', this)">
-                                <i class="fas fa-times"></i>
-                                Decline
-                            </button>
-                        </div>
-                    </div>
+                    <?php foreach ($all_notifications as $notification): ?>
+                        <?php if ($notification['type'] === 'friend_request'): ?>
+                            <?php $request = $notification['data']; ?>
+                            <div class="friend-request-card" data-request-id="<?php echo $request['id']; ?>">
+                                <div class="request-avatar" onclick="viewProfile(<?php echo $request['requester_id']; ?>)">
+                                    <img src="../assets/menu/defaultuser.png" alt="<?php echo htmlspecialchars($request['username']); ?>">
+                                </div>
+                                <div class="request-info">
+                                    <h3 onclick="viewProfile(<?php echo $request['requester_id']; ?>)" style="cursor: pointer;"><img src="../assets/pixels/friendgem.png" alt="Friend Request" class="username-icon"> <?php echo htmlspecialchars($request['username']); ?> <span class="notification-text">has sent you a friend request</span></h3>
+                                    <p class="request-details">
+                                        <span class="grade-level"><?php echo htmlspecialchars($request['grade_level']); ?></span>
+                                        <span class="request-time"><?php echo timeAgo($request['created_at']); ?></span>
+                                    </p>
+                                </div>
+                                <div class="request-actions">
+                                    <button class="accept-btn" onclick="acceptFriendRequest(<?php echo $request['id']; ?>, <?php echo $request['requester_id']; ?>, '<?php echo htmlspecialchars($request['username']); ?>', this)">
+                                        <i class="fas fa-check"></i>
+                                        Accept
+                                    </button>
+                                    <button class="decline-btn" onclick="declineFriendRequest(<?php echo $request['id']; ?>, '<?php echo htmlspecialchars($request['username']); ?>', this)">
+                                        <i class="fas fa-times"></i>
+                                        Decline
+                                    </button>
+                                </div>
+                            </div>
+                        <?php elseif ($notification['type'] === 'cresent_received'): ?>
+                            <?php 
+                                $data = $notification['data']; 
+                                $sender_data = json_decode($data['data'], true);
+                                $sender_username = $sender_data['sender_username'] ?? 'Unknown';
+                                $sender_id = $sender_data['sender_id'] ?? 0;
+                            ?>
+                            <div class="friend-request-card crescent-notification" data-notification-id="<?php echo $data['id']; ?>">
+                                <div class="request-avatar" onclick="viewProfile(<?php echo $sender_id; ?>)">
+                                    <img src="../assets/menu/defaultuser.png" alt="User">
+                                </div>
+                                <div class="request-info">
+                                    <h3 onclick="viewProfile(<?php echo $sender_id; ?>)" style="cursor: pointer;"><img src="../assets/pixels/cresent.png" alt="Cresent" class="username-icon"> <?php echo htmlspecialchars($sender_username); ?> <span class="notification-text">has given you a Cresent</span></h3>
+                                    <p class="request-details">
+                                        <span class="request-time"><?php echo timeAgo($data['created_at']); ?></span>
+                                    </p>
+                                </div>
+                                <div class="request-actions">
+                                    <button class="decline-btn" onclick="dismissNotification(<?php echo $data['id']; ?>, this)">
+                                        <i class="fas fa-times"></i>
+                                        Dismiss
+                                    </button>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
@@ -625,6 +684,40 @@ $notification_count = count($friend_requests);
                 
                 // Show error message
                 alert('Error: ' + (error.message || 'Failed to decline friend request'));
+            });
+        }
+
+        function dismissNotification(notificationId, buttonElement) {
+            // Play click sound
+            playClickSound();
+
+            // Disable button
+            buttonElement.disabled = true;
+            buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Dismissing...';
+            
+            fetch('dismiss_notification.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    notification_id: notificationId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Reload the page immediately
+                    window.location.reload();
+                } else {
+                    throw new Error(data.message || 'Failed to dismiss notification');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                buttonElement.disabled = false;
+                buttonElement.innerHTML = '<i class="fas fa-times"></i> Dismiss';
+                alert('Error: ' + (error.message || 'Failed to dismiss notification'));
             });
         }
 

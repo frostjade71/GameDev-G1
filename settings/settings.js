@@ -37,7 +37,7 @@ function saveSettings(event) {
     })
     .catch(error => {
         console.error('Error:', error);
-        showToast('Error saving settings');
+        showToast('not implemented yet...');
     });
 }
 
@@ -45,66 +45,55 @@ function saveSettings(event) {
 function showToast(message) {
     console.log('showToast called with message:', message);
     
-    // Create a simple toast element if needed
-    let toast = document.getElementById('toast');
-    console.log('Toast element found:', toast);
+    // Create a new toast element to avoid CSS conflicts (like Reset Game Progress)
+    const newToast = document.createElement('div');
+    newToast.innerHTML = '<div style="text-align: center;"><img src="../assets/pixels/hammer.png" style="width: 20px; height: 20px; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;">' + message + '</div>';
+    newToast.style.cssText = `
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        background: rgba(0, 0, 0, 0.95) !important;
+        color: white !important;
+        padding: 15px 25px !important;
+        border-radius: 10px !important;
+        z-index: 999999 !important;
+        font-size: 14px !important;
+        font-family: Arial, sans-serif !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+        pointer-events: none !important;
+        text-align: center !important;
+        max-width: 80% !important;
+        word-wrap: break-word !important;
+        margin: 0 !important;
+        float: none !important;
+        display: block !important;
+    `;
     
-    if (toast) {
-        toast.textContent = message;
-        toast.style.position = 'fixed';
-        toast.style.top = '20px';
-        toast.style.left = '50%';
-        toast.style.transform = 'translateX(-50%)';
-        toast.style.background = 'rgba(0, 0, 0, 0.9)';
-        toast.style.color = 'white';
-        toast.style.padding = '15px 25px';
-        toast.style.borderRadius = '10px';
-        toast.style.zIndex = '9999';
-        toast.style.fontSize = '14px';
-        toast.style.fontFamily = 'Arial, sans-serif';
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s ease';
-        toast.style.display = 'block';
-        toast.style.visibility = 'visible';
-        
-        // Show the toast
+    document.body.appendChild(newToast);
+    console.log('Toast added to body:', newToast);
+    
+    // Force center positioning again after append
+    setTimeout(() => {
+        newToast.style.top = '50% !important';
+        newToast.style.left = '50% !important';
+        newToast.style.transform = 'translate(-50%, -50%) !important';
+        newToast.style.opacity = '1';
+        console.log('Toast positioned and shown');
+    }, 10);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        newToast.style.opacity = '0';
         setTimeout(() => {
-            toast.style.opacity = '1';
-        }, 100);
-        
-        // Hide after 3 seconds
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 300);
-        }, 3000);
-        
-        console.log('Toast should be visible now');
-    } else {
-        console.error('Toast element not found!');
-        // Create a fallback toast
-        const fallbackToast = document.createElement('div');
-        fallbackToast.textContent = message;
-        fallbackToast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            z-index: 9999;
-            font-size: 14px;
-            font-family: Arial, sans-serif;
-        `;
-        document.body.appendChild(fallbackToast);
-        
-        setTimeout(() => {
-            fallbackToast.remove();
-        }, 3000);
-    }
+            if (newToast.parentNode) {
+                newToast.parentNode.removeChild(newToast);
+            }
+        }, 300);
+    }, 3000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

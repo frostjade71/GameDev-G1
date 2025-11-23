@@ -21,7 +21,7 @@ if (!$user) {
     exit();
 }
 
-// Get pending friend requests for the current user (for notification count)
+// Get pending friend requests for the current user
 $stmt = $pdo->prepare("
     SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level
     FROM friend_requests fr
@@ -32,8 +32,17 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $friend_requests = $stmt->fetchAll();
 
-// Get notification count for badge
-$notification_count = count($friend_requests);
+// Get crescent notifications
+$stmt = $pdo->prepare("
+    SELECT id, type, message, data, created_at
+    FROM notifications
+    WHERE user_id = ? AND type = 'cresent_received'
+");
+$stmt->execute([$user_id]);
+$cresent_notifications = $stmt->fetchAll();
+
+// Get notification count for badge (both friend requests and crescent notifications)
+$notification_count = count($friend_requests) + count($cresent_notifications);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -135,7 +144,8 @@ $notification_count = count($friend_requests);
     <div class="main-content">
         <div class="credits-container">
         <div class="credits-title">
-            <img src="../assets/menu/credits2.png" alt="Credits" class="credits-logo">
+            
+<img src="../assets/menu/Word-Weavers.png" alt="Word Weavers Logo" class="credits-big-logo">
         </div>
         <div class="credits-section members-container">
             <h2>Group 3 Members</h2>
@@ -152,8 +162,21 @@ $notification_count = count($friend_requests);
             <h2>Developer</h2>
             <div class="developer-card">Jaderby Peñaranda</div>
         </div>
+        <div class="credits-section github-container">
+            <a href="https://github.com/frostjade71/GameDev-G1" target="_blank" rel="noopener noreferrer" class="github-link">
+                <i class="fab fa-github github-logo"></i>
+            </a>
+            <a href="https://discord.gg/nPjnxqXdny" target="_blank" rel="noopener noreferrer" class="discord-link">
+                <i class="fab fa-discord discord-logo"></i>
+            </a>
+            <a href="https://mail.google.com/mail/u/0/?fs=1&to=wordweavershccci@gmail.com&tf=cm" target="_blank" rel="noopener noreferrer" class="email-link">
+                <i class="fas fa-envelope email-logo"></i>
+            </a>
         </div>
-    </div>
+        <footer class="credits-footer">
+            <p>© 2025 WordWeaversHCCCI. All rights reserved.</p>
+        </footer>
+        </div>
     <div class="toast-overlay"></div>
     <div id="toast" class="toast"></div>
     <script src="../script.js"></script>

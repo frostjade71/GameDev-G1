@@ -18,7 +18,7 @@ $stmt = $pdo->prepare("SELECT username, email, grade_level, section FROM users W
 $stmt->execute([$user_id]);
 $current_user = $stmt->fetch();
 
-// Get pending friend requests for the current user (for notification count)
+// Get pending friend requests for the current user
 $stmt = $pdo->prepare("
     SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level
     FROM friend_requests fr
@@ -29,8 +29,17 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $friend_requests = $stmt->fetchAll();
 
-// Get notification count for badge
-$notification_count = count($friend_requests);
+// Get crescent notifications
+$stmt = $pdo->prepare("
+    SELECT id, type, message, data, created_at
+    FROM notifications
+    WHERE user_id = ? AND type = 'cresent_received'
+");
+$stmt->execute([$user_id]);
+$cresent_notifications = $stmt->fetchAll();
+
+// Get notification count for badge (both friend requests and crescent notifications)
+$notification_count = count($friend_requests) + count($cresent_notifications);
 
 // Update session with the grade level from database if not set
 if (!isset($_SESSION['grade_level']) && isset($current_user['grade_level'])) {

@@ -545,6 +545,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 padding: 1rem;
             }
             
+            .form-group label {
+                font-size: 0.7rem;
+            }
+            
             .form-group input,
             .form-group select {
                 padding: 0.8rem;
@@ -552,8 +556,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             
             .auth-button {
-                padding: 0.9rem;
-                font-size: 0.95rem;
+                padding: 0.7rem;
+                font-size: 0.85rem;
+                margin-top: -0.5rem;
             }
         }
 
@@ -581,6 +586,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 padding: 0.8rem;
             }
             
+            .form-group label {
+                font-size: 0.65rem;
+            }
+            
             .form-group input,
             .form-group select {
                 padding: 0.7rem;
@@ -588,8 +597,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             
             .auth-button {
-                padding: 0.8rem;
-                font-size: 0.9rem;
+                padding: 0.6rem;
+                font-size: 0.8rem;
+                margin-top: -1rem;
             }
         }
 
@@ -667,7 +677,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         <div class="auth-header">
             <img src="../assets/menu/Word-Weavers.png" alt="Word Weavers" class="auth-logo">
-            <p class="auth-subtitle">Create your account to start learning</p>
+            <p class="auth-subtitle">Create an Account</p>
         </div>
         
         <?php if ($error_message): ?>

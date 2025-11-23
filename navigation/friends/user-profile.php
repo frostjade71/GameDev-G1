@@ -80,6 +80,79 @@ $overall_gwa = !empty($game_stats) ?
     array_sum(array_column($game_stats, 'gwa_score')) / count($game_stats) : 
     0;
 
+// Get viewed user's rank from leaderboard
+$rank_stmt = $pdo->prepare("
+    SELECT COUNT(*) + 1 as user_rank
+    FROM users u
+    LEFT JOIN game_progress gp ON u.id = gp.user_id AND gp.game_type = 'vocabworld'
+    WHERE u.id != ?
+    AND (COALESCE(gp.player_level, 1) > COALESCE((SELECT player_level FROM game_progress WHERE user_id = ? AND game_type = 'vocabworld'), 1)
+         OR (COALESCE(gp.player_level, 1) = COALESCE((SELECT player_level FROM game_progress WHERE user_id = ? AND game_type = 'vocabworld'), 1)
+             AND COALESCE(gp.total_monsters_defeated, 0) > COALESCE((SELECT total_monsters_defeated FROM game_progress WHERE user_id = ? AND game_type = 'vocabworld'), 0)))
+");
+$rank_stmt->execute([$viewed_user_id, $viewed_user_id, $viewed_user_id, $viewed_user_id]);
+$user_rank = $rank_stmt->fetchColumn();
+
+// Get character selection data for JavaScript
+$character_stmt = $pdo->prepare("
+    SELECT character_image_path, selected_character 
+    FROM character_selections 
+    WHERE user_id = ? AND game_type = 'vocabworld' 
+    LIMIT 1
+");
+$character_stmt->execute([$viewed_user_id]);
+$character_result = $character_stmt->fetch();
+
+// Set default values for JavaScript
+$character_images = [
+    'emma' => '../../MainGame/vocabworld/assets/characters/girl_char/character_emma.png',
+    'ethan' => '../../MainGame/vocabworld/assets/characters/boy_char/character_ethan.png',
+    'amber' => '../../MainGame/vocabworld/assets/characters/amber_char/amber.png',
+    'girl' => '../../MainGame/vocabworld/assets/characters/girl_char/character_emma.png',
+    'boy' => '../../MainGame/vocabworld/assets/characters/boy_char/character_ethan.png'
+];
+
+$character_image = $character_images['ethan'];
+$character_name = 'Ethan';
+
+if ($character_result) {
+    // If we have a character selection in the database
+    if (!empty($character_result['selected_character'])) {
+        $character_name = $character_result['selected_character'];
+        $char_key = strtolower($character_name);
+        
+        // If we have a direct match in our character images array
+        if (isset($character_images[$char_key])) {
+            $character_image = $character_images[$char_key];
+        } 
+        // Otherwise try to find a matching character in the paths
+        else if (!empty($character_result['character_image_path'])) {
+            // Try to extract character name from the stored path
+            foreach ($character_images as $char => $path) {
+                if (stripos($character_result['character_image_path'], $char) !== false) {
+                    $character_image = $path; // Use the correct path from our array
+                    break;
+                }
+            }
+        }
+    } 
+    // Fallback to extracting name from image path if no selected_character
+    else if (!empty($character_result['character_image_path'])) {
+        // Try to match the stored path to our known character paths
+        foreach ($character_images as $char => $path) {
+            if (stripos($character_result['character_image_path'], $char) !== false) {
+                $character_image = $path; // Use the correct path from our array
+                $character_name = ucfirst($char);
+                break;
+            }
+        }
+    }
+}
+
+// Initialize essence and shards with default values since tables don't exist
+$essence = 0;
+$shards = 0;
+
 if (!$viewed_user) {
     header('Location: friends.php');
     exit();
@@ -103,15 +176,26 @@ $stmt = $pdo->prepare("
 $stmt->execute([$current_user_id, $viewed_user_id, $viewed_user_id, $current_user_id]);
 $are_friends = $stmt->fetch();
 
-// Get notification count for current user
+// Get pending friend requests for the current user
 $stmt = $pdo->prepare("
     SELECT COUNT(*) as count
     FROM friend_requests 
     WHERE receiver_id = ? AND status = 'pending'
 ");
 $stmt->execute([$current_user_id]);
-$notification_result = $stmt->fetch();
-$notification_count = $notification_result['count'];
+$friend_requests_count = $stmt->fetch()['count'];
+
+// Get crescent notifications for the current user
+$stmt = $pdo->prepare("
+    SELECT COUNT(*) as count
+    FROM notifications
+    WHERE user_id = ? AND type = 'cresent_received'
+");
+$stmt->execute([$current_user_id]);
+$cresent_notifications_count = $stmt->fetch()['count'];
+
+// Total notification count
+$notification_count = $friend_requests_count + $cresent_notifications_count;
 
 // Get viewed user's rank from leaderboard
 $rank_stmt = $pdo->prepare("
@@ -145,41 +229,32 @@ $stmt = $pdo->prepare("
 $stmt->execute([$viewed_user_id]);
 $player_stats = $stmt->fetch();
 
-// Get character selection data for JavaScript
-// Debug: Check if user has a character selection
-$character_stmt = $pdo->prepare("
-    SELECT character_image_path, selected_character 
-    FROM character_selections 
-    WHERE user_id = ? AND game_type = 'vocabworld' 
-    LIMIT 1
-");
-$character_stmt->execute([$viewed_user_id]);
-$character_result = $character_stmt->fetch();
+// Get Essence and Shards
+$essence = 0;
+$shards = 0;
 
-// Debug output
-// echo "<pre>Character Result: "; print_r($character_result); echo "</pre>";
-
-// Set default values for JavaScript
-$character_image = '../../MainGame/vocabworld/assets/characters/boy_char/character_ethan.png';
-$character_name = 'Ethan';
-
-if ($character_result) {
-    // Debug: Check what's in the result
-    // echo "<pre>Character Result: "; print_r($character_result); echo "</pre>";
-    // echo "<p>Image Path: " . ($character_result['character_image_path'] ?? 'Not set') . "</p>";
-    if (!empty($character_result['character_image_path'])) {
-        $character_image = $character_result['character_image_path'];
-    }
-    if (!empty($character_result['selected_character'])) {
-        $character_name = $character_result['selected_character'];
-    } else if (preg_match('/character_([^.]+)\./', $character_image, $matches)) {
-        $character_name = ucfirst($matches[1]);
+// Get Essence
+$essence_manager_path = '../../MainGame/vocabworld/api/essence_manager.php';
+if (file_exists($essence_manager_path)) {
+    require_once $essence_manager_path;
+    if (class_exists('EssenceManager')) {
+        $essenceManager = new EssenceManager($pdo);
+        $essence = $essenceManager->getEssence($viewed_user_id);
     }
 }
 
-// Initialize essence and shards with default values
-$essence = 0;
-$shards = 0;
+// Get Shards
+$shard_manager_path = '../../MainGame/vocabworld/shard_manager.php';
+if (file_exists($shard_manager_path)) {
+    require_once $shard_manager_path;
+    if (class_exists('ShardManager')) {
+        $shardManager = new ShardManager($pdo);
+        $shard_result = $shardManager->getShardBalance($viewed_user_id);
+        if ($shard_result && isset($shard_result['current_shards'])) {
+            $shards = $shard_result['current_shards'];
+        }
+    }
+}
 
 // Get viewed user's favorites
 $stmt = $pdo->prepare("SELECT game_type FROM user_favorites WHERE user_id = ?");
@@ -228,6 +303,120 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $stmt->execute([$current_user_id, $viewed_user_id, $viewed_user_id, $current_user_id]);
             $friend_request = $stmt->fetch();
         }
+    }
+}
+
+// Initialize user_fame table and get user stats
+function initializeUserFame($pdo, $username) {
+    $stmt = $pdo->prepare("INSERT IGNORE INTO user_fame (username, cresents, views) VALUES (?, 0, 0)");
+    $stmt->execute([$username]);
+}
+
+function getUserFame($pdo, $username) {
+    initializeUserFame($pdo, $username);
+    $stmt = $pdo->prepare("SELECT cresents, views FROM user_fame WHERE username = ?");
+    $stmt->execute([$username]);
+    return $stmt->fetch();
+}
+
+function incrementView($pdo, $username) {
+    initializeUserFame($pdo, $username);
+    $stmt = $pdo->prepare("UPDATE user_fame SET views = views + 1 WHERE username = ?");
+    $stmt->execute([$username]);
+}
+
+function toggleCrescent($pdo, $viewer_username, $viewed_username) {
+    initializeUserFame($pdo, $viewer_username);
+    initializeUserFame($pdo, $viewed_username);
+    
+    // Check if viewer has already given a crescent to viewed user
+    $stmt = $pdo->prepare("SELECT id FROM user_crescents WHERE giver_username = ? AND receiver_username = ?");
+    $stmt->execute([$viewer_username, $viewed_username]);
+    $existing = $stmt->fetch();
+    
+    if ($existing) {
+        // Remove crescent
+        $stmt = $pdo->prepare("DELETE FROM user_crescents WHERE giver_username = ? AND receiver_username = ?");
+        $stmt->execute([$viewer_username, $viewed_username]);
+        $stmt = $pdo->prepare("UPDATE user_fame SET cresents = cresents - 1 WHERE username = ?");
+        $stmt->execute([$viewed_username]);
+        return false; // Crescent removed
+    } else {
+        // Add crescent
+        $stmt = $pdo->prepare("INSERT INTO user_crescents (giver_username, receiver_username, created_at) VALUES (?, ?, NOW())");
+        $stmt->execute([$viewer_username, $viewed_username]);
+        $stmt = $pdo->prepare("UPDATE user_fame SET cresents = cresents + 1 WHERE username = ?");
+        $stmt->execute([$viewed_username]);
+        return true; // Crescent added
+    }
+}
+
+function hasGivenCrescent($pdo, $viewer_username, $viewed_username) {
+    $stmt = $pdo->prepare("SELECT id FROM user_crescents WHERE giver_username = ? AND receiver_username = ?");
+    $stmt->execute([$viewer_username, $viewed_username]);
+    return $stmt->fetch() !== false;
+}
+
+// Create user_crescents table if it doesn't exist
+$pdo->exec("CREATE TABLE IF NOT EXISTS user_crescents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    giver_username VARCHAR(255) NOT NULL,
+    receiver_username VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_crescent (giver_username, receiver_username)
+)");
+
+// Increment view count (only if viewer is not the same as viewed user)
+if ($current_user['username'] !== $viewed_user['username']) {
+    incrementView($pdo, $viewed_user['username']);
+}
+
+// Get user fame stats
+$user_fame = getUserFame($pdo, $viewed_user['username']);
+$views_count = $user_fame ? $user_fame['views'] : 0;
+$crescents_count = $user_fame ? $user_fame['cresents'] : 0;
+
+// Check if current user has given crescent to viewed user
+$has_given_crescent = false;
+if ($current_user['username'] !== $viewed_user['username']) {
+    $has_given_crescent = hasGivenCrescent($pdo, $current_user['username'], $viewed_user['username']);
+}
+
+// Handle crescent toggle
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'toggle_crescent') {
+    // Clear any output buffers
+    if (ob_get_length()) ob_clean();
+    
+    if ($current_user['username'] !== $viewed_user['username']) {
+        try {
+            $added = toggleCrescent($pdo, $current_user['username'], $viewed_user['username']);
+            $user_fame = getUserFame($pdo, $viewed_user['username']);
+            $views_count = $user_fame ? $user_fame['views'] : 0;
+            $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
+            $has_given_crescent = $added;
+            
+            // Return JSON response for AJAX
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => true,
+                'cresents' => $crescents_count,
+                'has_given' => $has_given_crescent
+            ]);
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    } else {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'error' => 'Cannot give crescent to yourself'
+        ]);
+        exit();
     }
 }
 ?>
@@ -383,6 +572,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     <?php if (!empty($viewed_user['about_me'])): ?>
                         <p class="about-me"><?php echo htmlspecialchars($viewed_user['about_me']); ?></p>
                     <?php endif; ?>
+                    
+                    <!-- User Fame Section -->
+                    <div class="user-fame-section">
+                        <div class="fame-stats">
+                            <div class="fame-item">
+                                <div class="tooltip">Profile Views: <?php echo number_format($views_count); ?></div>
+                                <img src="../../assets/pixels/pubviews.png" alt="Views" class="fame-icon">
+                                <span class="fame-value"><?php echo number_format($views_count); ?></span>
+                            </div>
+                            <span class="fame-separator">●</span>
+                            <div class="fame-item">
+                                <?php if ($current_user['username'] !== $viewed_user['username']): ?>
+                                    <form method="POST" class="crescent-form" style="display: inline;">
+                                        <input type="hidden" name="action" value="toggle_crescent">
+                                        <input type="hidden" name="viewed_user_id" value="<?php echo $viewed_user_id; ?>">
+                                        <button type="submit" class="crescent-btn <?php echo $has_given_crescent ? 'given' : ''; ?>" onclick="toggleCrescent(event, this)">
+                                            <img src="../../assets/pixels/cresent.png" alt="Crescents" class="fame-icon">
+                                            <span class="fame-value"><?php echo number_format($crescents_count); ?></span>
+                                        </button>
+                                    </form>
+                                <?php else: ?>
+                                    <img src="../../assets/pixels/cresent.png" alt="Crescents" class="fame-icon">
+                                    <span class="fame-value"><?php echo number_format($crescents_count); ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
                     <div class="badge-container">
                         <?php 
                         $is_jaderby = (strtolower($viewed_user['username']) === 'jaderby garcia peñaranda');
@@ -448,6 +664,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 </div>
             </div>
 
+            <!-- Game Stats Section -->
+            <div class="game-stats-section">
+                <h2><i class="fas fa-gamepad"></i> Game Stats</h2>
+                <div class="game-stats-content">
+                    <div class="game-logo-small" onclick="showGameStatsModal()">
+                        <img src="../../assets/selection/vocablogo.webp" alt="Vocabworld" class="game-logo-small-img">
+                    </div>
+                </div>
+            </div>
 
 <!-- User Favorites -->
             <div class="user-favorites-section">
@@ -542,6 +767,139 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     <i class="fas fa-times"></i>
                     No
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Stats Modal -->
+    <div class="modal-overlay" id="gameStatsModal">
+        <div class="game-stats-modal-content" id="gameStatsContent">
+            <!-- Modal Header with Close Button -->
+            <div class="game-stats-modal-header">
+                <div class="modal-header-content">
+                    <img src="../../MainGame/vocabworld/assets/menu/vocab_new.png" alt="Vocabworld" class="game-logo-header-img">
+                </div>
+                <button class="modal-close-btn" id="closeGameStatsBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="game-stats-modal-body">
+                <!-- Player Profile Section -->
+                <div class="player-profile-section">
+                    <div class="character-display">
+                        <div class="character-avatar-wrapper">
+                            <div class="character-avatar-glow"></div>
+                            <img src="<?php echo htmlspecialchars($character_image); ?>" 
+                                 alt="<?php echo htmlspecialchars($character_name); ?>" 
+                                 class="character-avatar"
+                                 id="character-sprite"
+                                 data-character="<?php echo strtolower($character_name); ?>">
+                        </div>
+                        <div class="character-details">
+                            <h3 class="character-name" id="character-name"><?php echo htmlspecialchars($character_name); ?></h3>
+                            <div class="character-level-badge">
+                                <i class="fas fa-star"></i>
+                                <span>Level <?php echo number_format($player_stats['total_level']); ?></span>
+                            </div>
+                        </div>
+                        <?php if (isset($user_rank)): ?>
+                            <div class="character-rank-badge rank-<?php echo $user_rank <= 3 ? $user_rank : 'other'; ?>">
+                                <?php if ($user_rank <= 3): ?>
+                                    <i class="fas fa-trophy"></i>
+                                <?php endif; ?>
+                                <span>Rank #<?php echo $user_rank; ?></span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-sections">
+                    <!-- Combat Stats -->
+                    <div class="stats-category">
+                        <div class="category-header">
+                            <img src="../../assets/pixels/blueorb.png" alt="Stats" style="width: 24px; height: 24px; margin-right: 8px;">
+                            <h4>Stats</h4>
+                        </div>
+                        <div class="stats-cards-grid">
+                            <div class="stat-card-modern">
+                                <div class="stat-card-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/level.png" alt="Level">
+                                </div>
+                                <div class="stat-card-content">
+                                    <span class="stat-card-label">Level</span>
+                                    <span class="stat-card-value"><?php echo number_format($player_stats['total_level']); ?></span>
+                                </div>
+                            </div>
+                            <div class="stat-card-modern">
+                                <div class="stat-card-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/total_xp.png" alt="Experience">
+                                </div>
+                                <div class="stat-card-content">
+                                    <span class="stat-card-label">Experience</span>
+                                    <span class="stat-card-value"><?php echo number_format($player_stats['total_experience']); ?></span>
+                                </div>
+                            </div>
+                            <div class="stat-card-modern">
+                                <div class="stat-card-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/sword1.png" alt="Monsters">
+                                </div>
+                                <div class="stat-card-content">
+                                    <span class="stat-card-label">Monsters Defeated</span>
+                                    <span class="stat-card-value"><?php echo number_format($player_stats['total_monsters_defeated']); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resources -->
+                    <div class="stats-category">
+                        <div class="category-header">
+                            <img src="../../assets/pixels/bluedias.png" alt="Resources" style="width: 24px; height: 24px; margin-right: 8px;">
+                            <h4>Resources</h4>
+                        </div>
+                        <div class="stats-cards-grid resources-grid">
+                            <div class="stat-card-modern resource-card">
+                                <div class="stat-card-icon">
+                                    <img src="../../MainGame/vocabworld/assets/currency/essence.png" alt="Essence">
+                                </div>
+                                <div class="stat-card-content">
+                                    <span class="stat-card-label">Essence</span>
+                                    <span class="stat-card-value essence-value"><?php echo number_format($essence); ?></span>
+                                </div>
+                            </div>
+                            <div class="stat-card-modern resource-card">
+                                <div class="stat-card-icon">
+                                    <img src="../../MainGame/vocabworld/assets/currency/shard1.png" alt="Shards">
+                                </div>
+                                <div class="stat-card-content">
+                                    <span class="stat-card-label">Shards</span>
+                                    <span class="stat-card-value shard-value"><?php echo number_format($shards); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance -->
+                    <div class="stats-category">
+                        <div class="category-header">
+                            <img src="../../MainGame/vocabworld/assets/menu/instructionicon.png" alt="Performance" style="width: 24px; height: 24px; margin-right: 8px;">
+                            <h4>Performance</h4>
+                        </div>
+                        <div class="stats-cards-grid">
+                            <div class="stat-card-modern gwa-card">
+                                <div class="stat-card-icon gwa-icon">
+                                    <img src="../../MainGame/vocabworld/assets/stats/gwa.png" alt="GWA">
+                                </div>
+                                <div class="stat-card-content">
+                                    <span class="stat-card-label">GWA</span>
+                                    <span class="stat-card-value gwa-value-display"><?php echo number_format($overall_gwa, 2); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -822,8 +1180,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
              
              if (!toast || !toastOverlay) return;
              
-             // Set message and type
-             toast.textContent = message;
+             // Set message and type (use innerHTML to render HTML content)
+             toast.innerHTML = message;
              toast.className = `toast ${type}`;
              
              // Show toast
@@ -836,7 +1194,163 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                  toastOverlay.classList.remove('show');
              }, 3000);
          }
+
+         // Game Stats Modal functions
+         function showGameStatsModal() {
+             const modal = document.getElementById('gameStatsModal');
+             const content = document.getElementById('gameStatsContent');
+             
+             if (modal && content) {
+                 modal.classList.add('show');
+                 content.classList.remove('hide');
+                 content.classList.add('show');
+             }
+         }
+
+         function hideGameStatsModal() {
+             const modal = document.getElementById('gameStatsModal');
+             const content = document.getElementById('gameStatsContent');
+             
+             if (modal && content) {
+                 content.classList.remove('show');
+                 content.classList.add('hide');
+                 modal.classList.remove('show');
+             }
+         }
+
+         // Add event listeners for the Game Stats modal
+         document.addEventListener('DOMContentLoaded', function() {
+             const closeGameStatsBtn = document.getElementById('closeGameStatsBtn');
+             
+             if (closeGameStatsBtn) {
+                 closeGameStatsBtn.addEventListener('click', function(e) {
+                     e.preventDefault();
+                     hideGameStatsModal();
+                 });
+             }
+             
+             // Close modal when clicking outside
+             const gameStatsModal = document.getElementById('gameStatsModal');
+             if (gameStatsModal) {
+                 gameStatsModal.addEventListener('click', function(e) {
+                     if (e.target === gameStatsModal) {
+                         hideGameStatsModal();
+                     }
+                 });
+             }
+             
+             // Close modal with Escape key
+             document.addEventListener('keydown', function(e) {
+                 if (e.key === 'Escape') {
+                     const modal = document.getElementById('gameStatsModal');
+                     if (modal && modal.classList.contains('show')) {
+                         hideGameStatsModal();
+                     }
+                 }
+             });
+         });
+
+        // Crescent toggle functionality
+        function toggleCrescent(event, button) {
+            event.preventDefault();
+            
+            const form = button.closest('form');
+            const formData = new FormData(form);
+            const valueSpan = button.querySelector('.fame-value');
+            const originalCount = parseInt(valueSpan.textContent.replace(/,/g, ''));
+            const isCurrentlyGiven = button.classList.contains('given');
+            
+            // Disable button during request
+            button.disabled = true;
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<span style="opacity: 0.5;">...</span>';
+            
+            fetch('crescent_ajax.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                // Check if response is actually JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Server returned non-JSON response');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update the crescent count and button state
+                    valueSpan.textContent = data.cresents.toLocaleString();
+                    
+                    // Toggle the 'given' class
+                    if (data.has_given) {
+                        button.classList.add('given');
+                        showToast('<img src="../../assets/pixels/cresent.png" alt="Crescent" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"> You gave a Crescent!', 'success');
+                        
+                        // Reload page after toast disappears (1.5 seconds)
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        button.classList.remove('given');
+                        // No toast, just reload immediately
+                        window.location.reload();
+                    }
+                } else {
+                    // Show specific error message from server if available
+                    const errorMsg = data.error || 'Failed to update crescent. Please try again.';
+                    showToast(errorMsg, 'error');
+                    
+                    // Revert the UI changes since the operation failed
+                    valueSpan.textContent = originalCount.toLocaleString();
+                    if (isCurrentlyGiven) {
+                        button.classList.add('given');
+                    } else {
+                        button.classList.remove('given');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling crescent:', error);
+                
+                // If the operation likely succeeded (based on database behavior) but response failed
+                // Show optimistic UI update
+                if (error.message.includes('non-JSON')) {
+                    // Optimistically update the UI since the database operation likely worked
+                    if (isCurrentlyGiven) {
+                        button.classList.remove('given');
+                        valueSpan.textContent = Math.max(0, originalCount - 1).toLocaleString();
+                        // No toast, just reload immediately
+                        window.location.reload();
+                    } else {
+                        button.classList.add('given');
+                        valueSpan.textContent = (originalCount + 1).toLocaleString();
+                        showToast('<img src="../../assets/pixels/cresent.png" alt="Crescent" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"> You gave a Crescent!', 'success');
+                        
+                        // Reload page after toast disappears (1.5 seconds)
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    }
+                } else {
+                    // Show network error message
+                    showToast('🌙 Crescent magic failed! Try again.', 'error');
+                    
+                    // Revert the UI changes
+                    valueSpan.textContent = originalCount.toLocaleString();
+                    if (isCurrentlyGiven) {
+                        button.classList.add('given');
+                    } else {
+                        button.classList.remove('given');
+                    }
+                }
+            })
+            .finally(() => {
+                // Re-enable button and restore original content
+                button.disabled = false;
+                button.innerHTML = originalHTML;
+            });
+        }
     </script>
 </body>
 </html>
-

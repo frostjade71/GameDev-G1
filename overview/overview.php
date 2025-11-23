@@ -14,13 +14,28 @@ $stmt = $pdo->prepare("SELECT username, email FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
-// Get notification count
+// Get pending friend requests for the current user
 $stmt = $pdo->prepare("
-    SELECT fr.id FROM friend_requests fr
+    SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level
+    FROM friend_requests fr
+    JOIN users u ON fr.requester_id = u.id
     WHERE fr.receiver_id = ? AND fr.status = 'pending'
+    ORDER BY fr.created_at DESC
 ");
 $stmt->execute([$user_id]);
-$notification_count = $stmt->rowCount();
+$friend_requests = $stmt->fetchAll();
+
+// Get crescent notifications
+$stmt = $pdo->prepare("
+    SELECT id, type, message, data, created_at
+    FROM notifications
+    WHERE user_id = ? AND type = 'cresent_received'
+");
+$stmt->execute([$user_id]);
+$cresent_notifications = $stmt->fetchAll();
+
+// Get notification count for badge (both friend requests and crescent notifications)
+$notification_count = count($friend_requests) + count($cresent_notifications);
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -87,30 +87,12 @@ $character = $stmt->fetch();
 $default_character = 'assets/characters/boy_char/character_ethan.png';
 $character_path = $character ? str_replace('../', '', $character['character_image_path']) : $default_character;
 
-// Calculate GWA from recent scores
-$stmt = $pdo->prepare("
-    SELECT AVG(score) as avg_score 
-    FROM game_scores 
-    WHERE user_id = ? 
-    AND game_type = 'vocabworld' 
-    AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)");
-$stmt->execute([$user_id]);
-$avg_result = $stmt->fetch();
-$current_gwa = $avg_result['avg_score'] ?? 0;
+// Note: game_scores table has been removed
+$current_gwa = 0;
 
-// Get user's vocabworld scores
-$stmt = $pdo->prepare("SELECT * FROM game_scores WHERE user_id = ? AND game_type = 'vocabworld' ORDER BY created_at DESC LIMIT 10");
-$stmt->execute([$user_id]);
-$scores = $stmt->fetchAll();
-
-// Calculate average percentage
-$total_sessions = count($scores);
+// Note: game_scores table has been removed
+$total_sessions = 0;
 $average_percentage = 0;
-if ($total_sessions > 0) {
-    $total_score = array_sum(array_column($scores, 'score'));
-    $max_possible_score = $total_sessions * 1000; // Assuming max 1000 points per session
-    $average_percentage = round(($total_score / $max_possible_score) * 100, 1);
-}
 
 // Get character customization data
 $character_data = null;

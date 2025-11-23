@@ -65,7 +65,9 @@ body {
 
 .credits-title {
     margin-bottom: 1.5rem;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     font-size: 0.8em;
     text-transform: uppercase;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -77,6 +79,40 @@ body {
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
 }
 
+/* Styling for the additional Word Weavers logo */
+.credits-big-logo {
+    max-width: 300px;
+    height: auto;
+    margin-top: 2rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+@media (max-width: 768px) {
+    .credits-title {
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .credits-title {
+        margin-bottom: 0.3rem;
+    }
+}
+
+/* Mobile scaling for Word Weavers logo */
+@media (max-width: 768px) {
+    .credits-big-logo {
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .credits-big-logo {
+        max-width: 180px;
+    }
+}
+
+/* Existing scaling for credits logo */
 @media (max-width: 768px) {
     .credits-logo {
         max-width: 100px;
@@ -121,31 +157,64 @@ body {
         font-size: 0.5rem;
         margin-bottom: 0.6rem;
     }
+    
+    .developer-container h2 {
+        font-size: 0.6rem !important;
+    }
 }
 
 @media (max-width: 480px) {
     .credits-section h2 {
         font-size: 0.4rem;
         margin-bottom: 0.4rem;
+        margin-top: -1%;
+    }
+    
+    .developer-container h2 {
+        font-size: 0.5rem !important;
     }
 }
 
-.members-container, .developer-container {
+.members-container,
+.developer-container,
+.github-container {
     margin: 0 auto 1.5rem;
     padding: 0.5rem;
 }
 
 @media (max-width: 768px) {
-    .members-container, .developer-container {
+
+    .members-container,
+    .developer-container,
+    .github-container {
         margin: 0 auto 1.2rem;
         padding: 0.4rem;
+    }
+    
+    .developer-container {
+        margin-top: -1.2rem;
+    }
+    
+    .github-container {
+        margin-top: -1rem;
     }
 }
 
 @media (max-width: 480px) {
-    .members-container, .developer-container {
+
+    .members-container,
+    .developer-container,
+    .github-container {
         margin: 0 auto 1rem;
         padding: 0.3rem;
+    }
+    
+    .developer-container {
+        margin-top: -1rem;
+    }
+    
+    .github-container {
+        margin-top: -0.8rem;
     }
 }
 
@@ -170,7 +239,8 @@ body {
     }
 }
 
-.member-card, .developer-card {
+.member-card,
+.developer-card {
     font-family: 'Press Start 2P', cursive;
     font-size: 0.7rem;
     text-align: center;
@@ -181,20 +251,25 @@ body {
 }
 
 @media (max-width: 768px) {
-    .member-card, .developer-card {
+
+    .member-card,
+    .developer-card {
         font-size: 0.4rem;
         line-height: 1.2;
     }
 }
 
 @media (max-width: 480px) {
-    .member-card, .developer-card {
+
+    .member-card,
+    .developer-card {
         font-size: 0.3rem;
         line-height: 1.1;
     }
 }
 
-.member-card:hover, .developer-card:hover {
+.member-card:hover,
+.developer-card:hover {
     color: #ffd700;
     text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
 }
@@ -203,23 +278,28 @@ body {
     .credits-title {
         font-size: 0.6rem;
     }
-    
+
     .credits-section h2 {
-        font-size: 1rem;
-    }
-    
-    .members-list {
-        grid-template-columns: 1fr;
-    }
-    
-    .member-card, .developer-card {
-        font-size: 0.4rem;
-    }
-    
-    .developer-card {
         font-size: 0.5rem;
     }
     
+    .developer-container h2 {
+        font-size: 0.6rem !important;
+    }
+
+    .members-list {
+        grid-template-columns: 1fr;
+    }
+
+    .member-card,
+    .developer-card {
+        font-size: 0.4rem;
+    }
+
+    .developer-card {
+        font-size: 0.5rem;
+    }
+
     .members-container,
     .developer-container {
         padding: 1.5rem;
@@ -270,3 +350,96 @@ body {
     transform: translateX(-5px);
 }
 
+.github-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.github-link,
+.discord-link,
+.email-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.github-logo,
+.discord-logo,
+.email-logo {
+    font-size: 1.2rem;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.github-logo:hover {
+    color: #87CEEB;
+    text-shadow: 0 0 10px rgba(135, 206, 235, 0.5);
+    transform: scale(1.1);
+}
+
+.discord-logo:hover {
+    color: #7289DA;
+    text-shadow: 0 0 10px rgba(114, 137, 218, 0.5);
+    transform: scale(1.1);
+}
+
+.email-logo:hover {
+    color: #FFA500;
+    text-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .github-container {
+        gap: 1.5rem;
+    }
+    
+    .github-logo,
+    .discord-logo,
+    .email-logo {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .github-container {
+        gap: 1rem;
+    }
+    
+    .github-logo,
+    .discord-logo,
+    .email-logo {
+        font-size: 0.8rem;
+    }
+}
+
+.credits-footer {
+    text-align: center;
+    padding: 1rem 0 0.5rem 0;
+    margin-top: 1rem;
+}
+
+.credits-footer p {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .credits-footer p {
+        font-size: 0.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .credits-footer p {
+        font-size: 0.3rem;
+    }
+}

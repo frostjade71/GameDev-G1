@@ -27,21 +27,53 @@ body {
 }
 
 @media (max-width: 768px) {
+    /* Prevent scrolling on tablets */
+    html, body {
+        height: 100%;
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+    
+    .main-content {
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+    }
+    
     .credits-container {
         margin: 0.5rem auto;
         padding: 1rem;
         width: 85%;
         max-width: 100%;
         border-radius: 12px;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
     }
 }
 
 @media (max-width: 480px) {
+    /* Prevent scrolling on mobile */
+    html, body {
+        height: 100%;
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+    
+    .main-content {
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+    }
+    
     .credits-container {
         margin: 0.25rem auto;
         padding: 0.75rem;
         width: 80%;
         border-radius: 10px;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
     }
 }
 
@@ -274,6 +306,15 @@ body {
     text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
 }
 
+#developerName {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#developerName:hover {
+    transform: translateY(-2px);
+}
+
 @media (max-width: 768px) {
     .credits-title {
         font-size: 0.6rem;
@@ -442,4 +483,380 @@ body {
     .credits-footer p {
         font-size: 0.3rem;
     }
+}
+
+/* Gravatar Hover Card Styles */
+.gravatar-card-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gravatar-card-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+.gravatar-card-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    z-index: 1001;
+    display: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+    max-width: 320px;
+    width: 85%;
+}
+
+.gravatar-card-container.show {
+    display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.gravatar-card-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1002;
+}
+
+.gravatar-card-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Gravatar Hovercard Styles */
+.gravatar-hovercard {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.gravatar-hovercard__inner {
+    position: relative;
+}
+
+.gravatar-hovercard__header-image {
+    width: 100%;
+    height: 90px;
+    background-size: cover !important;
+    background-position: center 10% !important;
+    background-repeat: no-repeat !important;
+}
+
+.gravatar-hovercard__header {
+    position: relative;
+    padding: 0 15px 15px;
+    margin-top: -42px;
+}
+
+.gravatar-hovercard__avatar-link {
+    display: block;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.gravatar-hovercard__avatar-link:hover {
+    transform: scale(1.05);
+}
+
+.gravatar-hovercard__avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gravatar-hovercard__personal-info-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    margin-top: 12px;
+}
+
+.gravatar-hovercard__personal-info-link:hover .gravatar-hovercard__name {
+    color: #0073b1;
+}
+
+.gravatar-hovercard__name {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
+    color: #1a1a1a;
+    transition: color 0.2s ease;
+}
+
+.gravatar-hovercard__job {
+    font-size: 12px;
+    color: #666;
+    margin: 4px 0 0;
+    line-height: 1.3;
+}
+
+.gravatar-hovercard__body {
+    padding: 0 15px 15px;
+}
+
+.gravatar-hovercard__description {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.gravatar-hovercard__social-links {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+.gravatar-hovercard__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.gravatar-hovercard__social-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gravatar-hovercard__social-link[data-service-name="gravatar"]:hover {
+    background: #1e8e3e;
+}
+
+.gravatar-hovercard__social-link[data-service-name="linkedin"]:hover {
+    background: #0073b1;
+}
+
+.gravatar-hovercard__social-link[data-service-name="github"]:hover {
+    background: #333;
+}
+
+.gravatar-hovercard__social-link[data-service-name="facebook"]:hover {
+    background: #1877f2;
+}
+
+.gravatar-hovercard__social-icon {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0.7);
+    transition: filter 0.2s ease;
+}
+
+.gravatar-hovercard__social-link:hover .gravatar-hovercard__social-icon {
+    filter: brightness(0) invert(1);
+}
+
+.gravatar-hovercard__footer {
+    padding: 12px 15px;
+    border-top: 1px solid #eee;
+    background: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gravatar-hovercard__profile-url {
+    font-size: 12px;
+    color: #666;
+    text-decoration: none;
+    font-weight: 500;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gravatar-hovercard__profile-url:hover {
+    color: #0073b1;
+}
+
+.gravatar-hovercard__profile-link {
+    font-size: 12px;
+    color: #0073b1;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.2s ease;
+}
+
+.gravatar-hovercard__profile-link:hover {
+    gap: 8px;
+}
+
+.gravatar-hovercard__profile-color {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+/* Mobile responsiveness for Gravatar card */
+@media (max-width: 768px) {
+.gravatar-card-container {
+width: 95%;
+max-width: 300px;
+}
+
+.gravatar-hovercard__header {
+margin-top: -38px;
+padding: 0 12px 12px;
+}
+
+.gravatar-hovercard__avatar-link {
+width: 76px;
+height: 76px;
+border-width: 2px;
+}
+
+.gravatar-hovercard__name {
+font-size: 16px;
+}
+
+.gravatar-hovercard__job {
+font-size: 11px;
+}
+
+.gravatar-hovercard__body {
+padding: 0 12px 12px;
+}
+
+.gravatar-hovercard__description {
+font-size: 12px;
+}
+
+.gravatar-hovercard__social-links {
+padding: 12px;
+gap: 8px;
+}
+
+.gravatar-hovercard__social-link {
+width: 30px;
+height: 30px;
+}
+
+.gravatar-hovercard__social-icon {
+width: 16px;
+height: 16px;
+}
+
+.gravatar-hovercard__footer {
+padding: 10px 12px;
+}
+
+.gravatar-hovercard__profile-url {
+font-size: 11px;
+max-width: 100px;
+}
+
+.gravatar-hovercard__profile-link {
+font-size: 11px;
+}
+}
+
+@media (max-width: 480px) {
+.gravatar-card-container {
+width: 98%;
+max-width: 280px;
+}
+
+.gravatar-hovercard__header-image {
+height: 70px;
+}
+
+.gravatar-hovercard__header {
+margin-top: -35px;
+padding: 0 10px 10px;
+}
+
+.gravatar-hovercard__avatar-link {
+width: 70px;
+height: 70px;
+border-width: 2px;
+}
+
+.gravatar-hovercard__name {
+font-size: 14px;
+}
+
+.gravatar-hovercard__job {
+font-size: 10px;
+}
+
+.gravatar-hovercard__body {
+padding: 0 10px 10px;
+}
+
+.gravatar-hovercard__description {
+font-size: 11px;
+}
+
+.gravatar-hovercard__social-links {
+padding: 10px;
+gap: 8px;
+}
+
+.gravatar-hovercard__social-link {
+width: 28px;
+height: 28px;
+}
+
+.gravatar-hovercard__social-icon {
+width: 14px;
+height: 14px;
+}
+
+.gravatar-hovercard__footer {
+padding: 8px 10px;
+}
+
+.gravatar-hovercard__profile-url {
+font-size: 10px;
+max-width: 90px;
+}
+
+.gravatar-hovercard__profile-link {
+font-size: 10px;
+}
 }

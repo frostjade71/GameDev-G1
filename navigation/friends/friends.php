@@ -402,11 +402,11 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
     <!-- Logout Confirmation Modal -->
     <div class="toast-overlay" id="logoutModal">
         <div class="toast" id="logoutConfirmation">
-            <h3 style="margin-bottom: 1rem; color:rgb(255, 255, 255);">Logout Confirmation</h3>
-            <p style="margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.8);">Are you sure you want to logout?</p>
-            <div style="display: flex; gap: 1rem; justify-content: center;">
-                <button onclick="confirmLogout()" style="background: #ff6b6b; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Yes, Logout</button>
-                <button onclick="hideLogoutModal()" style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Cancel</button>
+            <h3>Logout Confirmation</h3>
+            <p>Are you sure you want to logout?</p>
+            <div class="modal-buttons">
+                <button class="logout-btn" onclick="confirmLogout()">Yes, Logout</button>
+                <button class="cancel-btn" onclick="hideLogoutModal()">Cancel</button>
             </div>
         </div>
     </div>

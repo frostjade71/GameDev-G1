@@ -178,31 +178,34 @@
 }
 
 /* Responsive Design for Logout Modal */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     #logoutConfirmation {
-        width: 90%;
-        padding: 1.5rem;
+        width: 85%;
+        padding: 1rem;
+        max-width: 320px;
     }
 
     #logoutConfirmation h3 {
-        font-size: 0.85rem;
-        margin-bottom: 0.8rem;
+        font-size: 0.75rem;
+        margin-bottom: 0.6rem;
     }
 
     #logoutConfirmation p {
-        font-size: 0.75rem;
-        margin-bottom: 1.2rem;
+        font-size: 0.65rem;
+        margin-bottom: 1rem;
+        line-height: 1.4;
     }
 
     #logoutConfirmation .modal-buttons {
         flex-direction: column;
-        gap: 0.8rem;
+        gap: 0.6rem;
     }
 
     #logoutConfirmation .logout-btn,
     #logoutConfirmation .cancel-btn {
         width: 100%;
-        padding: 0.7rem 1rem;
-        font-size: 0.7rem;
+        padding: 0.5rem 0.7rem;
+        font-size: 0.55rem;
+        border-radius: 6px;
     }
 }

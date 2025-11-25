@@ -29,5 +29,52 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 100);
         });
     }
+
+    // Gravatar Profile Card functionality
+    const developerName = document.getElementById('developerName');
+    const gravatarContainer = document.getElementById('gravatarCardContainer');
+    const gravatarOverlay = document.getElementById('gravatarOverlay');
+    const closeGravatar = document.getElementById('closeGravatar');
+
+    // Show Gravatar card when clicking developer name
+    if (developerName) {
+        developerName.addEventListener('click', () => {
+            if (gravatarContainer && gravatarOverlay) {
+                gravatarOverlay.classList.add('show');
+                gravatarContainer.classList.add('show');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+        });
+    }
+
+    // Close Gravatar card when clicking close button
+    if (closeGravatar) {
+        closeGravatar.addEventListener('click', () => {
+            closeGravatarCard();
+        });
+    }
+
+    // Close Gravatar card when clicking overlay
+    if (gravatarOverlay) {
+        gravatarOverlay.addEventListener('click', () => {
+            closeGravatarCard();
+        });
+    }
+
+    // Close Gravatar card when pressing Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && gravatarContainer && gravatarContainer.classList.contains('show')) {
+            closeGravatarCard();
+        }
+    });
+
+    // Function to close Gravatar card
+    function closeGravatarCard() {
+        if (gravatarContainer && gravatarOverlay) {
+            gravatarOverlay.classList.remove('show');
+            gravatarContainer.classList.remove('show');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+    }
 });
 

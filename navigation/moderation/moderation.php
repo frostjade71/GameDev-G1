@@ -98,8 +98,7 @@ $notification_count = $stmt->fetch()['count'];
     <title>Moderation Panel - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="../shared/navigation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../../styles.css">
-    <link rel="stylesheet" href="../shared/navigation.css">
+    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="moderation.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -290,79 +289,25 @@ $notification_count = $stmt->fetch()['count'];
         </div>
     </div>
 
-    <!-- Logout Modal -->
-    <div id="logoutModal" class="modal">
-        <div class="modal-content">
-            <h3>Confirm Logout</h3>
-            <p>Are you sure you want to log out?</p>
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                <a href="../../onboarding/logout.php" class="btn btn-primary">Logout</a>
+    <!-- Logout Confirmation Modal -->
+    <div class="toast-overlay" id="logoutModal">
+        <div class="toast" id="logoutConfirmation">
+            <h3>Logout Confirmation</h3>
+            <p>Are you sure you want to logout?</p>
+            <div class="modal-buttons">
+                <button class="logout-btn" onclick="confirmLogout()">Yes, Logout</button>
+                <button class="cancel-btn" onclick="hideLogoutModal()">Cancel</button>
             </div>
         </div>
     </div>
 
+    <script src="../../script.js"></script>
+    <script src="../shared/profile-dropdown.js"></script>
+    <script src="../shared/notification-badge.js"></script>
     <script src="moderation.js"></script>
     <script>
-    // Mobile menu toggle
+    // Page-specific functionality (mobile menu handled by shared script.js)
     document.addEventListener('DOMContentLoaded', function() {
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const sidebar = document.querySelector('.sidebar');
-        const profileTrigger = document.getElementById('profile-dropdown-trigger');
-        const dropdownMenu = document.querySelector('.nav-dropdown-menu');
-
-        if (mobileMenuBtn && sidebar) {
-            // Toggle sidebar on mobile
-            mobileMenuBtn.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-                document.body.classList.toggle('sidebar-active');
-                
-                if (sidebar.classList.contains('active')) {
-                    mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
-                    mobileMenuBtn.setAttribute('aria-label', 'Close menu');
-                } else {
-                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                    mobileMenuBtn.setAttribute('aria-label', 'Open menu');
-                }
-            });
-
-            // Close sidebar when clicking outside
-            document.addEventListener('click', function(e) {
-                if (window.innerWidth <= 768 && 
-                    sidebar.classList.contains('active') && 
-                    !sidebar.contains(e.target) && 
-                    !mobileMenuBtn.contains(e.target)) {
-                    sidebar.classList.remove('active');
-                    document.body.classList.remove('sidebar-active');
-                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                    mobileMenuBtn.setAttribute('aria-label', 'Open menu');
-                }
-            });
-        }
-
-        // Toggle profile dropdown
-        if (profileTrigger && dropdownMenu) {
-            profileTrigger.addEventListener('click', function(e) {
-                e.preventDefault();
-                dropdownMenu.classList.toggle('show');
-                const arrow = this.querySelector('.dropdown-arrow');
-                if (arrow) {
-                    arrow.style.transform = dropdownMenu.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
-                }
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!profileTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                    dropdownMenu.classList.remove('show');
-                    const arrow = profileTrigger.querySelector('.dropdown-arrow');
-                    if (arrow) {
-                        arrow.style.transform = 'rotate(0)';
-                    }
-                }
-            });
-        }
-
         // Search functionality
         const searchInput = document.getElementById('userSearch');
         if (searchInput) {
@@ -385,21 +330,32 @@ $notification_count = $stmt->fetch()['count'];
         }
     });
 
-    // Modal functions
+    // Logout functionality
     function showLogoutModal() {
-        document.getElementById('logoutModal').style.display = 'flex';
-    }
-
-    function closeModal() {
-        document.getElementById('logoutModal').style.display = 'none';
-    }
-
-    // Close modal when clicking outside the content
-    window.onclick = function(event) {
         const modal = document.getElementById('logoutModal');
-        if (event.target === modal) {
-            closeModal();
+        const confirmation = document.getElementById('logoutConfirmation');
+        
+        if (modal && confirmation) {
+            modal.classList.add('show');
+            confirmation.classList.remove('hide');
+            confirmation.classList.add('show');
         }
+    }
+
+    function hideLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        const confirmation = document.getElementById('logoutConfirmation');
+        
+        if (modal && confirmation) {
+            confirmation.classList.remove('show');
+            confirmation.classList.add('hide');
+            modal.classList.remove('show');
+        }
+    }
+
+    function confirmLogout() {
+        // Redirect to logout endpoint
+        window.location.href = '../../onboarding/logout.php';
     }
     </script>
 </body>

@@ -10,14 +10,12 @@ function getGreeting() {
     
     $currentHour = (int)date('H');
     
-    if ($currentHour >= 5 && $currentHour < 12) {
+    if ($currentHour >= 4 && $currentHour < 12) {
         return "Good Morning";
     } elseif ($currentHour >= 12 && $currentHour < 17) {
         return "Good Afternoon";
-    } elseif ($currentHour >= 17 && $currentHour < 21) {
-        return "Good Evening";
     } else {
-        return "Good Night";
+        return "Good Evening";
     }
 }
 ?>

@@ -160,7 +160,7 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
         </div>
         <div class="credits-section developer-container">
             <h2>Developer</h2>
-            <div class="developer-card">Jaderby Peñaranda</div>
+            <div class="developer-card" id="developerName">Jaderby Peñaranda</div>
         </div>
         <div class="credits-section github-container">
             <a href="https://github.com/frostjade71/GameDev-G1" target="_blank" rel="noopener noreferrer" class="github-link">
@@ -177,6 +177,54 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
             <p>© 2025 WordWeaversHCCCI. All rights reserved.</p>
         </footer>
         </div>
+    </div>
+
+    <!-- Gravatar Hover Card -->
+    <div class="gravatar-card-overlay" id="gravatarOverlay"></div>
+    <div class="gravatar-card-container" id="gravatarCardContainer">
+        <div class="gravatar-hovercard">
+            <div class="gravatar-hovercard__inner">
+                <div class="gravatar-hovercard__header-image" style="background: url(&quot;https://1.gravatar.com/userimage/274162724/ded22cbae356004a1dc7b5d07bf9c96e?size=1024&quot;) 1% 8% / 142% no-repeat;"></div>
+                <div class="gravatar-hovercard__header">
+                    <a class="gravatar-hovercard__avatar-link" href="https://jaderbypenaranda.link?utm_source=hovercard" target="_blank">
+                        <img class="gravatar-hovercard__avatar" src="https://2.gravatar.com/avatar/e8c90b8d9f6760afe027d12769ea696c178548ae500ea2a2e55ff770fa12f7b6?s=256&amp;d=initials" width="104" height="104" alt="Jaderby Peñaranda">
+                    </a>
+                    <a class="gravatar-hovercard__personal-info-link" href="https://jaderbypenaranda.link?utm_source=hovercard" target="_blank">
+                        <h4 class="gravatar-hovercard__name">Jaderby Peñaranda</h4>
+                        <p class="gravatar-hovercard__job">Computer Science Senior, HCCCI</p>
+                    </a>
+                </div>
+                <div class="gravatar-hovercard__body">
+                    <p class="gravatar-hovercard__description">Hello.</p>
+                </div>
+                <div class="gravatar-hovercard__social-links">
+                    <a class="gravatar-hovercard__social-link" href="https://jaderbypenaranda.link?utm_source=hovercard" target="_blank" data-service-name="gravatar">
+                        <img class="gravatar-hovercard__social-icon" src="https://s.gravatar.com/icons/gravatar.svg" width="32" height="32" alt="Gravatar">
+                    </a>
+                    <a class="gravatar-hovercard__social-link" href="https://www.linkedin.com/in/jaderby-pe%C3%B1aranda-830670359" target="_blank" data-service-name="linkedin">
+                        <img class="gravatar-hovercard__social-icon" src="https://s.gravatar.com/icons/linkedin.svg" width="32" height="32" alt="LinkedIn">
+                    </a>
+                    <a class="gravatar-hovercard__social-link" href="https://github.com/frostjade71" target="_blank" data-service-name="github">
+                        <img class="gravatar-hovercard__social-icon" src="https://s.gravatar.com/icons/github.svg" width="32" height="32" alt="GitHub">
+                    </a>
+                    <a class="gravatar-hovercard__social-link" href="https://support.gravatar.com/profiles/verified-accounts/#facebook" target="_blank" data-service-name="facebook">
+                        <img class="gravatar-hovercard__social-icon" src="https://s.gravatar.com/icons/facebook.svg" width="32" height="32" alt="Facebook">
+                    </a>
+                </div>
+                <div class="gravatar-hovercard__footer">
+                    <a class="gravatar-hovercard__profile-url" title="https://jaderbypenaranda.link" href="https://jaderbypenaranda.link/?utm_source=profile-card" target="_blank">
+                        jaderbypenaranda.link
+                    </a>
+                    <a class="gravatar-hovercard__profile-link" href="https://jaderbypenaranda.link/?utm_source=profile-card" target="_blank">
+                        View profile →
+                    </a>
+                </div>
+                <div class="gravatar-hovercard__profile-color" style="background: linear-gradient(138deg, rgb(15, 44, 133) 0%, rgb(142, 48, 112) 55%, rgb(71, 34, 44) 100%);"></div>
+            </div>
+            <button class="gravatar-card-close" id="closeGravatar">&times;</button>
+        </div>
+    </div>
+
     <div class="toast-overlay"></div>
     <div id="toast" class="toast"></div>
     <script src="../script.js"></script>

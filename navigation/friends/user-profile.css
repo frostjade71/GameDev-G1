@@ -1327,7 +1327,8 @@
     background: rgba(20, 20, 30, 0.6);
 }
 
-.game-stats-section::before {
+/* Removed pseudo horizontal line */
+/* .game-stats-section::before {
     content: '';
     position: absolute;
     top: 0;
@@ -1335,7 +1336,7 @@
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
-}
+} */
 
 .game-stats-section h2 {
     color: white;
@@ -2118,7 +2119,8 @@
     background: rgba(20, 20, 30, 0.6);
 }
 
-.grade-section-container::before {
+/* Removed pseudo horizontal line */
+/* .grade-section-container::before {
     content: '';
     position: absolute;
     top: 0;
@@ -2126,7 +2128,7 @@
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, rgba(255, 193, 7, 0.8), rgba(255, 152, 0, 0.8));
-}
+} */
 
 .grade-section-container h3 {
     color: white;
@@ -2144,8 +2146,12 @@
 }
 
 .grade-section-container h3 i {
-    color: rgba(255, 193, 7, 0.8);
+    color: rgba(0, 255, 135, 0.8);
     font-size: 1.2em;
+}
+
+.grade-section-container .section-header i {
+    color: rgba(0, 255, 135, 0.8);
 }
 
 .grade-section-content {

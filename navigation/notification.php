@@ -238,9 +238,8 @@ $notification_count = count($all_notifications);
                                     </p>
                                 </div>
                                 <div class="request-actions">
-                                    <button class="decline-btn" onclick="dismissNotification(<?php echo $data['id']; ?>, this)">
+                                    <button class="decline-btn dismiss-only" onclick="dismissNotification(<?php echo $data['id']; ?>, this)">
                                         <i class="fas fa-times"></i>
-                                        Dismiss
                                     </button>
                                 </div>
                             </div>
@@ -397,7 +396,7 @@ $notification_count = count($all_notifications);
         .friend-requests-section .decline-all-btn {
             width: 30px !important;
             height: 30px !important;
-            border-radius: 50% !important;
+            border-radius: 8px !important;
             padding: 0 !important;
             display: flex !important;
             align-items: center !important;
@@ -415,16 +414,36 @@ $notification_count = count($all_notifications);
             display: none !important;
         }
 
-        /* Mobile accept and decline buttons - smaller size */
+        /* Mobile accept and decline buttons - icon only circular buttons */
+        .friend-request-card {
+            position: relative;
+        }
+
+        .request-actions {
+            position: absolute !important;
+            right: 0.5rem !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            margin: 0 !important;
+            flex-direction: row !important;
+            gap: 0.3rem !important;
+        }
+
         .accept-btn, .decline-btn {
-            padding: 0.3rem 0.5rem !important;
-            font-size: 0.7rem !important;
-            min-width: 60px !important;
+            width: 28px !important;
+            height: 28px !important;
+            border-radius: 6px !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 28px !important;
+            font-size: 0 !important;
         }
 
         .accept-btn i, .decline-btn i {
-            font-size: 10px !important;
-            margin-right: 3px !important;
+            font-size: 12px !important;
+            margin: 0 !important;
         }
     }
 

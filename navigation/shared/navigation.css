@@ -134,6 +134,11 @@
     .mobile-menu-btn {
         display: flex;
         z-index: 2000;
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+        top: 8px;
+        left: 8px;
     }
 
     .mobile-menu-btn:hover {
@@ -401,30 +406,88 @@
 /* Mobile responsiveness for dropdown */
 @media screen and (max-width: 768px) {
     .profile-dropdown-content {
-        min-width: 200px;
+        min-width: 160px;
         right: -10px;
     }
 
     .profile-dropdown-header {
-        padding: 0.9rem;
+        padding: 0.6rem;
     }
 
     .profile-dropdown-avatar {
-        width: 36px;
-        height: 36px;
+        width: 28px;
+        height: 28px;
     }
 
     .profile-dropdown-name {
-        font-size: 0.9rem;
+        font-size: 0.75rem;
     }
 
     .profile-dropdown-email {
-        font-size: 0.7rem;
+        font-size: 0.55rem;
     }
 
     .profile-dropdown-item {
-        padding: 0.55rem 1rem;
-        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.7rem;
+    }
+    
+    /* Make header elements smaller on mobile */
+    .top-header {
+        height: 50px;
+        padding: 0 1rem;
+    }
+    
+    .header-right {
+        gap: 0.8rem;
+    }
+    
+    .notification-icon {
+        font-size: 0.9rem;
+        width: 20px;
+        height: 20px;
+    }
+    
+    .notification-icon i {
+        font-size: 0.9rem;
+    }
+    
+    .notification-badge {
+        top: -6px;
+        right: -6px;
+        width: 14px;
+        height: 14px;
+        font-size: 0.65rem;
+    }
+    
+    .logout-icon {
+        font-size: 0.9rem;
+    }
+    
+    .profile-img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+    }
+    
+    .user-info .greeting {
+        font-size: 0.65rem;
+        line-height: 1;
+    }
+    
+    .user-info .username {
+        font-size: 0.7rem;
+        line-height: 1;
+        font-weight: 600;
+    }
+    
+    .main-content {
+        margin-top: 50px;
     }
 }
 

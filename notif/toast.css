@@ -26,22 +26,22 @@
     transform: translate(-50%, -50%) scale(0.9);
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 20, 0.98));
     color: white;
-    padding: 25px 40px;
-    border-radius: 20px;
+    padding: 15px 25px;
+    border-radius: 15px;
     font-family: var(--font-pixel);
-    font-size: 0.8rem;
-    line-height: 1.6;
+    font-size: 0.7rem;
+    line-height: 1.4;
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     border: 2px solid rgba(96, 239, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(96, 239, 255, 0.15),
-                0 4px 16px rgba(0, 255, 135, 0.1),
-                inset 0 2px 15px rgba(96, 239, 255, 0.05);
+    box-shadow: 0 6px 24px rgba(96, 239, 255, 0.15),
+                0 3px 12px rgba(0, 255, 135, 0.1),
+                inset 0 1px 10px rgba(96, 239, 255, 0.05);
     text-align: center;
-    width: 400px;
-    max-width: 90%;
+    width: 300px;
+    max-width: 85%;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
     margin: 0;
@@ -167,8 +167,10 @@
 @media (max-width: 768px) {
     .toast {
         left: 50%;  /* Reset for mobile */
-        width: 90%;
-        padding: 20px;
+        width: 80%;
+        padding: 12px 20px;
+        font-size: 0.65rem;
+        border-radius: 12px;
     }
 
     .toast.show,

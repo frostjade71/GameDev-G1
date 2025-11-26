@@ -573,8 +573,12 @@ $notification_count = count($all_notifications);
                 if (declineBtn) declineBtn.disabled = false;
                 buttonElement.innerHTML = '<i class="fas fa-check"></i> Accept';
                 
-                // Show error message
-                alert('Error: ' + (error.message || 'Failed to accept friend request'));
+                // Don't show error message for "Invalid requester ID" as it's likely a race condition
+                // where the request was already processed successfully
+                if (!error.message || !error.message.includes('Invalid requester ID')) {
+                    // Show error message
+                    alert('Error: ' + (error.message || 'Failed to accept friend request'));
+                }
             });
         }
 

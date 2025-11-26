@@ -68,12 +68,21 @@ function initializeSuggestedFriends() {
     });
 }
 
+// Helper function to detect mobile devices
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
 function addFriend(friendId, friendName, buttonElement) {
     console.log('Adding friend:', friendId, friendName);
     
     // Disable button and show loading state
     buttonElement.disabled = true;
-    buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+    if (isMobile()) {
+        buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    } else {
+        buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+    }
     
     // Make API call to send friend request
     fetch('../send_friend_request.php', {
@@ -96,7 +105,11 @@ function addFriend(friendId, friendName, buttonElement) {
             showToast(`Friend request sent to ${friendName}!`, 'success');
             
             // Update button to "Cancel Request"
-            buttonElement.innerHTML = '<i class="fas fa-times"></i> Cancel Request';
+            if (isMobile()) {
+                buttonElement.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                buttonElement.innerHTML = '<i class="fas fa-times"></i> Cancel Request';
+            }
             buttonElement.className = 'cancel-request-btn';
             buttonElement.onclick = function() {
                 cancelFriendRequest(friendId, friendName, this);
@@ -111,7 +124,11 @@ function addFriend(friendId, friendName, buttonElement) {
             // Check if the error is because request already exists
             if (data.message && data.message.includes('already exists')) {
                 // Update button to "Cancel Request" since request already exists (no notification)
-                buttonElement.innerHTML = '<i class="fas fa-times"></i> Cancel Request';
+                if (isMobile()) {
+                    buttonElement.innerHTML = '<i class="fas fa-times"></i>';
+                } else {
+                    buttonElement.innerHTML = '<i class="fas fa-times"></i> Cancel Request';
+                }
                 buttonElement.className = 'cancel-request-btn';
                 buttonElement.onclick = function() {
                     cancelFriendRequest(friendId, friendName, this);
@@ -128,7 +145,11 @@ function addFriend(friendId, friendName, buttonElement) {
                 
                 // Reset button state
                 buttonElement.disabled = false;
-                buttonElement.innerHTML = '<i class="fas fa-user-plus"></i> Add Friend';
+                if (isMobile()) {
+                    buttonElement.innerHTML = '<i class="fas fa-user-plus"></i>';
+                } else {
+                    buttonElement.innerHTML = '<i class="fas fa-user-plus"></i> Add Friend';
+                }
             }
         }
     })
@@ -141,14 +162,22 @@ function addFriend(friendId, friendName, buttonElement) {
         
         // Reset button state
         buttonElement.disabled = false;
-        buttonElement.innerHTML = '<i class="fas fa-user-plus"></i> Add Friend';
+        if (isMobile()) {
+            buttonElement.innerHTML = '<i class="fas fa-user-plus"></i>';
+        } else {
+            buttonElement.innerHTML = '<i class="fas fa-user-plus"></i> Add Friend';
+        }
     });
 }
 
 function cancelFriendRequest(friendId, friendName, buttonElement) {
     // Disable button and show loading state
     buttonElement.disabled = true;
-    buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
+    if (isMobile()) {
+        buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    } else {
+        buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
+    }
     
     // Make API call to cancel friend request
     fetch('../cancel_friend_request.php', {
@@ -176,7 +205,11 @@ function cancelFriendRequest(friendId, friendName, buttonElement) {
             
             // Reset button state
             buttonElement.disabled = false;
-            buttonElement.innerHTML = '<i class="fas fa-times"></i> Cancel Request';
+            if (isMobile()) {
+                buttonElement.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                buttonElement.innerHTML = '<i class="fas fa-times"></i> Cancel Request';
+            }
         }
     })
     .catch(error => {
@@ -187,7 +220,11 @@ function cancelFriendRequest(friendId, friendName, buttonElement) {
         
         // Reset button state
         buttonElement.disabled = false;
-        buttonElement.innerHTML = '<i class="fas fa-times"></i> Cancel Request';
+        if (isMobile()) {
+            buttonElement.innerHTML = '<i class="fas fa-times"></i>';
+        } else {
+            buttonElement.innerHTML = '<i class="fas fa-times"></i> Cancel Request';
+        }
     });
 }
 

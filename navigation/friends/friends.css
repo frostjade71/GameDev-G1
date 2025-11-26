@@ -1,8 +1,10 @@
 /* Main layout */
 .main-content {
     position: fixed;
-    top: 60px; /* Adjust based on your header height */
-    left: 250px; /* Adjust based on your sidebar width */
+    top: 60px;
+    /* Adjust based on your header height */
+    left: 250px;
+    /* Adjust based on your sidebar width */
     right: 0;
     bottom: 0;
     overflow-y: auto;
@@ -113,7 +115,7 @@
     margin-bottom: 0.8rem;
     display: grid;
     grid-template-columns: auto 1fr auto;
-    grid-template-areas: 
+    grid-template-areas:
         "avatar content actions";
     align-items: center;
     gap: 1rem;
@@ -169,13 +171,15 @@
 .friend-info {
     grid-area: content;
     min-width: 0;
-    max-width: calc(100% - 60px); /* Slightly more space for the chat button */
+    max-width: calc(100% - 60px);
+    /* Slightly more space for the chat button */
     align-self: center;
     display: flex;
     flex-direction: column;
     gap: 0.05rem;
     margin-right: 0.5rem;
-    flex: 1; /* Allow it to take available space */
+    flex: 1;
+    /* Allow it to take available space */
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -189,9 +193,12 @@
     transition: color 0.3s ease;
     line-height: 1.1;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    white-space: normal; /* Changed from nowrap */
-    word-break: break-word; /* Allow long words to break */
-    display: block; /* Changed from flex */
+    white-space: normal;
+    /* Changed from nowrap */
+    word-break: break-word;
+    /* Allow long words to break */
+    display: block;
+    /* Changed from flex */
     width: 100%;
 }
 
@@ -218,9 +225,11 @@
 }
 
 .friend-status {
-    color: #9CA3AF; /* A neutral grey color */
+    color: #9CA3AF;
+    /* A neutral grey color */
     font-size: 0.7rem;
-    margin: -2px 0 0 0; /* Negative top margin to pull up */
+    margin: -2px 0 0 0;
+    /* Negative top margin to pull up */
     padding: 0;
     line-height: 1.1;
     display: block;
@@ -329,10 +338,13 @@
 
 /* Badge style */
 .user-badge {
-    width: 18px;  /* Reduced from 24px */
-    height: 18px; /* Reduced from 24px */
+    width: 18px;
+    /* Reduced from 24px */
+    height: 18px;
+    /* Reduced from 24px */
     object-fit: contain;
-    margin-left: 0.3rem; /* Reduced from 0.5rem */
+    margin-left: 0.3rem;
+    /* Reduced from 0.5rem */
     transition: transform 0.3s ease;
 }
 
@@ -541,51 +553,51 @@
         padding: 1rem;
         top: 70px;
     }
-    
+
     .friend-info {
         gap: 0.05rem;
     }
-    
+
     .empty-state {
         padding: 0.6rem;
         min-height: 50px;
     }
-    
+
     .empty-state i {
         font-size: 1rem;
         margin-bottom: 0.2rem;
     }
-    
+
     .empty-state h3 {
         font-size: 0.6rem;
         margin-bottom: 0.15rem;
     }
-    
+
     .empty-state p {
         font-size: 0.55rem;
     }
-    
+
     .friends-section,
     .suggested-section {
         padding: 1.5rem;
         margin-bottom: 2rem;
         border-radius: 20px;
     }
-    
+
     .suggested-section {
         margin-top: 3rem;
     }
-    
+
     .section-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
     }
-    
+
     .section-header h2 {
         font-size: 0.8rem;
     }
-    
+
     .section-header h2 i {
         font-size: 0.7rem;
     }
@@ -607,7 +619,7 @@
     .suggested-info h3 {
         font-size: 0.65rem;
     }
-    
+
     .friend-info h3 .username-text,
     .suggested-info h3 {
         font-size: 0.6rem;
@@ -658,7 +670,7 @@
         max-width: 140px;
         justify-content: center;
     }
-    
+
     .friend-card {
         padding: 1rem;
         gap: 0.6rem;
@@ -679,7 +691,7 @@
         height: 100%;
         border-width: 1px;
     }
-    
+
     .friend-info {
         flex: 1;
         min-width: calc(100% - 60px);
@@ -691,17 +703,18 @@
     }
 
     .suggested-card {
-        padding: 1rem;
-        gap: 1rem;
+        padding: 0.7rem;
+        gap: 0.6rem;
         min-height: auto;
         flex-wrap: wrap;
         flex-direction: row;
         align-items: flex-start;
+        position: relative;
     }
 
     .suggested-avatar {
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
         padding: 2px;
     }
 
@@ -713,43 +726,52 @@
 
     .suggested-info {
         flex: 1;
-        min-width: calc(100% - 60px);
+        min-width: 0;
+        max-width: calc(100% - 95px);
         text-align: left;
         align-items: flex-start;
     }
 
     .suggested-info h3 {
-        font-size: 0.65rem;
-        margin-bottom: 0.4rem;
+        font-size: 0.58rem;
+        margin-bottom: 0.25rem;
         white-space: normal;
         word-wrap: break-word;
         text-align: left;
         display: inline-flex;
+        line-height: 1.3;
     }
 
     .suggested-card .user-details {
-        font-size: 0.65rem;
-        gap: 0.8rem;
+        font-size: 0.58rem;
+        gap: 0.6rem;
         flex-wrap: wrap;
         text-align: left;
         justify-content: flex-start;
     }
 
     .suggested-actions {
-        width: 100%;
-        order: 3;
+        width: auto;
+        order: unset;
         display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 0.5rem;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0;
+        position: absolute;
+        right: 0.7rem;
+        top: 50%;
+        transform: translateY(-50%);
     }
 
     .user-badge {
-        width: 16px;  /* Reduced from 20px */
-        height: 16px; /* Reduced from 20px */
+        width: 16px;
+        /* Reduced from 20px */
+        height: 16px;
+        /* Reduced from 20px */
         margin-left: 0.2rem;
     }
-    
+
     .friend-actions {
         display: flex;
         justify-content: center;
@@ -759,33 +781,41 @@
 
     .add-friend-btn,
     .cancel-request-btn {
-        padding: 0.15rem 0.5rem;
-        font-size: 0.55rem;
-        gap: 0.15rem;
+        padding: 0.3rem;
+        font-size: 0.5rem;
+        gap: 0.1rem;
         flex: 1;
-        min-width: 70px;
-        max-width: 100px;
+        min-width: 30px;
+        max-width: 30px;
+        width: 30px;
+        height: 30px;
         justify-content: center;
-        height: 22px;
-        border-radius: 5px;
+        border-radius: 6px;
         margin-top: -1rem;
     }
 
     .add-friend-btn i,
     .cancel-request-btn i {
-        font-size: 0.6rem;
+        font-size: 0.75rem;
+        margin: 0;
+    }
+
+    /* Hide text on mobile, show only icons */
+    .add-friend-btn span,
+    .cancel-request-btn span {
+        display: none;
     }
 
     .action-btn {
         flex: 1;
         min-width: auto;
     }
-    
+
     .search-actions {
         width: 100%;
         flex-direction: column;
     }
-    
+
     .search-container {
         width: 100%;
         min-width: unset;
@@ -793,7 +823,7 @@
         padding: 0 0.5rem;
         margin-bottom: 0.5rem;
     }
-    
+
     .refresh-button {
         width: 40%;
         height: 25px;
@@ -805,7 +835,7 @@
         gap: 0.5rem;
         margin-top: -10px;
     }
-    
+
     .refresh-button i {
         font-size: 0.8rem;
     }
@@ -816,28 +846,28 @@
         padding: 0.5rem;
         top: 60px;
     }
-    
+
     .friends-section,
     .suggested-section {
         padding: 1rem;
         border-radius: 15px;
     }
-    
+
     .section-header h2 {
         font-size: 0.7rem;
         margin-top: 0.5rem;
     }
-    
+
     .section-header h2 i {
         font-size: 0.6rem;
     }
-    
+
     .friend-card,
     .suggested-card {
         padding: 0.8rem;
         gap: 0.4rem;
     }
-    
+
     .friend-avatar,
     .suggested-avatar {
         width: 35px;
@@ -857,7 +887,7 @@
         margin-bottom: 0.3rem;
         line-height: 1.2;
     }
-    
+
     .friend-info h3 .username-text,
     .suggested-info h3 {
         font-size: 0.55rem;
@@ -873,19 +903,19 @@
     .suggested-actions {
         padding-top: 0.5rem;
     }
-    
+
     .action-btn {
         padding: 0.2rem 0.4rem;
         min-width: 26px;
         max-width: 26px;
         height: 26px;
     }
-    
+
     .action-btn img {
         width: 14px;
         height: 14px;
     }
-    
+
     .action-btn i {
         font-size: 0.55rem;
     }
@@ -893,25 +923,26 @@
 
 /* Second media query for smaller screens */
 @media (max-width: 480px) {
+
     .friend-card,
     .suggested-card {
-        padding: 0.8rem;
-        gap: 0.4rem; /* Increased from 0.2rem */
-        
+        padding: 0.6rem;
+        gap: 0.3rem;
+
         /* Add margin to the right of the avatar */
         .friend-avatar {
             margin-right: 0.5rem;
         }
     }
-    
+
     .friend-info {
         gap: 0.02rem;
     }
-    
+
     .friend-avatar,
     .suggested-avatar {
-        width: 35px;
-        height: 35px;
+        width: 32px;
+        height: 32px;
         margin: 2px 0;
     }
 
@@ -923,39 +954,39 @@
 
     .friend-info h3,
     .suggested-info h3 {
-        font-size: 0.6rem;
-        margin-bottom: 0.3rem;
+        font-size: 0.55rem;
+        margin-bottom: 0.2rem;
         line-height: 1.2;
     }
-    
+
     .friend-info h3 .username-text,
     .suggested-info h3 {
-        font-size: 0.55rem;
+        font-size: 0.5rem;
     }
 
     .friend-status,
     .user-details {
-        font-size: 0.6rem;
-        gap: 0.6rem;
+        font-size: 0.55rem;
+        gap: 0.5rem;
     }
 
     .friend-actions,
     .suggested-actions {
         padding-top: 0.5rem;
     }
-    
+
     .action-btn {
         padding: 0.2rem 0.4rem;
         min-width: 26px;
         max-width: 26px;
         height: 26px;
     }
-    
+
     .action-btn img {
         width: 14px;
         height: 14px;
     }
-    
+
     .action-btn i {
         font-size: 0.55rem;
     }

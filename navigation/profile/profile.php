@@ -229,6 +229,33 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id, $user_id]);
 $friends_count = $stmt->fetch()['friends_count'];
 
+// Initialize user_fame table and get user stats
+function initializeUserFame($pdo, $username) {
+    $stmt = $pdo->prepare("INSERT IGNORE INTO user_fame (username, cresents, views) VALUES (?, 0, 0)");
+    $stmt->execute([$username]);
+}
+
+function getUserFame($pdo, $username) {
+    initializeUserFame($pdo, $username);
+    $stmt = $pdo->prepare("SELECT cresents, views FROM user_fame WHERE username = ?");
+    $stmt->execute([$username]);
+    return $stmt->fetch();
+}
+
+// Create user_crescents table if it doesn't exist
+$pdo->exec("CREATE TABLE IF NOT EXISTS user_crescents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    giver_username VARCHAR(255) NOT NULL,
+    receiver_username VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_crescent (giver_username, receiver_username)
+)");
+
+// Get user fame stats
+$user_fame = getUserFame($pdo, $user['username']);
+$views_count = $user_fame ? $user_fame['views'] : 0;
+$crescents_count = $user_fame ? $user_fame['cresents'] : 0;
+
 // No longer calculating user level since it's been replaced with email
 ?>
 <!DOCTYPE html>
@@ -352,8 +379,31 @@ $friends_count = $stmt->fetch()['friends_count'];
                 <div class="profile-info">
                     <h1><?php echo htmlspecialchars($user['username']); ?></h1>
                     <p class="player-email"><?php echo htmlspecialchars($user['email']); ?></p>
-                    <p class="friends-count"><?php echo $friends_count; ?> Friends</p>
                     <p class="about-me-text"><?php echo ($user['about_me'] !== null && $user['about_me'] !== '') ? htmlspecialchars($user['about_me']) : 'Tell us something about yourself...'; ?></p>
+                    
+                    <!-- User Fame Section -->
+                    <div class="user-fame-section">
+                        <div class="fame-stats">
+                            <div class="fame-item">
+                                <div class="tooltip">Friends: <?php echo number_format($friends_count); ?></div>
+                                <img src="../../assets/pixels/friendhat.png" alt="Friends" class="fame-icon">
+                                <span class="fame-value"><?php echo number_format($friends_count); ?></span>
+                            </div>
+                            <span class="fame-separator">●</span>
+                            <div class="fame-item">
+                                <div class="tooltip">Profile Views: <?php echo number_format($views_count); ?></div>
+                                <img src="../../assets/pixels/eyeviews.png" alt="Views" class="fame-icon">
+                                <span class="fame-value"><?php echo number_format($views_count); ?></span>
+                            </div>
+                            <span class="fame-separator">●</span>
+                            <div class="fame-item">
+                                <div class="tooltip">Crescents: <?php echo number_format($crescents_count); ?></div>
+                                <img src="../../assets/pixels/cresent.png" alt="Crescents" class="fame-icon">
+                                <span class="fame-value"><?php echo number_format($crescents_count); ?></span>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="badge-container">
                         <?php 
                         $is_jaderby = (strtolower($user['username']) === 'jaderby garcia peñaranda');

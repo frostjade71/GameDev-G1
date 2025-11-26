@@ -29,6 +29,12 @@ if (!$viewed_user_id) {
     exit();
 }
 
+// Redirect to own profile page if user is viewing their own profile
+if ($viewed_user_id === $current_user_id) {
+    header('Location: ../profile/profile.php');
+    exit();
+}
+
 // Get the viewed user's information
 $stmt = $pdo->prepare("SELECT id, username, email, grade_level, section, about_me, created_at FROM users WHERE id = ?");
 $stmt->execute([$viewed_user_id]);
@@ -319,10 +325,36 @@ function getUserFame($pdo, $username) {
     return $stmt->fetch();
 }
 
-function incrementView($pdo, $username) {
-    initializeUserFame($pdo, $username);
-    $stmt = $pdo->prepare("UPDATE user_fame SET views = views + 1 WHERE username = ?");
-    $stmt->execute([$username]);
+function incrementView($pdo, $viewer_username, $viewed_username) {
+    initializeUserFame($pdo, $viewed_username);
+    
+    // Create profile_view_cooldowns table if it doesn't exist
+    $pdo->exec("CREATE TABLE IF NOT EXISTS profile_view_cooldowns (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        viewer_username VARCHAR(255) NOT NULL,
+        viewed_username VARCHAR(255) NOT NULL,
+        last_viewed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY unique_viewer_viewed (viewer_username, viewed_username)
+    )");
+    
+    // Check if viewer has viewed this profile within the last 10 minutes
+    $stmt = $pdo->prepare("SELECT last_viewed FROM profile_view_cooldowns WHERE viewer_username = ? AND viewed_username = ? AND last_viewed > DATE_SUB(NOW(), INTERVAL 10 MINUTE)");
+    $stmt->execute([$viewer_username, $viewed_username]);
+    $recent_view = $stmt->fetch();
+    
+    if (!$recent_view) {
+        // Update or insert the cooldown record
+        $stmt = $pdo->prepare("INSERT INTO profile_view_cooldowns (viewer_username, viewed_username, last_viewed) VALUES (?, ?, NOW()) ON DUPLICATE KEY UPDATE last_viewed = NOW()");
+        $stmt->execute([$viewer_username, $viewed_username]);
+        
+        // Increment the view count
+        $stmt = $pdo->prepare("UPDATE user_fame SET views = views + 1 WHERE username = ?");
+        $stmt->execute([$viewed_username]);
+        
+        return true; // View was counted
+    }
+    
+    return false; // View was not counted due to cooldown
 }
 
 function toggleCrescent($pdo, $viewer_username, $viewed_username) {
@@ -368,7 +400,7 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS user_crescents (
 
 // Increment view count (only if viewer is not the same as viewed user)
 if ($current_user['username'] !== $viewed_user['username']) {
-    incrementView($pdo, $viewed_user['username']);
+    incrementView($pdo, $current_user['username'], $viewed_user['username']);
 }
 
 // Get user fame stats
@@ -545,9 +577,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         <form method="POST" class="friend-request-form">
                             <input type="hidden" name="action" value="send_request">
                              <?php if ($are_friends): ?>
-                                 <button type="button" class="friend-request-btn remove-friend" onclick="removeFriend(<?php echo $viewed_user_id; ?>, '<?php echo htmlspecialchars($viewed_user['username']); ?>', this)">
-                                     <i class="fas fa-user-minus"></i>
-                                     Remove Friend
+                                 <button type="button" class="friend-request-btn friends-status" onclick="removeFriend(<?php echo $viewed_user_id; ?>, '<?php echo htmlspecialchars($viewed_user['username']); ?>', this)">
+                                     <i class="fas fa-check"></i>
+                                     Friends
                                  </button>
                              <?php elseif ($received_friend_request): ?>
                                  <button type="button" class="friend-request-btn pending-request" disabled>
@@ -568,7 +600,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         </form>
                     </div>
                     <p class="player-email"><?php echo htmlspecialchars($viewed_user['email']); ?></p>
-                    <p class="friends-count"><?php echo $friends_count; ?> Friends</p>
                     <?php if (!empty($viewed_user['about_me'])): ?>
                         <p class="about-me"><?php echo htmlspecialchars($viewed_user['about_me']); ?></p>
                     <?php endif; ?>
@@ -577,13 +608,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     <div class="user-fame-section">
                         <div class="fame-stats">
                             <div class="fame-item">
+                                <div class="tooltip">Friends: <?php echo number_format($friends_count); ?></div>
+                                <img src="../../assets/pixels/friendhat.png" alt="Friends" class="fame-icon">
+                                <span class="fame-value"><?php echo number_format($friends_count); ?></span>
+                            </div>
+                            <span class="fame-separator">●</span>
+                            <div class="fame-item">
                                 <div class="tooltip">Profile Views: <?php echo number_format($views_count); ?></div>
-                                <img src="../../assets/pixels/pubviews.png" alt="Views" class="fame-icon">
+                                <img src="../../assets/pixels/eyeviews.png" alt="Views" class="fame-icon">
                                 <span class="fame-value"><?php echo number_format($views_count); ?></span>
                             </div>
                             <span class="fame-separator">●</span>
                             <div class="fame-item">
                                 <?php if ($current_user['username'] !== $viewed_user['username']): ?>
+                                    <div class="tooltip">Crescents: <?php echo number_format($crescents_count); ?></div>
                                     <form method="POST" class="crescent-form" style="display: inline;">
                                         <input type="hidden" name="action" value="toggle_crescent">
                                         <input type="hidden" name="viewed_user_id" value="<?php echo $viewed_user_id; ?>">
@@ -593,6 +631,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                         </button>
                                     </form>
                                 <?php else: ?>
+                                    <div class="tooltip">Crescents: <?php echo number_format($crescents_count); ?></div>
                                     <img src="../../assets/pixels/cresent.png" alt="Crescents" class="fame-icon">
                                     <span class="fame-value"><?php echo number_format($crescents_count); ?></span>
                                 <?php endif; ?>
@@ -1139,12 +1178,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                      // Show success message
                      showToast(`${friendName} has been removed from your friends.`, 'success');
                      
-                     // Redirect to friends page with hard refresh after a short delay
-                     setTimeout(() => {
-                         // Force a hard refresh by adding a timestamp parameter
-                         const timestamp = new Date().getTime();
-                         window.location.replace(`friends.php?t=${timestamp}`);
-                     }, 1500);
+                     // Update button to "Add Friend" state
+                     buttonElement.innerHTML = '<i class="fas fa-user-plus"></i> Add Friend';
+                     buttonElement.className = 'friend-request-btn';
+                     buttonElement.type = 'submit';
+                     buttonElement.disabled = false;
+                     buttonElement.onclick = null;
+                     
+                     // Update the form action
+                     const form = buttonElement.closest('form');
+                     if (form) {
+                         form.querySelector('input[name="action"]').value = 'send_request';
+                     }
+                     
+                     // Hide the modal
+                     hideRemoveFriendModal();
                  } else {
                      // Show error message
                      showToast(data.message || 'Failed to remove friend. Please try again.', 'error');

@@ -379,12 +379,12 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                                 <?php if ($suggested['has_pending_request']): ?>
                                     <button class="cancel-request-btn" onclick="cancelFriendRequest(<?php echo $suggested['id']; ?>, '<?php echo htmlspecialchars($suggested['username']); ?>', this)">
                                         <i class="fas fa-times"></i>
-                                        Cancel Request
+                                        <span>Cancel Request</span>
                                     </button>
                                 <?php else: ?>
                                     <button class="add-friend-btn" onclick="addFriend(<?php echo $suggested['id']; ?>, '<?php echo htmlspecialchars($suggested['username']); ?>', this)">
                                         <i class="fas fa-user-plus"></i>
-                                        Add Friend
+                                        <span>Add Friend</span>
                                     </button>
                                 <?php endif; ?>
                             </div>

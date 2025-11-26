@@ -810,8 +810,14 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script>
         // View profile function to match the one in friends.php
         function viewProfile(userId) {
-            // Navigate to user profile page with relative path
-            window.location.href = `../friends/user-profile.php?id=${userId}`;
+            // Check if viewing own profile (use == to handle type coercion)
+            if (userId == currentUserId) {
+                // Navigate to own profile page
+                window.location.href = `../profile/profile.php`;
+            } else {
+                // Navigate to user profile page with relative path
+                window.location.href = `../friends/user-profile.php?id=${userId}`;
+            }
         }
     </script>
 </body>

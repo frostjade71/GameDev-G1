@@ -198,10 +198,10 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="../../assets/menu/ww_logo_main.webp">
     <title>Friends - Word Weavers</title>
-    <link rel="stylesheet" href="../../styles.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="friends.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../../styles.css?v=1.0">
+    <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=1.0">
+    <link rel="stylesheet" href="../../notif/toast.css?v=1.0">
+    <link rel="stylesheet" href="friends.css?v=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>

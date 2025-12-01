@@ -63,9 +63,9 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
     <link rel="icon" type="image/png" href="assets/menu/ww_logo_main.webp">
     <title>Menu - Word Weavers</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="navigation/shared/navigation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="notif/toast.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="menu.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="navigation/shared/navigation.css?v=<?php echo filemtime('navigation/shared/navigation.css'); ?>">
+    <link rel="stylesheet" href="notif/toast.css?v=<?php echo filemtime('notif/toast.css'); ?>">
+    <link rel="stylesheet" href="menu.css?v=<?php echo filemtime('menu.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>

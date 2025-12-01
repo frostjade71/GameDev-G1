@@ -31,10 +31,10 @@ $game_progress = [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/webp" href="../assets/menu/ww_logo_main.webp">
     <title>Select Game - Word Weavers</title>
-    <link rel="stylesheet" href="../styles.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../navigation/shared/navigation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="game-selection.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../notif/toast.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../styles.css?v=<?php echo filemtime('../styles.css'); ?>">
+    <link rel="stylesheet" href="../navigation/shared/navigation.css?v=<?php echo filemtime('../navigation/shared/navigation.css'); ?>">
+    <link rel="stylesheet" href="game-selection.css?v=<?php echo filemtime('game-selection.css'); ?>">
+    <link rel="stylesheet" href="../notif/toast.css?v=<?php echo filemtime('../notif/toast.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -206,7 +206,7 @@ $game_progress = [];
         </div>
     </div>
 
-    <script src="game-selection.js?v=<?php echo time(); ?>"></script>
+    <script src="game-selection.js?v=<?php echo filemtime('game-selection.js'); ?>"></script>
     <script src="../navigation/shared/profile-dropdown.js"></script>
     <script>
         // Override sound paths for this page

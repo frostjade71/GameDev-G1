@@ -266,9 +266,9 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
     <link rel="icon" type="image/png" href="../../assets/menu/ww_logo_main.webp">
     <title>Profile - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css">
-    <link rel="stylesheet" href="../shared/navigation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="profile.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../shared/navigation.css?v=<?php echo filemtime('../shared/navigation.css'); ?>">
+    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo filemtime('../../notif/toast.css'); ?>">
+    <link rel="stylesheet" href="profile.css?v=<?php echo filemtime('profile.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>

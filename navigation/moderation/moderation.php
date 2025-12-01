@@ -91,20 +91,6 @@ $notification_count = $stmt->fetch()['count'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../assets/menu/ww_logo_main.webp">
-    <title>Moderation Panel - Word Weavers</title>
-    <link rel="stylesheet" href="../../styles.css">
-    <link rel="stylesheet" href="../shared/navigation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="moderation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-</head>
-<body>
-    <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" aria-label="Open menu">
         <i class="fas fa-bars"></i>
     </button>

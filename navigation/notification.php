@@ -76,10 +76,10 @@ $notification_count = count($all_notifications);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/webp" href="../assets/menu/ww_logo_main.webp">
     <title>Word Weavers - Notifications</title>
-    <link rel="stylesheet" href="shared/navigation.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="notification.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../notif/toast.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../styles.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="shared/navigation.css?v=<?php echo filemtime('shared/navigation.css'); ?>">
+    <link rel="stylesheet" href="notification.css?v=<?php echo filemtime('notification.css'); ?>">
+    <link rel="stylesheet" href="../notif/toast.css?v=<?php echo filemtime('../notif/toast.css'); ?>">
+    <link rel="stylesheet" href="../styles.css?v=<?php echo filemtime('../styles.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

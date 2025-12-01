@@ -462,7 +462,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <link rel="stylesheet" href="../../navigation/shared/navigation.css">
     <link rel="stylesheet" href="../../notif/toast.css">
     <link rel="stylesheet" href="../../styles.css">
-    <link rel="stylesheet" href="user-profile.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="user-profile.css?v=<?php echo filemtime('user-profile.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>

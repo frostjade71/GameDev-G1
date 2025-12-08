@@ -128,6 +128,12 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </a>
+            <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
+            <a href="../moderation/moderation.php" class="nav-link">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin</span>
+            </a>
+            <?php endif; ?>
         </nav>
     </div>
 
@@ -193,18 +199,19 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div>Loading Leaderboard</div>
                 </div>
             </div>
+            
+            <!-- Header -->
             <div class="settings-header">
                 <h1 class="settings-title">Leaderboards</h1>
             </div>
 
             <div class="leaderboard-section">
-                <!-- Game Selection - VocabWorld Only -->
+                <!-- Game Logo -->
                 <div class="game-logo-container">
                     <img src="../../MainGame/vocabworld/assets/menu/vocab_new.png" alt="VocabWorld" class="game-logo">
                 </div>
-                <div class="section-separator"></div>
                 
-                <!-- Sort Dropdown -->
+                <!-- Sort Filter -->
                 <div class="leaderboard-filters">
                     <div class="filter-group">
                         <div class="dropdown">
@@ -242,12 +249,6 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 
-                <!-- Loading Indicator -->
-                <div id="loadingIndicator" style="display: none; text-align: center; padding: 20px;">
-                    <i class="fas fa-spinner fa-spin"></i> Loading leaderboard...
-                </div>
-                
-                <!-- Leaderboard Content -->
                 <!-- Podium for Top 3 -->
                 <div class="podium-container">
                     <?php 
@@ -257,40 +258,37 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         if (!$player) continue;
                         $rank = array_search($player, $top_players) + 1;
                     ?>
-                        <div class="podium-place rank-<?php echo $rank; ?> <?php echo $player['user_id'] == $user_id ? 'current-user' : ''; ?>" data-rank="<?php echo $rank; ?>" onclick="viewProfile(<?php echo $player['user_id']; ?>)" style="cursor: pointer;">
-                            <div class="podium-avatar">
-                                <img src="../../assets/menu/defaultuser.png" alt="<?php echo htmlspecialchars($player['username']); ?>" class="podium-img">
-                            </div>
+                        <div class="podium-place rank-<?php echo $rank; ?> <?php echo $player['user_id'] == $user_id ? 'current-user' : ''; ?>" onclick="viewProfile(<?php echo $player['user_id']; ?>)">
                             <div class="podium-rank">#<?php echo $rank; ?></div>
-                            <div class="podium-name"><?php echo htmlspecialchars($player['username']); ?></div>
-                            <div class="podium-score">
-                                <span class="score-value"><?php echo number_format($player['gwa'] ?? 0, 2); ?></span>
-                                <span class="score-label">GWA</span>
+                            <div class="podium-avatar">
+                                <img src="../../assets/menu/defaultuser.png" alt="<?php echo htmlspecialchars($player['username']); ?>">
                             </div>
+                            <div class="podium-name"><?php echo htmlspecialchars($player['username']); ?></div>
+                            <div class="podium-score"><?php echo number_format($player['gwa'] ?? 0, 2); ?></div>
                         </div>
                     <?php endforeach; ?>
                 </div>
 
                 <!-- Table for Ranks 4-10 -->
-                <div class="leaderboard-table-container" style="margin-top: 30px;">
+                <div class="leaderboard-table-container">
                     <table class="leaderboard-table">
                         <thead>
                             <tr>
                                 <th>Rank</th>
                                 <th>Player</th>
-                                <th class="sortable" data-sort="gwa">GWA <i class="sort-icon"></i></th>
+                                <th class="sortable" data-sort="gwa">Score <i class="sort-icon"></i></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php 
-                            $other_players = array_slice($leaderboard_data, 3, 7); // Get ranks 4-10
+                            $other_players = array_slice($leaderboard_data, 3, 7);
                             foreach ($other_players as $index => $player): 
                                 $rowClass = [];
                                 if ($player['user_id'] == $user_id) {
                                     $rowClass[] = 'current-user';
                                 }
                             ?>
-                            <tr class="<?php echo implode(' ', $rowClass); ?>" onclick="viewProfile(<?php echo $player['user_id']; ?>)" style="cursor: pointer;">
+                            <tr class="<?php echo implode(' ', $rowClass); ?>" onclick="viewProfile(<?php echo $player['user_id']; ?>)">
                                 <td class="rank"><?php echo $index + 4; ?></td>
                                 <td class="player-name"><?php echo htmlspecialchars($player['username']); ?></td>
                                 <td><?php echo number_format($player['gwa'] ?? 0, 2); ?></td>
@@ -300,24 +298,16 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </table>
                 </div>
                 
-                <!-- Separator Line -->
-                <div class="leaderboard-separator"></div>
-                
-                <!-- Personal Rank Section -->
-                <div class="personal-rank-section" style="margin: 10px auto 0; max-width: 600px; width: 95%; text-align: center;">
-                    <div class="personal-rank-container" style="background: rgba(0, 0, 0, 0.3); border: 1px solid #4da6ff; border-radius: 4px; padding: 3px; margin: 0 auto; max-width: 200px; box-shadow: 0 0 4px rgba(77, 166, 255, 0.3); transition: all 0.3s ease;">
-                        <div id="personal-rank-title" style="font-family: 'Press Start 2P', monospace; font-size: 0.7em; color: #fff; text-align: center; padding: 2px; letter-spacing: -0.5px; line-height: 1.2;">
-                            Loading...
-                        </div>
-                    </div>
-                            </tbody>
-                        </table>
+                <!-- Personal Rank -->
+                <div class="personal-rank-section">
+                    <div class="personal-rank-container">
+                        <div id="personal-rank-title">Loading...</div>
                     </div>
                 </div>
                 
-            </div> <!-- Close leaderboard-section -->
-        </div> <!-- Close leaderboard-container -->
-    </div> <!-- Close main-content -->
+            </div>
+        </div>
+    </div>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../shared/navigation.js?v=<?php echo filemtime('../shared/navigation.js'); ?>"></script>
@@ -652,6 +642,18 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             loadLeaderboard();
         });
 
+        // View profile function
+        function viewProfile(userId) {
+            // Check if viewing own profile (use == to handle type coercion)
+            if (userId == currentUserId) {
+                // Navigate to own profile page
+                window.location.href = '../profile/profile.php';
+            } else {
+                // Navigate to user profile page with relative path
+                window.location.href = `../friends/user-profile.php?user_id=${userId}`;
+            }
+        }
+
         // Logout function
         function showLogoutModal() {
             if (confirm('Are you sure you want to log out?')) {
@@ -807,18 +809,5 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
     <script src="../shared/navigation.js"></script>
-    <script>
-        // View profile function to match the one in friends.php
-        function viewProfile(userId) {
-            // Check if viewing own profile (use == to handle type coercion)
-            if (userId == currentUserId) {
-                // Navigate to own profile page
-                window.location.href = `../profile/profile.php`;
-            } else {
-                // Navigate to user profile page with relative path
-                window.location.href = `../friends/user-profile.php?id=${userId}`;
-            }
-        }
-    </script>
 </body>
 </html>

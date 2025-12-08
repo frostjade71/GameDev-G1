@@ -22,7 +22,7 @@ if (!$current_user) {
 }
 
 // Get the user ID from URL parameter
-$viewed_user_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$viewed_user_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
 
 if (!$viewed_user_id) {
     header('Location: friends.php');
@@ -493,6 +493,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </a>
+            <?php if (in_array($current_user['grade_level'], ['Developer', 'Admin'])): ?>
+            <a href="../moderation/moderation.php" class="nav-link">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin</span>
+            </a>
+            <?php endif; ?>
         </nav>
     </div>
 

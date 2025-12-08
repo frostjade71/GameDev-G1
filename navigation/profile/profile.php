@@ -295,21 +295,16 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
                 <i class="fas fa-users"></i>
                 <span>Friends</span>
             </a>
-            <div class="nav-item-with-dropdown">
-                <a href="profile.php" class="nav-link active" id="profile-dropdown-trigger">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                    <i class="fas fa-chevron-down dropdown-arrow"></i>
-                </a>
-                <div class="nav-dropdown-menu">
-                    <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
-                    <a href="../moderation/moderation.php" class="nav-dropdown-item" id="moderation-panel">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>Moderation</span>
-                    </a>
-                    <?php endif; ?>
-                </div>
-            </div>
+            <a href="profile.php" class="nav-link active">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+            <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
+            <a href="../moderation/moderation.php" class="nav-link">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin</span>
+            </a>
+            <?php endif; ?>
         </nav>
     </div>
 

@@ -2,10 +2,10 @@
 // This file contains common functions used across multiple pages
 
 // Toast notification function with sound and blur overlay
-window.showToast = function(message) {
+window.showToast = function (message) {
     const toast = document.getElementById('toast');
     const overlay = document.querySelector('.toast-overlay');
-    
+
     if (toast && overlay) {
         // Play toast notification sound
         const toastSound = new Audio('assets/sounds/toast/toastnotifwarn.mp3');
@@ -13,13 +13,13 @@ window.showToast = function(message) {
         toastSound.play().catch(error => {
             console.log('Error playing toast sound:', error);
         });
-        
+
         // Show overlay and toast
         overlay.classList.add('show');
         toast.textContent = message;
         toast.classList.remove('hide');
         toast.classList.add('show');
-        
+
         // Hide the toast and overlay after 3 seconds
         setTimeout(() => {
             toast.classList.remove('show');
@@ -33,10 +33,15 @@ window.showToast = function(message) {
 
 // Click sound function
 function playClickSound() {
-    const clickSound = new Audio('assets/sounds/clicks/mixkit-stapling-paper-2995.wav');
-    clickSound.play().catch(error => {
-        console.log('Error playing click sound:', error);
-    });
+    try {
+        const clickSound = new Audio('assets/sounds/clicks/mixkit-stapling-paper-2995.wav');
+        clickSound.volume = 0.3;
+        clickSound.play().catch(() => {
+            // Silently fail if sound can't play
+        });
+    } catch (error) {
+        // Silently fail if sound file doesn't exist
+    }
 }
 
 // Add click effect to buttons
@@ -58,16 +63,16 @@ function viewProfile(userId) {
 document.addEventListener('DOMContentLoaded', () => {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const sidebar = document.querySelector('.sidebar');
-    
+
     if (mobileMenuBtn && sidebar) {
         mobileMenuBtn.addEventListener('click', () => {
             // Add visual feedback
             addClickEffect(mobileMenuBtn);
-            
+
             // Toggle sidebar
             sidebar.classList.toggle('active');
         });
-        
+
         // Close sidebar when clicking outside on mobile
         document.addEventListener('click', (e) => {
             if (window.innerWidth <= 768) {
@@ -76,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-        
+
         // Close sidebar when clicking on nav links
         const navLinks = document.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
@@ -92,11 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const dashboardCards = document.querySelectorAll('.dashboard-card');
     dashboardCards.forEach(card => {
         card.addEventListener('click', (e) => {
-            // Play click sound
+            // Play click sound only
             playClickSound();
-            
-            // Add visual feedback
-            addClickEffect(card);
         });
     });
 
@@ -106,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bannerCta.addEventListener('click', (e) => {
             // Play click sound
             playClickSound();
-            
+
             // Add visual feedback
             addClickEffect(bannerCta);
         });
@@ -119,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item.style.transform = 'translateY(-2px)';
             item.style.transition = 'transform 0.2s ease';
         });
-        
+
         item.addEventListener('mouseleave', () => {
             item.style.transform = 'translateY(0)';
         });
@@ -167,64 +169,14 @@ document.addEventListener('DOMContentLoaded', () => {
         bannerContent.style.opacity = '0';
         bannerContent.style.transform = 'translateY(30px)';
         bannerContent.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-        
+
         setTimeout(() => {
             bannerContent.style.opacity = '1';
             bannerContent.style.transform = 'translateY(0)';
         }, 200);
     }
 
-    // Add ripple effect to buttons
-    function createRipple(event) {
-        const button = event.currentTarget;
-        const circle = document.createElement('span');
-        const diameter = Math.max(button.clientWidth, button.clientHeight);
-        const radius = diameter / 2;
 
-        circle.style.width = circle.style.height = `${diameter}px`;
-        circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
-        circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
-        circle.classList.add('ripple');
-
-        const ripple = button.getElementsByClassName('ripple')[0];
-        if (ripple) {
-            ripple.remove();
-        }
-
-        button.appendChild(circle);
-    }
-
-    // Add ripple effect to dashboard cards and CTA
-    const rippleElements = document.querySelectorAll('.dashboard-card, .banner-cta');
-    rippleElements.forEach(element => {
-        element.addEventListener('click', createRipple);
-    });
-
-    // Add CSS for ripple effect
-    const style = document.createElement('style');
-    style.textContent = `
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: scale(0);
-            animation: ripple-animation 0.6s linear;
-            pointer-events: none;
-        }
-
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-
-        .dashboard-card, .banner-cta {
-            position: relative;
-            overflow: hidden;
-        }
-    `;
-    document.head.appendChild(style);
 });
 
 // Utility function to check if element is in viewport
@@ -257,7 +209,7 @@ document.addEventListener('keydown', (e) => {
         if (sidebar && sidebar.classList.contains('active')) {
             sidebar.classList.remove('active');
         }
-        
+
         const logoutModal = document.getElementById('logoutModal');
         if (logoutModal && logoutModal.classList.contains('show')) {
             hideLogoutModal();
@@ -274,7 +226,7 @@ if ('ontouchstart' in window) {
             target.style.transform = 'scale(0.98)';
         }
     });
-    
+
     document.addEventListener('touchend', (e) => {
         const target = e.target.closest('.dashboard-card, .banner-cta, .mobile-menu-btn');
         if (target) {

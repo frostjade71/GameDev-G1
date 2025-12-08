@@ -232,6 +232,12 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </a>
+            <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
+            <a href="../../navigation/moderation/moderation.php" class="nav-link">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin</span>
+            </a>
+            <?php endif; ?>
         </nav>
     </div>
 
@@ -356,12 +362,12 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                 <?php else: ?>
                 <div class="suggested-grid" id="suggestedGrid">
                         <?php foreach ($suggested_friends as $suggested): ?>
-                        <div class="suggested-card">
-                            <div class="suggested-avatar" onclick="viewProfile(<?php echo $suggested['id']; ?>)">
+                        <div class="suggested-card" onclick="viewProfile(<?php echo $suggested['id']; ?>)" style="cursor: pointer;">
+                            <div class="suggested-avatar">
                                 <img src="<?php echo htmlspecialchars($suggested['profile_image']); ?>" alt="<?php echo htmlspecialchars($suggested['username']); ?>">
                             </div>
                             <div class="suggested-info">
-                                <h3 onclick="viewProfile(<?php echo $suggested['id']; ?>)" style="cursor: pointer;">
+                                <h3>
                                     <?php echo htmlspecialchars($suggested['username']); ?>
                                     <?php if ($suggested['highest_badge']): ?>
                                         <img src="<?php echo htmlspecialchars($suggested['highest_badge']['src']); ?>" 
@@ -377,12 +383,12 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                             </div>
                             <div class="suggested-actions">
                                 <?php if ($suggested['has_pending_request']): ?>
-                                    <button class="cancel-request-btn" onclick="cancelFriendRequest(<?php echo $suggested['id']; ?>, '<?php echo htmlspecialchars($suggested['username']); ?>', this)">
+                                    <button class="cancel-request-btn" onclick="event.stopPropagation(); cancelFriendRequest(<?php echo $suggested['id']; ?>, '<?php echo htmlspecialchars($suggested['username']); ?>', this)">
                                         <i class="fas fa-times"></i>
                                         <span>Cancel Request</span>
                                     </button>
                                 <?php else: ?>
-                                    <button class="add-friend-btn" onclick="addFriend(<?php echo $suggested['id']; ?>, '<?php echo htmlspecialchars($suggested['username']); ?>', this)">
+                                    <button class="add-friend-btn" onclick="event.stopPropagation(); addFriend(<?php echo $suggested['id']; ?>, '<?php echo htmlspecialchars($suggested['username']); ?>', this)">
                                         <i class="fas fa-user-plus"></i>
                                         <span>Add Friend</span>
                                     </button>
@@ -507,7 +513,7 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
             }
             
             // Navigate to user profile
-            window.location.href = `user-profile.php?id=${userId}`;
+            window.location.href = `user-profile.php?user_id=${userId}`;
         };
 
         // Logout functionality
@@ -544,7 +550,7 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
         // View profile functionality
         function viewProfile(userId) {
             // Navigate to user profile page
-            window.location.href = `user-profile.php?id=${userId}`;
+            window.location.href = `user-profile.php?user_id=${userId}`;
         }
     </script>
 </body>

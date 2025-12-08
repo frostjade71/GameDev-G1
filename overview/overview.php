@@ -10,7 +10,7 @@ if (!isLoggedIn()) {
 
 // Get user information
 $user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT username, email FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, email, grade_level FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
@@ -39,6 +39,21 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="../assets/menu/ww_logo_main.webp">
+    <title>Overview - Word Weavers</title>
+    <link rel="stylesheet" href="../navigation/shared/navigation.css?v=<?php echo filemtime('../navigation/shared/navigation.css'); ?>">
+    <link rel="stylesheet" href="../styles.css?v=<?php echo filemtime('../styles.css'); ?>">
+    <link rel="stylesheet" href="overview.css?v=<?php echo filemtime('overview.css'); ?>">
+    <link rel="stylesheet" href="../notif/toast.css?v=<?php echo filemtime('../notif/toast.css'); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
     </button>
 
     <!-- Sidebar -->
@@ -63,6 +78,12 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </a>
+            <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
+            <a href="../navigation/moderation/moderation.php" class="nav-link">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin</span>
+            </a>
+            <?php endif; ?>
         </nav>
     </div>
 
@@ -132,7 +153,7 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                             <img src="../assets/menu/Word_weavers.png" alt="Word Weavers" class="title-logo">
                         </div>
                         <div class="text-section">
-                            <p><strong>Word Weavers</strong> is a web-based educational game dashboard developed by Group 1, Computer Science students from Holy Cross College of Carigara Incorporated. It is designed to store and organize various educational games that aim to enhance the English language skills of high school students in Grades 7 to 10. The platform also allows teachers and students to monitor their performance through detailed progress reports, interactive scoreboards, and performance analytics.</p>
+                            <p><strong>Word Weavers</strong> is a comprehensive web-based educational platform developed by Group 3 Computer Science Seniors at Holy Cross College of Carigara Incorporated in partial fulfillment of the requirements for the degree of Bachelor of Science in Computer Science. This interactive platform, created under the thesis titled "Developing Educational Games for High School Language Arts: Design Principles and Effectiveness," helps learners improve their English skills through immersive language arts web games featuring vocabulary building, grammar challenges, and social learning features.</p>
                             <div class="separator"></div>
                             <p>This website was developed in response to the growing need for modern learning tools that combine effective teaching methods with the specific learning needs of adolescents. Many students learn better through visual and interactive experiences rather than traditional lectures, so this platform aims to make learning more engaging, enjoyable, and effective for them.</p>
                         </div>

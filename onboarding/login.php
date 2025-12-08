@@ -35,6 +35,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['grade_level'] = $user['grade_level'];
                 
+                // Update last login timestamp
+                try {
+                    $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
+                    $updateStmt->execute([$user['id']]);
+                } catch (PDOException $e) {
+                    // Log error but don't prevent login
+                    error_log("Failed to update last_login: " . $e->getMessage());
+                }
+                
+                // Create session record for active user tracking
+                try {
+                    $sessionStmt = $pdo->prepare("
+                        INSERT INTO user_sessions (user_id, session_id, login_time, last_activity, ip_address, user_agent) 
+                        VALUES (?, ?, NOW(), NOW(), ?, ?)
+                    ");
+                    $sessionStmt->execute([
+                        $user['id'],
+                        session_id(),
+                        $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+                        $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
+                    ]);
+                } catch (PDOException $e) {
+                    // Log error but don't prevent login
+                    error_log("Failed to create session record: " . $e->getMessage());
+                }
+                
                 // Redirect to index page
                 header('Location: ../menu.php');
                 exit();

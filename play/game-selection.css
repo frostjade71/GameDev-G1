@@ -68,7 +68,8 @@ body.hover-vocabbg {
 }
 
 .menu-container::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
+    /* Chrome, Safari, Opera */
 }
 
 .game-title {
@@ -230,7 +231,7 @@ body.hover-vocabbg {
     .carousel-button.prev {
         left: 8px;
     }
-    
+
     .carousel-button.next {
         right: 8px;
     }
@@ -240,7 +241,7 @@ body.hover-vocabbg {
     .carousel-button.prev {
         left: 5px;
     }
-    
+
     .carousel-button.next {
         right: 5px;
     }
@@ -332,21 +333,24 @@ body.hover-vocabbg {
     color: white;
     font-size: 0.98rem;
     margin-bottom: 0.69rem;
-    
+    text-align: center;
 }
 
 @media (max-width: 768px) {
     .card-content h2 {
-        font-size: 1.3rem;
-        margin-bottom: 0.4rem;
-        margin-top: 2rem;
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+        margin-top: 0.5rem;
+        text-align: center;
     }
 }
 
 @media (max-width: 480px) {
     .card-content h2 {
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
+        font-size: 0.9rem;
+        margin-bottom: 0.6rem;
+        margin-top: 0.5rem;
+        text-align: center;
     }
 }
 
@@ -593,4 +597,3 @@ body.hover-vocabbg {
     color: #00ff87;
     margin: 1rem 0;
 }
-

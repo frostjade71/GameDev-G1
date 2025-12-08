@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const prevButton = document.querySelector('.carousel-button.prev');
         const nextButton = document.querySelector('.carousel-button.next');
         const dotsContainer = document.querySelector('.carousel-dots');
-        
+
         let currentIndex = 0;
-        
+
         // Create dots (limited to 3)
         const maxDots = 3;
         for (let i = 0; i < maxDots; i++) {
@@ -21,14 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
             dot.classList.add('carousel-dot');
             if (i === 0) dot.classList.add('active');
             dotsContainer.appendChild(dot);
-            
+
             dot.addEventListener('click', () => {
                 moveToSlide(i);
             });
         }
-        
+
         const dots = Array.from(dotsContainer.children);
-        
+
         // Update dots
         const updateDots = (index) => {
             dots.forEach(dot => dot.classList.remove('active'));
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const dotIndex = Math.min(index, maxDots - 1);
             dots[dotIndex].classList.add('active');
         };
-        
+
         // Move to specific slide
         const moveToSlide = (index) => {
             const slideWidth = cards[0].getBoundingClientRect().width;
@@ -44,12 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
             carouselTrack.style.transform = `translateX(-${index * (slideWidth + gap)}px)`;
             currentIndex = index;
             updateDots(index);
-            
+
             // Update button states
             prevButton.style.opacity = index === 0 ? '0.5' : '1';
             nextButton.style.opacity = index === cards.length - 1 ? '0.5' : '1';
         };
-        
+
         // Button click handlers
         prevButton.addEventListener('click', () => {
             if (currentIndex > 0) {
@@ -57,14 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 playClickSound();
             }
         });
-        
+
         nextButton.addEventListener('click', () => {
             if (currentIndex < cards.length - 1) {
                 moveToSlide(currentIndex + 1);
                 playClickSound();
             }
         });
-        
+
         // Initialize button states
         prevButton.style.opacity = '0.5';
     }
@@ -91,25 +91,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (gameCards) {
         let currentBackground = null;
-        
+
         gameCards.forEach((card, index) => {
             const gameType = card.dataset.game;
             console.log(`Card ${index}: gameType = ${gameType}`); // Debug log
-            
+
             card.addEventListener('mouseenter', () => {
                 const gameType = card.dataset.game;
                 const body = document.body;
-                
+
                 // Only proceed if the card has a valid game type
                 if (!gameType) {
                     return;
                 }
-                
+
                 // Remove previous background class if exists
                 if (currentBackground) {
                     body.classList.remove('hover-' + currentBackground);
                 }
-                
+
                 // Set new background
                 body.classList.add('hover-' + gameType);
                 currentBackground = gameType;
@@ -125,15 +125,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Remove any existing click listeners first
             card.removeEventListener('click', card._clickHandler);
-            
+
             // Create new click handler
             card._clickHandler = (event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                
+
                 const gameType = card.dataset.game;
                 console.log('Game card clicked, gameType:', gameType); // Debug log
-                
+
                 if (gameType === 'vocabbg') {
                     // Redirect to VocabWorld game
                     console.log('Redirecting to VocabWorld...'); // Debug log
@@ -151,27 +151,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     showToast('more games soon', '../assets/pixels/hammer.png');
                 }
             };
-            
+
             card.addEventListener('click', card._clickHandler);
         });
     }
 
     // Handle back button
     const backButton = document.getElementById('backToMenu');
-    
+
     if (backButton) {
         backButton.addEventListener('click', (e) => {
             e.preventDefault();
-            
+
             // Play click sound
             playClickSound();
-            
+
             // Add visual feedback
             backButton.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 backButton.style.transform = 'scale(1)';
             }, 100);
-            
+
             // Navigate back to menu with from parameter
             window.location.href = '../menu.php?from=selection';
         });

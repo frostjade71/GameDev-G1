@@ -17,79 +17,6 @@
     display: none;
 }
 
-/* Navigation dropdown menu */
-.nav-item-with-dropdown {
-    position: relative;
-}
-
-.nav-item-with-dropdown .dropdown-arrow {
-    margin-left: auto;
-    font-size: 0.8em;
-    transition: transform 0.3s ease;
-}
-
-.nav-dropdown-menu {
-    display: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    background: rgba(20, 20, 30, 0.98);
-    border-radius: 0 0 12px 12px;
-    padding: 0.5rem 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    z-index: 10;
-    border: 1px solid rgba(96, 239, 255, 0.2);
-    border-top: none;
-    overflow: hidden;
-}
-
-/* Dropdowns will only show on click, not hover */
-.nav-item-with-dropdown .nav-dropdown-menu {
-    display: none;
-}
-
-/* Show dropdown when active (mobile) */
-.nav-item-with-dropdown.active .nav-dropdown-menu {
-    display: block;
-    position: static;
-    /* Full width on mobile */
-    border-radius: 0 0 12px 12px;
-    border-left: none;
-    border-right: none;
-    margin-top: 0.5rem;
-}
-
-.nav-item-with-dropdown.active .dropdown-arrow {
-    transform: rotate(180deg);
-}
-
-.nav-dropdown-item {
-    display: flex;
-    align-items: center;
-    padding: 0.6rem 1.5rem;
-    color: #e0e0e0;
-    text-decoration: none;
-    font-size: 0.9em;
-    transition: all 0.2s ease;
-}
-
-.nav-dropdown-item i {
-    margin-right: 0.8rem;
-    width: 20px;
-    text-align: center;
-    color: rgba(96, 239, 255, 0.8);
-}
-
-.nav-dropdown-item:hover {
-    background: rgba(96, 239, 255, 0.1);
-    color: #ffffff;
-    padding-left: 1.8rem;
-}
-
-.nav-dropdown-item:hover i {
-    color: #60efff;
-}
-
 /* Mobile menu button */
 .mobile-menu-btn {
     display: none;
@@ -431,27 +358,27 @@
         padding: 0.4rem 0.8rem;
         font-size: 0.7rem;
     }
-    
+
     /* Make header elements smaller on mobile */
     .top-header {
         height: 50px;
         padding: 0 1rem;
     }
-    
+
     .header-right {
         gap: 0.8rem;
     }
-    
+
     .notification-icon {
         font-size: 0.9rem;
         width: 20px;
         height: 20px;
     }
-    
+
     .notification-icon i {
         font-size: 0.9rem;
     }
-    
+
     .notification-badge {
         top: -6px;
         right: -6px;
@@ -459,33 +386,33 @@
         height: 14px;
         font-size: 0.65rem;
     }
-    
+
     .logout-icon {
         font-size: 0.9rem;
     }
-    
+
     .profile-img {
         width: 28px;
         height: 28px;
     }
-    
+
     .user-info {
         display: flex;
         flex-direction: column;
         gap: 0.1rem;
     }
-    
+
     .user-info .greeting {
         font-size: 0.65rem;
         line-height: 1;
     }
-    
+
     .user-info .username {
         font-size: 0.7rem;
         line-height: 1;
         font-weight: 600;
     }
-    
+
     .main-content {
         margin-top: 50px;
     }

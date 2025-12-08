@@ -21,16 +21,16 @@ function debounce(func, wait) {
     };
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize tooltips
     initializeTooltips();
-    
+
     // Initialize event listeners
     initializeEventListeners();
 
     // Initialize sortable headers (tri-state sorting)
     initializeSortingHeaders();
-    
+
     // Initialize current state from DOM
     initializeModerationState();
 });
@@ -65,38 +65,38 @@ function loadUsersAjax() {
     if (moderationState.sort) params.set('sort', moderationState.sort);
     if (moderationState.order) params.set('order', moderationState.order);
     if (moderationState.grade && moderationState.grade !== 'all') params.set('grade', moderationState.grade);
-    
+
     fetch(`get_users.php?${params.toString()}`, {
         method: 'GET',
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
-    .then(async (res) => {
-        const text = await res.text();
-        try {
-            return JSON.parse(text);
-        } catch (e) {
-            console.error('Error loading users', e);
-            console.error('Raw response:', text);
-            throw e;
-        }
-    })
-    .then(data => {
-        if (data && data.success) {
-            const tbody = document.getElementById('usersTbody');
-            if (tbody) {
-                tbody.innerHTML = data.rows_html || '';
+        .then(async (res) => {
+            const text = await res.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Error loading users', e);
+                console.error('Raw response:', text);
+                throw e;
             }
-            updateHeaderIndicators();
-        } else {
-            console.error('Failed to load users', data && data.message);
-            showToast('Failed to load users', 'error');
-        }
-    })
-    .catch(err => {
-        console.error('Error loading users', err);
-        showToast('Error loading users', 'error');
-    })
-    .finally(() => setLoading(false));
+        })
+        .then(data => {
+            if (data && data.success) {
+                const tbody = document.getElementById('usersTbody');
+                if (tbody) {
+                    tbody.innerHTML = data.rows_html || '';
+                }
+                updateHeaderIndicators();
+            } else {
+                console.error('Failed to load users', data && data.message);
+                showToast('Failed to load users', 'error');
+            }
+        })
+        .catch(err => {
+            console.error('Error loading users', err);
+            showToast('Error loading users', 'error');
+        })
+        .finally(() => setLoading(false));
 }
 
 function updateHeaderIndicators() {
@@ -118,14 +118,14 @@ function updateHeaderIndicators() {
 function initializeTooltips() {
     // Tooltip functionality for action buttons
     const tooltipTriggers = document.querySelectorAll('[data-tooltip]');
-    
+
     tooltipTriggers.forEach(trigger => {
         // Create tooltip element
         const tooltip = document.createElement('div');
         tooltip.className = 'tooltip';
         tooltip.textContent = trigger.getAttribute('data-tooltip');
         document.body.appendChild(tooltip);
-        
+
         // Position tooltip on hover
         trigger.addEventListener('mouseenter', (e) => {
             const rect = trigger.getBoundingClientRect();
@@ -133,7 +133,7 @@ function initializeTooltips() {
             tooltip.style.top = `${rect.top - tooltip.offsetHeight - 5}px`;
             tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px`;
         });
-        
+
         trigger.addEventListener('mouseleave', () => {
             tooltip.style.display = 'none';
         });
@@ -166,15 +166,15 @@ function initializeEventListeners() {
         searchInput.addEventListener('input', debounce((e) => {
             const searchTerm = e.target.value.toLowerCase();
             const rows = document.querySelectorAll('.user-table tbody tr');
-            
+
             rows.forEach(row => {
                 const username = row.cells[1].textContent.toLowerCase();
                 const email = row.cells[2].textContent.toLowerCase();
                 const grade = row.cells[3].textContent.toLowerCase();
                 const section = row.cells[4]?.textContent?.toLowerCase() || '';
-                
-                if (username.includes(searchTerm) || 
-                    email.includes(searchTerm) || 
+
+                if (username.includes(searchTerm) ||
+                    email.includes(searchTerm) ||
                     grade.includes(searchTerm) ||
                     section.includes(searchTerm)) {
                     row.style.display = '';
@@ -184,12 +184,12 @@ function initializeEventListeners() {
             });
         }, 300));
     }
-    
+
     // Header profile dropdown toggle (profile image click)
     const profileAnchor = document.querySelector('.user-profile .profile-icon');
     const profileDropdown = document.querySelector('.user-profile .profile-dropdown-content');
     if (profileAnchor && profileDropdown) {
-        profileAnchor.addEventListener('click', function(e) {
+        profileAnchor.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             profileDropdown.classList.toggle('show');
@@ -200,13 +200,13 @@ function initializeEventListeners() {
             profileImg.style.cursor = 'pointer';
         }
         // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!profileDropdown.contains(e.target) && !profileAnchor.contains(e.target)) {
                 profileDropdown.classList.remove('show');
             }
         });
     }
-    
+
     // Intercept grade filter to use AJAX instead of reload
     const gradeSelect = document.getElementById('gradeFilter');
     if (gradeSelect) {
@@ -218,9 +218,9 @@ function initializeEventListeners() {
             loadUsersAjax();
         });
     }
-    
+
     // Initialize any additional event listeners here
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         // Handle clicks on action buttons
         if (e.target.closest('.btn-view')) {
             const userId = e.target.closest('[data-user-id]').getAttribute('data-user-id');
@@ -296,25 +296,8 @@ function updateGradeFilter(grade) {
  * @param {number} userId - ID of the user to view
  */
 function viewUser(userId) {
-    // In a real implementation, this would redirect to the user's profile
-    // or show a modal with detailed user information
-    console.log(`Viewing user with ID: ${userId}`);
-    // For now, we'll show a simple alert
-    showToast(`Viewing user #${userId}`, 'info');
-    
-    // Example of how you might implement this with an AJAX call:
-    /*
-    fetch(`/api/users/${userId}`)
-        .then(response => response.json())
-        .then(data => {
-            // Show user details in a modal
-            showUserDetailsModal(data);
-        })
-        .catch(error => {
-            console.error('Error fetching user data:', error);
-            showToast('Failed to load user data', 'error');
-        });
-    */
+    // Redirect to user's profile page
+    window.location.href = `../friends/user-profile.php?user_id=${userId}`;
 }
 
 /**
@@ -322,42 +305,7 @@ function viewUser(userId) {
  * @param {number} userId - ID of the user to warn
  */
 function warnUser(userId) {
-    // Show confirmation dialog
-    if (confirm('Are you sure you want to issue a warning to this user?')) {
-        // In a real implementation, this would send a request to your backend
-        console.log(`Warning user with ID: ${userId}`);
-        
-        // Show success message
-        showToast('Warning issued successfully', 'success');
-        
-        // Example of how you might implement this with an AJAX call:
-        /*
-        fetch('/api/users/warn', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId: userId,
-                reason: 'Violation of community guidelines', // You might want to collect this from a form
-                moderatorId: <?php echo $user_id; ?>
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Warning issued successfully', 'success');
-                // Optionally update the UI to reflect the warning
-            } else {
-                throw new Error(data.message || 'Failed to issue warning');
-            }
-        })
-        .catch(error => {
-            console.error('Error issuing warning:', error);
-            showToast(error.message || 'Failed to issue warning', 'error');
-        });
-        */
-    }
+    showToast('Warning feature not yet working', 'info');
 }
 
 /**
@@ -365,32 +313,90 @@ function warnUser(userId) {
  * @param {number} userId - ID of the user to delete
  */
 function deleteUser(userId) {
-    // Show confirmation dialog with a stronger warning
-    if (confirm('WARNING: This action cannot be undone. Are you sure you want to delete this user account?')) {
-        // In a real implementation, this would send a request to your backend
-        console.log(`Deleting user with ID: ${userId}`);
-        
-        // Show success message
-        showToast('User deleted successfully', 'success');
-        
-        // Example of how you might implement this with an AJAX call:
-        /*
-        fetch('/api/users/delete', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId: userId,
-                moderatorId: <?php echo $user_id; ?>
-            })
+    // Show custom confirmation modal
+    showDeleteConfirmation(userId);
+}
+
+/**
+ * Show custom delete confirmation modal
+ * @param {number} userId - ID of the user to delete
+ */
+function showDeleteConfirmation(userId) {
+    // Create modal overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'delete-modal-overlay';
+    overlay.innerHTML = `
+        <div class="delete-modal">
+            <div class="delete-modal-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Delete User Account</h3>
+            </div>
+            <div class="delete-modal-body">
+                <p><strong>WARNING:</strong> This action cannot be undone!</p>
+                <p>Are you sure you want to permanently delete user #${userId}?</p>
+                <p class="delete-warning">All user data, progress, and settings will be lost.</p>
+            </div>
+            <div class="delete-modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn-confirm-delete" onclick="confirmDeleteUser(${userId})">
+                    <i class="fas fa-trash"></i> Delete User
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Animate in
+    setTimeout(() => {
+        overlay.classList.add('show');
+    }, 10);
+}
+
+/**
+ * Close delete confirmation modal
+ */
+function closeDeleteModal() {
+    const overlay = document.querySelector('.delete-modal-overlay');
+    if (overlay) {
+        overlay.classList.remove('show');
+        setTimeout(() => {
+            overlay.remove();
+        }, 300);
+    }
+}
+
+/**
+ * Confirm and execute user deletion
+ * @param {number} userId - ID of the user to delete
+ */
+function confirmDeleteUser(userId) {
+    // Close modal
+    closeDeleteModal();
+
+    // Show loading state
+    showToast('Deleting user...', 'info');
+
+    // Send delete request to API
+    fetch('../../api/delete-user.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            user_id: userId
         })
+    })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 showToast('User deleted successfully', 'success');
-                // Remove the user card from the UI
-                document.querySelector(`.user-card[data-user-id="${userId}"]`).remove();
+                // Reload the page to refresh the user list
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
             } else {
                 throw new Error(data.message || 'Failed to delete user');
             }
@@ -399,8 +405,6 @@ function deleteUser(userId) {
             console.error('Error deleting user:', error);
             showToast(error.message || 'Failed to delete user', 'error');
         });
-        */
-    }
 }
 
 /**
@@ -413,15 +417,15 @@ function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast-notification ${type}`;
     toast.textContent = message;
-    
+
     // Add to the page
     document.body.appendChild(toast);
-    
+
     // Show the toast
     setTimeout(() => {
         toast.classList.add('show');
     }, 10);
-    
+
     // Remove the toast after a delay
     setTimeout(() => {
         toast.classList.remove('show');
@@ -441,25 +445,25 @@ function showModal(title, content, options = {}) {
     // In a real implementation, you might want to use a more robust modal system
     const modal = document.createElement('div');
     modal.className = 'modal';
-    
+
     const modalContent = document.createElement('div');
     modalContent.className = 'modal-content';
-    
+
     // Add title
     const titleEl = document.createElement('h3');
     titleEl.textContent = title;
     modalContent.appendChild(titleEl);
-    
+
     // Add content
     const contentEl = document.createElement('div');
     contentEl.className = 'modal-body';
     contentEl.innerHTML = content;
     modalContent.appendChild(contentEl);
-    
+
     // Add buttons
     const actionsEl = document.createElement('div');
     actionsEl.className = 'modal-actions';
-    
+
     if (options.buttons && options.buttons.length) {
         options.buttons.forEach(button => {
             const btn = document.createElement('button');
@@ -476,25 +480,25 @@ function showModal(title, content, options = {}) {
         closeBtn.onclick = () => closeModal(modal);
         actionsEl.appendChild(closeBtn);
     }
-    
+
     modalContent.appendChild(actionsEl);
     modal.appendChild(modalContent);
-    
+
     // Add to the page
     document.body.appendChild(modal);
-    
+
     // Show the modal
     setTimeout(() => {
         modal.classList.add('show');
     }, 10);
-    
+
     // Close on click outside
     modal.onclick = (e) => {
         if (e.target === modal) {
             closeModal(modal);
         }
     };
-    
+
     // Return the modal element in case you need to close it programmatically
     return modal;
 }

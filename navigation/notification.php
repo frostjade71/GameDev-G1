@@ -113,6 +113,12 @@ $notification_count = count($all_notifications);
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </a>
+            <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
+            <a href="../navigation/moderation/moderation.php" class="nav-link">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin</span>
+            </a>
+            <?php endif; ?>
         </nav>
     </div>
 

@@ -37,6 +37,7 @@ $current_essence = $essenceManager->getEssence($user_id);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="../assets/menu/vv_logo.webp">
     <title>How to Play - VocabWorld</title>
     <link rel="stylesheet" href="../style.css?v=4">
     <link rel="stylesheet" href="../navigation/navigation.css?v=4">

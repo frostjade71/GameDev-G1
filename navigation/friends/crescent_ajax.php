@@ -20,7 +20,7 @@ while (ob_get_level()) {
 
 // Get current user information
 $current_user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT username, email, grade_level, section FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, email, grade_level, section, profile_image FROM users WHERE id = ?");
 $stmt->execute([$current_user_id]);
 $current_user = $stmt->fetch();
 

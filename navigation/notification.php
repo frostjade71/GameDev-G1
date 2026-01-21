@@ -10,7 +10,7 @@ if (!isLoggedIn()) {
 
 // Get user information
 $user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT username, email, grade_level FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, email, grade_level, profile_image FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
@@ -25,7 +25,7 @@ if (!$user) {
 
 // Get pending friend requests for the current user
 $stmt = $pdo->prepare("
-    SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level
+    SELECT fr.id, fr.requester_id, fr.created_at, u.username, u.email, u.grade_level, u.profile_image
     FROM friend_requests fr
     JOIN users u ON fr.requester_id = u.id
     WHERE fr.receiver_id = ? AND fr.status = 'pending'
@@ -74,7 +74,7 @@ $notification_count = count($all_notifications);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="../assets/menu/ww_logo_main.webp">
+    <link rel="icon" type="image/webp" href="../assets/images/ww_logo.webp">
     <title>Word Weavers - Notifications</title>
     <link rel="stylesheet" href="shared/navigation.css?v=<?php echo filemtime('shared/navigation.css'); ?>">
     <link rel="stylesheet" href="notification.css?v=<?php echo filemtime('notification.css'); ?>">
@@ -86,6 +86,7 @@ $notification_count = count($all_notifications);
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
+    <?php include '../includes/page-loader.php'; ?>
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" aria-label="Open menu">
         <i class="fas fa-bars"></i>
@@ -139,11 +140,11 @@ $notification_count = count($all_notifications);
                 </div>
                 <div class="profile-dropdown">
                     <a href="#" class="profile-icon">
-                        <img src="../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                        <img src="<?php echo !empty($user['profile_image']) ? '../' . htmlspecialchars($user['profile_image']) : '../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                     </a>
                     <div class="profile-dropdown-content">
                         <div class="profile-dropdown-header">
-                            <img src="../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../' . htmlspecialchars($user['profile_image']) : '../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                             <div class="profile-dropdown-info">
                                 <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
                                 <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
@@ -206,7 +207,7 @@ $notification_count = count($all_notifications);
                             <?php $request = $notification['data']; ?>
                             <div class="friend-request-card" data-request-id="<?php echo $request['id']; ?>">
                                 <div class="request-avatar" onclick="viewProfile(<?php echo $request['requester_id']; ?>)">
-                                    <img src="../assets/menu/defaultuser.png" alt="<?php echo htmlspecialchars($request['username']); ?>">
+                                    <img src="<?php echo !empty($request['profile_image']) ? '../' . htmlspecialchars($request['profile_image']) : '../assets/menu/defaultuser.png'; ?>" alt="<?php echo htmlspecialchars($request['username']); ?>">
                                 </div>
                                 <div class="request-info">
                                     <h3 onclick="viewProfile(<?php echo $request['requester_id']; ?>)" style="cursor: pointer;"><img src="../assets/pixels/friendgem.png" alt="Friend Request" class="username-icon"> <?php echo htmlspecialchars($request['username']); ?> <span class="notification-text">has sent you a friend request</span></h3>

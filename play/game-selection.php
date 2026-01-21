@@ -10,7 +10,7 @@ if (!isLoggedIn()) {
 
 // Get user information
 $user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT username, email, grade_level FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, email, grade_level, profile_image FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
@@ -29,7 +29,7 @@ $game_progress = [];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="../assets/menu/ww_logo_main.webp">
+    <link rel="icon" type="image/webp" href="../assets/images/ww_logo.webp">
     <title>Select Game - Word Weavers</title>
     <link rel="stylesheet" href="../styles.css?v=<?php echo filemtime('../styles.css'); ?>">
     <link rel="stylesheet" href="../navigation/shared/navigation.css?v=<?php echo filemtime('../navigation/shared/navigation.css'); ?>">
@@ -38,6 +38,7 @@ $game_progress = [];
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+    <?php include '../includes/page-loader.php'; ?>
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" aria-label="Open menu">
         <i class="fas fa-bars"></i>
@@ -91,11 +92,11 @@ $game_progress = [];
                 </div>
                 <div class="profile-dropdown">
                     <a href="#" class="profile-icon">
-                        <img src="../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                        <img src="<?php echo !empty($user['profile_image']) ? '../' . htmlspecialchars($user['profile_image']) : '../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                     </a>
                     <div class="profile-dropdown-content">
                         <div class="profile-dropdown-header">
-                            <img src="../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../' . htmlspecialchars($user['profile_image']) : '../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                             <div class="profile-dropdown-info">
                                 <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
                                 <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>

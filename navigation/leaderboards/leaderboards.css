@@ -185,6 +185,17 @@ body {
     object-fit: contain;
 }
 
+/* Leaderboard Type Title */
+.leaderboard-type-title {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #ffd700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    font-family: 'Press Start 2P', cursive;
+    text-transform: uppercase;
+}
+
 /* Podium - Modern 3D Elevated Design */
 .podium-container {
     display: flex;
@@ -543,6 +554,10 @@ body {
         font-size: 1.1rem;
     }
 
+    .leaderboard-type-title {
+        font-size: 0.8rem;
+    }
+
     .game-logo {
         height: 40px;
     }
@@ -622,6 +637,11 @@ body {
 @media (max-width: 480px) {
     .settings-title {
         font-size: 1rem;
+    }
+
+    .leaderboard-type-title {
+        font-size: 0.7rem;
+        margin-bottom: 0.3rem;
     }
 
     .podium-container {

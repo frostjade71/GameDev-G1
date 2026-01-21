@@ -11,7 +11,7 @@ if (!isLoggedIn()) {
 $user_id = $_SESSION['user_id'];
 
 // Get user information
-$stmt = $pdo->prepare("SELECT username, email, grade_level FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, email, grade_level, profile_image FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
@@ -50,6 +50,7 @@ $stmt = $pdo->prepare("
     SELECT 
         u.id as user_id,
         u.username,
+        u.profile_image,
         COALESCE(ue.essence_amount, 0) as essence,
         COALESCE(us.current_shards, 0) as shards,
         COALESCE(gp.player_level, 1) as level,
@@ -77,7 +78,7 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="../../assets/menu/ww_logo_main.webp">
+    <link rel="icon" type="image/webp" href="../../assets/images/ww_logo.webp">
     <title>Leaderboards - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css?v=<?php echo filemtime('../../styles.css'); ?>">
     <link rel="stylesheet" href="../shared/navigation.css?v=<?php echo filemtime('../shared/navigation.css'); ?>">
@@ -101,6 +102,7 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </style>
 </head>
 <body>
+    <?php include '../../includes/page-loader.php'; ?>
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" aria-label="Open menu">
         <i class="fas fa-bars"></i>
@@ -154,11 +156,11 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <div class="profile-dropdown">
                     <a href="#" class="profile-icon">
-                        <img src="../../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                        <img src="<?php echo !empty($user['profile_image']) ? '../../' . htmlspecialchars($user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                     </a>
                     <div class="profile-dropdown-content">
                         <div class="profile-dropdown-header">
-                            <img src="../../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../../' . htmlspecialchars($user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                             <div class="profile-dropdown-info">
                                 <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
                                 <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
@@ -250,6 +252,7 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 
                 <!-- Podium for Top 3 -->
+                <div class="leaderboard-type-title" id="leaderboard-type-title">Levels</div>
                 <div class="podium-container">
                     <?php 
                     $top_players = array_slice($leaderboard_data, 0, 3);
@@ -261,7 +264,7 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="podium-place rank-<?php echo $rank; ?> <?php echo $player['user_id'] == $user_id ? 'current-user' : ''; ?>" onclick="viewProfile(<?php echo $player['user_id']; ?>)">
                             <div class="podium-rank">#<?php echo $rank; ?></div>
                             <div class="podium-avatar">
-                                <img src="../../assets/menu/defaultuser.png" alt="<?php echo htmlspecialchars($player['username']); ?>">
+                                <img src="<?php echo !empty($player['profile_image']) ? '../../' . htmlspecialchars($player['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="<?php echo htmlspecialchars($player['username']); ?>" class="podium-img">
                             </div>
                             <div class="podium-name"><?php echo htmlspecialchars($player['username']); ?></div>
                             <div class="podium-score"><?php echo number_format($player['gwa'] ?? 0, 2); ?></div>
@@ -375,6 +378,9 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             const leaderboardData = response.data || [];
             
+            // Update the leaderboard type title
+            updateLeaderboardTypeTitle();
+            
             // Update the podium (top 3)
             updatePodium(leaderboardData.slice(0, 3));
             
@@ -396,6 +402,19 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             setTimeout(() => {
                 $('#loadingIndicator').remove();
             }, 500);
+        }
+        
+        // Function to update the leaderboard type title
+        function updateLeaderboardTypeTitle() {
+            const sortNames = {
+                'level': 'Levels',
+                'gwa': 'GWA',
+                'essence': 'Essence',
+                'shards': 'Shards',
+                'monsters_defeated': 'Monsters Defeated',
+                'characters_owned': 'Characters Owned'
+            };
+            $('#leaderboard-type-title').text(sortNames[currentSort] || currentSort);
         }
         
         // Function to update the personal rank section
@@ -469,7 +488,7 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 const podiumHtml = `
                     <div class="podium-place rank-${rank} ${isCurrentUser ? 'current-user' : ''}" data-rank="${rank}" style="cursor: pointer;" onclick="viewProfile(${player.user_id})">
                         <div class="podium-avatar">
-                            <img src="../../assets/menu/defaultuser.png" alt="${username}" class="podium-img">
+                            <img src="${player.profile_image ? '../../' + player.profile_image : '../../assets/menu/defaultuser.png'}" alt="${username}" class="podium-img">
                         </div>
                         <div class="podium-rank">#${rank}</div>
                         <div class="podium-name" title="${player.username}">${username}</div>

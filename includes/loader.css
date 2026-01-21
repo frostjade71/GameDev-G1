@@ -1,0 +1,103 @@
+/* Loader Animation for Upload States */
+/* Usage: <div class="loader"></div> */
+
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+}
+
+.loader:before,
+.loader:after {
+  content: "";
+  grid-area: 1/1;
+  margin: 0 0 15px 15px;
+  --c: #0000 calc(100%/3), #046D8B 0 calc(2*100%/3), #0000 0;
+  --c1: linear-gradient(90deg, var(--c));
+  --c2: linear-gradient(0deg, var(--c));
+  background: var(--c1), var(--c2), var(--c1), var(--c2);
+  background-size: 300% 4px, 4px 300%;
+  background-repeat: no-repeat;
+  animation: l12 1s infinite linear;
+}
+
+.loader:after {
+  margin: 15px 15px 0 0;
+  transform: scale(-1, -1);
+}
+
+@keyframes l12 {
+  0%   { background-position: 50%  0, 100% 100%, 0    100%, 0 0; }
+  25%  { background-position: 0    0, 100% 50%,  0    100%, 0 0; }
+  50%  { background-position: 0    0, 100% 0,    50%  100%, 0 0; }
+  75%  { background-position: 0    0, 100% 0,    100% 100%, 0 50%; }
+  75.01% { background-position: 100% 0, 100% 0,    100% 100%, 0 50%; }
+  100% { background-position: 50%  0, 100% 0,    100% 100%, 0 100%; }
+}
+
+/* Loader Overlay for Upload States */
+.upload-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.upload-loader-overlay.show {
+  display: flex;
+}
+
+.upload-loader-overlay .loader-text {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+/* Page Loader Overlay - specific for page transitions */
+.page-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8); /* Darker background for more premium feel */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  flex-direction: column;
+  gap: 20px;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Hide loader with transition */
+.page-loader-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Smooth page fade-in */
+body {
+  opacity: 0;
+  animation: bodyFadeIn 0.5s ease forwards;
+}
+
+@keyframes bodyFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+

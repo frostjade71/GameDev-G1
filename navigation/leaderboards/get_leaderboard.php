@@ -74,6 +74,7 @@ try {
         SELECT 
             u.id as user_id,
             u.username,
+            u.profile_image,
             COALESCE(ue.essence_amount, 0) as essence,
             COALESCE(us.current_shards, 0) as shards,
             COALESCE(gp.player_level, 1) as level,
@@ -98,6 +99,7 @@ try {
         SELECT 
             u.id as user_id,
             u.username,
+            u.profile_image,
             COALESCE(ue.essence_amount, 0) as essence,
             COALESCE(us.current_shards, 0) as shards,
             COALESCE(gp.player_level, 1) as level,
@@ -151,6 +153,7 @@ try {
             'shards' => (int)($row['shards'] ?? 0),
             'characters_owned' => (int)($row['characters_owned'] ?? 0),
             'gwa' => (float)($row['gwa'] ?? 0),
+            'profile_image' => $row['profile_image'],
             'rank' => $rank
         ];
     }
@@ -186,6 +189,7 @@ try {
             'shards' => (int)($userRankData['shards'] ?? 0),
             'characters_owned' => (int)($userRankData['characters_owned'] ?? 0),
             'gwa' => (float)($userRankData['gwa'] ?? 0),
+            'profile_image' => $userRankData['profile_image'],
             'rank' => $rank
         ];
     }

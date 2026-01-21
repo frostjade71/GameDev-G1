@@ -11,7 +11,7 @@ if (!isLoggedIn()) {
 
 // Get current user information
 $current_user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT username, email, grade_level, section FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, email, grade_level, section, profile_image FROM users WHERE id = ?");
 $stmt->execute([$current_user_id]);
 $current_user = $stmt->fetch();
 
@@ -36,7 +36,7 @@ if ($viewed_user_id === $current_user_id) {
 }
 
 // Get the viewed user's information
-$stmt = $pdo->prepare("SELECT id, username, email, grade_level, section, about_me, created_at FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT id, username, email, grade_level, section, about_me, profile_image, created_at FROM users WHERE id = ?");
 $stmt->execute([$viewed_user_id]);
 $viewed_user = $stmt->fetch();
 
@@ -457,7 +457,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../assets/menu/ww_logo_main.webp">
+    <link rel="icon" type="image/webp" href="../../assets/images/ww_logo.webp">
     <title><?php echo htmlspecialchars($viewed_user['username']); ?> - Word Weavers</title>
     <link rel="stylesheet" href="../../navigation/shared/navigation.css">
     <link rel="stylesheet" href="../../notif/toast.css">
@@ -466,6 +466,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+    <?php include '../../includes/page-loader.php'; ?>
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
         <i class="fas fa-bars"></i>
@@ -519,11 +520,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 </div>
                 <div class="profile-dropdown">
                     <a href="#" class="profile-icon">
-                        <img src="../../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                        <img src="<?php echo !empty($current_user['profile_image']) ? '../../' . htmlspecialchars($current_user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                     </a>
                     <div class="profile-dropdown-content">
                         <div class="profile-dropdown-header">
-                            <img src="../../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                            <img src="<?php echo !empty($current_user['profile_image']) ? '../../' . htmlspecialchars($current_user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                             <div class="profile-dropdown-info">
                                 <div class="profile-dropdown-name"><?php echo htmlspecialchars($current_user['username']); ?></div>
                                 <div class="profile-dropdown-email"><?php echo htmlspecialchars($current_user['email']); ?></div>
@@ -575,7 +576,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <!-- User Profile Header -->
             <div class="user-profile-header">
                 <div class="profile-avatar">
-                    <img src="../../assets/menu/defaultuser.png" alt="<?php echo htmlspecialchars($viewed_user['username']); ?>" class="large-avatar">
+                    <img src="<?php echo !empty($viewed_user['profile_image']) ? '../../' . htmlspecialchars($viewed_user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="<?php echo htmlspecialchars($viewed_user['username']); ?>" class="large-avatar">
                 </div>
                 <div class="profile-info">
                     <div class="profile-name-section">

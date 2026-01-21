@@ -11,7 +11,7 @@ if (!isLoggedIn()) {
 
 // Get user information
 $user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT username, email, grade_level, section, about_me, created_at FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, email, grade_level, section, about_me, created_at, profile_image FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
@@ -61,6 +61,85 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'update_profile') 
         ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to update profile']);
+    }
+    exit();
+}
+
+// Handle profile image upload
+if ($_POST && isset($_POST['action']) && $_POST['action'] === 'upload_profile_image') {
+    // Check if file was uploaded
+    if (!isset($_FILES['profile_image']) || $_FILES['profile_image']['error'] === UPLOAD_ERR_NO_FILE) {
+        echo json_encode(['success' => false, 'message' => 'No file was uploaded']);
+        exit();
+    }
+    
+    $file = $_FILES['profile_image'];
+    
+    // Check for upload errors
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        echo json_encode(['success' => false, 'message' => 'File upload error']);
+        exit();
+    }
+    
+    // Validate file size (5MB = 5,242,880 bytes)
+    $maxFileSize = 5 * 1024 * 1024; // 5MB
+    if ($file['size'] > $maxFileSize) {
+        echo json_encode(['success' => false, 'message' => 'File size must be less than 5MB']);
+        exit();
+    }
+    
+    // Validate file type
+    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mimeType = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
+    
+    if (!in_array($mimeType, $allowedTypes)) {
+        echo json_encode(['success' => false, 'message' => 'Only image files (JPG, PNG, GIF, WEBP) are allowed']);
+        exit();
+    }
+    
+    // Get file extension
+    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+        echo json_encode(['success' => false, 'message' => 'Invalid file extension']);
+        exit();
+    }
+    
+    // Generate unique filename
+    $newFilename = 'user_' . $user_id . '_' . time() . '.' . $extension;
+    $uploadDir = '../../uploads/profile_avatars/';
+    $uploadPath = $uploadDir . $newFilename;
+    
+    // Create directory if it doesn't exist
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+    
+    // Delete old profile image if exists
+    if (!empty($user['profile_image']) && file_exists('../../' . $user['profile_image'])) {
+        unlink('../../' . $user['profile_image']);
+    }
+    
+    // Move uploaded file
+    if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+        // Update database with new profile image path
+        $relativePath = 'uploads/profile_avatars/' . $newFilename;
+        $stmt = $pdo->prepare("UPDATE users SET profile_image = ?, updated_at = NOW() WHERE id = ?");
+        
+        if ($stmt->execute([$relativePath, $user_id])) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Profile image updated successfully!',
+                'image_path' => $relativePath
+            ]);
+        } else {
+            // Delete uploaded file if database update fails
+            unlink($uploadPath);
+            echo json_encode(['success' => false, 'message' => 'Failed to update database']);
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to upload file']);
     }
     exit();
 }
@@ -263,15 +342,19 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../assets/menu/ww_logo_main.webp">
+    <link rel="icon" type="image/webp" href="../../assets/images/ww_logo.webp">
     <title>Profile - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="../shared/navigation.css?v=<?php echo filemtime('../shared/navigation.css'); ?>">
     <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo filemtime('../../notif/toast.css'); ?>">
+    <link rel="stylesheet" href="../../includes/loader.css?v=<?php echo filemtime('../../includes/loader.css'); ?>">
+    <link rel="stylesheet" href="../../includes/crop-modal.css?v=<?php echo filemtime('../../includes/crop-modal.css'); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <link rel="stylesheet" href="profile.css?v=<?php echo filemtime('profile.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+    <?php include '../../includes/page-loader.php'; ?>
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" aria-label="Open menu">
         <i class="fas fa-bars"></i>
@@ -325,11 +408,11 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
                 </div>
                 <div class="profile-dropdown">
                     <a href="#" class="profile-icon">
-                        <img src="../../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                        <img src="<?php echo !empty($user['profile_image']) ? '../../' . htmlspecialchars($user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                     </a>
                     <div class="profile-dropdown-content">
                         <div class="profile-dropdown-header">
-                            <img src="../../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../../' . htmlspecialchars($user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                             <div class="profile-dropdown-info">
                                 <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
                                 <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
@@ -366,10 +449,11 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
         <div class="profile-container">
             <div class="profile-header">
                 <div class="profile-avatar">
-                    <img src="../../assets/menu/defaultuser.png" alt="Profile" class="large-avatar">
-                    <button class="change-avatar-btn">
+                    <img src="<?php echo !empty($user['profile_image']) ? '../../' . htmlspecialchars($user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="large-avatar" id="profile-avatar-img">
+                    <button class="change-avatar-btn" id="change-avatar-btn">
                         <i class="fas fa-camera"></i>
                     </button>
+                    <input type="file" id="profile-image-input" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" style="display: none;">
                 </div>
                 <div class="profile-info">
                     <h1><?php echo htmlspecialchars($user['username']); ?></h1>
@@ -689,8 +773,34 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
         </div>
     </div>
 
+    <!-- Image Crop Modal -->
+    <div class="crop-modal-overlay" id="crop-modal">
+        <div class="crop-modal">
+            <div class="crop-modal-header">
+                <h3>Crop Profile Image</h3>
+                <button class="crop-modal-close" id="crop-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="crop-container">
+                <img id="crop-image" src="" alt="Image to crop">
+            </div>
+            <div class="crop-controls">
+                <button class="crop-btn crop-btn-cancel" id="crop-cancel">Cancel</button>
+                <button class="crop-btn crop-btn-done" id="crop-done">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Loader Overlay -->
+    <div class="upload-loader-overlay" id="upload-loader">
+        <div class="loader"></div>
+        <div class="loader-text">Uploading profile image...</div>
+    </div>
+
     <script src="../../script.js"></script>
     <script src="../shared/notification-badge.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script>
     // Mobile menu functionality
     document.addEventListener('DOMContentLoaded', function() {
@@ -972,6 +1082,219 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
                     alert('Error updating profile');
                 });
             });
+        }
+        
+        // Profile image upload functionality with cropping
+        const changeAvatarBtn = document.getElementById('change-avatar-btn');
+        const profileImageInput = document.getElementById('profile-image-input');
+        const profileAvatarImg = document.getElementById('profile-avatar-img');
+        const cropModal = document.getElementById('crop-modal');
+        const cropImage = document.getElementById('crop-image');
+        const cropDone = document.getElementById('crop-done');
+        const cropCancel = document.getElementById('crop-cancel');
+        const cropModalClose = document.getElementById('crop-modal-close');
+        
+        let cropper = null;
+        let selectedFile = null;
+        
+        if (changeAvatarBtn && profileImageInput) {
+            // Trigger file input when button is clicked
+            changeAvatarBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                profileImageInput.click();
+            });
+            
+            // Handle file selection
+            profileImageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                
+                if (!file) {
+                    return;
+                }
+                
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    if (typeof showToast === 'function') {
+                        showToast('Only image files (JPG, PNG, GIF, WEBP) are allowed');
+                    } else {
+                        alert('Only image files (JPG, PNG, GIF, WEBP) are allowed');
+                    }
+                    profileImageInput.value = '';
+                    return;
+                }
+                
+                // Validate file size (5MB)
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxSize) {
+                    if (typeof showToast === 'function') {
+                        showToast('File size must be less than 5MB');
+                    } else {
+                        alert('File size must be less than 5MB');
+                    }
+                    profileImageInput.value = '';
+                    return;
+                }
+                
+                // Store the selected file
+                selectedFile = file;
+                
+                // Show crop modal
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    cropImage.src = event.target.result;
+                    cropModal.classList.add('show');
+                    
+                    // Initialize Cropper.js
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    
+                    cropper = new Cropper(cropImage, {
+                        aspectRatio: 1, // 1:1 square ratio
+                        viewMode: 1,
+                        dragMode: 'move',
+                        autoCropArea: 1,
+                        restore: false,
+                        guides: true,
+                        center: true,
+                        highlight: false,
+                        cropBoxMovable: true,
+                        cropBoxResizable: true,
+                        toggleDragModeOnDblclick: false,
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            // Handle crop done button
+            if (cropDone) {
+                cropDone.addEventListener('click', function() {
+                    if (!cropper) return;
+                    
+                    // Get cropped canvas
+                    const canvas = cropper.getCroppedCanvas({
+                        width: 500,
+                        height: 500,
+                        imageSmoothingEnabled: true,
+                        imageSmoothingQuality: 'high',
+                    });
+                    
+                    // Convert canvas to blob
+                    canvas.toBlob(function(blob) {
+                        // Create a new file from the blob
+                        const croppedFile = new File([blob], selectedFile.name, {
+                            type: selectedFile.type,
+                            lastModified: Date.now(),
+                        });
+                        
+                        // Close crop modal
+                        cropModal.classList.remove('show');
+                        if (cropper) {
+                            cropper.destroy();
+                            cropper = null;
+                        }
+                        
+                        // Upload the cropped file
+                        uploadProfileImage(croppedFile);
+                        
+                        // Reset file input
+                        profileImageInput.value = '';
+                    }, selectedFile.type);
+                });
+            }
+            
+            // Handle crop cancel
+            const closeCropModal = function() {
+                cropModal.classList.remove('show');
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+                profileImageInput.value = '';
+                selectedFile = null;
+            };
+            
+            if (cropCancel) {
+                cropCancel.addEventListener('click', closeCropModal);
+            }
+            
+            if (cropModalClose) {
+                cropModalClose.addEventListener('click', closeCropModal);
+            }
+            
+            // Upload function
+            function uploadProfileImage(file) {
+                const formData = new FormData();
+                formData.append('action', 'upload_profile_image');
+                formData.append('profile_image', file);
+                
+                // Show loading overlay
+                const uploadLoader = document.getElementById('upload-loader');
+                if (uploadLoader) {
+                    uploadLoader.classList.add('show');
+                }
+                
+                fetch('profile.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading overlay
+                    if (uploadLoader) {
+                        uploadLoader.classList.remove('show');
+                    }
+                    
+                    if (data.success) {
+                        // Show success message
+                        if (typeof showToast === 'function') {
+                            showToast(data.message);
+                        }
+                        
+                        // Update all profile images on the page
+                        const imagePath = '../../' + data.image_path;
+                        
+                        // Update large profile avatar
+                        if (profileAvatarImg) {
+                            profileAvatarImg.src = imagePath;
+                        }
+                        
+                        // Update header profile images
+                        const headerProfileImg = document.querySelector('.profile-img');
+                        if (headerProfileImg) {
+                            headerProfileImg.src = imagePath;
+                        }
+                        
+                        const dropdownAvatar = document.querySelector('.profile-dropdown-avatar');
+                        if (dropdownAvatar) {
+                            dropdownAvatar.src = imagePath;
+                        }
+                        
+                    } else {
+                        if (typeof showToast === 'function') {
+                            showToast('Error: ' + data.message);
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    }
+                })
+                .catch(error => {
+                    // Hide loading overlay
+                    const uploadLoader = document.getElementById('upload-loader');
+                    if (uploadLoader) {
+                        uploadLoader.classList.remove('show');
+                    }
+                    
+                    console.error('Upload error:', error);
+                    if (typeof showToast === 'function') {
+                        showToast('Error uploading profile image');
+                    } else {
+                        alert('Error uploading profile image');
+                    }
+                });
+            }
         }
     });
     </script>

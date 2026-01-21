@@ -10,7 +10,7 @@ if (!isLoggedIn()) {
 
 // Get user information
 $user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT username, email, grade_level FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, email, grade_level, profile_image FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
@@ -23,7 +23,7 @@ if (!$user) {
 
 // Get user's friends from the friends table
 $stmt = $pdo->prepare("
-    SELECT u.id, u.username, u.email, u.grade_level, u.created_at, f.created_at as friendship_date
+    SELECT u.id, u.username, u.email, u.grade_level, u.profile_image, u.created_at, f.created_at as friendship_date
     FROM friends f
     JOIN users u ON (
         CASE 
@@ -73,7 +73,7 @@ foreach ($friends_data as $friend_data) {
         'id' => $friend_data['id'],
         'username' => $friend_data['username'],
         'email' => $friend_data['email'],
-        'profile_image' => '../../assets/menu/defaultuser.png',
+        'profile_image' => !empty($friend_data['profile_image']) ? '../../' . $friend_data['profile_image'] : '../../assets/menu/defaultuser.png',
         'grade_level' => $friend_data['grade_level'],
         'joined_date' => date('M j, Y', strtotime($friend_data['created_at'])),
         'friendship_date' => date('M j, Y', strtotime($friend_data['friendship_date'])),
@@ -85,7 +85,7 @@ foreach ($friends_data as $friend_data) {
 
 // Get users from database (excluding current user, existing friends, and users who have sent friend requests) - limit to 4 for 1 row display
 $stmt = $pdo->prepare("
-    SELECT u.id, u.username, u.email, u.grade_level, u.created_at 
+    SELECT u.id, u.username, u.email, u.grade_level, u.profile_image, u.created_at 
     FROM users u
     WHERE u.id != ? 
     AND u.id NOT IN (
@@ -109,7 +109,7 @@ $all_users = $stmt->fetchAll();
 
 // Get ALL users for dropdown search (excluding current user only)
 $stmt_all = $pdo->prepare("
-    SELECT u.id, u.username, u.email, u.grade_level, u.created_at 
+    SELECT u.id, u.username, u.email, u.grade_level, u.profile_image, u.created_at 
     FROM users u
     WHERE u.id != ?
     ORDER BY u.username ASC
@@ -160,7 +160,7 @@ foreach ($all_users as $suggested_user) {
         'id' => $suggested_user['id'],
         'username' => $suggested_user['username'],
         'email' => $suggested_user['email'],
-        'profile_image' => '../../assets/menu/defaultuser.png',
+        'profile_image' => !empty($suggested_user['profile_image']) ? '../../' . $suggested_user['profile_image'] : '../../assets/menu/defaultuser.png',
         'grade_level' => $suggested_user['grade_level'],
         'joined_date' => date('M j, Y', strtotime($suggested_user['created_at'])),
         'has_pending_request' => $has_pending_request,
@@ -196,7 +196,7 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="../../assets/menu/ww_logo_main.webp">
+    <link rel="icon" type="image/webp" href="../../assets/images/ww_logo.webp">
     <title>Friends - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css?v=<?php echo filemtime('../../styles.css'); ?>">
     <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo filemtime('../../navigation/shared/navigation.css'); ?>">
@@ -205,6 +205,7 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+    <?php include '../../includes/page-loader.php'; ?>
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" aria-label="Open menu">
         <i class="fas fa-bars"></i>
@@ -258,11 +259,11 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                 </div>
                 <div class="profile-dropdown">
                     <a href="#" class="profile-icon">
-                        <img src="../../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                        <img src="<?php echo !empty($user['profile_image']) ? '../../' . htmlspecialchars($user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                     </a>
                     <div class="profile-dropdown-content">
                         <div class="profile-dropdown-header">
-                            <img src="../../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../../' . htmlspecialchars($user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                             <div class="profile-dropdown-info">
                                 <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
                                 <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
@@ -481,7 +482,7 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
             } else {
                 dropdown.innerHTML = filteredUsers.map(user => `
                     <div class="dropdown-item" onclick="selectUser(${user.id}, '${user.username}')" style="padding: 0.8rem 1rem; cursor: pointer; border-bottom: 1px solid rgba(96, 239, 255, 0.1); transition: background 0.2s ease; display: flex; align-items: center; gap: 0.8rem;" onmouseenter="this.style.background='rgba(96, 239, 255, 0.1)'" onmouseleave="this.style.background='transparent'">
-                        <img src="../../assets/menu/defaultuser.png" alt="${user.username}" style="width: 35px; height: 35px; border-radius: 50%; border: 2px solid rgba(96, 239, 255, 0.3);">
+                        <img src="${user.profile_image ? '../../' + user.profile_image : '../../assets/menu/defaultuser.png'}" alt="${user.username}" style="width: 35px; height: 35px; border-radius: 50%; border: 2px solid rgba(96, 239, 255, 0.3);">
                         <div style="flex: 1;">
                             <div style="color: white; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem;">${user.username}</div>
                             <div style="color: rgba(96, 239, 255, 0.8); font-size: 0.8rem;">${user.grade_level}</div>

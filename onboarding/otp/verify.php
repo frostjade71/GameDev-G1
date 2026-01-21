@@ -494,6 +494,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </style>
 </head>
 <body>
+    <?php include '../../includes/page-loader.php'; ?>
     <div class="toast-container"></div>
     <div class="verification-container">
         <div class="verification-header">

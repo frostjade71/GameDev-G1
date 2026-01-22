@@ -57,7 +57,7 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="../assets/images/ww_logo.webp">
+    <?php include '../includes/favicon.php'; ?>
     <title>Settings - Word Weavers</title>
     <link rel="stylesheet" href="../navigation/shared/navigation.css?v=<?php echo filemtime('../navigation/shared/navigation.css'); ?>">
     <link rel="stylesheet" href="../styles.css?v=<?php echo filemtime('../styles.css'); ?>">
@@ -356,6 +356,12 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </a>
+            <?php if (in_array($user['grade_level'], ['Teacher', 'Admin', 'Developer'])): ?>
+            <a href="../navigation/teacher/dashboard.php" class="nav-link">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Teacher</span>
+            </a>
+            <?php endif; ?>
             <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
             <a href="../navigation/moderation/moderation.php" class="nav-link">
                 <i class="fas fa-shield-alt"></i>

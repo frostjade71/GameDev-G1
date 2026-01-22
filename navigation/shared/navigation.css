@@ -41,12 +41,16 @@
 @media screen and (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
-        width: 100%;
+        width: 60%;
         padding-top: 80px;
         z-index: 1900;
         transition: transform 0.3s ease-in-out;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+    }
+
+    .sidebar-logo-img {
+        content: url('../../assets/menu/ww_logo_main.webp');
     }
 
     .sidebar.active {

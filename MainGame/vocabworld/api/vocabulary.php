@@ -27,19 +27,6 @@ if (empty($configPath)) {
 
 require_once $configPath;
 
-// Include vocabulary data
-$vocabDataPath = __DIR__ . '/../vocabulary_data.php';
-if (!file_exists($vocabDataPath)) {
-    $vocabDataPath = dirname(__DIR__) . '/vocabulary_data.php';
-}
-
-if (!file_exists($vocabDataPath)) {
-    http_response_code(500);
-    die('Could not locate vocabulary data file');
-}
-
-require_once $vocabDataPath;
-
 header('Content-Type: application/json');
 
 // Check if user is logged in
@@ -81,24 +68,42 @@ function handleGetRequest() {
     // Debug: Log the user's grade level
     error_log("User grade level: " . ($user['grade_level'] ?? 'NOT SET'));
     
-    // Get a random word based on user's grade level
-    $grade_level = $user['grade_level'] ?? 7; // Default to grade 7 if not set
-    $words = VocabularyData::getWordsByGrade($grade_level);
+    // Get user's grade level (extract number from grade level string)
+    $grade_level = $user['grade_level'] ?? '7';
     
-    // Convert to array if it's not already (in case it returns an iterator)
-    $words = array_values($words);
-    
-    error_log("Words found for grade $grade_level: " . count($words));
-    
-    if (empty($words)) {
-        // Fallback to grade 7 words if no grade-specific words found
-        error_log("No words found for grade $grade_level, falling back to grade 7");
-        $words = VocabularyData::getWordsByGrade(7);
-        $words = array_values($words);
+    // Extract numeric grade from strings like "Grade 7", "7", etc.
+    if (preg_match('/\d+/', $grade_level, $matches)) {
+        $grade_level = $matches[0];
     }
     
-    if (empty($words)) {
-        // Last resort: Return a grade 7 default question
+    // Fetch questions from database based on user's grade level
+    $stmt = $pdo->prepare("
+        SELECT vq.id, vq.word, vq.definition, vq.difficulty, vq.grade_level
+        FROM vocabulary_questions vq
+        WHERE vq.is_active = 1 AND vq.grade_level = ?
+        ORDER BY RAND()
+        LIMIT 1
+    ");
+    $stmt->execute([$grade_level]);
+    $question = $stmt->fetch();
+    
+    // If no questions found for this grade, try any grade
+    if (!$question) {
+        error_log("No questions found for grade $grade_level, trying any grade");
+        $stmt = $pdo->prepare("
+            SELECT vq.id, vq.word, vq.definition, vq.difficulty, vq.grade_level
+            FROM vocabulary_questions vq
+            WHERE vq.is_active = 1
+            ORDER BY RAND()
+            LIMIT 1
+        ");
+        $stmt->execute();
+        $question = $stmt->fetch();
+    }
+    
+    // If still no questions, return fallback
+    if (!$question) {
+        error_log("No questions found in database, using fallback");
         echo json_encode([
             'text' => 'What is the meaning of "abundant"?',
             'correct' => 'existing in large quantities; plentiful',
@@ -107,47 +112,80 @@ function handleGetRequest() {
         return;
     }
     
-    // Select a random word
-    $word = $words[array_rand($words)];
+    error_log("Selected word: " . $question['word'] . " (Grade " . $question['grade_level'] . ")");
     
-    error_log("Selected word: " . $word['word'] . " (Grade " . $word['grade'] . ")");
+    // Get choices for this question
+    $stmt = $pdo->prepare("
+        SELECT choice_text, is_correct
+        FROM vocabulary_choices
+        WHERE question_id = ?
+        ORDER BY id
+    ");
+    $stmt->execute([$question['id']]);
+    $choices = $stmt->fetchAll();
     
-    // Create wrong options from other words in the same grade
-    $wrong_options = [];
-    $other_words = array_filter($words, function($w) use ($word) {
-        return $w['word'] !== $word['word'];
-    });
-    $other_words = array_values($other_words);
-    
-    // Get 3 random wrong definitions
-    shuffle($other_words);
-    for ($i = 0; $i < min(3, count($other_words)); $i++) {
-        $wrong_options[] = $other_words[$i]['definition'];
+    // If no choices found, create them from other questions
+    if (empty($choices) || count($choices) < 4) {
+        error_log("No choices found for question, generating from other definitions");
+        
+        // Get other definitions as wrong options
+        $stmt = $pdo->prepare("
+            SELECT definition
+            FROM vocabulary_questions
+            WHERE id != ? AND is_active = 1
+            ORDER BY RAND()
+            LIMIT 3
+        ");
+        $stmt->execute([$question['id']]);
+        $wrong_options = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
+        // If not enough wrong options, add generic ones
+        while (count($wrong_options) < 3) {
+            $generic_options = [
+                'very large in size',
+                'moving very quickly',
+                'difficult to understand',
+                'easy to remember'
+            ];
+            $wrong_options[] = $generic_options[array_rand($generic_options)];
+        }
+        
+        // Create options array
+        $options = array_merge([$question['definition']], array_slice($wrong_options, 0, 3));
+        shuffle($options);
+        
+        echo json_encode([
+            'text' => "What is the meaning of \"{$question['word']}\"?",
+            'correct' => $question['definition'],
+            'options' => $options
+        ]);
+        return;
     }
     
-    // If we don't have enough wrong options, add generic ones
-    while (count($wrong_options) < 3) {
-        $generic_options = [
-            'very large in size',
-            'moving very quickly',
-            'difficult to understand',
-            'easy to remember'
-        ];
-        $wrong_options[] = $generic_options[array_rand($generic_options)];
+    // Use the choices from database
+    $correct_answer = '';
+    $all_options = [];
+    
+    foreach ($choices as $choice) {
+        $all_options[] = $choice['choice_text'];
+        if ($choice['is_correct']) {
+            $correct_answer = $choice['choice_text'];
+        }
     }
     
-    // Create options array with correct answer
-    $options = array_merge([$word['definition']], array_slice($wrong_options, 0, 3));
-    shuffle($options);
+    // Shuffle options for randomness
+    shuffle($all_options);
     
     echo json_encode([
-        'text' => "What is the meaning of \"{$word['word']}\"?",
-        'correct' => $word['definition'],
-        'options' => $options
+        'text' => "What is the meaning of \"{$question['word']}\"?",
+        'correct' => $correct_answer,
+        'options' => $all_options
     ]);
 }
 
 function handlePostRequest() {
+    global $pdo;
+    
     $input = json_decode(file_get_contents('php://input'), true);
     
     if (!$input) {
@@ -167,27 +205,36 @@ function handlePostRequest() {
             $grades = $input['grades'] ?? [];
             $count = intval($input['count'] ?? 10);
             
-            $words = VocabularyData::getVocabularyWords();
-            $filtered = [];
+            // Build query with filters
+            $query = "SELECT vq.*, 
+                      (SELECT GROUP_CONCAT(choice_text) FROM vocabulary_choices WHERE question_id = vq.id) as choices
+                      FROM vocabulary_questions vq
+                      WHERE vq.is_active = 1";
+            $params = [];
             
-            foreach ($words as $word) {
-                if (!empty($difficulties) && !in_array($word['difficulty'], $difficulties)) {
-                    continue;
-                }
-                if (!empty($grades) && !in_array($word['grade'], $grades)) {
-                    continue;
-                }
-                $filtered[] = $word;
+            if (!empty($difficulties)) {
+                $placeholders = str_repeat('?,', count($difficulties) - 1) . '?';
+                $query .= " AND vq.difficulty IN ($placeholders)";
+                $params = array_merge($params, $difficulties);
             }
             
-            // Shuffle and limit
-            shuffle($filtered);
-            $filtered = array_slice($filtered, 0, $count);
+            if (!empty($grades)) {
+                $placeholders = str_repeat('?,', count($grades) - 1) . '?';
+                $query .= " AND vq.grade_level IN ($placeholders)";
+                $params = array_merge($params, $grades);
+            }
+            
+            $query .= " ORDER BY RAND() LIMIT ?";
+            $params[] = $count;
+            
+            $stmt = $pdo->prepare($query);
+            $stmt->execute($params);
+            $questions = $stmt->fetchAll();
             
             echo json_encode([
                 'success' => true,
-                'data' => $filtered,
-                'count' => count($filtered)
+                'data' => $questions,
+                'count' => count($questions)
             ]);
             break;
             

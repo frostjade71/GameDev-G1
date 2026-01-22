@@ -457,7 +457,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="../../assets/images/ww_logo.webp">
+    <?php include '../../includes/favicon.php'; ?>
     <title><?php echo htmlspecialchars($viewed_user['username']); ?> - Word Weavers</title>
     <link rel="stylesheet" href="../../navigation/shared/navigation.css">
     <link rel="stylesheet" href="../../notif/toast.css">

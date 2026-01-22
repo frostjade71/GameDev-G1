@@ -74,7 +74,7 @@ $notification_count = count($all_notifications);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="../assets/images/ww_logo.webp">
+    <?php include '../includes/favicon.php'; ?>
     <title>Word Weavers - Notifications</title>
     <link rel="stylesheet" href="shared/navigation.css?v=<?php echo filemtime('shared/navigation.css'); ?>">
     <link rel="stylesheet" href="notification.css?v=<?php echo filemtime('notification.css'); ?>">

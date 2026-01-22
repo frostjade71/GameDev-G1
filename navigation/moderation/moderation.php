@@ -73,7 +73,7 @@ $admin_logs = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="../../assets/images/ww_logo.webp">
+    <?php include '../../includes/favicon.php'; ?>
     <title>Admin Dashboard - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css?v=<?php echo filemtime('../../styles.css'); ?>">
     <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo filemtime('../../navigation/shared/navigation.css'); ?>">
@@ -112,6 +112,12 @@ $admin_logs = $stmt->fetchAll();
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
             </a>
+            <?php if (in_array($current_user['grade_level'], ['Teacher', 'Admin', 'Developer'])): ?>
+            <a href="../teacher/dashboard.php" class="nav-link">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Teacher</span>
+            </a>
+            <?php endif; ?>
             <a href="moderation.php" class="nav-link active">
                 <i class="fas fa-shield-alt"></i>
                 <span>Admin</span>

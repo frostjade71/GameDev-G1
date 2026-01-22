@@ -7,9 +7,9 @@ header('Content-Type: application/json; charset=utf-8');
 // Buffer any accidental output
 ob_start();
 
-require_once '../../onboarding/config.php';
+require_once '../../../onboarding/config.php';
 
-// Ensure user is logged in and has Admin/Developer access like in moderation.php
+// Ensure user is logged in and has Admin/Developer access like in dashboard.php
 $gradeLevel = $_SESSION['grade_level'] ?? '';
 $isAdminDev = in_array(strtolower($gradeLevel), array_map('strtolower', ['Developer', 'Admin']));
 
@@ -58,13 +58,13 @@ try {
 			$joinDate = date('M j, Y', strtotime($user['created_at']));
 			$selfId = $_SESSION['user_id'] ?? null;
 			$canDelete = (($_SESSION['grade_level'] ?? '') === 'Developer') && ($id != $selfId);
-			$deleteDisabled = $canDelete ? '' : 'disabled title="Delete (Admin only)"';
+			$deleteDisabled = $canDelete ? '' : 'disabled title="Delete (Developer only)"';
 			$selfWarnDisabled = ($id == $selfId) ? 'disabled="disabled"' : '';
 			echo '<tr>';
 			echo '<td data-label="ID">' . $id . '</td>';
 			echo '<td data-label="Username">' . $username . '</td>';
 			echo '<td data-label="Email">' . $email . '</td>';
-			echo '<td data-label="Grade Level">' . $grade . '</td>';
+			echo '<td data-label="Grade Level"><span class="grade-badge">' . $grade . '</span></td>';
 			echo '<td data-label="Section">' . $section . '</td>';
 			echo '<td data-label="Join Date">' . $joinDate . '</td>';
 			echo '<td class="actions" data-label="Actions">';
@@ -73,7 +73,7 @@ try {
 			if ($canDelete) {
 				echo '<button class="btn-delete" onclick="deleteUser(' . $id . ', \'' . htmlspecialchars(addslashes($user['username'])) . '\')" title="Delete"><i class="fas fa-trash"></i></button>';
 			} else {
-				echo '<button class="btn-delete" disabled title="Delete (Admin only)"><i class="fas fa-trash"></i></button>';
+				echo '<button class="btn-delete" disabled title="Delete (Developer only)"><i class="fas fa-trash"></i></button>';
 			}
 			echo '</td>';
 			echo '</tr>';

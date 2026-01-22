@@ -3,6 +3,58 @@
    Clean, modern design with reduced visual noise
    ============================================ */
 
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url('../../../../fonts/PressStart2P-Regular.ttf') format('truetype');
+}
+
+/* Admin Container - Same as Profile */
+.admin-container {
+    background: rgba(10, 10, 15, 0.95);
+    border-radius: 25px;
+    padding: 1.25rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 2px solid rgba(96, 239, 255, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.admin-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+}
+
+/* Custom Admin Sidebar Styles */
+.admin-sidebar .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-divider {
+    height: 1px;
+    background: rgba(96, 239, 255, 0.2);
+    margin: 0.5rem 0;
+}
+
+.back-link {
+    transition: all 0.3s ease;
+}
+
+.back-link:hover {
+    transform: translateX(-3px);
+}
+
 /* Dashboard Container */
 .dashboard-container {
     background: #1a1a1a;
@@ -174,7 +226,7 @@
     padding: 16px 20px 12px 20px;
     border-bottom: 1px solid #333;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     gap: 15px;
 }
@@ -395,6 +447,10 @@
     color: #4cc9f0;
 }
 
+.leaderboard-content {
+    display: block;
+}
+
 /* Admin Activity Log - Minimalist */
 .log-timeline {
     display: flex;
@@ -426,6 +482,10 @@
 .log-admin {
     color: #4cc9f0;
     font-weight: 500;
+}
+
+.log-action {
+    margin-left: 8px;
 }
 
 /* User Table Enhancements */
@@ -514,14 +574,12 @@
     position: relative;
     border-radius: 6px;
     -webkit-overflow-scrolling: touch;
-    /* Smooth scrolling on iOS */
     width: 100%;
 }
 
 .user-table {
     width: 100%;
     min-width: 800px;
-    /* Force horizontal scroll on mobile */
     border-collapse: collapse;
     background: #1e1e1e;
     font-size: 0.8rem;
@@ -638,7 +696,6 @@
     from {
         transform: rotate(0deg);
     }
-
     to {
         transform: rotate(360deg);
     }
@@ -801,300 +858,6 @@
 
     .performer-score {
         font-size: 0.85rem;
-    }
-
-    .table-controls {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-        margin-bottom: 10px;
-    }
-
-    .grade-filter label {
-        font-size: 0.7rem;
-    }
-
-    .grade-filter select {
-        font-size: 0.7rem;
-        padding: 5px 8px;
-    }
-
-    .search-box {
-        width: 100%;
-    }
-
-    .search-box input {
-        font-size: 0.7rem;
-        padding: 6px 10px 6px 28px;
-    }
-
-    .search-box i {
-        font-size: 0.7rem;
-        left: 8px;
-    }
-
-    .user-table {
-        font-size: 0.65rem;
-        min-width: 700px;
-        /* Ensure horizontal scroll */
-    }
-
-    .user-table th,
-    .user-table td {
-        padding: 8px 6px;
-        white-space: nowrap;
-        /* Prevent text wrapping */
-    }
-
-    .user-table th {
-        font-size: 0.6rem;
-    }
-
-    .grade-badge {
-        font-size: 0.65rem;
-        padding: 2px 8px;
-    }
-
-    .actions {
-        gap: 4px;
-    }
-
-    .actions button {
-        padding: 3px 6px;
-        font-size: 0.8rem;
-    }
-
-    .btn-action {
-        font-size: 0.65rem;
-        padding: 4px 10px;
-    }
-
-    .log-item {
-        padding: 8px;
-    }
-
-    .log-time {
-        font-size: 0.6rem;
-    }
-
-    .log-content {
-        font-size: 0.7rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .dashboard-container {
-        padding: 8px;
-        margin: 3px;
-    }
-
-    .dashboard-header {
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-    }
-
-    .dashboard-header h1 {
-        font-size: 0.75rem;
-    }
-
-    .dashboard-header p {
-        font-size: 0.6rem;
-    }
-
-    .dashboard-header .header-logo {
-        width: 20px;
-        height: 20px;
-    }
-
-    .stats-grid {
-        gap: 6px;
-        margin-bottom: 12px;
-    }
-
-    .stat-card {
-        padding: 8px;
-        gap: 6px;
-    }
-
-    .stat-icon {
-        width: 28px;
-        height: 28px;
-        font-size: 0.9rem;
-    }
-
-    .stat-value {
-        font-size: 1rem;
-    }
-
-    .stat-label {
-        font-size: 0.6rem;
-    }
-
-    .stat-sublabel {
-        font-size: 0.55rem;
-    }
-
-    .dashboard-grid {
-        gap: 8px;
-        margin-bottom: 12px;
-    }
-
-    .card-header {
-        padding: 8px 10px 6px 10px;
-    }
-
-    .card-header h3 {
-        font-size: 0.65rem;
-        gap: 4px;
-    }
-
-    .card-header h3 i {
-        font-size: 0.7rem;
-    }
-
-    .card-body {
-        padding: 10px;
-    }
-
-    .chart-filter select {
-        font-size: 0.6rem;
-        padding: 2px 6px;
-    }
-
-    #gradeChart {
-        max-height: 180px;
-    }
-
-    .timeline-item {
-        padding-left: 16px;
-        gap: 6px;
-    }
-
-    .timeline-dot {
-        width: 10px;
-        height: 10px;
-    }
-
-    .timeline-title {
-        font-size: 0.7rem;
-    }
-
-    .timeline-badge {
-        font-size: 0.55rem;
-        padding: 1px 5px;
-    }
-
-    .timeline-time {
-        font-size: 0.55rem;
-    }
-
-    .performer-card {
-        padding: 6px;
-        gap: 6px;
-    }
-
-    .performer-rank {
-        width: 24px;
-        height: 24px;
-        font-size: 0.65rem;
-    }
-
-    .performer-name {
-        font-size: 0.7rem;
-    }
-
-    .performer-stats {
-        font-size: 0.6rem;
-        gap: 6px;
-    }
-
-    .performer-score {
-        font-size: 0.8rem;
-    }
-
-    .table-controls {
-        gap: 6px;
-        margin-bottom: 8px;
-    }
-
-    .grade-filter label {
-        font-size: 0.65rem;
-    }
-
-    .grade-filter select {
-        font-size: 0.65rem;
-        padding: 4px 6px;
-    }
-
-    .search-box input {
-        font-size: 0.65rem;
-        padding: 5px 8px 5px 26px;
-    }
-
-    .search-box i {
-        font-size: 0.65rem;
-        left: 6px;
-    }
-
-    .user-table {
-        font-size: 0.6rem;
-        min-width: 650px;
-        /* Ensure horizontal scroll on small screens */
-    }
-
-    .user-table th,
-    .user-table td {
-        padding: 6px 4px;
-        white-space: nowrap;
-        /* Prevent text wrapping */
-    }
-
-    .user-table th {
-        font-size: 0.55rem;
-    }
-
-    .grade-badge {
-        font-size: 0.6rem;
-        padding: 2px 6px;
-    }
-
-    .actions {
-        gap: 3px;
-    }
-
-    .actions button {
-        padding: 2px 4px;
-        font-size: 0.75rem;
-    }
-
-    .btn-action {
-        font-size: 0.6rem;
-        padding: 3px 8px;
-    }
-
-    .log-item {
-        padding: 6px;
-    }
-
-    .log-time {
-        font-size: 0.55rem;
-    }
-
-    .log-content {
-        font-size: 0.65rem;
-    }
-
-    /* Make table more mobile-friendly with horizontal scroll */
-    .table-responsive {
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* Ensure smooth horizontal scrolling on mobile */
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        border: 1px solid #2a2a2a;
-        border-radius: 6px;
     }
 }
 

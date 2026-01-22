@@ -73,7 +73,7 @@ $game_progress = [];
             </a>
             <?php endif; ?>
             <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
-            <a href="../navigation/moderation/moderation.php" class="nav-link">
+            <a href="../navigation/admin/dashboard.php" class="nav-link">
                 <i class="fas fa-shield-alt"></i>
                 <span>Admin</span>
             </a>

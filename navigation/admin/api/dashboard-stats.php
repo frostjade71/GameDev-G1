@@ -1,8 +1,7 @@
 <?php
 // Dashboard Statistics Calculator
 // This file calculates and returns all statistics needed for the admin dashboard
-
-require_once '../../onboarding/config.php';
+// Note: This file is included by dashboard.php which has already loaded config.php
 
 // Initialize statistics array
 $stats = [
@@ -166,5 +165,5 @@ try {
     // Return empty stats on error
 }
 
-// Return stats array for use in moderation.php
+// Return stats array for use in dashboard.php
 return $stats;

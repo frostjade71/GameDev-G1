@@ -1,6 +1,6 @@
 /**
- * Moderation Panel JavaScript
- * Handles user management functionality for moderators
+ * User Management JavaScript
+ * Handles user management functionality for admin users
  */
 
 /**
@@ -21,10 +21,15 @@ function debounce(func, wait) {
     };
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Initialize tooltips
-    initializeTooltips();
+// Current state
+let userManagementState = {
+    sort: 'id',
+    order: 'asc',
+    grade: 'all',
+    isLoading: false
+};
 
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize event listeners
     initializeEventListeners();
 
@@ -32,41 +37,33 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeSortingHeaders();
 
     // Initialize current state from DOM
-    initializeModerationState();
+    initializeUserManagementState();
 });
 
-// Current state
-let moderationState = {
-    sort: 'id',
-    order: 'asc',
-    grade: 'all',
-    isLoading: false
-};
-
-function initializeModerationState() {
-    const container = document.getElementById('moderationContainer');
-    if (!container) return;
-    moderationState.sort = container.getAttribute('data-initial-sort') || 'id';
-    moderationState.order = container.getAttribute('data-initial-order') || 'asc';
-    moderationState.grade = container.getAttribute('data-initial-grade') || 'all';
+function initializeUserManagementState() {
+    // Get initial state from URL or defaults
+    const urlParams = new URLSearchParams(window.location.search);
+    userManagementState.sort = urlParams.get('sort') || 'id';
+    userManagementState.order = urlParams.get('order') || 'asc';
+    userManagementState.grade = urlParams.get('grade') || 'all';
     updateHeaderIndicators();
 }
 
 function setLoading(loading) {
     const overlay = document.getElementById('loadingIndicator');
     if (!overlay) return;
-    moderationState.isLoading = loading;
+    userManagementState.isLoading = loading;
     overlay.style.display = loading ? 'flex' : 'none';
 }
 
 function loadUsersAjax() {
     setLoading(true);
     const params = new URLSearchParams();
-    if (moderationState.sort) params.set('sort', moderationState.sort);
-    if (moderationState.order) params.set('order', moderationState.order);
-    if (moderationState.grade && moderationState.grade !== 'all') params.set('grade', moderationState.grade);
+    if (userManagementState.sort) params.set('sort', userManagementState.sort);
+    if (userManagementState.order) params.set('order', userManagementState.order);
+    if (userManagementState.grade && userManagementState.grade !== 'all') params.set('grade', userManagementState.grade);
 
-    fetch(`get_users.php?${params.toString()}`, {
+    fetch(`api/get_users.php?${params.toString()}`, {
         method: 'GET',
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
@@ -105,59 +102,15 @@ function updateHeaderIndicators() {
         const col = th.getAttribute('data-sort');
         const baseText = th.textContent.replace(/[↑↓]/g, '').trim();
         let label = baseText;
-        if (moderationState.sort === col) {
-            label = `${baseText} ${moderationState.order === 'asc' ? '↑' : '↓'}`;
+        if (userManagementState.sort === col) {
+            label = `${baseText} ${userManagementState.order === 'asc' ? '↑' : '↓'}`;
         }
         th.textContent = label;
     });
 }
 
 /**
- * Initialize tooltips for action buttons
- */
-function initializeTooltips() {
-    // Tooltip functionality for action buttons
-    const tooltipTriggers = document.querySelectorAll('[data-tooltip]');
-
-    tooltipTriggers.forEach(trigger => {
-        // Create tooltip element
-        const tooltip = document.createElement('div');
-        tooltip.className = 'tooltip';
-        tooltip.textContent = trigger.getAttribute('data-tooltip');
-        document.body.appendChild(tooltip);
-
-        // Position tooltip on hover
-        trigger.addEventListener('mouseenter', (e) => {
-            const rect = trigger.getBoundingClientRect();
-            tooltip.style.display = 'block';
-            tooltip.style.top = `${rect.top - tooltip.offsetHeight - 5}px`;
-            tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px`;
-        });
-
-        trigger.addEventListener('mouseleave', () => {
-            tooltip.style.display = 'none';
-        });
-    });
-}
-
-/**
- * Update the URL with the selected grade filter and reload the page
- * @param {string} grade - The selected grade filter value
- */
-function updateGradeFilter(grade) {
-    const url = new URL(window.location.href);
-    if (grade === 'all') {
-        url.searchParams.delete('grade');
-    } else {
-        url.searchParams.set('grade', grade);
-    }
-    // Reset to first page when changing filters
-    url.searchParams.delete('page');
-    window.location.href = url.toString();
-}
-
-/**
- * Initialize event listeners for the moderation panel
+ * Initialize event listeners for the user management panel
  */
 function initializeEventListeners() {
     // Search functionality
@@ -168,9 +121,9 @@ function initializeEventListeners() {
             const rows = document.querySelectorAll('.user-table tbody tr');
 
             rows.forEach(row => {
-                const username = row.cells[1].textContent.toLowerCase();
-                const email = row.cells[2].textContent.toLowerCase();
-                const grade = row.cells[3].textContent.toLowerCase();
+                const username = row.cells[1]?.textContent?.toLowerCase() || '';
+                const email = row.cells[2]?.textContent?.toLowerCase() || '';
+                const grade = row.cells[3]?.textContent?.toLowerCase() || '';
                 const section = row.cells[4]?.textContent?.toLowerCase() || '';
 
                 if (username.includes(searchTerm) ||
@@ -185,54 +138,15 @@ function initializeEventListeners() {
         }, 300));
     }
 
-    // Header profile dropdown toggle (profile image click)
-    const profileAnchor = document.querySelector('.user-profile .profile-icon');
-    const profileDropdown = document.querySelector('.user-profile .profile-dropdown-content');
-    if (profileAnchor && profileDropdown) {
-        profileAnchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            profileDropdown.classList.toggle('show');
-        });
-        // Also allow clicking directly on img.profile-img to toggle
-        const profileImg = profileAnchor.querySelector('.profile-img');
-        if (profileImg) {
-            profileImg.style.cursor = 'pointer';
-        }
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function (e) {
-            if (!profileDropdown.contains(e.target) && !profileAnchor.contains(e.target)) {
-                profileDropdown.classList.remove('show');
-            }
-        });
-    }
-
     // Intercept grade filter to use AJAX instead of reload
     const gradeSelect = document.getElementById('gradeFilter');
     if (gradeSelect) {
         gradeSelect.addEventListener('change', (e) => {
             const value = e.target.value || 'all';
-            moderationState.grade = value;
-            // Reset to default sorting if you want default after filter change
-            // keep current sort: do nothing
+            userManagementState.grade = value;
             loadUsersAjax();
         });
     }
-
-    // Initialize any additional event listeners here
-    document.addEventListener('click', function (e) {
-        // Handle clicks on action buttons
-        if (e.target.closest('.btn-view')) {
-            const userId = e.target.closest('[data-user-id]').getAttribute('data-user-id');
-            viewUser(userId);
-        } else if (e.target.closest('.btn-warn')) {
-            const userId = e.target.closest('[data-user-id]').getAttribute('data-user-id');
-            warnUser(userId);
-        } else if (e.target.closest('.btn-delete')) {
-            const userId = e.target.closest('[data-user-id]').getAttribute('data-user-id');
-            deleteUser(userId);
-        }
-    });
 }
 
 /**
@@ -246,33 +160,33 @@ function initializeSortingHeaders() {
     headers.forEach(th => {
         th.addEventListener('click', () => {
             const column = th.getAttribute('data-sort');
-            const currentSort = moderationState.sort;
-            const currentOrder = moderationState.order;
+            const currentSort = userManagementState.sort;
+            const currentOrder = userManagementState.order;
 
             let isDefault = false;
 
             if (currentSort === column) {
                 if (currentOrder === 'asc') {
-                    moderationState.order = 'desc';
+                    userManagementState.order = 'desc';
                 } else if (currentOrder === 'desc') {
                     // Third click -> default: remove params
                     isDefault = true;
                 } else {
                     // Was default for this column but explicitly selected -> asc
-                    moderationState.order = 'asc';
+                    userManagementState.order = 'asc';
                 }
             } else {
                 // Switching to a new column -> start with asc
-                moderationState.sort = column;
-                moderationState.order = 'asc';
+                userManagementState.sort = column;
+                userManagementState.order = 'asc';
             }
 
             if (isDefault) {
                 // Reset to server default
-                moderationState.sort = 'id';
-                moderationState.order = 'asc';
+                userManagementState.sort = 'id';
+                userManagementState.order = 'asc';
             } else {
-                moderationState.sort = moderationState.sort || column;
+                userManagementState.sort = userManagementState.sort || column;
             }
 
             loadUsersAjax();
@@ -280,14 +194,17 @@ function initializeSortingHeaders() {
     });
 }
 
-// Override grade filter function used in HTML to avoid reloads (kept for compatibility)
+/**
+ * Update the URL with the selected grade filter and reload the page
+ * @param {string} grade - The selected grade filter value
+ */
 function updateGradeFilter(grade) {
     const value = grade || 'all';
     const select = document.getElementById('gradeFilter');
     if (select && select.value !== value) {
         select.value = value;
     }
-    moderationState.grade = value;
+    userManagementState.grade = value;
     loadUsersAjax();
 }
 
@@ -305,23 +222,25 @@ function viewUser(userId) {
  * @param {number} userId - ID of the user to warn
  */
 function warnUser(userId) {
-    showToast('Warning feature not yet working', 'info');
+    showToast('Warning feature not yet implemented', 'info');
 }
 
 /**
  * Delete a user
  * @param {number} userId - ID of the user to delete
+ * @param {string} username - Username of the user to delete
  */
-function deleteUser(userId) {
+function deleteUser(userId, username) {
     // Show custom confirmation modal
-    showDeleteConfirmation(userId);
+    showDeleteConfirmation(userId, username);
 }
 
 /**
  * Show custom delete confirmation modal
  * @param {number} userId - ID of the user to delete
+ * @param {string} username - Username of the user to delete
  */
-function showDeleteConfirmation(userId) {
+function showDeleteConfirmation(userId, username) {
     // Create modal overlay
     const overlay = document.createElement('div');
     overlay.className = 'delete-modal-overlay';
@@ -333,7 +252,7 @@ function showDeleteConfirmation(userId) {
             </div>
             <div class="delete-modal-body">
                 <p><strong>WARNING:</strong> This action cannot be undone!</p>
-                <p>Are you sure you want to permanently delete user #${userId}?</p>
+                <p>Are you sure you want to permanently delete user <strong>${username}</strong> (ID: ${userId})?</p>
                 <p class="delete-warning">All user data, progress, and settings will be lost.</p>
             </div>
             <div class="delete-modal-footer">
@@ -393,10 +312,8 @@ function confirmDeleteUser(userId) {
         .then(data => {
             if (data.success) {
                 showToast('User deleted successfully', 'success');
-                // Reload the page to refresh the user list
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
+                // Reload the user list
+                loadUsersAjax();
             } else {
                 throw new Error(data.message || 'Failed to delete user');
             }
@@ -405,6 +322,51 @@ function confirmDeleteUser(userId) {
             console.error('Error deleting user:', error);
             showToast(error.message || 'Failed to delete user', 'error');
         });
+}
+
+/**
+ * Export users to CSV
+ */
+function exportUsers() {
+    // Log admin action
+    logAdminAction('Exported user data');
+    
+    // Create CSV export
+    const table = document.querySelector('.user-table');
+    let csv = [];
+    const rows = table.querySelectorAll('tr');
+    
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const rowData = [];
+        cols.forEach((col, index) => {
+            if (index < cols.length - 1) { // Skip actions column
+                rowData.push('"' + col.textContent.trim().replace(/"/g, '""') + '"');
+            }
+        });
+        csv.push(rowData.join(','));
+    });
+    
+    const csvContent = csv.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'users_export_' + new Date().toISOString().split('T')[0] + '.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+    
+    showToast('User data exported successfully', 'success');
+}
+
+function logAdminAction(action) {
+    fetch('../../api/admin-log.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: action })
+    }).catch(err => console.error('Failed to log action:', err));
 }
 
 /**
@@ -430,90 +392,9 @@ function showToast(message, type = 'info') {
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => {
-            document.body.removeChild(toast);
-        }, 300);
-    }, 5000);
-}
-
-/**
- * Show a modal dialog
- * @param {string} title - The title of the modal
- * @param {string} content - The HTML content of the modal
- * @param {Object} options - Additional options (e.g., buttons, size, etc.)
- */
-function showModal(title, content, options = {}) {
-    // In a real implementation, you might want to use a more robust modal system
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-
-    const modalContent = document.createElement('div');
-    modalContent.className = 'modal-content';
-
-    // Add title
-    const titleEl = document.createElement('h3');
-    titleEl.textContent = title;
-    modalContent.appendChild(titleEl);
-
-    // Add content
-    const contentEl = document.createElement('div');
-    contentEl.className = 'modal-body';
-    contentEl.innerHTML = content;
-    modalContent.appendChild(contentEl);
-
-    // Add buttons
-    const actionsEl = document.createElement('div');
-    actionsEl.className = 'modal-actions';
-
-    if (options.buttons && options.buttons.length) {
-        options.buttons.forEach(button => {
-            const btn = document.createElement('button');
-            btn.className = `btn ${button.className || ''}`;
-            btn.textContent = button.text;
-            btn.onclick = button.onclick || (() => closeModal(modal));
-            actionsEl.appendChild(btn);
-        });
-    } else {
-        // Default close button
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'btn btn-primary';
-        closeBtn.textContent = 'Close';
-        closeBtn.onclick = () => closeModal(modal);
-        actionsEl.appendChild(closeBtn);
-    }
-
-    modalContent.appendChild(actionsEl);
-    modal.appendChild(modalContent);
-
-    // Add to the page
-    document.body.appendChild(modal);
-
-    // Show the modal
-    setTimeout(() => {
-        modal.classList.add('show');
-    }, 10);
-
-    // Close on click outside
-    modal.onclick = (e) => {
-        if (e.target === modal) {
-            closeModal(modal);
-        }
-    };
-
-    // Return the modal element in case you need to close it programmatically
-    return modal;
-}
-
-/**
- * Close a modal
- * @param {HTMLElement} modal - The modal element to close
- */
-function closeModal(modal) {
-    if (modal) {
-        modal.classList.remove('show');
-        setTimeout(() => {
-            if (modal.parentNode) {
-                document.body.removeChild(modal);
+            if (toast.parentNode) {
+                document.body.removeChild(toast);
             }
         }, 300);
-    }
+    }, 5000);
 }

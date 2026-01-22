@@ -495,7 +495,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 <span>Profile</span>
             </a>
             <?php if (in_array($current_user['grade_level'], ['Developer', 'Admin'])): ?>
-            <a href="../moderation/moderation.php" class="nav-link">
+            <a href="../admin/dashboard.php" class="nav-link">
                 <i class="fas fa-shield-alt"></i>
                 <span>Admin</span>
             </a>

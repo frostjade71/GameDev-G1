@@ -389,7 +389,7 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
             </a>
             <?php endif; ?>
             <?php if (in_array($user['grade_level'], ['Developer', 'Admin'])): ?>
-            <a href="../moderation/moderation.php" class="nav-link">
+            <a href="../admin/dashboard.php" class="nav-link">
                 <i class="fas fa-shield-alt"></i>
                 <span>Admin</span>
             </a>

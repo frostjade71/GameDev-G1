@@ -1,0 +1,452 @@
+<?php
+require_once '../../onboarding/config.php';
+require_once '../../includes/greeting.php';
+
+// Check if user is logged in and has admin/developer access
+$gradeLevel = $_SESSION['grade_level'] ?? '';
+$isAdminDev = in_array(strtolower($gradeLevel), array_map('strtolower', ['Developer', 'Admin']));
+
+if (!function_exists('isLoggedIn') || !isLoggedIn() || !$isAdminDev) {
+    header('Location: ../../onboarding/login.php');
+    exit();
+}
+
+// Get current user information
+$user_id = $_SESSION['user_id'];
+$stmt = $pdo->prepare("SELECT username, email, grade_level, section, profile_image FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$current_user = $stmt->fetch();
+
+// Get notification count
+$stmt = $pdo->prepare("
+    SELECT COUNT(*) as count 
+    FROM friend_requests 
+    WHERE receiver_id = ? AND status = 'pending'
+");
+$stmt->execute([$user_id]);
+$notification_count = $stmt->fetch()['count'];
+
+// Load dashboard statistics
+$dashboardStats = require_once 'api/dashboard-stats.php';
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include '../../includes/favicon.php'; ?>
+    <title>Analytics - Admin - Word Weavers</title>
+    <link rel="stylesheet" href="../../styles.css?v=<?php echo filemtime('../../styles.css'); ?>">
+    <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo filemtime('../../navigation/shared/navigation.css'); ?>">
+    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo filemtime('../../notif/toast.css'); ?>">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo filemtime('assets/css/dashboard.css'); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <?php include '../../includes/page-loader.php'; ?>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Custom Admin Sidebar -->
+    <div class="sidebar admin-sidebar">
+        <div class="sidebar-logo">
+            <img src="../../assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
+        </div>
+        <nav class="sidebar-nav">
+            <a href="../../menu.php" class="nav-link back-link">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Home</span>
+            </a>
+            <div class="nav-divider"></div>
+            <a href="dashboard.php" class="nav-link">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="analytics.php" class="nav-link active">
+                <i class="fas fa-chart-pie"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="user-management.php" class="nav-link">
+                <i class="fas fa-users-cog"></i>
+                <span>User Management</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Header -->
+    <header class="top-header">
+        <div class="header-right">
+            <div class="notification-icon" onclick="window.location.href='../notification.php'">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge"><?php echo $notification_count; ?></span>
+            </div>
+            <div class="logout-icon" onclick="showLogoutModal()">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <span class="greeting"><?php echo getGreeting(); ?></span>
+                    <span class="username"><?php echo htmlspecialchars(explode(' ', $current_user['username'])[0]); ?></span>
+                </div>
+                <div class="profile-dropdown">
+                    <a href="#" class="profile-icon">
+                        <img src="<?php echo !empty($current_user['profile_image']) ? '../../' . htmlspecialchars($current_user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
+                    </a>
+                    <div class="profile-dropdown-content">
+                        <div class="profile-dropdown-header">
+                            <img src="<?php echo !empty($current_user['profile_image']) ? '../../' . htmlspecialchars($current_user['profile_image']) : '../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
+                            <div class="profile-dropdown-info">
+                                <div class="profile-dropdown-name"><?php echo htmlspecialchars($current_user['username']); ?></div>
+                                <div class="profile-dropdown-email"><?php echo htmlspecialchars($current_user['email']); ?></div>
+                            </div>
+                        </div>
+                        <div class="profile-dropdown-menu">
+                            <a href="../profile/profile.php" class="profile-dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>View Profile</span>
+                            </a>
+                            <a href="../favorites/favorites.php" class="profile-dropdown-item">
+                                <i class="fas fa-star"></i>
+                                <span>My Favorites</span>
+                            </a>
+                            <a href="../../settings/settings.php" class="profile-dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="profile-dropdown-item" onclick="showLogoutModal()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="dashboard-container">
+            <!-- Analytics Header -->
+            <div class="dashboard-header">
+                <div class="header-title">
+                    <img src="../../assets/menu/ww_logo_main.webp" alt="Word Weavers Logo" class="header-logo">
+                    <div>
+                        <h1>Analytics</h1>
+                        <p>Detailed System Analytics & Insights</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Charts Grid -->
+            <div class="dashboard-grid">
+                <!-- User Distribution Chart -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-users"></i> User Distribution by Grade</h3>
+                        <div class="chart-filter">
+                            <select id="distributionFilter" onchange="updateDistributionChart(this.value)">
+                                <option value="grade">By Grade</option>
+                                <option value="role">By Role</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- GWA Performance Chart -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-graduation-cap"></i> Average GWA by Grade</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="gwaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Analytics Cards -->
+            <div class="dashboard-grid">
+                <!-- Role Distribution -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-user-tag"></i> Role Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="role-stats">
+                            <?php if (!empty($dashboardStats['role_distribution'])): ?>
+                                <?php foreach ($dashboardStats['role_distribution'] as $role): ?>
+                                    <div class="role-item">
+                                        <div class="role-label"><?php echo htmlspecialchars($role['role']); ?></div>
+                                        <div class="role-value"><?php echo $role['count']; ?> users</div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <p class="no-data">No role data available</p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top GWA by Grade -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-trophy"></i> Top GWA by Grade Level</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="gwa-grade-list">
+                            <?php if (!empty($dashboardStats['top_gwa_by_grade'])): ?>
+                                <?php foreach ($dashboardStats['top_gwa_by_grade'] as $grade): ?>
+                                    <div class="gwa-grade-item">
+                                        <div class="gwa-grade-name"><?php echo htmlspecialchars($grade['grade_level']); ?></div>
+                                        <div class="gwa-grade-stats">
+                                            <span>Avg: <?php echo number_format($grade['avg_gwa'], 2); ?></span>
+                                            <span>Students: <?php echo $grade['student_count']; ?></span>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <p class="no-data">No GWA data available</p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="toast-overlay" id="logoutModal">
+        <div class="toast" id="logoutConfirmation">
+            <h3>Logout Confirmation</h3>
+            <p>Are you sure you want to logout?</p>
+            <div class="modal-buttons">
+                <button class="logout-btn" onclick="confirmLogout()">Yes, Logout</button>
+                <button class="cancel-btn" onclick="hideLogoutModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../script.js"></script>
+    <script src="../shared/profile-dropdown.js"></script>
+    <script src="../shared/notification-badge.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+    <script>
+    // Chart data from PHP
+    const chartData = {
+        distribution: <?php echo json_encode($dashboardStats['grade_distribution']); ?>,
+        role_distribution: <?php echo json_encode($dashboardStats['role_distribution']); ?>,
+        top_gwa: <?php echo json_encode($dashboardStats['top_gwa_by_grade']); ?>
+    };
+    
+    let distributionChart = null;
+    let gwaChart = null;
+    
+    // Initialize Charts
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeDistributionChart('grade');
+        initializeGWAChart();
+    });
+
+    function initializeDistributionChart(type) {
+        const ctx = document.getElementById('distributionChart');
+        if (!ctx) return;
+
+        if (distributionChart) {
+            distributionChart.destroy();
+        }
+
+        let labels, values, title;
+        
+        if (type === 'grade') {
+            if (!chartData.distribution || chartData.distribution.length === 0) return;
+            labels = chartData.distribution.map(item => item.grade_level);
+            values = chartData.distribution.map(item => item.count);
+            title = 'User Distribution by Grade';
+        } else {
+            if (!chartData.role_distribution || chartData.role_distribution.length === 0) return;
+            labels = chartData.role_distribution.map(item => item.role);
+            values = chartData.role_distribution.map(item => item.count);
+            title = 'User Distribution by Role';
+        }
+
+        distributionChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Users',
+                    data: values,
+                    backgroundColor: [
+                        '#4cc9f0',
+                        '#00ff87',
+                        '#ffc107',
+                        '#f44336',
+                        '#9c27b0',
+                        '#ff6b6b',
+                        '#4ecdc4',
+                        '#45b7d1'
+                    ],
+                    borderColor: '#1a1a1a',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#e0e0e0',
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + ' users';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function initializeGWAChart() {
+        const ctx = document.getElementById('gwaChart');
+        if (!ctx) return;
+
+        if (gwaChart) {
+            gwaChart.destroy();
+        }
+
+        if (!chartData.top_gwa || chartData.top_gwa.length === 0) return;
+        
+        const labels = chartData.top_gwa.map(item => item.grade_level);
+        const values = chartData.top_gwa.map(item => parseFloat(item.avg_gwa).toFixed(2));
+
+        gwaChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Average GWA',
+                    data: values,
+                    backgroundColor: '#4cc9f0',
+                    borderColor: '#00ff87',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Average GWA: ' + context.parsed.y;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        ticks: {
+                            color: '#e0e0e0',
+                            stepSize: 1
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#e0e0e0'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function updateDistributionChart(type) {
+        initializeDistributionChart(type);
+    }
+
+    // Logout functionality
+    function showLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        const confirmation = document.getElementById('logoutConfirmation');
+        
+        if (modal && confirmation) {
+            modal.classList.add('show');
+            confirmation.classList.remove('hide');
+            confirmation.classList.add('show');
+        }
+    }
+
+    function hideLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        const confirmation = document.getElementById('logoutConfirmation');
+        
+        if (modal && confirmation) {
+            confirmation.classList.remove('show');
+            confirmation.classList.add('hide');
+            modal.classList.remove('show');
+        }
+    }
+
+    function confirmLogout() {
+        window.location.href = '../../onboarding/logout.php';
+    }
+    </script>
+    <style>
+    .role-stats, .gwa-grade-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .role-item, .gwa-grade-item {
+        background: #252525;
+        border-radius: 4px;
+        padding: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .role-label, .gwa-grade-name {
+        color: #fff;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    .role-value, .gwa-grade-stats {
+        color: #4cc9f0;
+        font-size: 0.85rem;
+        display: flex;
+        gap: 12px;
+    }
+    </style>
+</body>
+</html>

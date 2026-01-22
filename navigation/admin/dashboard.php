@@ -27,35 +27,7 @@ $stmt->execute([$user_id]);
 $notification_count = $stmt->fetch()['count'];
 
 // Load dashboard statistics
-$dashboardStats = require_once 'dashboard-stats.php';
-
-// Get sort parameters for user table
-$sort = isset($_GET['sort']) ? $_GET['sort'] : 'id';
-$order = isset($_GET['order']) ? $_GET['order'] : 'asc';
-$grade_filter = isset($_GET['grade']) ? $_GET['grade'] : 'all';
-
-// Validate sort column
-$valid_columns = ['id', 'username', 'email', 'grade_level', 'section', 'created_at'];
-$sort = in_array($sort, $valid_columns) ? $sort : 'id';
-$order = $order === 'desc' ? 'DESC' : 'ASC';
-
-// Build the query for user table
-$query = "SELECT id, username, email, grade_level, section, created_at FROM users";
-$params = [];
-
-if ($grade_filter !== 'all') {
-    $query .= " WHERE grade_level = ?";
-    $params[] = $grade_filter;
-}
-
-$query .= " ORDER BY $sort $order LIMIT 10";
-
-$stmt = $pdo->prepare($query);
-$stmt->execute($params);
-$users = $stmt->fetchAll();
-
-// Get unique grade levels for filter
-$grade_levels = $pdo->query("SELECT DISTINCT grade_level FROM users ORDER BY grade_level")->fetchAll(PDO::FETCH_COLUMN);
+$dashboardStats = require_once 'api/dashboard-stats.php';
 
 // Get recent admin logs
 $stmt = $pdo->prepare("
@@ -78,8 +50,8 @@ $admin_logs = $stmt->fetchAll();
     <link rel="stylesheet" href="../../styles.css?v=<?php echo filemtime('../../styles.css'); ?>">
     <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo filemtime('../../navigation/shared/navigation.css'); ?>">
     <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo filemtime('../../notif/toast.css'); ?>">
-    <link rel="stylesheet" href="moderation.css?v=<?php echo filemtime('moderation.css'); ?>">
-    <link rel="stylesheet" href="delete-modal.css?v=<?php echo filemtime('delete-modal.css'); ?>">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo filemtime('assets/css/dashboard.css'); ?>">
+    <link rel="stylesheet" href="assets/css/delete-modal.css?v=<?php echo filemtime('assets/css/delete-modal.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
@@ -90,37 +62,28 @@ $admin_logs = $stmt->fetchAll();
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
+    <!-- Custom Admin Sidebar -->
+    <div class="sidebar admin-sidebar">
         <div class="sidebar-logo">
             <img src="../../assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
         </div>
         <nav class="sidebar-nav">
-            <a href="../../menu.php" class="nav-link">
-                <i class="fas fa-house"></i>
-                <span>Menu</span>
+            <a href="../../menu.php" class="nav-link back-link">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Home</span>
             </a>
-            <a href="../favorites/favorites.php" class="nav-link">
-                <i class="fas fa-star"></i>
-                <span>Favorites</span>
+            <div class="nav-divider"></div>
+            <a href="dashboard.php" class="nav-link active">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
             </a>
-            <a href="../friends/friends.php" class="nav-link">
-                <i class="fas fa-users"></i>
-                <span>Friends</span>
+            <a href="analytics.php" class="nav-link">
+                <i class="fas fa-chart-pie"></i>
+                <span>Analytics</span>
             </a>
-            <a href="../profile/profile.php" class="nav-link">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
-            </a>
-            <?php if (in_array($current_user['grade_level'], ['Teacher', 'Admin', 'Developer'])): ?>
-            <a href="../teacher/dashboard.php" class="nav-link">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <span>Teacher</span>
-            </a>
-            <?php endif; ?>
-            <a href="moderation.php" class="nav-link active">
-                <i class="fas fa-shield-alt"></i>
-                <span>Admin</span>
+            <a href="user-management.php" class="nav-link">
+                <i class="fas fa-users-cog"></i>
+                <span>User Management</span>
             </a>
         </nav>
     </div>
@@ -186,7 +149,7 @@ $admin_logs = $stmt->fetchAll();
                     <img src="../../assets/menu/ww_logo_main.webp" alt="Word Weavers Logo" class="header-logo">
                     <div>
                         <h1>Admin Dashboard</h1>
-                        <p>System Overview & User Management</p>
+                        <p>System Overview & Statistics</p>
                     </div>
                 </div>
             </div>
@@ -259,13 +222,7 @@ $admin_logs = $stmt->fetchAll();
                 <!-- Analytics Chart -->
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3><i class="fas fa-chart-pie"></i> Analytics</h3>
-                        <div class="chart-filter">
-                            <select id="chartFilter" onchange="updateChart(this.value)">
-                                <option value="distribution">Users</option>
-                                <option value="top_gwa">Top GWA</option>
-                            </select>
-                        </div>
+                        <h3><i class="fas fa-chart-pie"></i> User Distribution</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="gradeChart"></canvas>
@@ -321,8 +278,7 @@ $admin_logs = $stmt->fetchAll();
                 </div>
             </div>
 
-
-            <!-- Top Performers Card with Filter -->
+            <!-- Top Performers Card -->
             <div class="dashboard-card">
                 <div class="card-header">
                     <h3><i class="fas fa-trophy"></i> Leaderboard</h3>
@@ -381,104 +337,6 @@ $admin_logs = $stmt->fetchAll();
                 </div>
             </div>
 
-            <!-- User Management Section -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-users-cog"></i> User Management</h3>
-                    <div class="card-actions">
-                        <button class="btn-action" onclick="exportUsers()">
-                            <i class="fas fa-download"></i> Export
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="table-controls">
-                        <div class="grade-filter">
-                            <label for="gradeFilter">Filter by Grade:</label>
-                            <select id="gradeFilter" onchange="updateGradeFilter(this.value)">
-                                <option value="all" <?= $grade_filter === 'all' ? 'selected' : '' ?>>All Grades</option>
-                                <?php foreach ($grade_levels as $grade): ?>
-                                    <option value="<?= htmlspecialchars($grade) ?>" <?= $grade_filter === $grade ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($grade) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="userSearch" placeholder="Search users...">
-                        </div>
-                    </div>
-                    
-                    <div class="table-responsive">
-                        <div id="loadingIndicator" style="display:none;">
-                            <div class="loading-content">
-                                <i class="fas fa-spinner fa-spin"></i>
-                                <div>Loading users...</div>
-                            </div>
-                        </div>
-                        <table class="user-table">
-                            <thead>
-                                <tr>
-                                    <th class="sortable" data-sort="id" data-order="<?= $sort === 'id' && $order === 'ASC' ? 'desc' : 'asc' ?>">
-                                        ID <?= $sort === 'id' ? ($order === 'ASC' ? '↑' : '↓') : '' ?>
-                                    </th>
-                                    <th class="sortable" data-sort="username" data-order="<?= $sort === 'username' && $order === 'ASC' ? 'desc' : 'asc' ?>">
-                                        Username <?= $sort === 'username' ? ($order === 'ASC' ? '↑' : '↓') : '' ?>
-                                    </th>
-                                    <th class="sortable" data-sort="email" data-order="<?= $sort === 'email' && $order === 'ASC' ? 'desc' : 'asc' ?>">
-                                        Email <?= $sort === 'email' ? ($order === 'ASC' ? '↑' : '↓') : '' ?>
-                                    </th>
-                                    <th>Grade Level</th>
-                                    <th>Section</th>
-                                    <th class="sortable" data-sort="created_at" data-order="<?= $sort === 'created_at' && $order === 'ASC' ? 'desc' : 'asc' ?>">
-                                        Join Date <?= $sort === 'created_at' ? ($order === 'ASC' ? '↑' : '↓') : '' ?>
-                                    </th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTbody">
-                                <?php if (empty($users)): ?>
-                                    <tr>
-                                        <td colspan="7" class="no-users">No users found</td>
-                                    </tr>
-                                <?php else: ?>
-                                    <?php foreach ($users as $user): ?>
-                                        <tr>
-                                            <td data-label="ID"><?= htmlspecialchars($user['id']) ?></td>
-                                            <td data-label="Username"><?= htmlspecialchars($user['username']) ?></td>
-                                            <td data-label="Email"><?= htmlspecialchars($user['email']) ?></td>
-                                            <td data-label="Grade Level">
-                                                <span class="grade-badge"><?= htmlspecialchars($user['grade_level']) ?></span>
-                                            </td>
-                                            <td data-label="Section"><?= !empty($user['section']) ? htmlspecialchars($user['section']) : 'N/A' ?></td>
-                                            <td data-label="Join Date"><?= date('M j, Y', strtotime($user['created_at'])) ?></td>
-                                            <td class="actions" data-label="Actions">
-                                                <button class="btn-view" onclick="viewUser(<?= $user['id'] ?>)" title="View">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button class="btn-warn" onclick="warnUser(<?= $user['id'] ?>)" title="Warn" <?= $user['id'] === $_SESSION['user_id'] ? 'disabled="disabled"' : '' ?>>
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                </button>
-                                                <?php if ($_SESSION['grade_level'] === 'Developer' && $user['id'] !== $_SESSION['user_id']): ?>
-                                                    <button class="btn-delete" onclick="deleteUser(<?= $user['id'] ?>, '<?= htmlspecialchars(addslashes($user['username'])) ?>')" title="Delete">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                <?php else: ?>
-                                                    <button class="btn-delete" disabled title="Delete (Developer only)">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
             <!-- Admin Activity Log -->
             <?php if (!empty($admin_logs)): ?>
             <div class="dashboard-card">
@@ -518,25 +376,24 @@ $admin_logs = $stmt->fetchAll();
     <script src="../../script.js"></script>
     <script src="../shared/profile-dropdown.js"></script>
     <script src="../shared/notification-badge.js"></script>
-    <script src="moderation.js"></script>
+    <script src="assets/js/dashboard.js"></script>
     <script>
     // Chart data from PHP
     const chartData = {
-        distribution: <?php echo json_encode($dashboardStats['grade_distribution']); ?>,
-        top_gwa: <?php echo json_encode($dashboardStats['top_gwa_by_grade']); ?>
+        distribution: <?php echo json_encode($dashboardStats['grade_distribution']); ?>
     };
     
     let currentChart = null;
     
     // Initialize Chart.js for grade distribution
     document.addEventListener('DOMContentLoaded', function() {
-        initializeChart('distribution');
+        initializeChart();
         
         // Animate stat counters
         animateCounters();
     });
 
-    function initializeChart(type) {
+    function initializeChart() {
         const ctx = document.getElementById('gradeChart');
         if (!ctx) return;
 
@@ -545,32 +402,17 @@ $admin_logs = $stmt->fetchAll();
             currentChart.destroy();
         }
 
-        let data, labels, values, chartType, chartTitle;
-
-        if (type === 'distribution') {
-            // User Distribution Chart
-            if (!chartData.distribution || chartData.distribution.length === 0) return;
-            
-            labels = chartData.distribution.map(item => item.grade_level);
-            values = chartData.distribution.map(item => item.count);
-            chartType = 'doughnut';
-            chartTitle = 'User Distribution by Grade';
-        } else if (type === 'top_gwa') {
-            // Top GWA Chart
-            if (!chartData.top_gwa || chartData.top_gwa.length === 0) return;
-            
-            labels = chartData.top_gwa.map(item => item.grade_level);
-            values = chartData.top_gwa.map(item => parseFloat(item.avg_gwa).toFixed(2));
-            chartType = 'bar';
-            chartTitle = 'Average GWA by Grade Level';
-        }
+        if (!chartData.distribution || chartData.distribution.length === 0) return;
+        
+        const labels = chartData.distribution.map(item => item.grade_level);
+        const values = chartData.distribution.map(item => item.count);
 
         currentChart = new Chart(ctx, {
-            type: chartType,
+            type: 'doughnut',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: type === 'top_gwa' ? 'Average GWA' : 'Students',
+                    label: 'Students',
                     data: values,
                     backgroundColor: [
                         '#4cc9f0',
@@ -591,7 +433,7 @@ $admin_logs = $stmt->fetchAll();
                 maintainAspectRatio: true,
                 plugins: {
                     legend: {
-                        position: chartType === 'doughnut' ? 'bottom' : 'top',
+                        position: 'bottom',
                         labels: {
                             color: '#e0e0e0',
                             padding: 15,
@@ -600,48 +442,16 @@ $admin_logs = $stmt->fetchAll();
                             }
                         }
                     },
-                    title: {
-                        display: false
-                    },
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                if (type === 'top_gwa') {
-                                    return context.dataset.label + ': ' + context.parsed.y;
-                                } else {
-                                    return context.label + ': ' + context.parsed + ' students';
-                                }
+                                return context.label + ': ' + context.parsed + ' students';
                             }
                         }
                     }
-                },
-                scales: chartType === 'bar' ? {
-                    y: {
-                        beginAtZero: true,
-                        max: 10,
-                        ticks: {
-                            color: '#e0e0e0',
-                            stepSize: 1
-                        },
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: '#e0e0e0'
-                        },
-                        grid: {
-                            display: false
-                        }
-                    }
-                } : {}
+                }
             }
         });
-    }
-
-    function updateChart(filterType) {
-        initializeChart(filterType);
     }
 
     function animateCounters() {
@@ -664,38 +474,6 @@ $admin_logs = $stmt->fetchAll();
 
             updateCounter();
         });
-    }
-
-    function exportUsers() {
-        // Log admin action
-        logAdminAction('Exported user data');
-        
-        // Create CSV export
-        const table = document.querySelector('.user-table');
-        let csv = [];
-        const rows = table.querySelectorAll('tr');
-        
-        rows.forEach(row => {
-            const cols = row.querySelectorAll('td, th');
-            const rowData = [];
-            cols.forEach((col, index) => {
-                if (index < cols.length - 1) { // Skip actions column
-                    rowData.push('"' + col.textContent.trim().replace(/"/g, '""') + '"');
-                }
-            });
-            csv.push(rowData.join(','));
-        });
-        
-        const csvContent = csv.join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'users_export_' + new Date().toISOString().split('T')[0] + '.csv';
-        a.click();
-        window.URL.revokeObjectURL(url);
-        
-        showToast('User data exported successfully', 'success');
     }
 
     function updateLeaderboard(type) {

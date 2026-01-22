@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Press Start 2P';
-    src: url('../../fonts/PressStart2P-Regular.ttf') format('truetype');
+    src: url('../../../../fonts/PressStart2P-Regular.ttf') format('truetype');
 }
 
 /* Teacher Container - Same as Profile */
@@ -161,12 +161,19 @@
 
 /* Welcome Section Styles - Matching Reference Dashboard */
 .welcome-section {
-    background: linear-gradient(
-        135deg,
-        rgba(10, 10, 15, 0.85) 0%,
-        rgba(0, 0, 0, 0.85) 100%
-    ),
-    url('assets/images/wordweav_cover.webp');
+    background: 
+        linear-gradient(
+            to right,
+            rgba(19, 32, 51) 0%,
+            rgba(19, 32, 51, 0.721) 20%,
+            rgba(19, 32, 51, 0.171) 100%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(10, 10, 15, 0.85) 0%,
+            rgba(0, 0, 0, 0.85) 100%
+        ),
+        url('../images/wordweav_cover.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -180,6 +187,7 @@
     gap: 40px;
     width: 100%;
     box-sizing: border-box;
+    position: relative;
 }
 
 .welcome-content {

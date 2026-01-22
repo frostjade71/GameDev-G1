@@ -151,24 +151,107 @@ document.querySelectorAll('.sortable').forEach(header => {
     });
 });
 
-// Mobile menu functionality
-const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-const sidebar = document.querySelector('.sidebar');
+// Mobile menu functionality for teacher pages
+// This ensures the mobile menu works specifically for teacher pages
+(function() {
+    function initMobileMenu() {
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const sidebar = document.querySelector('.sidebar.teacher-sidebar');
 
-if (mobileMenuBtn && sidebar) {
-    mobileMenuBtn.addEventListener('click', function() {
-        sidebar.classList.toggle('active');
-    });
-    
-    // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', function(e) {
-        if (window.innerWidth <= 768) {
-            if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                sidebar.classList.remove('active');
+        if (!mobileMenuBtn || !sidebar) {
+            return; // Elements not found, exit early
+        }
+
+        // Use a flag to prevent multiple initializations
+        if (mobileMenuBtn.dataset.menuInitialized === 'true') {
+            return; // Already initialized
+        }
+        mobileMenuBtn.dataset.menuInitialized = 'true';
+
+        // Toggle function
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+            
+            // Prevent body scroll when sidebar is open
+            if (sidebar.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
             }
         }
+        
+        // Add click event listener
+        mobileMenuBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSidebar();
+        });
+        
+        // Also add touchstart for better mobile support
+        mobileMenuBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSidebar();
+        }, { passive: false });
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+                if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+        });
+        
+        // Close sidebar when clicking on nav links
+        const navLinks = sidebar.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileMenu);
+    } else {
+        // DOM is already ready
+        initMobileMenu();
+    }
+    
+    // Also try after window load (after page loader finishes)
+    window.addEventListener('load', function() {
+        setTimeout(initMobileMenu, 100);
     });
-}
+    
+    // Fallback: try after a delay
+    setTimeout(initMobileMenu, 300);
+    
+    // Ensure button is clickable
+    function ensureButtonClickable() {
+        const btn = document.querySelector('.mobile-menu-btn');
+        if (btn) {
+            btn.style.pointerEvents = 'auto';
+            btn.style.cursor = 'pointer';
+            btn.style.zIndex = '2000';
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', ensureButtonClickable);
+    } else {
+        ensureButtonClickable();
+    }
+    window.addEventListener('load', ensureButtonClickable);
+})();
 
 // ============================================
 // VOCABULARY CRUD OPERATIONS

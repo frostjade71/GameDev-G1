@@ -37,8 +37,17 @@ $stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE grade_level NOT I
 $active_students = $stmt->fetch()['count'];
 
 // Total vocabulary questions
-$stmt = $pdo->query("SELECT COUNT(*) as count FROM vocabulary_questions WHERE is_active = 1");
-$total_vocab = $stmt->fetch()['count'];
+$total_vocab = 0;
+try {
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM vocabulary_questions WHERE is_active = 1");
+    $result = $stmt->fetch();
+    if ($result) {
+        $total_vocab = $result['count'];
+    }
+} catch (PDOException $e) {
+    // vocabulary_questions table may not exist yet
+    $total_vocab = 0;
+}
 
 // Grade levels count
 $stmt = $pdo->query("SELECT COUNT(DISTINCT grade_level) as count FROM users WHERE grade_level NOT IN ('Teacher', 'Admin', 'Developer')");
@@ -159,8 +168,18 @@ $grade_levels_count = $stmt->fetch()['count'];
             $total_students = $stmt->fetch()['count'];
             
             // Total vocabulary questions
-            $stmt = $pdo->query("SELECT COUNT(*) as count FROM vocabulary_questions WHERE is_active = 1");
-            $total_vocab = $stmt->fetch()['count'];
+            $vocab_count = 0;
+            try {
+                $stmt = $pdo->query("SELECT COUNT(*) as count FROM vocabulary_questions WHERE is_active = 1");
+                $result = $stmt->fetch();
+                if ($result) {
+                    $vocab_count = $result['count'];
+                }
+            } catch (PDOException $e) {
+                // vocabulary_questions table may not exist yet
+                $vocab_count = 0;
+            }
+            $total_vocab = $vocab_count;
             
             // Active students (logged in within last 7 days)
             $stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE grade_level NOT IN ('Teacher', 'Admin', 'Developer') AND last_login >= DATE_SUB(NOW(), INTERVAL 7 DAY)");

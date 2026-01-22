@@ -1,9 +1,22 @@
 <?php
-// Database configuration for Docker
-$host = 'db';
-$dbname = 'school_portal';
-$username = 'root';
-$password = 'rootpassword';
+// Database configuration - Auto-detect environment (Docker or Live Server)
+
+// Determine if running on live server or Docker
+$isLiveServer = !in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', 'localhost:8080', '127.0.0.1:8080', '127.0.0.1']);
+
+if ($isLiveServer) {
+    // Live server configuration
+    $host = 'localhost';
+    $dbname = 'frostjad_school_portal';
+    $username = 'frostjad_school_portal';
+    $password = 'gVpF6VekbCKqYZ4bh2AX';
+} else {
+    // Docker configuration
+    $host = 'db';
+    $dbname = 'school_portal';
+    $username = 'root';
+    $password = 'rootpassword';
+}
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);

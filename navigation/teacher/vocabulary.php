@@ -27,16 +27,24 @@ $stmt->execute([$user_id]);
 $notification_count = $stmt->fetch()['count'];
 
 // Get vocabulary questions with choices (Fetch ALL for client-side filtering)
-$query = "SELECT vq.*, u.username as creator_name, u.profile_image as creator_image,
-          (SELECT COUNT(*) FROM vocabulary_choices WHERE question_id = vq.id) as choice_count
-          FROM vocabulary_questions vq
-          LEFT JOIN users u ON vq.created_by = u.id
-          WHERE vq.is_active = 1
-          ORDER BY vq.created_at DESC";
+$vocabulary_questions = [];
+$total_vocab = 0;
 
-$stmt = $pdo->prepare($query);
-$stmt->execute();
-$vocabulary_questions = $stmt->fetchAll();
+try {
+    $query = "SELECT vq.*, u.username as creator_name, u.profile_image as creator_image,
+              (SELECT COUNT(*) FROM vocabulary_choices WHERE question_id = vq.id) as choice_count
+              FROM vocabulary_questions vq
+              LEFT JOIN users u ON vq.created_by = u.id
+              WHERE vq.is_active = 1
+              ORDER BY vq.created_at DESC";
+
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+    $vocabulary_questions = $stmt->fetchAll();
+} catch (PDOException $e) {
+    // vocabulary_questions table may not exist yet
+    $vocabulary_questions = [];
+}
 
 // Get total count
 $total_vocab = count($vocabulary_questions);

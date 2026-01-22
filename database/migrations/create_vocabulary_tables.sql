@@ -31,11 +31,11 @@ CREATE TABLE IF NOT EXISTS `vocabulary_choices` (
 
 -- Insert sample vocabulary questions from existing data
 INSERT INTO `vocabulary_questions` (`word`, `definition`, `example_sentence`, `difficulty`, `grade_level`, `created_by`, `is_active`) VALUES
-('abundant', 'existing in large quantities; plentiful', 'The forest has abundant wildlife and natural resources.', 1, '7', 1, TRUE),
-('analyze', 'examine in detail to understand structure or meaning', 'Let''s analyze the data to find patterns and trends.', 1, '7', 1, TRUE),
-('ancient', 'belonging to the very distant past; very old', 'The ancient temple was built over a thousand years ago.', 1, '7', 1, TRUE),
-('benevolent', 'well meaning and kindly; charitable', 'The benevolent teacher helped all students succeed.', 2, '8', 1, TRUE),
-('comprehensive', 'complete; including everything or nearly everything', 'This is a comprehensive guide to learning English.', 2, '8', 1, TRUE);
+('abundant', 'existing in large quantities; plentiful', 'The forest has abundant wildlife and natural resources.', 1, '7', 5, TRUE),
+('analyze', 'examine in detail to understand structure or meaning', 'Let''s analyze the data to find patterns and trends.', 1, '7', 5, TRUE),
+('ancient', 'belonging to the very distant past; very old', 'The ancient temple was built over a thousand years ago.', 1, '7', 5, TRUE),
+('benevolent', 'well meaning and kindly; charitable', 'The benevolent teacher helped all students succeed.', 2, '8', 5, TRUE),
+('comprehensive', 'complete; including everything or nearly everything', 'This is a comprehensive guide to learning English.', 2, '8', 5, TRUE);
 
 -- Insert sample choices for the first question (abundant)
 INSERT INTO `vocabulary_choices` (`question_id`, `choice_text`, `is_correct`) VALUES

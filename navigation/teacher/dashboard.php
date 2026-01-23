@@ -1,8 +1,4 @@
 <?php
-// Temporary error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once '../../onboarding/config.php';
 require_once '../../includes/greeting.php';
 
@@ -37,8 +33,8 @@ $stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE grade_level NOT I
 $total_students = $stmt->fetch()['count'];
 
 // Active students (logged in within last 7 days)
-$stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE grade_level NOT IN ('Teacher', 'Admin', 'Developer') AND last_login >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
-$active_students = $stmt->fetch()['count'];
+// Note: last_login column doesn't exist in the database yet
+$active_students = 0;
 
 // Total vocabulary questions
 $total_vocab = 0;

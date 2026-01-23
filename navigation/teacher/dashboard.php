@@ -161,35 +161,6 @@ $grade_levels_count = $stmt->fetch()['count'];
     <!-- Main Content -->
     <div class="main-content">
         <!-- Dashboard View -->
-            <?php
-            // Get statistics for dashboard
-            // Total students count
-            $stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE grade_level NOT IN ('Teacher', 'Admin', 'Developer')");
-            $total_students = $stmt->fetch()['count'];
-            
-            // Total vocabulary questions
-            $vocab_count = 0;
-            try {
-                $stmt = $pdo->query("SELECT COUNT(*) as count FROM vocabulary_questions WHERE is_active = 1");
-                $result = $stmt->fetch();
-                if ($result) {
-                    $vocab_count = $result['count'];
-                }
-            } catch (PDOException $e) {
-                // vocabulary_questions table may not exist yet
-                $vocab_count = 0;
-            }
-            $total_vocab = $vocab_count;
-            
-            // Active students (logged in within last 7 days)
-            $stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE grade_level NOT IN ('Teacher', 'Admin', 'Developer') AND last_login >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
-            $active_students = $stmt->fetch()['count'];
-            
-            // Unique grade levels
-            $stmt = $pdo->query("SELECT COUNT(DISTINCT grade_level) as count FROM users WHERE grade_level NOT IN ('Teacher', 'Admin', 'Developer')");
-            $grade_levels_count = $stmt->fetch()['count'];
-            ?>
-            
             <!-- Welcome Section -->
             <div class="welcome-section">
                 <div class="welcome-content">

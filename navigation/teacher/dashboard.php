@@ -61,9 +61,9 @@ $grade_levels_count = $stmt->fetch()['count'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php include '../../includes/favicon.php'; ?>
     <title>Teacher Dashboard - Word Weavers</title>
-    <link rel="stylesheet" href="../../styles.css?v=<?php echo filemtime('../../styles.css'); ?>">
-    <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo filemtime('../../navigation/shared/navigation.css'); ?>">
-    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo filemtime('../../notif/toast.css'); ?>">
+    <link rel="stylesheet" href="../../styles.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>

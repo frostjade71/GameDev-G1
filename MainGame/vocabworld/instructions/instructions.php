@@ -47,6 +47,7 @@ $current_essence = $essenceManager->getEssence($user_id);
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <?php include '../loaders/loader-component.php'; ?>
     <div class="game-container">
         <!-- Background -->
         <div class="background-image"></div>
@@ -59,13 +60,16 @@ $current_essence = $essenceManager->getEssence($user_id);
                 </div>
             </div>
             <div class="header-right">
-                <div class="essence-currency">
-                    <i class="fas fa-gem"></i>
-                    <span class="essence-count" id="essence-count"><?php echo $current_essence; ?></span>
-                </div>
-                <div class="shard-currency">
-                    <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
-                    <span class="shard-count" id="shard-count"><?php echo $user_shards; ?></span>
+                <div class="shard-currency" onclick="toggleCurrencyDropdown(this)">
+                    <div class="currency-item shard-item">
+                        <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
+                        <span class="shard-count" id="shard-count"><?php echo $user_shards; ?></span>
+                        <i class="fas fa-chevron-down mobile-only dropdown-arrow" style="font-size: 0.8rem; margin-left: 5px;"></i>
+                    </div>
+                    <div class="currency-item essence-item">
+                        <img src="../assets/currency/essence.png" alt="Essence" class="shard-icon">
+                        <span class="shard-count" id="essence-count"><?php echo $current_essence; ?></span>
+                    </div>
                 </div>
                 <div class="user-profile">
                     <div class="user-info">
@@ -74,33 +78,32 @@ $current_essence = $essenceManager->getEssence($user_id);
                     </div>
                     <div class="profile-dropdown">
                         <a href="#" class="profile-icon">
-                            <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                         </a>
                         <div class="profile-dropdown-content">
                             <div class="profile-dropdown-header">
-                                <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                                <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                                 <div class="profile-dropdown-info">
                                     <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
-                                    <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
+                                    <div class="profile-dropdown-level">
+                                        <img src="../assets/stats/level.png" class="level-icon-mini">
+                                        <span>Level <?php echo htmlspecialchars($progress['player_level'] ?? 1); ?></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="profile-dropdown-menu">
-                                <a href="../../../navigation/profile/profile.php" class="profile-dropdown-item">
-                                    <i class="fas fa-user"></i>
-                                    <span>View Profile</span>
+                                <a href="../charactermenu/character.php" class="profile-dropdown-item">
+                                    <img src="../charactermenu/assets/fc1089.png" class="dropdown-item-icon">
+                                    <span>View Character</span>
                                 </a>
-                                <a href="../../../navigation/favorites/favorites.php" class="profile-dropdown-item">
-                                    <i class="fas fa-star"></i>
-                                    <span>My Favorites</span>
+                                <a href="../learnvocabmenu/learn.php" class="profile-dropdown-item">
+                                    <img src="../assets/menu/vocabsys.png" class="dropdown-item-icon">
+                                    <span>Study & Learn</span>
                                 </a>
-                                <a href="../../../settings/settings.php" class="profile-dropdown-item">
-                                    <i class="fas fa-cog"></i>
-                                    <span>Settings</span>
-                                </a>
-                            </div>
+                             </div>
                             <div class="profile-dropdown-footer">
                                 <button class="profile-dropdown-item sign-out" onclick="showLogoutModal()">
-                                    <i class="fas fa-sign-out-alt"></i>
+                                    <img src="../assets/menu/exit.png" class="dropdown-item-icon">
                                     <span>Sign Out</span>
                                 </button>
                             </div>
@@ -131,7 +134,7 @@ $current_essence = $essenceManager->getEssence($user_id);
                     <!-- Movement & Controls -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <i class="fas fa-arrows-alt"></i>
+                            <img src="../assets/menu/playsys.png" alt="Movement" style="width: 100%; height: 100%; object-fit: contain;">
                         </div>
                         <h2>Movement & Controls</h2>
                         <div class="controls-grid">
@@ -158,7 +161,7 @@ $current_essence = $essenceManager->getEssence($user_id);
                     <!-- Battle System -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <i class="fas fa-fist-raised"></i>
+                            <img src="../assets/menu/vocabsys.png" alt="Battle System">
                         </div>
                         <h2>Battle System</h2>
                         <ul class="feature-list">
@@ -178,37 +181,6 @@ $current_essence = $essenceManager->getEssence($user_id);
                         </div>
                     </div>
 
-                    <!-- Question Types -->
-                    <div class="instruction-card">
-                        <div class="card-icon">
-                            <i class="fas fa-question-circle"></i>
-                        </div>
-                        <h2>Question Types</h2>
-                        <div class="question-types">
-                            <div class="question-type-item">
-                                <i class="fas fa-book"></i>
-                                <h3>Definitions</h3>
-                                <p>Match words with their meanings</p>
-                            </div>
-                            <div class="question-type-item">
-                                <i class="fas fa-equals"></i>
-                                <h3>Synonyms</h3>
-                                <p>Find words with similar meanings</p>
-                            </div>
-                            <div class="question-type-item">
-                                <i class="fas fa-not-equal"></i>
-                                <h3>Antonyms</h3>
-                                <p>Identify opposite meanings</p>
-                            </div>
-                            <div class="question-type-item">
-                                <i class="fas fa-random"></i>
-                                <h3>Scrambled Words</h3>
-                                <p>Unscramble vocabulary words</p>
-                            </div>
-                        </div>
-                        <p class="note"><i class="fas fa-info-circle"></i> Questions are tailored to your grade level (<?php echo $user['grade_level'] ?? '7-10'; ?>)</p>
-                    </div>
-
                     <!-- Rewards & Progression -->
                     <div class="instruction-card">
                         <div class="card-icon">
@@ -217,7 +189,7 @@ $current_essence = $essenceManager->getEssence($user_id);
                         <h2>Rewards & Progression</h2>
                         <div class="rewards-grid">
                             <div class="reward-item">
-                                <i class="fas fa-gem essence-icon"></i>
+                                <img src="../assets/currency/essence.png" alt="Essence" class="reward-icon">
                                 <h3>Essence</h3>
                                 <p>Earn 5-10 essence per correct answer</p>
                                 <p class="current-balance">Current: <strong><?php echo $current_essence; ?></strong></p>
@@ -229,7 +201,7 @@ $current_essence = $essenceManager->getEssence($user_id);
                                 <p class="current-balance">Current: <strong><?php echo $user_shards; ?></strong></p>
                             </div>
                             <div class="reward-item">
-                                <i class="fas fa-star score-icon"></i>
+                                <img src="../assets/stats/ratings1.png" alt="Score" class="reward-icon">
                                 <h3>Score Points</h3>
                                 <p>100 points per correct answer</p>
                                 <p class="current-balance">Tracks your performance</p>
@@ -240,33 +212,33 @@ $current_essence = $essenceManager->getEssence($user_id);
                     <!-- Character Stats -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <i class="fas fa-user-shield"></i>
+                            <img src="../assets/menu/charactersys.png" alt="Character Stats" style="width: 100%; height: 100%; object-fit: contain;">
                         </div>
                         <h2>Character Stats</h2>
                         <div class="stats-explanation">
                             <div class="stat-item">
-                                <i class="fas fa-heart"></i>
+                                <img src="../assets/stats/heart.png" alt="HP" class="stat-icon-img">
                                 <div>
                                     <strong>HP (Health Points)</strong>
                                     <p>Your character's health - starts at 100</p>
                                 </div>
                             </div>
                             <div class="stat-item">
-                                <i class="fas fa-level-up-alt"></i>
+                                <img src="../assets/stats/level.png" alt="Level" class="stat-icon-img">
                                 <div>
                                     <strong>Level</strong>
                                     <p>Increases as you defeat more monsters</p>
                                 </div>
                             </div>
                             <div class="stat-item">
-                                <i class="fas fa-gem"></i>
+                                <img src="../assets/currency/essence.png" alt="Essence" class="stat-icon-img">
                                 <div>
                                     <strong>Essence</strong>
                                     <p>Currency earned from battles</p>
                                 </div>
                             </div>
                             <div class="stat-item">
-                                <i class="fas fa-chart-line"></i>
+                                <img src="../assets/stats/gwa.png" alt="GWA" class="stat-icon-img">
                                 <div>
                                     <strong>GWA (Game Weighted Average)</strong>
                                     <p>Your average score over the last 30 days</p>
@@ -275,40 +247,10 @@ $current_essence = $essenceManager->getEssence($user_id);
                         </div>
                     </div>
 
-                    <!-- Monster Types -->
-                    <div class="instruction-card">
-                        <div class="card-icon">
-                            <i class="fas fa-dragon"></i>
-                        </div>
-                        <h2>Monster Types</h2>
-                        <div class="monster-gallery">
-                            <div class="monster-item">
-                                <div class="monster-sprite monster1"></div>
-                                <h3>Common Monster</h3>
-                                <p>Basic enemies with standard questions</p>
-                            </div>
-                            <div class="monster-item">
-                                <div class="monster-sprite monster2"></div>
-                                <h3>Rare Monster</h3>
-                                <p>Tougher foes with harder vocabulary</p>
-                            </div>
-                            <div class="monster-item">
-                                <div class="monster-sprite monster3"></div>
-                                <h3>Elite Monster</h3>
-                                <p>Challenging enemies with complex words</p>
-                            </div>
-                            <div class="monster-item">
-                                <div class="monster-sprite boss"></div>
-                                <h3>Boss Monster</h3>
-                                <p>Ultimate challenge with advanced vocabulary</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Tips & Strategies -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <i class="fas fa-lightbulb"></i>
+                            <img src="../assets/menu/instructionicon.png" alt="Tips" style="width: 100%; height: 100%; object-fit: contain;">
                         </div>
                         <h2>Tips & Strategies</h2>
                         <ul class="tips-list">
@@ -353,7 +295,7 @@ $current_essence = $essenceManager->getEssence($user_id);
                     <!-- Learning Mode -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <i class="fas fa-graduation-cap"></i>
+                            <img src="../assets/menu/learnvocab.webp" alt="Learning Mode" style="width: 100%; height: 100%; object-fit: contain;">
                         </div>
                         <h2>Learning Mode</h2>
                         <p>Before jumping into battle, use Learning Mode to:</p>
@@ -457,6 +399,13 @@ $current_essence = $essenceManager->getEssence($user_id);
                 instructionsWrapper.style.scrollBehavior = 'smooth';
             }
         });
+
+        // Toggle currency dropdown on mobile
+        function toggleCurrencyDropdown(element) {
+            if (window.innerWidth <= 768) {
+                element.classList.toggle('show-dropdown');
+            }
+        }
     </script>
 </body>
 </html>

@@ -55,6 +55,11 @@ if ($shard_balance) {
     $user_shards = $shard_balance['current_shards'];
 }
 
+// Get essence balance
+require_once '../api/essence_manager.php';
+$essenceManager = new EssenceManager($pdo);
+$current_essence = $essenceManager->getEssence($user_id);
+
 // Get user's owned characters
 $stmt = $pdo->prepare("SELECT character_type FROM character_ownership WHERE user_id = ?");
 $stmt->execute([$user_id]);
@@ -76,6 +81,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <?php include '../loaders/loader-component.php'; ?>
     <div class="game-container">
         <!-- Background -->
         <div class="background-image"></div>
@@ -88,9 +94,16 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 </div>
             </div>
             <div class="header-right">
-                <div class="shard-currency">
-                    <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
-                    <span class="shard-count" id="shard-count">0</span>
+                <div class="shard-currency" onclick="toggleCurrencyDropdown(this)">
+                    <div class="currency-item shard-item">
+                        <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
+                        <span class="shard-count" id="shard-count">0</span>
+                        <i class="fas fa-chevron-down mobile-only dropdown-arrow" style="font-size: 0.8rem; margin-left: 5px;"></i>
+                    </div>
+                    <div class="currency-item essence-item">
+                        <img src="../assets/currency/essence.png" alt="Essence" class="shard-icon">
+                        <span class="shard-count"><?php echo $current_essence; ?></span>
+                    </div>
                 </div>
                 <div class="user-profile">
                     <div class="user-info">
@@ -99,11 +112,11 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                     </div>
                     <div class="profile-dropdown">
                         <a href="#" class="profile-icon">
-                            <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                         </a>
                         <div class="profile-dropdown-content">
                             <div class="profile-dropdown-header">
-                                <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                                <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                                 <div class="profile-dropdown-info">
                                     <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
                                     <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
@@ -163,7 +176,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 <!-- Right Side: Shop Characters (Sliding container) -->
                 <div class="progress-section shop-characters-container">
                     <div class="shop-characters-card transparent-card slide-in-right">
-                        <h3>Character Shop</h3>
+                        <h3><img src="assets/fc1839.png" alt="Shop Icon" class="title-icon"> Character Shop</h3>
                         <div class="shop-characters-grid">
                             <!-- Ethan Character Card -->
                             <div class="shop-character-card" data-character="boy">
@@ -275,13 +288,17 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
     </div>
 
     <!-- Purchase Confirmation Modal -->
-    <div id="purchaseModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
-        <div id="purchaseConfirmation" style="background: #1e3a8a; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); max-width: 400px; width: 90%; text-align: center; color: white;">
-            <h3 style="margin-bottom: 1rem; color: #4CAF50;">Purchase Confirmation</h3>
-            <p id="purchaseMessage" style="margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.8);"></p>
-            <div style="display: flex; gap: 1rem; justify-content: center;">
-                <button onclick="confirmPurchase()" style="background: #4CAF50; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Yes, Buy</button>
-                <button onclick="hidePurchaseModal()" style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Cancel</button>
+    <div id="purchaseModal" class="purchase-modal-overlay">
+        <div class="purchase-modal-content">
+            <div class="purchase-modal-header">
+                <h3>Purchase Confirmation</h3>
+            </div>
+            <div class="purchase-modal-body">
+                <p id="purchaseMessage"></p>
+            </div>
+            <div class="purchase-modal-footer">
+                <button onclick="confirmPurchase()" class="modal-btn confirm-btn">Yes, Buy</button>
+                <button onclick="hidePurchaseModal()" class="modal-btn cancel-btn">Cancel</button>
             </div>
         </div>
     </div>
@@ -350,14 +367,13 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
             console.log('Purchase data stored:', currentPurchaseData);
             
             // Show modal
-            modal.style.display = 'flex';
-            console.log('Modal display set to flex');
+            modal.classList.add('show');
+            console.log('Modal display set to show');
         }
 
         function hidePurchaseModal() {
             const modal = document.getElementById('purchaseModal');
             if (modal) {
-                modal.style.display = 'none';
                 modal.classList.remove('show');
             }
             // Don't clear currentPurchaseData here - it's needed for the purchase
@@ -587,38 +603,12 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
             }, 3000);
         }
         
-        // Add CSS for smooth button transitions and modal visibility
-        const style = document.createElement('style');
-        style.textContent = `
-            .purchase-btn {
-                transition: all 0.3s ease;
+        // Toggle currency dropdown on mobile
+        function toggleCurrencyDropdown(element) {
+            if (window.innerWidth <= 768) {
+                element.classList.toggle('show-dropdown');
             }
-            #purchaseModal {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 1000;
-                justify-content: center;
-                align-items: center;
-            }
-            #purchaseModal.show {
-                display: flex;
-            }
-            #purchaseConfirmation {
-                background: var(--royal-blue);
-                padding: 2rem;
-                border-radius: 12px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                max-width: 400px;
-                width: 90%;
-                text-align: center;
-            }
-        `;
-        document.head.appendChild(style);
+        }
     </script>
 </body>
 </html>

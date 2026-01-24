@@ -31,6 +31,8 @@ $transactions = $shardManager->getTransactionHistory($user_id, 100);
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <?php include '../loaders/loader-component.php'; ?>
+
     <div class="game-container">
         <!-- Background -->
         <div class="background-image"></div>
@@ -43,9 +45,16 @@ $transactions = $shardManager->getTransactionHistory($user_id, 100);
                 </div>
             </div>
             <div class="header-right">
-                <div class="shard-currency">
-                    <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
-                    <span class="shard-count"><?php echo $shard_balance['current_shards'] ?? 0; ?></span>
+                <div class="shard-currency" onclick="toggleCurrencyDropdown(this)">
+                    <div class="currency-item shard-item">
+                        <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
+                        <span class="shard-count"><?php echo $shard_balance['current_shards'] ?? 0; ?></span>
+                        <i class="fas fa-chevron-down mobile-only dropdown-arrow" style="font-size: 0.8rem; margin-left: 5px;"></i>
+                    </div>
+                    <div class="currency-item essence-item">
+                        <img src="../assets/currency/essence.png" alt="Essence" class="shard-icon">
+                        <span class="shard-count">0</span>
+                    </div>
                 </div>
                 <div class="user-profile">
                     <div class="user-info">
@@ -127,6 +136,13 @@ $transactions = $shardManager->getTransactionHistory($user_id, 100);
     <script>
         function goToCharacterProfile() {
             window.location.href = 'character.php';
+        }
+
+        // Toggle currency dropdown on mobile
+        function toggleCurrencyDropdown(element) {
+            if (window.innerWidth <= 768) {
+                element.classList.toggle('show-dropdown');
+            }
         }
     </script>
     

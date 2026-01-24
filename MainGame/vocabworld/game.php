@@ -140,6 +140,7 @@ if ($shard_result['success']) {
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
 </head>
 <body>
+    <?php include 'loaders/loader-component.php'; ?>
     <!-- Victory Overview Screen -->
     <div class="victory-screen" id="victory-screen">
         <div class="victory-content">

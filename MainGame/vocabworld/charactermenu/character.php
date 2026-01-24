@@ -3,7 +3,11 @@ require_once '../../../onboarding/config.php';
 require_once '../../../includes/greeting.php';
 
 // Check if user is logged in
+// Check if user is logged in
 requireLogin();
+
+// Include GWA Updater
+require_once '../../../includes/gwa_updater.php';
 
 // Get user information
 $user_id = $_SESSION['user_id'];
@@ -11,10 +15,21 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
+// Update all user GWAs first
+updateAllUserGWAs($pdo, $user_id);
+
+// Get GWA score
+$gwa_stmt = $pdo->prepare("SELECT gwa FROM user_gwa WHERE user_id = ? AND game_type = 'vocabworld'");
+$gwa_stmt->execute([$user_id]);
+$gwa_result = $gwa_stmt->fetch();
+
 // Get user's vocabworld progress
 $stmt = $pdo->prepare("SELECT * FROM game_progress WHERE user_id = ? AND game_type = 'vocabworld'");
 $stmt->execute([$user_id]);
 $progress = $stmt->fetch();
+
+// Calculate GWA if not found or ensure it defaults correctly (fallback to level * 1.5 logic from profile.php if needed)
+$gwa_score = $gwa_result ? $gwa_result['gwa'] : (($progress['player_level'] ?? 1) * 1.5);
 
 // Note: game_scores table has been removed
 $total_sessions = 0;
@@ -32,6 +47,11 @@ if ($progress && $progress['unlocked_levels']) {
 require_once '../shard_manager.php';
 $shardManager = new ShardManager($pdo);
 $shard_result = $shardManager->ensureShardAccount($user_id);
+
+// Get essence balance
+require_once '../api/essence_manager.php';
+$essenceManager = new EssenceManager($pdo);
+$current_essence = $essenceManager->getEssence($user_id);
 
 if ($shard_result['success']) {
     $user_shards = $shard_result['shard_balance'];
@@ -86,13 +106,14 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
     <link rel="icon" type="image/webp" href="../assets/menu/vv_logo.webp">
     <title>Character - VocabWorld</title>
     <link rel="stylesheet" href="../style.css?v=3">
-    <link rel="stylesheet" href="charactermenu.css?v=3">
+    <link rel="stylesheet" href="charactermenu.css?v=6">
     <link rel="stylesheet" href="../navigation/navigation.css?v=3">
     <link rel="stylesheet" href="../../../notif/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <?php include '../loaders/loader-component.php'; ?>
     <div class="game-container">
         <!-- Background -->
         <div class="background-image"></div>
@@ -105,9 +126,16 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 </div>
             </div>
             <div class="header-right">
-                <div class="shard-currency">
-                    <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
-                    <span class="shard-count" id="shard-count">0</span>
+                <div class="shard-currency" onclick="toggleCurrencyDropdown(this)">
+                    <div class="currency-item shard-item">
+                        <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
+                        <span class="shard-count" id="shard-count">0</span>
+                        <i class="fas fa-chevron-down mobile-only dropdown-arrow" style="font-size: 0.8rem; margin-left: 5px;"></i>
+                    </div>
+                    <div class="currency-item essence-item">
+                        <img src="../assets/currency/essence.png" alt="Essence" class="shard-icon">
+                        <span class="shard-count"><?php echo $current_essence; ?></span>
+                    </div>
                 </div>
                 <div class="user-profile">
                     <div class="user-info">
@@ -116,33 +144,32 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                     </div>
                     <div class="profile-dropdown">
                         <a href="#" class="profile-icon">
-                            <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                         </a>
                         <div class="profile-dropdown-content">
                             <div class="profile-dropdown-header">
-                                <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                                <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                                 <div class="profile-dropdown-info">
                                     <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
-                                    <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
+                                    <div class="profile-dropdown-level">
+                                        <img src="../assets/stats/level.png" class="level-icon-mini">
+                                        <span>Level <?php echo htmlspecialchars($progress['player_level'] ?? 1); ?></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="profile-dropdown-menu">
-                                <a href="../../../navigation/profile/profile.php" class="profile-dropdown-item">
-                                    <i class="fas fa-user"></i>
-                                    <span>View Profile</span>
+                                <a href="character.php" class="profile-dropdown-item">
+                                    <img src="assets/fc1089.png" class="dropdown-item-icon">
+                                    <span>View Character</span>
                                 </a>
-                                <a href="../../../navigation/favorites/favorites.php" class="profile-dropdown-item">
-                                    <i class="fas fa-star"></i>
-                                    <span>My Favorites</span>
+                                <a href="../learnvocabmenu/learn.php" class="profile-dropdown-item">
+                                    <img src="../assets/menu/vocabsys.png" class="dropdown-item-icon">
+                                    <span>Study & Learn</span>
                                 </a>
-                                <a href="../../../settings/settings.php" class="profile-dropdown-item">
-                                    <i class="fas fa-cog"></i>
-                                    <span>Settings</span>
-                                </a>
-                            </div>
+                             </div>
                             <div class="profile-dropdown-footer">
                                 <button class="profile-dropdown-item sign-out" onclick="showLogoutModal()">
-                                    <i class="fas fa-sign-out-alt"></i>
+                                    <img src="../assets/menu/exit.png" class="dropdown-item-icon">
                                     <span>Sign Out</span>
                                 </button>
                             </div>
@@ -167,10 +194,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                 <div class="character-logo">
                                     <img src="../assets/menu/vocabcharacterlogo.png" alt="VocabCharacter Logo" class="logo-image">
                                 </div>
-                                <div class="character-status">
-                                    <span class="status-indicator active"></span>
-                                    <span class="status-text">Active</span>
-                                </div>
+
                             </div>
                             <div class="character-preview-display">
                                 <div class="character-sprite-container">
@@ -187,11 +211,11 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                             
                             <div class="character-actions">
                                 <button class="action-btn edit-character-btn" onclick="goToEditCharacter()">
-                                    <i class="fas fa-user-edit"></i>
+                                    <img src="assets/fc5.png" class="action-icon" alt="Customize">
                                     <span>Customize</span>
                                 </button>
                                 <button class="action-btn shop-characters-btn" onclick="showCharacterShop()">
-                                    <i class="fas fa-store"></i>
+                                    <img src="assets/fc1839.png" class="action-icon" alt="Shop">
                                     <span>Shop</span>
                                 </button>
                             </div>
@@ -202,41 +226,41 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 <!-- Right Side: Progress & Badges -->
                 <div class="progress-section">
                     <div class="progress-card transparent-card">
-                        <h3>Your Progress</h3>
+                        <h3><img src="assets/fc1089.png" alt="Progress Icon" class="title-icon"> Your Progress</h3>
                         <div class="stat-item">
-                            <i class="fas fa-level-up-alt"></i>
+                            <img src="../assets/stats/level.png" alt="Level" style="width: 32px; height: 32px; margin-right: 15px;">
                             <div class="stat-details">
                                 <span class="stat-value">Level <?php echo htmlspecialchars($progress['player_level'] ?? 1); ?></span>
                                 <span class="stat-label">Current Level</span>
                             </div>
                         </div>
                         <div class="stat-item">
-                            <i class="fas fa-star"></i>
+                            <img src="../assets/stats/total_xp.png" alt="XP" style="width: 32px; height: 32px; margin-right: 15px;">
                             <div class="stat-details">
                                 <span class="stat-value"><?php echo number_format($progress['total_experience_earned'] ?? 0); ?> XP</span>
                                 <span class="stat-label">Total Experience</span>
                             </div>
                         </div>
                         <div class="stat-item">
-                            <i class="fas fa-skull"></i>
+                            <img src="../assets/stats/sword1.png" alt="Kills" style="width: 32px; height: 32px; margin-right: 15px;">
                             <div class="stat-details">
                                 <span class="stat-value"><?php echo number_format($progress['total_monsters_defeated'] ?? 0); ?></span>
                                 <span class="stat-label">Monsters Defeated</span>
                             </div>
                         </div>
                         <div class="stat-item">
-                            <i class="fas fa-award"></i>
+                            <img src="../assets/stats/gwa.png" alt="GWA" style="width: 32px; height: 32px; margin-right: 15px;">
                             <div class="stat-details">
-                                <span class="stat-value"><?php echo number_format($progress['score'] ?? 0, 2); ?></span>
+                                <span class="stat-value"><?php echo number_format($gwa_score, 2); ?></span>
                                 <span class="stat-label">GWA</span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="badges-card transparent-card">
-                        <h3>Achievements & Badges</h3>
+                        <h3><img src="assets/fc2124.png" alt="Badges Icon" class="title-icon"> Achievements & Badges</h3>
                         <div class="soon-badge">
-                            <div class="soon-icon">🚀</div>
+                            <div class="soon-icon"><img src="assets/fix.png" alt="Coming Soon"></div>
                             <div class="soon-text">Coming Soon</div>
                             <div class="soon-description">New achievements and badges are being developed!</div>
                         </div>
@@ -429,6 +453,13 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 if (characterName) {
                     characterName.textContent = characterNameText;
                 }
+            }
+        }
+
+        // Toggle currency dropdown on mobile
+        function toggleCurrencyDropdown(element) {
+            if (window.innerWidth <= 768) {
+                element.classList.toggle('show-dropdown');
             }
         }
     </script>

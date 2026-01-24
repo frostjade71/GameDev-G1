@@ -65,6 +65,18 @@ body.mobile-device .coming-soon-card {
     width: 100%;
 }
 
+.grade-card-container {
+    width: 100%;
+}
+
+.back-button-container {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+    width: 100%;
+}
+
 /* Grade Cards - Using same styling as index.php cards */
 .vocabworld-card {
     border-radius: 24px;
@@ -81,6 +93,7 @@ body.mobile-device .coming-soon-card {
     position: relative;
     cursor: pointer;
     min-height: 200px;
+    width: 100%;
     box-shadow: 
         0 4px 20px rgba(0, 0, 0, 0.3),
         0 8px 32px rgba(0, 0, 0, 0.4),
@@ -472,9 +485,10 @@ body.mobile-device .coming-soon-card {
     }
     
     .vocabworld-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        max-width: 500px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas: none;
+        gap: 1rem;
+        max-width: 100%;
     }
     
     .vocabworld-card {

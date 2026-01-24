@@ -3,347 +3,387 @@
 
 /* Profile Dropdown Styles for VocabWorld */
 .profile-dropdown {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .profile-dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 100%;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 40, 0.95));
-    backdrop-filter: blur(20px);
-    border: 2px solid rgba(96, 239, 255, 0.3);
-    border-radius: 16px;
-    min-width: 300px;
-    box-shadow: 
-        0 10px 40px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(96, 239, 255, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    z-index: 2000;
-    margin-top: 12px;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(-15px) scale(0.95);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.95),
+    rgba(20, 20, 40, 0.95)
+  );
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(96, 239, 255, 0.3);
+  border-radius: 16px;
+  min-width: 200px;
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(96, 239, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  z-index: 2000;
+  margin-top: 8px;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-15px) scale(0.95);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .profile-dropdown-content.show {
-    display: block;
-    opacity: 1;
-    transform: translateY(0) scale(1);
+  display: block;
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .profile-dropdown-content::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(96, 239, 255, 0.5), transparent);
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(96, 239, 255, 0.5),
+    transparent
+  );
 }
 
 .profile-dropdown-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(96, 239, 255, 0.2);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: linear-gradient(135deg, rgba(96, 239, 255, 0.05), rgba(0, 255, 135, 0.05));
+  padding: 0.8rem;
+  border-bottom: 1px solid rgba(96, 239, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(
+    135deg,
+    rgba(96, 239, 255, 0.05),
+    rgba(0, 255, 135, 0.05)
+  );
 }
 
 .profile-dropdown-avatar {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid rgba(96, 239, 255, 0.6);
-    box-shadow: 0 0 15px rgba(96, 239, 255, 0.3);
-    transition: all 0.3s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(96, 239, 255, 0.6);
+  box-shadow: 0 0 15px rgba(96, 239, 255, 0.3);
+  transition: all 0.3s ease;
 }
 
 .profile-dropdown-avatar:hover {
-    border-color: rgba(0, 255, 135, 0.8);
-    box-shadow: 0 0 20px rgba(0, 255, 135, 0.4);
+  border-color: rgba(0, 255, 135, 0.8);
+  box-shadow: 0 0 20px rgba(0, 255, 135, 0.4);
 }
 
 .profile-dropdown-info {
-    flex: 1;
+  flex: 1;
 }
 
 .profile-dropdown-name {
-    color: #ffffff;
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 0 0 0.25rem 0;
-    line-height: 1.2;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    background: linear-gradient(135deg, #ffffff, rgba(96, 239, 255, 0.8));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.1rem 0;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, #ffffff, rgba(96, 239, 255, 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.profile-dropdown-email {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-    margin: 0;
-    word-break: break-all;
-    font-weight: 400;
+.profile-dropdown-level {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.65rem;
+  margin-top: 2px;
+}
+
+.level-icon-mini {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
 }
 
 .profile-dropdown-menu {
-    padding: 0.5rem 0;
-    background: rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 0;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .profile-dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.875rem 1.5rem;
-    color: #ffffff;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 500;
-    position: relative;
-    overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
 }
 
 .profile-dropdown-item::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    background: linear-gradient(135deg, rgba(96, 239, 255, 0.2), rgba(0, 255, 135, 0.2));
-    transition: width 0.3s ease;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(96, 239, 255, 0.2),
+    rgba(0, 255, 135, 0.2)
+  );
+  transition: width 0.3s ease;
 }
 
 .profile-dropdown-item:hover {
-    background: linear-gradient(135deg, rgba(96, 239, 255, 0.1), rgba(0, 255, 135, 0.05));
-    color: rgba(96, 239, 255, 1);
-    transform: translateX(5px);
+  background: linear-gradient(
+    135deg,
+    rgba(96, 239, 255, 0.1),
+    rgba(0, 255, 135, 0.05)
+  );
+  color: rgba(96, 239, 255, 1);
+  transform: translateX(5px);
 }
 
 .profile-dropdown-item:hover::before {
-    width: 4px;
+  width: 4px;
 }
 
 .profile-dropdown-item i {
-    width: 22px;
-    text-align: center;
-    color: rgba(96, 239, 255, 0.8);
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
+  width: 18px;
+  text-align: center;
+  color: rgba(96, 239, 255, 0.8);
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
-.profile-dropdown-item:hover i {
-    color: rgba(96, 239, 255, 1);
-    transform: scale(1.1);
+.profile-dropdown-item:hover i,
+.profile-dropdown-item:hover .dropdown-item-icon {
+  color: rgba(96, 239, 255, 1);
+  transform: scale(1.1);
+}
+
+.dropdown-item-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  transition: all 0.3s ease;
 }
 
 .profile-dropdown-footer {
-    border-top: 1px solid rgba(96, 239, 255, 0.2);
-    padding: 0.5rem 0;
-    background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid rgba(96, 239, 255, 0.2);
+  padding: 0.5rem 0;
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .profile-dropdown-item.sign-out {
-    color: #ff6b6b;
-    font-weight: 600;
+  color: #ff6b6b;
+  font-weight: 600;
 }
 
 .profile-dropdown-item.sign-out:hover {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(255, 107, 107, 0.05));
-    color: #ff8a8a;
-    transform: translateX(5px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 107, 0.15),
+    rgba(255, 107, 107, 0.05)
+  );
+  color: #ff8a8a;
+  transform: translateX(5px);
 }
 
 .profile-dropdown-item.sign-out:hover::before {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(255, 107, 107, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 107, 0.3),
+    rgba(255, 107, 107, 0.2)
+  );
 }
 
-.profile-dropdown-item.sign-out i {
-    color: #ff6b6b;
-}
-
-.profile-dropdown-item.sign-out:hover i {
-    color: #ff8a8a;
-    transform: scale(1.1);
+.profile-dropdown-item.sign-out:hover .dropdown-item-icon {
+  transform: scale(1.1);
 }
 
 /* Game-specific header styling */
 .top-header {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(20, 20, 40, 0.9));
-    backdrop-filter: blur(15px);
-    border-bottom: 2px solid rgba(96, 239, 255, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.9),
+    rgba(20, 20, 40, 0.9)
+  );
+  backdrop-filter: blur(15px);
+  border-bottom: 2px solid rgba(96, 239, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .header-right {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .greeting {
-    font-size: 0.7rem;
-    color: rgba(96, 239, 255, 0.8);
-    font-weight: 500;
+  font-size: 0.7rem;
+  color: rgba(96, 239, 255, 0.8);
+  font-weight: 500;
 }
 
 .username {
-    font-size: 1rem;
-    color: #ffffff;
-    font-weight: 600;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 0.9rem;
+  color: #ffffff;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .profile-icon {
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .profile-icon:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .profile-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(96, 239, 255, 0.5);
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(96, 239, 255, 0.2);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(96, 239, 255, 0.5);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(96, 239, 255, 0.2);
 }
 
 .profile-icon:hover .profile-img {
-    border-color: rgba(96, 239, 255, 0.8);
-    box-shadow: 0 0 15px rgba(96, 239, 255, 0.4);
+  border-color: rgba(96, 239, 255, 0.8);
+  box-shadow: 0 0 15px rgba(96, 239, 255, 0.4);
 }
-
-
 
 /* Mobile responsiveness for VocabWorld dropdown */
 @media screen and (max-width: 768px) {
-    .profile-dropdown-content {
-        min-width: 280px;
-        right: -15px;
-        margin-top: 8px;
-    }
-    
-    .profile-dropdown-header {
-        padding: 1.25rem;
-    }
-    
-    .profile-dropdown-avatar {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .profile-dropdown-name {
-        font-size: 1.1rem;
-    }
-    
-    .profile-dropdown-email {
-        font-size: 0.85rem;
-    }
-    
-    .profile-dropdown-item {
-        padding: 0.75rem 1.25rem;
-        font-size: 0.9rem;
-    }
-    
-    .profile-img {
-        width: 36px;
-        height: 36px;
-    }
-    
-    .header-right {
-        gap: 1rem;
-    }
+  .profile-dropdown-content {
+    min-width: 160px !important;
+    right: -10px !important;
+    margin-top: 5px !important;
+  }
+
+  .profile-dropdown-header {
+    padding: 0.6rem !important;
+  }
+
+  .profile-dropdown-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    border-width: 2px !important;
+    box-shadow: 0 0 5px rgba(96, 239, 255, 0.3) !important;
+  }
+
+  .profile-dropdown-name {
+    font-size: 0.75rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  .profile-dropdown-email {
+    font-size: 0.55rem !important;
+  }
+
+  .profile-dropdown-item {
+    padding: 0.4rem 0.8rem !important;
+    font-size: 0.7rem !important;
+  }
+
+  .profile-img {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .header-right {
+    gap: 0.6rem !important;
+  }
 }
 
 @media screen and (max-width: 480px) {
-    .profile-dropdown-content {
-        min-width: 260px;
-        right: -20px;
-    }
-    
-    .profile-dropdown-header {
-        padding: 1rem;
-    }
-    
-    .profile-dropdown-avatar {
-        width: 45px;
-        height: 45px;
-    }
-    
-    .profile-dropdown-name {
-        font-size: 1rem;
-    }
-    
-    .profile-dropdown-email {
-        font-size: 0.8rem;
-    }
-    
-    .profile-dropdown-item {
-        padding: 0.7rem 1rem;
-        font-size: 0.85rem;
-    }
+  .profile-dropdown-content {
+    min-width: 150px !important;
+    right: -5px !important;
+  }
+
+  .profile-dropdown-header {
+    padding: 0.5rem !important;
+  }
+
+  .profile-dropdown-avatar {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .profile-dropdown-name {
+    font-size: 0.7rem !important;
+  }
+
+  .profile-dropdown-email {
+    font-size: 0.5rem !important;
+  }
+
+  .profile-dropdown-item {
+    padding: 0.35rem 0.6rem !important;
+    font-size: 0.65rem !important;
+  }
 }
 
 /* Animation keyframes for VocabWorld theme */
 @keyframes vocabworld-glow {
-    0%, 100% {
-        box-shadow: 0 0 10px rgba(96, 239, 255, 0.2);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(96, 239, 255, 0.4);
-    }
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(96, 239, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(96, 239, 255, 0.4);
+  }
 }
 
 @keyframes vocabworld-pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 /* Apply VocabWorld-specific animations */
 .profile-dropdown-content.show {
-    animation: vocabworld-glow 2s ease-in-out infinite;
+  animation: vocabworld-glow 2s ease-in-out infinite;
 }
-
-.profile-icon:hover .profile-img {
-    animation: vocabworld-pulse 1s ease-in-out infinite;
-}
-
 
 

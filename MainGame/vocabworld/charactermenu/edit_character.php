@@ -55,6 +55,11 @@ if ($shard_balance) {
     $user_shards = $shard_balance['current_shards'];
 }
 
+// Get essence balance
+require_once '../api/essence_manager.php';
+$essenceManager = new EssenceManager($pdo);
+$current_essence = $essenceManager->getEssence($user_id);
+
 // Get user's owned characters
 $stmt = $pdo->prepare("SELECT character_type FROM character_ownership WHERE user_id = ?");
 $stmt->execute([$user_id]);
@@ -76,6 +81,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <?php include '../loaders/loader-component.php'; ?>
     <div class="game-container">
         <!-- Background -->
         <div class="background-image"></div>
@@ -88,9 +94,16 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 </div>
             </div>
             <div class="header-right">
-                <div class="shard-currency">
-                    <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
-                    <span class="shard-count" id="shard-count">0</span>
+                <div class="shard-currency" onclick="toggleCurrencyDropdown(this)">
+                    <div class="currency-item shard-item">
+                        <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
+                        <span class="shard-count" id="shard-count">0</span>
+                        <i class="fas fa-chevron-down mobile-only dropdown-arrow" style="font-size: 0.8rem; margin-left: 5px;"></i>
+                    </div>
+                    <div class="currency-item essence-item">
+                        <img src="../assets/currency/essence.png" alt="Essence" class="shard-icon">
+                        <span class="shard-count"><?php echo $current_essence; ?></span>
+                    </div>
                 </div>
                 <div class="user-profile">
                     <div class="user-info">
@@ -99,11 +112,11 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                     </div>
                     <div class="profile-dropdown">
                         <a href="#" class="profile-icon">
-                            <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                         </a>
                         <div class="profile-dropdown-content">
                             <div class="profile-dropdown-header">
-                                <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                                <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                                 <div class="profile-dropdown-info">
                                     <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
                                     <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
@@ -163,7 +176,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 <!-- Right Side: Character Selection (Sliding container) -->
                 <div class="progress-section character-selection-container">
                     <div class="character-selection-card transparent-card slide-in-right">
-                        <h3>Select Your Character</h3>
+                        <h3><img src="assets/fc5.png" alt="Select Icon" class="title-icon"> Select Your Character</h3>
                         <div class="character-cards-grid">
                             <!-- Ethan Character Card -->
                             <div class="character-card" data-character="boy">
@@ -418,6 +431,12 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
             setTimeout(() => {
                 toast.remove();
             }, 3000);
+        }
+        // Toggle currency dropdown on mobile
+        function toggleCurrencyDropdown(element) {
+            if (window.innerWidth <= 768) {
+                element.classList.toggle('show-dropdown');
+            }
         }
     </script>
 </body>

@@ -33,6 +33,11 @@ require_once '../shard_manager.php';
 $shardManager = new ShardManager($pdo);
 $shard_result = $shardManager->ensureShardAccount($user_id);
 
+// Get essence balance
+require_once '../api/essence_manager.php';
+$essenceManager = new EssenceManager($pdo);
+$current_essence = $essenceManager->getEssence($user_id);
+
 if ($shard_result['success']) {
     $user_shards = $shard_result['shard_balance'];
     
@@ -59,7 +64,7 @@ if ($shard_result['success']) {
     <title>Vocabulary - VocabWorld</title>
     <link rel="stylesheet" href="../style.css?v=3">
     <link rel="stylesheet" href="../navigation/navigation.css?v=3">
-    <link rel="stylesheet" href="learnvocabmenu.css?v=3">
+    <link rel="stylesheet" href="learnvocabmenu.css?v=4">
     <link rel="stylesheet" href="../../../notif/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -98,6 +103,7 @@ if ($shard_result['success']) {
     </style>
 </head>
 <body>
+    <?php include '../loaders/loader-component.php'; ?>
     <div class="game-container">
         <!-- Background -->
         <div class="background-image"></div>
@@ -110,9 +116,16 @@ if ($shard_result['success']) {
                 </div>
             </div>
             <div class="header-right">
-                <div class="shard-currency">
-                    <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
-                    <span class="shard-count" id="shard-count">0</span>
+                <div class="shard-currency" onclick="toggleCurrencyDropdown(this)">
+                    <div class="currency-item shard-item">
+                        <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
+                        <span class="shard-count" id="shard-count">0</span>
+                        <i class="fas fa-chevron-down mobile-only dropdown-arrow" style="font-size: 0.8rem; margin-left: 5px;"></i>
+                    </div>
+                    <div class="currency-item essence-item">
+                        <img src="../assets/currency/essence.png" alt="Essence" class="shard-icon">
+                        <span class="shard-count"><?php echo $current_essence; ?></span>
+                    </div>
                 </div>
                 <div class="user-profile">
                     <div class="user-info">
@@ -121,33 +134,32 @@ if ($shard_result['success']) {
                     </div>
                     <div class="profile-dropdown">
                         <a href="#" class="profile-icon">
-                            <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                         </a>
                         <div class="profile-dropdown-content">
                             <div class="profile-dropdown-header">
-                                <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                                <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                                 <div class="profile-dropdown-info">
                                     <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
-                                    <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
+                                    <div class="profile-dropdown-level">
+                                        <img src="../assets/stats/level.png" class="level-icon-mini">
+                                        <span>Level <?php echo htmlspecialchars($progress['player_level'] ?? 1); ?></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="profile-dropdown-menu">
-                                <a href="../../../navigation/profile/profile.php" class="profile-dropdown-item">
-                                    <i class="fas fa-user"></i>
-                                    <span>View Profile</span>
+                                <a href="../charactermenu/character.php" class="profile-dropdown-item">
+                                    <img src="../charactermenu/assets/fc1089.png" class="dropdown-item-icon">
+                                    <span>View Character</span>
                                 </a>
-                                <a href="../../../navigation/favorites/favorites.php" class="profile-dropdown-item">
-                                    <i class="fas fa-star"></i>
-                                    <span>My Favorites</span>
+                                <a href="learn.php" class="profile-dropdown-item">
+                                    <img src="../assets/menu/vocabsys.png" class="dropdown-item-icon">
+                                    <span>Study & Learn</span>
                                 </a>
-                                <a href="../../../settings/settings.php" class="profile-dropdown-item">
-                                    <i class="fas fa-cog"></i>
-                                    <span>Settings</span>
-                                </a>
-                            </div>
+                             </div>
                             <div class="profile-dropdown-footer">
                                 <button class="profile-dropdown-item sign-out" onclick="showLogoutModal()">
-                                    <i class="fas fa-sign-out-alt"></i>
+                                    <img src="../assets/menu/exit.png" class="dropdown-item-icon">
                                     <span>Sign Out</span>
                                 </button>
                             </div>
@@ -216,49 +228,7 @@ if ($shard_result['success']) {
                     </div>
 
                  </div>
-                 <style>
-                     .vocabworld-grid {
-                         display: grid;
-                         grid-template-columns: 1fr;
-                         gap: 20px;
-                         max-width: 1200px;
-                         margin: 0 auto;
-                         padding: 20px;
-                     }
-                     
-                     .grade-card-container {
-                         width: 100%;
-                     }
-                     
-                     .vocabworld-card {
-                         min-height: 180px;
-                         display: flex;
-                         flex-direction: column;
-                         justify-content: center;
-                         align-items: center;
-                         text-align: center;
-                         width: 100%;
-                     }
-                     
-                     .back-button-container {
-                         display: flex;
-                         justify-content: flex-end;
-                         padding: 10px 0;
-                         margin-top: 10px;
-                     }
-                     
-                     @media (min-width: 768px) {
-                         .vocabworld-grid {
-                             grid-template-columns: repeat(2, 1fr);
-                         }
-                         
-                         .back-button-container {
-                             grid-column: 2;
-                             justify-content: flex-end;
-                             padding-right: 20px;
-                         }
-                     }
-                 </style>
+
             </div>
         </div>
     </div>
@@ -338,6 +308,13 @@ if ($shard_result['success']) {
         document.addEventListener('DOMContentLoaded', function() {
             initializeShardDisplay();
         });
+
+        // Toggle currency dropdown on mobile
+        function toggleCurrencyDropdown(element) {
+            if (window.innerWidth <= 768) {
+                element.classList.toggle('show-dropdown');
+            }
+        }
     </script>
     <script src="grade-access.js"></script>
 </body>

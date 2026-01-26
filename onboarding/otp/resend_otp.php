@@ -14,7 +14,7 @@ $username = $_SESSION['temp_user_data']['username'];
 // Generate new OTP
 $new_otp = generateOTP();
 $_SESSION['otp'] = $new_otp;
-$_SESSION['otp_expiry'] = time() + (10 * 60); // 10 minutes expiry
+$_SESSION['otp_expiry'] = time() + (5 * 60); // 5 minutes expiry
 
 if (sendOTP($email, $username, $new_otp)) {
     header('Location: verify.php?resent=1');

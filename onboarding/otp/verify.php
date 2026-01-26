@@ -56,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include '../../includes/favicon.php'; ?>
     <title>Verify Email - Word Weavers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -130,11 +131,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         .verification-title {
-            color: rgba(96, 239, 255, 1);
+            color: #ffffff;
             margin-bottom: 0.5rem;
             font-size: 1.1rem;
             font-family: 'Press Start 2P', cursive;
-            text-shadow: 0 0 10px rgba(96, 239, 255, 0.3);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
             letter-spacing: 0.5px;
             line-height: 1.4;
             white-space: nowrap;

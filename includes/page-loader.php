@@ -49,7 +49,7 @@ if (file_exists("includes/loader.css")) {
 
 <div class="page-loader-overlay" id="pageLoader">
     <div class="loader"></div>
-
+    <div id="loaderText" class="loader-text"></div>
 </div>
 
 <script>

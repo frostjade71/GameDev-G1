@@ -246,6 +246,18 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
         </div>
     </div>
 
+    <!-- Changelog Pop-up Modal -->
+    <div class="changelog-modal-overlay" id="changelogModalOverlay">
+        <div class="changelog-modal" id="changelogModal">
+            <button class="changelog-close-btn" id="closeChangelog" aria-label="Close changelog">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="changelog-content">
+                <img src="assets/banner/changelog_banner.png" alt="Changelog Banner" class="changelog-banner-img">
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script src="navigation/shared/profile-dropdown.js"></script>
     <script src="navigation/shared/notification-badge.js"></script>

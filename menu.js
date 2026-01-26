@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeMenu();
     initializeAnimations();
     initializeSoundEffects();
+    initializeChangelog();
 });
 
 // Initialize menu functionality
@@ -291,8 +292,52 @@ animationStyle.textContent = `
 `;
 document.head.appendChild(animationStyle);
 
+// Initialize Changelog Pop-up
+function initializeChangelog() {
+    const modalOverlay = document.getElementById('changelogModalOverlay');
+    const closeBtn = document.getElementById('closeChangelog');
 
+    if (!modalOverlay || !closeBtn) return;
 
+    // Check if already shown in this session
+    if (sessionStorage.getItem('changelog_viewed')) {
+        return;
+    }
 
+    // Show modal on page load
+    // Using a slight delay for better transition
+    setTimeout(() => {
+        modalOverlay.classList.add('show');
+        // Mark as shown
+        sessionStorage.setItem('changelog_viewed', 'true');
+    }, 500);
 
+    // Close on close button click
+    closeBtn.addEventListener('click', function() {
+        playClickSound();
+        hideChangelog();
+    });
+
+    // Close on clicking outside the modal
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            hideChangelog();
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modalOverlay.classList.contains('show')) {
+            hideChangelog();
+        }
+    });
+
+    function hideChangelog() {
+        modalOverlay.style.opacity = '0';
+        setTimeout(() => {
+            modalOverlay.classList.remove('show');
+            modalOverlay.style.opacity = '';
+        }, 300);
+    }
+}
 

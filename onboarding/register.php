@@ -731,7 +731,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <select 
                     id="grade_level" 
                     name="grade_level" 
-                    required
+                    required>
                     <option value="">Select your grade level</option>
                     <option value="Grade 7" <?php echo ($_POST['grade_level'] ?? '') === 'Grade 7' ? 'selected' : ''; ?>>Grade 7</option>
                     <option value="Grade 8" <?php echo ($_POST['grade_level'] ?? '') === 'Grade 8' ? 'selected' : ''; ?>>Grade 8</option>
@@ -798,8 +798,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     <script>
         // Add loading state to form
-        document.querySelector('.auth-form').addEventListener('submit', function() {
-            this.classList.add('loading');
+        document.querySelector('.auth-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const loader = document.getElementById('pageLoader');
+            const loaderText = document.getElementById('loaderText');
+
+            if (loader) {
+                loader.classList.remove('hidden');
+                if (loaderText) {
+                    loaderText.textContent = "Creating Account";
+                    
+                    setTimeout(() => {
+                        loaderText.textContent = "Sending Code";
+                        
+                        setTimeout(() => {
+                            form.submit();
+                        }, 2000);
+                    }, 2000);
+                } else {
+                    form.submit();
+                }
+            } else {
+                form.submit();
+            }
         });
         
         // Password confirmation validation

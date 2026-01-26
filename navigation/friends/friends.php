@@ -102,7 +102,7 @@ $stmt = $pdo->prepare("
         WHERE receiver_id = ? AND status = 'pending'
     )
     ORDER BY RAND() 
-    LIMIT 4
+    LIMIT 6
 ");
 $stmt->execute([$user_id, $user_id, $user_id, $user_id, $user_id, $user_id]);
 $all_users = $stmt->fetchAll();
@@ -344,7 +344,6 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
             <div class="suggested-section">
                 <div class="section-header">
                     <h2><i class="fas fa-user-plus"></i> People You May Know</h2>
-                    <div style="width: 100%; height: 1px; background: rgba(96, 239, 255, 0.3); margin: 15px 0;"></div>
                     <div class="search-actions">
                         <div class="search-container" style="position: relative; display: flex; align-items: center; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(96, 239, 255, 0.3); border-radius: 25px; padding: 0.5rem 1rem; transition: all 0.3s ease; min-width: 250px;" onmouseenter="this.style.background='rgba(255, 255, 255, 0.15)'; this.style.borderColor='rgba(96, 239, 255, 0.6)'" onmouseleave="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(96, 239, 255, 0.3)'">
                             <i class="fas fa-search search-icon" style="color: rgba(96, 239, 255, 0.7); margin-right: 0.5rem; font-size: 0.9rem;"></i>
@@ -355,9 +354,10 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                         </div>
                         <button class="refresh-button" onclick="refreshUsers()">
                             <i class="fas fa-sync-alt"></i>
-                            Refresh
+                            <span>Refresh</span>
                         </button>
                     </div>
+                    <div style="width: 100%; height: 1px; background: rgba(96, 239, 255, 0.3); margin: 15px 0;"></div>
                 </div>
                 
                 <?php if (empty($suggested_friends)): ?>
@@ -367,6 +367,26 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                     <p>You're the only user in the system right now!</p>
                 </div>
                 <?php else: ?>
+                <div class="loader-container" id="suggestedLoader">
+                    <div class="cards">
+                        <div class="card">
+                            <div class="face front"></div>
+                            <div class="face back"></div>
+                        </div>
+                        <div class="card">
+                            <div class="face front"></div>
+                            <div class="face back"></div>
+                        </div>
+                        <div class="card">
+                            <div class="face front"></div>
+                            <div class="face back"></div>
+                        </div>
+                        <div class="card">
+                            <div class="face front"></div>
+                            <div class="face back"></div>
+                        </div>
+                    </div>
+                </div>
                 <div class="suggested-grid" id="suggestedGrid">
                         <?php foreach ($suggested_friends as $suggested): ?>
                         <div class="suggested-card" onclick="viewProfile(<?php echo $suggested['id']; ?>)" style="cursor: pointer;">

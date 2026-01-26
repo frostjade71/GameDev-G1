@@ -135,12 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Game card clicked, gameType:', gameType); // Debug log
 
                 if (gameType === 'vocabbg') {
-                    // Redirect to VocabWorld game
-                    console.log('Redirecting to VocabWorld...'); // Debug log
+                    // Redirect to VocabWorld game loader
+                    console.log('Redirecting to VocabWorld Loader...'); // Debug log
                     playClickSound();
                     // Try immediate redirect
                     setTimeout(() => {
-                        window.location.href = '../MainGame/vocabworld/index.php';
+                        window.location.href = '../MainGame/vocabworld/loading/entering.html';
                     }, 100);
                 } else if (gameType === 'grammarbg') {
                     showToast('Grammar Heroes - Coming Soon!');

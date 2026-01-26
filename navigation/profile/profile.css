@@ -679,23 +679,23 @@
 
 @media (max-width: 768px) {
     .profile-settings {
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
+        margin-top: 1.2rem;
+        padding-top: 1.2rem;
     }
 
     .profile-settings::before {
-        width: 50px;
+        width: 40px;
     }
 }
 
 @media (max-width: 480px) {
     .profile-settings {
-        margin-top: 1rem;
-        padding-top: 1rem;
+        margin-top: 0.8rem;
+        padding-top: 0.8rem;
     }
 
     .profile-settings::before {
-        width: 40px;
+        width: 30px;
     }
 }
 
@@ -714,25 +714,28 @@
 
 @media (max-width: 768px) {
     .profile-settings h2 {
-        margin-bottom: 1rem;
-        font-size: 1.2rem;
-        gap: 0.6rem;
-    }
-
-    .profile-settings h2 i {
-        font-size: 1.1em;
-    }
-}
-
-@media (max-width: 480px) {
-    .profile-settings h2 {
         margin-bottom: 0.8rem;
         font-size: 1.1rem;
         gap: 0.5rem;
     }
 
     .profile-settings h2 i {
-        font-size: 1em;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-settings h2 {
+        margin-bottom: 0.6rem;
+        font-size: 1rem;
+        gap: 0.4rem;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .profile-settings h2 i {
+        font-size: 1rem;
     }
 }
 
@@ -744,13 +747,33 @@
 
 @media (max-width: 768px) {
     .settings-form {
-        gap: 1.2rem;
+        gap: 1rem;
+    }
+    
+    .form-group label {
+        font-size: 0.85rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 0.6rem;
+        font-size: 0.9rem;
     }
 }
 
 @media (max-width: 480px) {
     .settings-form {
-        gap: 1rem;
+        gap: 0.8rem;
+    }
+
+    .form-group label {
+        font-size: 0.8rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 0.5rem;
+        font-size: 0.85rem;
     }
 }
 
@@ -785,18 +808,38 @@
     background: linear-gradient(45deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
     border: none;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 0.8rem 1.5rem;
     color: white;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+}
+
+.button-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 @media (max-width: 768px) {
     .save-button {
-        padding: 0.8rem;
-        font-size: 0.9rem;
+        padding: 0.7rem;
+        font-size: 0.85rem;
+        margin-top: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .save-button {
+        padding: 0.6rem;
+        font-size: 0.8rem;
+        margin-top: 0.6rem;
     }
 }
 
@@ -805,6 +848,12 @@
         padding: 0.6rem;
         font-size: 0.8rem;
         margin-top: 0.8rem;
+        gap: 0.5rem;
+    }
+
+    .button-icon {
+        width: 16px;
+        height: 16px;
     }
 }
 
@@ -949,7 +998,7 @@
     }
 
     .section-header i {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
     }
 }
 
@@ -2023,6 +2072,14 @@
         width: 100%;
     }
 
+    .gamestats-section .header-title h3 {
+        font-size: 1.1rem;
+    }
+
+    .gamestats-section .header-title i {
+        font-size: 1.1rem;
+    }
+
     .gamestats-section .sort-dropdown {
         align-self: center;
         margin: 0.2rem 0 0;
@@ -2058,7 +2115,7 @@
     }
 
     .gamestats-info h4 {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     .gamestats-stats {
@@ -2068,6 +2125,12 @@
     /* Removed duplicate .stat-label media query */
 
     .stat-value {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .gamestats-info h4 {
         font-size: 1rem;
     }
 }
@@ -2252,6 +2315,10 @@
     }
 
     .section-header h3 {
+        font-size: 1rem;
+    }
+
+    .section-header i {
         font-size: 1rem;
     }
 }
@@ -2468,6 +2535,18 @@
     color: #fff;
     font-size: 0.85rem;
     font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .category-header h4 {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .category-header h4 {
+        font-size: 1rem;
+    }
 }
 
 /* Stats Cards Grid */

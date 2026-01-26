@@ -731,7 +731,7 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
             
             <div class="profile-settings">
                 <h2><i class="fas fa-cog"></i> Profile Settings</h2>
-                <form class="settings-form" id="profileForm">
+                <form class="settings-form" id="profileForm" data-ajax="true">
                     <div class="form-group">
                         <label>Player Name</label>
                         <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
@@ -758,7 +758,10 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
                         <label>Section</label>
                         <input type="text" name="section" value="<?php echo htmlspecialchars($user['section'] ?? ''); ?>" placeholder="Enter your section (e.g., A, B, Diamond, etc.)">
                     </div>
-                    <button type="submit" class="save-button">Save Changes</button>
+                    <button type="submit" class="save-button">
+                        <img src="../../assets/pixels/save.png" alt="Save" class="button-icon">
+                        Save Changes
+                    </button>
                 </form>
             </div>
         </div>
@@ -1049,32 +1052,16 @@ $crescents_count = $user_fame ? $user_fame['cresents'] : 0;
                             showToast(data.message);
                         }
                         
-                        // Update the About Me text immediately without reload
-                        const aboutMeElement = document.querySelector('.about-me-text');
-                        if (aboutMeElement && data.about_me !== undefined) {
-                            const newText = (data.about_me && data.about_me.trim() !== '') ? data.about_me : 'Tell us something about yourself...';
-                            aboutMeElement.textContent = newText;
-                        }
-                        
-                        // Update the Section display immediately without reload
-                        const sectionElement = document.querySelector('.section-info .info-value');
-                        if (sectionElement && data.section !== undefined) {
-                            const sectionText = (data.section && data.section.trim() !== '') ? data.section : 'Not specified';
-                            sectionElement.textContent = sectionText;
-                        }
-                        
-                        // Update username in header if it exists (show only first name)
-                        const usernameElements = document.querySelectorAll('.username');
-                        if (data.username) {
-                            usernameElements.forEach(el => {
-                                el.textContent = data.username.split(' ')[0];
-                            });
-                        }
-                        
-                        // Reload the page after a short delay to ensure all updates are reflected
+                        // Wait for toast to be seen, then show loader and reload
                         setTimeout(() => {
+                            const loader = document.getElementById('pageLoader');
+                            if (loader) {
+                                loader.classList.remove('hidden');
+                            }
+                            
+                            // Reload the page
                             window.location.reload();
-                        }, 500);
+                        }, 1500); // 1.5 seconds delay to see the toast
                         
                     } else {
                         if (typeof showToast === 'function') {

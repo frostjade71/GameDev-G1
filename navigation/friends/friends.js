@@ -395,20 +395,100 @@ function filterFriends(filter) {
     });
 }
 
-// Refresh users functionality
+// Refresh users functionality with AJAX and flip-card loader
 function refreshUsers() {
     const refreshBtn = document.querySelector('.refresh-button');
-    const refreshIcon = refreshBtn.querySelector('i');
+    const refreshIcon = refreshBtn ? refreshBtn.querySelector('i') : null;
+    const suggestedGrid = document.getElementById('suggestedGrid');
+    const loader = document.getElementById('suggestedLoader');
+
+    if (!suggestedGrid || !loader) {
+        // Fallback for missing elements
+        window.location.reload();
+        return;
+    }
 
     // Show loading state
-    refreshBtn.disabled = true;
-    refreshIcon.classList.add('fa-spin');
+    if (refreshBtn) refreshBtn.disabled = true;
+    if (refreshIcon) refreshIcon.classList.add('fa-spin');
+    
+    suggestedGrid.classList.add('refreshing');
+    loader.classList.add('active');
 
-    // Simulate API call to refresh users
-    setTimeout(() => {
-        // Reload the page to get new random users
-        window.location.reload();
-    }, 1000);
+    // Make AJAX call to shuffle users
+    const formData = new FormData();
+    formData.append('action', 'shuffle_users');
+
+    fetch('friends_ajax.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Add a small delay so the animation is visible
+        setTimeout(() => {
+            if (data.success && data.users) {
+                // Clear and rebuild grid
+                suggestedGrid.innerHTML = data.users.map(user => `
+                    <div class="suggested-card" onclick="viewProfile(${user.id})" style="cursor: pointer;">
+                        <div class="suggested-avatar">
+                            <img src="${user.profile_image}" alt="${user.username}">
+                        </div>
+                        <div class="suggested-info">
+                            <h3>
+                                ${user.username}
+                                ${user.highest_badge ? `
+                                    <img src="${user.highest_badge.src}" 
+                                         alt="${user.highest_badge.alt}" 
+                                         class="user-badge" 
+                                         title="${user.highest_badge.title}">
+                                ` : ''}
+                            </h3>
+                            <p class="user-details">
+                                <span class="grade-level">${user.grade_level}</span>
+                                <span class="joined-date">Joined ${user.joined_date}</span>
+                            </p>
+                        </div>
+                        <div class="suggested-actions">
+                            ${user.has_pending_request ? `
+                                <button class="cancel-request-btn" onclick="event.stopPropagation(); cancelFriendRequest(${user.id}, '${user.username.replace(/'/g, "\\'")}', this)">
+                                    <i class="fas fa-times"></i>
+                                    <span>Cancel Request</span>
+                                </button>
+                            ` : `
+                                <button class="add-friend-btn" onclick="event.stopPropagation(); addFriend(${user.id}, '${user.username.replace(/'/g, "\\'")}', this)">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>Add Friend</span>
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Re-initialize suggested friends listeners if needed
+                initializeSuggestedFriends();
+            } else {
+                showToast(data.message || 'Error refreshing users', 'error');
+            }
+
+            // Hide loading state
+            if (refreshBtn) refreshBtn.disabled = false;
+            if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+            
+            suggestedGrid.classList.remove('refreshing');
+            loader.classList.remove('active');
+        }, 1200); // 1.2 seconds delay for the loader animation
+    })
+    .catch(error => {
+        console.error('Refresh error:', error);
+        showToast('Failed to refresh users', 'error');
+        
+        // Reset UI on error
+        if (refreshBtn) refreshBtn.disabled = false;
+        if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+        suggestedGrid.classList.remove('refreshing');
+        loader.classList.remove('active');
+    });
 }
 
 // View profile functionality

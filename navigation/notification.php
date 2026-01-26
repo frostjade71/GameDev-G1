@@ -184,7 +184,7 @@ $notification_count = count($all_notifications);
             <div class="friend-requests-section">
                 <div class="section-header">
                     <div class="title-container">
-                    <h2 class="friend-requests-title"><img src="../assets/pixels/redbook.png" alt="Notification" class="friend-request-icon"> NOTIFICATIONS <span class="request-count">(<?php echo $notification_count; ?>)</span></h2>
+                    <h2 class="friend-requests-title"><i class="fas fa-bell" style="color: #FFD700; margin-right: -2px; font-size: 1.8em; vertical-align: middle; position: relative; top: -2px;"></i> NOTIFICATIONS <span class="request-count">(<?php echo $notification_count; ?>)</span></h2>
                 </div>
                     <?php if (!empty($friend_requests)): ?>
                     <button class="decline-all-btn" onclick="showDeclineAllModal()" aria-label="Decline All Requests">

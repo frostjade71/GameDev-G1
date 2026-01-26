@@ -593,6 +593,51 @@ function selectUser(userId, username) {
 
 // Carousel functionality removed - using simple grid layout
 
+// Carousel functions removed
+
+let currentModalUser = null;
+
+function openFriendModal(userData) {
+    currentModalUser = userData;
+    const modal = document.getElementById('friendInteractionModal');
+    const avatar = document.getElementById('modalFriendAvatar');
+    const name = document.getElementById('modalFriendName');
+    const status = document.getElementById('modalFriendStatus');
+
+    avatar.src = userData.profile_image;
+    name.textContent = userData.username;
+    status.textContent = userData.is_online ? 'Online' : (userData.status || 'Offline');
+    status.className = userData.is_online ? 'status-online' : 'status-offline';
+
+    modal.classList.add('active');
+
+    // Close modal when clicking outside
+    modal.onclick = function(e) {
+        if (e.target === modal) {
+            closeFriendModal();
+        }
+    };
+}
+
+function closeFriendModal() {
+    const modal = document.getElementById('friendInteractionModal');
+    modal.classList.remove('active');
+    currentModalUser = null;
+}
+
+function viewModalProfile() {
+    if (currentModalUser) {
+        window.location.href = `user-profile.php?user_id=${currentModalUser.id}`;
+    }
+}
+
+function openModalChat() {
+    if (currentModalUser) {
+        showToast('<div style="text-align: center;"><img src="../../assets/pixels/hammer.png" style="width: 24px; height: 24px; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;"><span style="font-family: \'Press Start 2P\', monospace; font-size: 0.7rem;">Messaging feature coming soon!</span></div>', 'info');
+        closeFriendModal();
+    }
+}
+
 // Export functions for global access
 window.addFriend = addFriend;
 window.cancelFriendRequest = cancelFriendRequest;
@@ -604,4 +649,7 @@ window.viewProfile = viewProfile;
 window.showDropdown = showDropdown;
 window.hideDropdown = hideDropdown;
 window.selectUser = selectUser;
-// Carousel functions removed
+window.openFriendModal = openFriendModal;
+window.closeFriendModal = closeFriendModal;
+window.viewModalProfile = viewModalProfile;
+window.openModalChat = openModalChat;

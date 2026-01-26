@@ -318,26 +318,46 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
                     <p>Start connecting with other players by adding them as friends below!</p>
                 </div>
                 <?php else: ?>
-                <div class="friends-grid">
+                <div class="friends-grid-box">
                     <?php foreach ($friends as $friend): ?>
-                    <div class="friend-card" onclick="viewProfile(<?php echo $friend['id']; ?>)">
-                        <div class="friend-avatar">
+                    <div class="friend-card-box" onclick="openFriendModal(<?php echo htmlspecialchars(json_encode([
+                        'id' => $friend['id'],
+                        'username' => $friend['username'],
+                        'profile_image' => $friend['profile_image'],
+                        'is_online' => $friend['is_online'],
+                        'status' => $friend['last_seen']
+                    ])); ?>)">
+                        <div class="friend-avatar-box">
                             <img src="<?php echo htmlspecialchars($friend['profile_image']); ?>" alt="<?php echo htmlspecialchars($friend['username']); ?>">
                             <div class="online-status <?php echo $friend['is_online'] ? 'online' : 'offline'; ?>"></div>
                         </div>
-                        <div class="friend-info">
+                        <div class="friend-info-box">
                             <h3 class="username-text"><?php echo htmlspecialchars($friend['username']); ?></h3>
-                            <p class="friend-status"><?php echo htmlspecialchars($friend['last_seen']); ?></p>
-                        </div>
-                        <div class="friend-actions">
-                            <button class="action-btn message-btn" title="Send Message" onclick="event.stopPropagation();">
-                                <img src="../../assets/pixels/chat.png" alt="Chat" style="width: 20px; height: 20px; object-fit: contain;">
-                            </button>
+                            <p class="friend-status-text"><?php echo $friend['is_online'] ? 'Online' : 'Offline'; ?></p>
                         </div>
                     </div>
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
+            </div>
+
+            <!-- Friend Interaction Modal -->
+            <div id="friendInteractionModal" class="friend-modal">
+                <div class="friend-modal-content">
+                    <div class="friend-modal-header">
+                        <img id="modalFriendAvatar" src="" alt="">
+                        <h3 id="modalFriendName"></h3>
+                        <p id="modalFriendStatus"></p>
+                    </div>
+                    <div class="friend-modal-actions">
+                        <button class="modal-btn view-profile-btn" onclick="viewModalProfile()">
+                            <i class="fas fa-user"></i> View Profile
+                        </button>
+                        <button class="modal-btn chat-btn" onclick="openModalChat()">
+                            <i class="fas fa-comment"></i> Chat
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- People You May Know Section -->

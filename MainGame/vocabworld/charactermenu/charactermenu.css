@@ -1346,3 +1346,34 @@
         font-size: 0.75rem;
     }
 }
+
+/* Mobile Currency Dropdown */
+@media (max-width: 768px) {
+    .shard-currency {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+    }
+
+    .essence-item {
+        display: none;
+    }
+
+    .shard-currency.show-dropdown .essence-item {
+        display: flex;
+        animation: slideInDown 0.3s ease;
+    }
+
+    @keyframes slideInDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .dropdown-arrow {
+        transition: transform 0.3s ease;
+    }
+    
+    .shard-currency.show-dropdown .dropdown-arrow {
+        transform: rotate(180deg);
+    }
+}

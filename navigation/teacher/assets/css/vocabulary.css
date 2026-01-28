@@ -612,11 +612,12 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.85); /* Slightly darker */
+    backdrop-filter: blur(8px); /* Increased blur */
     z-index: 10000;
     align-items: center;
     justify-content: center;
+    padding: 1rem; /* Add padding for mobile safe area */
 }
 
 .modal-overlay.show {
@@ -624,77 +625,100 @@
 }
 
 .modal-content {
-    background: rgba(10, 10, 15, 0.98);
-    border: 2px solid rgba(96, 239, 255, 0.3);
-    border-radius: 20px;
-    max-width: 600px;
-    width: 90%;
+    background: #1a1a24; /* Solid dark background for robustness */
+    border: 1px solid rgba(96, 239, 255, 0.3);
+    border-radius: 16px; /* Slightly tighter radius */
+    max-width: 550px; /* Reduced width for focus */
+    width: 100%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-content::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 .modal-content::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background: rgba(96, 239, 255, 0.3);
+    background: rgba(96, 239, 255, 0.2);
     border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(96, 239, 255, 0.5);
+    background: rgba(96, 239, 255, 0.4);
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(96, 239, 255, 0.2);
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* More subtle border */
+    background: rgba(255, 255, 255, 0.02); /* Slight header tint */
+    flex-shrink: 0;
+}
+
+.modal-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px !important; /* Force gap */
+}
+
+.stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px; /* Slightly softer */
+    box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
 }
 
 .modal-header h2 {
     color: white;
-    font-size: 1.3rem;
+    font-size: 1.1rem; /* Slightly smaller for elegance */
     margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 .modal-close {
-    background: rgba(255, 69, 0, 0.1);
-    border: 1px solid rgba(255, 69, 0, 0.3);
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 69, 0, 1);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    border-radius: 8px;
 }
 
 .modal-close:hover {
-    background: rgba(255, 69, 0, 0.3);
-    transform: rotate(90deg);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: none; /* Removed rotation */
 }
 
 .modal-body {
     padding: 1.5rem;
+    flex-grow: 1;
 }
 
 .modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    padding: 1.5rem;
-    border-top: 1px solid rgba(96, 239, 255, 0.2);
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    flex-shrink: 0;
 }
 
 /* Form Styles */
@@ -703,166 +727,207 @@
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem; /* Reduced spacing */
+    position: relative;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
 }
 
 .form-group label {
     display: block;
-    color: white;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-}
-
-/* Mobile Responsive for Vocab Table */
-@media screen and (max-width: 768px) {
-    .vocab-table {
-        border: 0;
-    }
-
-    .vocab-table thead {
-        display: none;
-    }
-
-    .vocab-table tbody tr {
-        display: block;
-        margin-bottom: 1rem;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(96, 239, 255, 0.1);
-        border-radius: 12px;
-        padding: 1rem;
-    }
-
-    .vocab-table tbody tr:hover {
-        background: rgba(96, 239, 255, 0.08);
-    }
-
-    .vocab-table td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.5rem 0;
-        border: none;
-        text-align: right;
-    }
-
-    .vocab-table td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: rgba(96, 239, 255, 1);
-        text-align: left;
-        flex: 0 0 40%;
-    }
-    
-    .vocab-table td:last-child {
-        border-bottom: none;
-    }
-
-    /* Override previous action-buttons mobile style to fit card layout */
-    .vocab-table .action-buttons {
-        width: auto;
-        justify-content: flex-end;
-    }
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
 }
 
 .required {
-    color: rgba(255, 69, 0, 1);
+    color: #ff4757;
+    margin-left: 3px;
 }
 
 .form-group input[type="text"],
 .form-group textarea,
 .form-group select {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(96, 239, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    padding: 0.7rem;
+    padding: 0.75rem;
     color: white;
     font-size: 0.9rem;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .form-group input[type="text"]:focus,
 .form-group textarea:focus,
 .form-group select:focus {
     outline: none;
-    border-color: rgba(0, 255, 135, 0.8);
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.form-group textarea {
-    resize: vertical;
-    font-family: inherit;
+    border-color: rgba(96, 239, 255, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 3px rgba(96, 239, 255, 0.1);
 }
 
 .form-hint {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.8rem;
-    margin-top: 0.3rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
 }
 
-.form-row {
+/* Choices Container */
+.choices-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-}
-
-.choices-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
+    margin-top: 0.5rem;
 }
 
 .choice-item {
     display: flex;
     align-items: center;
     gap: 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: border-color 0.2s;
+}
+
+.choice-item:focus-within {
+    border-color: rgba(96, 239, 255, 0.3);
 }
 
 .choice-item input[type="radio"] {
-    width: 20px;
-    height: 20px;
+    accent-color: #00C853;
+    width: 18px;
+    height: 18px;
     cursor: pointer;
 }
 
 .choice-item input[type="text"] {
-    flex: 1;
-}
-
-.btn-cancel,
-.btn-save,
-.btn-delete-confirm {
-    padding: 0.7rem 1.5rem;
-    border-radius: 8px;
+    border: none !important;
+    background: transparent !important;
+    padding: 0.25rem !important;
     font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    height: auto;
+    box-shadow: none !important;
 }
 
+.choice-item input[type="text"]:focus {
+    background: transparent !important;
+}
+
+/* Buttons */
 .btn-cancel {
-    background: rgba(255, 255, 255, 0.05);
+    background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .btn-cancel:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: white;
 }
 
 .btn-save {
-    background: rgba(0, 255, 135, 0.2);
-    border: 1px solid rgba(0, 255, 135, 0.5);
-    color: rgba(0, 255, 135, 1);
+    background: linear-gradient(135deg, #00C853 0%, #009624 100%);
+    border: none;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
 }
 
 .btn-save:hover {
-    background: rgba(0, 255, 135, 0.3);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 200, 83, 0.4);
 }
+
+/* Mobile Responsive */
+@media screen and (max-width: 480px) {
+    .modal-content {
+        max-height: 85vh; /* More breathing room */
+        border-radius: 16px;
+    }
+
+    .modal-header {
+        padding: 1rem;
+    }
+
+    .modal-title-wrapper {
+        gap: 10px !important;
+    }
+    
+    .stat-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 14px !important;
+    }
+    
+    .modal-header h2 {
+        font-size: 1rem;
+    }
+
+    #vocabForm {
+        padding: 1rem; /* Compact padding */
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0; /* Let margin-bottom handle it */
+    }
+
+    /* Stack choices for easy tapping */
+    .choices-container {
+        grid-template-columns: 1fr; 
+        gap: 0.8rem;
+    }
+    
+    .choice-item {
+        padding: 0.6rem 0.8rem; /* Larger touch target */
+    }
+
+    .choice-item input[type="radio"] {
+        width: 20px;
+        height: 20px;
+    }
+
+    .modal-footer {
+        padding: 1rem;
+        flex-direction: column-reverse; /* Save on top/bottom depending on preference, or just stacked */
+    }
+
+    .modal-footer button {
+        width: 100%;
+        justify-content: center;
+        padding: 0.8rem;
+    }
+}
+
 
 .btn-delete-confirm {
     background: rgba(255, 69, 0, 0.2);

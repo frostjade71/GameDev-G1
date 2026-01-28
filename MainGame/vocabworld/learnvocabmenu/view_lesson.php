@@ -11,14 +11,30 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
-// Get user's vocabworld progress
+// Get lesson ID
+$lesson_id = $_GET['id'] ?? null;
+
+if (!$lesson_id) {
+    header("Location: learn.php");
+    exit;
+}
+
+// Fetch Lesson
+$stmt = $pdo->prepare("SELECT * FROM lessons WHERE id = ?");
+$stmt->execute([$lesson_id]);
+$lesson = $stmt->fetch();
+
+if (!$lesson) {
+    // Lesson not found
+    header("Location: learn.php");
+    exit;
+}
+
+// Get user's vocabworld progress (for shards display)
 $stmt = $pdo->prepare("SELECT * FROM game_progress WHERE user_id = ? AND game_type = 'vocabworld'");
 $stmt->execute([$user_id]);
 $progress = $stmt->fetch();
 
-// Game scores section removed temporarily until table is restored
-
-// Get character customization data
 $character_data = null;
 $user_shards = 0;
 if ($progress && $progress['unlocked_levels']) {
@@ -26,7 +42,6 @@ if ($progress && $progress['unlocked_levels']) {
     $user_shards = $character_data['current_points'] ?? 0;
 }
 
-// Get shard balance from new shard system
 require_once '../shard_manager.php';
 $shardManager = new ShardManager($pdo);
 $shard_balance = $shardManager->getShardBalance($user_id);
@@ -38,13 +53,6 @@ if ($shard_balance) {
 require_once '../api/essence_manager.php';
 $essenceManager = new EssenceManager($pdo);
 $current_essence = $essenceManager->getEssence($user_id);
-
-// Fetch Lessons for Grade 10
-$user_section = $user['section'] ?? '';
-$lessons_query = "SELECT * FROM lessons WHERE grade_level = '10' AND (section = '' OR section IS NULL OR section = ?) ORDER BY created_at DESC";
-$stmt = $pdo->prepare($lessons_query);
-$stmt->execute([$user_section]);
-$lessons = $stmt->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -53,13 +61,184 @@ $lessons = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/webp" href="../assets/menu/vv_logo.webp">
-    <title>Grade 10 - Learning</title>
+    <title><?= htmlspecialchars($lesson['title']) ?> - VocabWorld</title>
     <link rel="stylesheet" href="../style.css?v=3">
     <link rel="stylesheet" href="../navigation/navigation.css?v=3">
     <link rel="stylesheet" href="learnvocabmenu.css?v=3">
     <link rel="stylesheet" href="../../../notif/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .lesson-view-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            padding-top: 80px; /* Space for fixed header/back button */
+        }
+
+        .lesson-content-card {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-header-banner {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .lesson-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .lesson-meta {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .lesson-body {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        /* Ensure images in content are responsive */
+        .lesson-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        /* Restore standard formatting for TinyMCE content */
+        .lesson-body p {
+            margin-bottom: 1em;
+        }
+
+        .lesson-body h1, .lesson-body h2, .lesson-body h3, 
+        .lesson-body h4, .lesson-body h5, .lesson-body h6 {
+            color: white;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+        }
+
+        .lesson-body h1 { font-size: 1.8em; }
+        .lesson-body h2 { font-size: 1.5em; }
+        .lesson-body h3 { font-size: 1.3em; }
+        .lesson-body h4 { font-size: 1.1em; }
+
+        .lesson-body ul, .lesson-body ol {
+            margin-bottom: 1em;
+            padding-left: 20px;
+        }
+
+        .lesson-body li {
+            margin-bottom: 0.5em;
+        }
+
+        .lesson-body blockquote {
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
+            margin: 1em 0;
+            padding-left: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+
+        .lesson-body strong {
+            font-weight: 600;
+            color: white;
+        }
+        
+        .lesson-body a {
+            color: #6e8efb;
+            text-decoration: underline;
+        }
+
+        .back-nav-btn {
+            position: fixed;
+            top: 100px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            z-index: 100;
+            font-size: 0.8rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .back-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .lesson-view-container {
+                padding: 10px;
+                padding-top: 70px; /* Space for fixed header/back button */
+            }
+            
+            .lesson-content-card {
+                padding: 15px;
+                border-radius: 12px;
+            }
+
+            .lesson-title {
+                font-size: 1.2rem;
+                margin-bottom: 5px;
+            }
+
+            .lesson-meta {
+                font-size: 0.7rem;
+                gap: 10px;
+            }
+
+            .lesson-body {
+                font-size: 0.85rem;
+                line-height: 1.5;
+            }
+            
+            .back-nav-btn {
+                top: auto;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: auto;
+                background: #3b82f6;
+                border: none;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+            
+            .back-nav-btn:hover {
+                transform: translateX(-50%) translateY(-2px);
+            }
+        }
+    </style>
 </head>
 <body>
     <?php include '../loaders/loader-component.php'; ?>
@@ -67,7 +246,7 @@ $lessons = $stmt->fetchAll();
         <!-- Background -->
         <div class="background-image"></div>
         
-        <!-- Header -->
+        <!-- Header (Simplified/Consistent) -->
         <header class="top-header">
             <div class="header-left">
                 <div class="game-logo-container">
@@ -128,83 +307,45 @@ $lessons = $stmt->fetchAll();
             </div>
         </header>
 
-        <!-- Main Menu -->
-        <div id="main-menu" class="screen active">
-            <div class="menu-container">
-                <!-- Page Header -->
-                <!-- Page Header -->
-                <div class="page-header">
+        <!-- Logout Confirmation Modal -->
+        <div class="toast-overlay" id="logoutModal" style="display: none;">
+            <div class="toast" id="logoutConfirmation">
+                <h3 style="margin-bottom: 1rem; color: #ff6b6b;">Logout Confirmation</h3>
+                <p style="margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.8);">Are you sure you want to logout?</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button onclick="confirmLogout()" style="background: #ff6b6b; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Yes, Logout</button>
+                    <button onclick="hideLogoutModal()" style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Cancel</button>
                 </div>
-                
-                <!-- Coming Soon Content -->
-                <!-- Lessons Content -->
-                <!-- Lessons Content -->
-                <div class="lessons-container">
-                    <?php if (empty($lessons)): ?>
-                    <div class="coming-soon-content">
-                        <div class="coming-soon-card">
-                            <div class="coming-soon-icon">
-                                <i class="fas fa-book-open"></i>
-                            </div>
-                            <h2>No Lessons Yet</h2>
-                            <p>There are currently no lessons available for Grade 10.</p>
-                            <p>Please check back later!</p>
+            </div>
+        </div>
+
+        <a href="grade<?= $lesson['grade_level'] ?>.php" class="back-nav-btn">
+            <i class="fas fa-arrow-left"></i> Back to Lessons
+        </a>
+
+        <div id="main-menu" class="screen active" style="overflow-y: auto;">
+            <div class="lesson-view-container">
+                <div class="lesson-content-card">
+                    <div class="lesson-header-banner">
+                        <h1 class="lesson-title"><?= htmlspecialchars($lesson['title']) ?></h1>
+                        <div class="lesson-meta">
+                            <span><i class="far fa-calendar-alt"></i> <?= date('F j, Y', strtotime($lesson['created_at'])) ?></span>
+                            <span><i class="fas fa-layer-group"></i> Grade <?= htmlspecialchars($lesson['grade_level']) ?></span>
                         </div>
                     </div>
-                    <?php else: ?>
-                        <div class="lessons-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; padding: 15px 0;">
-                            <?php foreach ($lessons as $lesson): ?>
-                                <div class="lesson-card" onclick="window.location.href='view_lesson.php?id=<?= $lesson['id'] ?>'" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); padding: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; display: flex; flex-direction: column; gap: 8px;">
-                                    <div class="lesson-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #6e8efb, #a777e3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">
-                                        <i class="fas fa-book-reader"></i>
-                                    </div>
-                                    <h3 style="color: white; margin: 0; font-size: 1rem; line-height: 1.3;"><?= htmlspecialchars($lesson['title']) ?></h3>
-                                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; margin: 0; flex-grow: 1;">
-                                        <?= date('M j, Y', strtotime($lesson['created_at'])) ?>
-                                    </p>
-                                    <div class="lesson-footer" style="display: flex; justify-content: flex-end;">
-                                        <span style="color: #a777e3; font-size: 0.8rem; font-weight: 600;">Read <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></span>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
-                
-                <!-- Action Buttons -->
-                <div class="action-buttons" style="display: flex; justify-content: center; margin-top: 20px;">
-                    <a href="learn.php" style="display: inline-flex; align-items: center; padding: 6px 16px; background: rgba(255, 255, 255, 0.1); color: white; text-decoration: none; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 0.8rem; transition: all 0.3s ease; font-family: 'Poppins', sans-serif;">
-                        <i class="fas fa-arrow-left" style="margin-right: 6px; font-size: 0.9rem;"></i> Back to Grade Selection
-                    </a>
+                    
+                    <div class="lesson-body">
+                        <?= $lesson['content'] ?>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Logout Confirmation Modal -->
-    <div class="toast-overlay" id="logoutModal" style="display: none;">
-        <div class="toast" id="logoutConfirmation">
-            <h3 style="margin-bottom: 1rem; color: #ff6b6b;">Logout Confirmation</h3>
-            <p style="margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.8);">Are you sure you want to logout?</p>
-            <div style="display: flex; gap: 1rem; justify-content: center;">
-                <button onclick="confirmLogout()" style="background: #ff6b6b; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Yes, Logout</button>
-                <button onclick="hideLogoutModal()" style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">Cancel</button>
-            </div>
-        </div>
-    </div>
-
+    
     <script src="learnvocabmenu.js"></script>
     <script src="../../../navigation/shared/profile-dropdown.js"></script>
+    
     <script>
-        // Pass PHP data to JavaScript
-        window.userData = {
-            userId: <?php echo $user_id; ?>,
-            username: '<?php echo addslashes($user['username']); ?>',
-            gradeLevel: '<?php echo addslashes($user['grade_level']); ?>',
-            shards: <?php echo $user_shards; ?>,
-            characterData: <?php echo $character_data ? json_encode($character_data) : 'null'; ?>
-        };
-
         // Logout functionality
         function showLogoutModal() {
             const modal = document.getElementById('logoutModal');
@@ -234,29 +375,6 @@ $lessons = $stmt->fetchAll();
             window.location.href = '../../../onboarding/logout.php';
         }
 
-        // Go back to grade selection
-        function goBack() {
-            window.location.href = 'learn.php';
-        }
-
-        // Initialize shard count display
-        function initializeShardDisplay() {
-            const shardCountEl = document.getElementById('shard-count');
-            if (shardCountEl && window.userData) {
-                shardCountEl.textContent = window.userData.shards || 0;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeShardDisplay();
-        });
-
-        // Toggle currency dropdown on mobile
-        function toggleCurrencyDropdown(element) {
-            if (window.innerWidth <= 768) {
-                element.classList.toggle('show-dropdown');
-            }
-        }
         // Toggle currency dropdown on mobile
         function toggleCurrencyDropdown(element) {
             if (window.innerWidth <= 768) {

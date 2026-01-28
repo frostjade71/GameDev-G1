@@ -747,7 +747,7 @@ body.mobile-device .coming-soon-card {
 
 /* Coming Soon Content Styles */
 .coming-soon-content {
-    max-width: 600px;
+    max-width: 450px; /* Reduced from 600px */
     width: 100%;
     margin: 0 auto;
     display: flex;
@@ -759,7 +759,7 @@ body.mobile-device .coming-soon-card {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
-    padding: 3rem;
+    padding: 2rem; /* Reduced from 3rem */
     text-align: center;
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
@@ -768,13 +768,13 @@ body.mobile-device .coming-soon-card {
 .coming-soon-card:hover {
     transform: translateY(-5px);
     border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 .coming-soon-icon {
-    font-size: 4rem;
+    font-size: 2.5rem; /* Reduced from 4rem */
     color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem; /* Reduced from 1.5rem */
     transition: all 0.3s ease;
 }
 
@@ -784,18 +784,40 @@ body.mobile-device .coming-soon-card {
 }
 
 .coming-soon-card h2 {
-    font-size: 2rem;
+    font-size: 1.5rem; /* Reduced from 2rem */
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem; /* Reduced from 1rem */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .coming-soon-card p {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+    font-size: 0.95rem; /* Reduced from 1.1rem */
+    line-height: 1.5;
+    margin-bottom: 1rem; /* Reduced from 1.5rem */
+}
+
+/* Mobile adjustments for coming soon card */
+@media (max-width: 768px) {
+    .coming-soon-card {
+        padding: 1.5rem;
+    }
+
+    .coming-soon-icon {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .coming-soon-card h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .coming-soon-card p {
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
+    }
 }
 
 .coming-soon-card ul {

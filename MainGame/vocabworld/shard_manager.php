@@ -29,8 +29,12 @@ class ShardManager {
      * Add shards to user's account (earn shards)
      */
     public function addShards($user_id, $amount, $description = 'Earned from gameplay', $game_type = 'vocabworld') {
+        $transactionStarted = false;
         try {
-            $this->pdo->beginTransaction();
+            if (!$this->pdo->inTransaction()) {
+                $this->pdo->beginTransaction();
+                $transactionStarted = true;
+            }
             
             // Get user info
             $stmt = $this->pdo->prepare("SELECT username FROM users WHERE id = ?");
@@ -47,6 +51,9 @@ class ShardManager {
                 // Create new shard account
                 $stmt = $this->pdo->prepare("INSERT INTO user_shards (user_id, username, current_shards, total_earned, total_spent) VALUES (?, ?, ?, ?, 0)");
                 $stmt->execute([$user_id, $username, $amount, $amount]);
+                
+                // If this was a new account, $new_balance is just amount
+                $new_balance = $amount;
             } else {
                 // Update existing account
                 $new_balance = $shard_account['current_shards'] + $amount;
@@ -60,11 +67,19 @@ class ShardManager {
             $stmt = $this->pdo->prepare("INSERT INTO shard_transactions (user_id, username, transaction_type, amount, description, game_type) VALUES (?, ?, 'earned', ?, ?, ?)");
             $stmt->execute([$user_id, $username, $amount, $description, $game_type]);
             
-            $this->pdo->commit();
-            return ['success' => true, 'new_balance' => $new_balance ?? $amount];
+            if ($transactionStarted) {
+                $this->pdo->commit();
+            }
+            return ['success' => true, 'new_balance' => $new_balance];
             
         } catch (Exception $e) {
-            $this->pdo->rollBack();
+            if ($transactionStarted && $this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            // If we didn't start the transaction, we re-throw so the parent can handle rollback
+            if (!$transactionStarted) {
+                throw $e;
+            }
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
@@ -73,8 +88,12 @@ class ShardManager {
      * Deduct shards from user's account (spend shards)
      */
     public function deductShards($user_id, $amount, $description = 'Spent on purchase', $game_type = 'vocabworld', $related_id = null) {
+        $transactionStarted = false;
         try {
-            $this->pdo->beginTransaction();
+            if (!$this->pdo->inTransaction()) {
+                $this->pdo->beginTransaction();
+                $transactionStarted = true;
+            }
             
             // Get user info
             $stmt = $this->pdo->prepare("SELECT username FROM users WHERE id = ?");
@@ -88,12 +107,12 @@ class ShardManager {
             $shard_account = $stmt->fetch();
             
             if (!$shard_account) {
-                $this->pdo->rollBack();
+                if ($transactionStarted) $this->pdo->rollBack();
                 return ['success' => false, 'error' => 'No shard account found'];
             }
             
             if ($shard_account['current_shards'] < $amount) {
-                $this->pdo->rollBack();
+                if ($transactionStarted) $this->pdo->rollBack();
                 return ['success' => false, 'error' => 'Insufficient shards'];
             }
             
@@ -108,11 +127,18 @@ class ShardManager {
             $stmt = $this->pdo->prepare("INSERT INTO shard_transactions (user_id, username, transaction_type, amount, description, game_type, related_id) VALUES (?, ?, 'spent', ?, ?, ?, ?)");
             $stmt->execute([$user_id, $username, $amount, $description, $game_type, $related_id]);
             
-            $this->pdo->commit();
+            if ($transactionStarted) {
+                $this->pdo->commit();
+            }
             return ['success' => true, 'new_balance' => $new_balance];
             
         } catch (Exception $e) {
-            $this->pdo->rollBack();
+            if ($transactionStarted && $this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            if (!$transactionStarted) {
+                throw $e;
+            }
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }

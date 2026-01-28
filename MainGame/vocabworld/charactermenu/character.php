@@ -218,6 +218,10 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                     <img src="assets/fc1839.png" class="action-icon" alt="Shop">
                                     <span>Shop</span>
                                 </button>
+                                <button class="action-btn convert-btn" onclick="goToConvert()">
+                                    <img src="assets/fc131.png" class="action-icon" alt="Convert">
+                                    <span>Convert</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -384,6 +388,11 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
         // Shop characters function
         function showCharacterShop() {
             window.location.href = 'shop_characters.php';
+        }
+
+        // Go to convert page
+        function goToConvert() {
+            window.location.href = 'convert.php';
         }
 
         // Initialize character customization

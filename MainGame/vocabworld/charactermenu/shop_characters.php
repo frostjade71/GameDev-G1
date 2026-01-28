@@ -119,26 +119,25 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                 <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                                 <div class="profile-dropdown-info">
                                     <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
-                                    <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
+                                    <div class="profile-dropdown-level">
+                                        <img src="../assets/stats/level.png" class="level-icon-mini">
+                                        <span>Level <?php echo htmlspecialchars($progress['player_level'] ?? 1); ?></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="profile-dropdown-menu">
-                                <a href="../../../navigation/profile/profile.php" class="profile-dropdown-item">
-                                    <i class="fas fa-user"></i>
-                                    <span>View Profile</span>
+                                <a href="character.php" class="profile-dropdown-item">
+                                    <img src="assets/fc1089.png" class="dropdown-item-icon">
+                                    <span>View Character</span>
                                 </a>
-                                <a href="../../../navigation/favorites/favorites.php" class="profile-dropdown-item">
-                                    <i class="fas fa-star"></i>
-                                    <span>My Favorites</span>
+                                <a href="../learnvocabmenu/learn.php" class="profile-dropdown-item">
+                                    <img src="../assets/menu/vocabsys.png" class="dropdown-item-icon">
+                                    <span>Study & Learn</span>
                                 </a>
-                                <a href="../../../settings/settings.php" class="profile-dropdown-item">
-                                    <i class="fas fa-cog"></i>
-                                    <span>Settings</span>
-                                </a>
-                            </div>
+                             </div>
                             <div class="profile-dropdown-footer">
                                 <button class="profile-dropdown-item sign-out" onclick="showLogoutModal()">
-                                    <i class="fas fa-sign-out-alt"></i>
+                                    <img src="../assets/menu/exit.png" class="dropdown-item-icon">
                                     <span>Sign Out</span>
                                 </button>
                             </div>
@@ -610,5 +609,6 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
             }
         }
     </script>
+    <script src="../../../navigation/shared/profile-dropdown.js"></script>
 </body>
 </html>

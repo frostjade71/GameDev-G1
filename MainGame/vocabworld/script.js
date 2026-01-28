@@ -140,9 +140,38 @@ class VocabWorldGame {
         this.generateQuestion();
     }
     
-    generateQuestion() {
+    async generateQuestion() {
         if (!this.gameState.gameActive) return;
         
+        try {
+            // Fetch question from database
+            const response = await fetch('api/vocabulary.php?action=get');
+            const data = await response.json();
+            
+            if (data && data.text) {
+                // Determine question type based on API response structure or random default
+                const questionType = this.getRandomQuestionType();
+                
+                // Map API data to game question format
+                this.gameState.currentQuestion = {
+                    word: {
+                        word: data.text.replace('What is the meaning of "', '').replace('"?', ''),
+                        definition: data.correct,
+                        example: data.example || "No example available.",
+                    },
+                    type: questionType,
+                    correctAnswer: data.correct,
+                    options: data.options
+                };
+                
+                this.displayQuestion();
+                return;
+            }
+        } catch (e) {
+            console.error("Error fetching question:", e);
+        }
+
+        // Fallback to local data if API fails
         const difficulty = this.getDifficultyLevel();
         const availableWords = this.getGameWords().filter(word => word.difficulty <= difficulty);
         

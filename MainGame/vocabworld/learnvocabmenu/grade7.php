@@ -18,19 +18,7 @@ $stmt = $pdo->prepare("SELECT * FROM game_progress WHERE user_id = ? AND game_ty
 $stmt->execute([$user_id]);
 $progress = $stmt->fetch();
 
-// Get user's vocabworld scores
-$stmt = $pdo->prepare("SELECT * FROM game_scores WHERE user_id = ? AND game_type = 'vocabworld' ORDER BY created_at DESC LIMIT 10");
-$stmt->execute([$user_id]);
-$scores = $stmt->fetchAll();
-
-// Calculate average percentage
-$total_sessions = count($scores);
-$average_percentage = 0;
-if ($total_sessions > 0) {
-    $total_score = array_sum(array_column($scores, 'score'));
-    $max_possible_score = $total_sessions * 1000; // Assuming max 1000 points per session
-    $average_percentage = round(($total_score / $max_possible_score) * 100, 1);
-}
+// Game scores section removed temporarily until table is restored
 
 // Get character customization data
 $character_data = null;
@@ -47,6 +35,18 @@ $shard_balance = $shardManager->getShardBalance($user_id);
 if ($shard_balance) {
     $user_shards = $shard_balance['current_shards'];
 }
+
+// Get essence balance
+require_once '../api/essence_manager.php';
+$essenceManager = new EssenceManager($pdo);
+$current_essence = $essenceManager->getEssence($user_id);
+
+// Fetch Lessons for Grade 7
+$user_section = $user['section'] ?? '';
+$lessons_query = "SELECT * FROM lessons WHERE grade_level = '7' AND (section = '' OR section IS NULL OR section = ?) ORDER BY created_at DESC";
+$stmt = $pdo->prepare($lessons_query);
+$stmt->execute([$user_section]);
+$lessons = $stmt->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -80,12 +80,12 @@ if ($shard_balance) {
                 <div class="shard-currency" onclick="toggleCurrencyDropdown(this)">
                     <div class="currency-item shard-item">
                         <img src="../assets/currency/shard1.png" alt="Shards" class="shard-icon">
-                        <span class="shard-count" id="shard-count">0</span>
+                        <span class="shard-count"><?= $user_shards ?></span>
                         <i class="fas fa-chevron-down mobile-only dropdown-arrow" style="font-size: 0.8rem; margin-left: 5px;"></i>
                     </div>
                     <div class="currency-item essence-item">
                         <img src="../assets/currency/essence.png" alt="Essence" class="shard-icon">
-                        <span class="shard-count">0</span>
+                        <span class="shard-count"><?php echo $current_essence; ?></span>
                     </div>
                 </div>
                 <div class="user-profile">
@@ -95,33 +95,32 @@ if ($shard_balance) {
                     </div>
                     <div class="profile-dropdown">
                         <a href="#" class="profile-icon">
-                            <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-img">
+                            <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-img">
                         </a>
                         <div class="profile-dropdown-content">
                             <div class="profile-dropdown-header">
-                                <img src="../../../assets/menu/defaultuser.png" alt="Profile" class="profile-dropdown-avatar">
+                                <img src="<?php echo !empty($user['profile_image']) ? '../../../' . htmlspecialchars($user['profile_image']) : '../../../assets/menu/defaultuser.png'; ?>" alt="Profile" class="profile-dropdown-avatar">
                                 <div class="profile-dropdown-info">
                                     <div class="profile-dropdown-name"><?php echo htmlspecialchars($user['username']); ?></div>
-                                    <div class="profile-dropdown-email"><?php echo htmlspecialchars($user['email']); ?></div>
+                                    <div class="profile-dropdown-level">
+                                        <img src="../assets/stats/level.png" class="level-icon-mini">
+                                        <span>Level <?php echo htmlspecialchars($progress['player_level'] ?? 1); ?></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="profile-dropdown-menu">
-                                <a href="../../../navigation/profile/profile.php" class="profile-dropdown-item">
-                                    <i class="fas fa-user"></i>
-                                    <span>View Profile</span>
+                                <a href="../charactermenu/character.php" class="profile-dropdown-item">
+                                    <img src="../charactermenu/assets/fc1089.png" class="dropdown-item-icon">
+                                    <span>View Character</span>
                                 </a>
-                                <a href="../../../navigation/favorites/favorites.php" class="profile-dropdown-item">
-                                    <i class="fas fa-star"></i>
-                                    <span>My Favorites</span>
+                                <a href="learn.php" class="profile-dropdown-item">
+                                    <img src="../assets/menu/vocabsys.png" class="dropdown-item-icon">
+                                    <span>Study & Learn</span>
                                 </a>
-                                <a href="../../../settings/settings.php" class="profile-dropdown-item">
-                                    <i class="fas fa-cog"></i>
-                                    <span>Settings</span>
-                                </a>
-                            </div>
+                             </div>
                             <div class="profile-dropdown-footer">
                                 <button class="profile-dropdown-item sign-out" onclick="showLogoutModal()">
-                                    <i class="fas fa-sign-out-alt"></i>
+                                    <img src="../assets/menu/exit.png" class="dropdown-item-icon">
                                     <span>Sign Out</span>
                                 </button>
                             </div>
@@ -135,231 +134,49 @@ if ($shard_balance) {
         <div id="main-menu" class="screen active">
             <div class="menu-container">
                 <!-- Page Header -->
+                <!-- Page Header -->
                 <div class="page-header">
-                    <h1 class="page-title">Grade 7 - Vocabulary Mastery</h1>
-                    <p class="page-subtitle">English Language Arts - Building Word Power for Effective Communication</p>
                 </div>
                 
-                <!-- Lesson Content -->
-                <div class="lesson-content">
-                    <div class="lesson-section">
-                        <h2 class="section-title">A. Introduction to Vocabulary Building</h2>
-                        <div class="lesson-text">
-                            <p>Welcome to your Grade 7 Vocabulary Journey!</p>
-                            <p>In this unit, we will explore the fascinating world of words to enhance your communication skills and reading comprehension.</p>
-                            <p><strong>Words are the building blocks of language.</strong><br>
-                            A rich vocabulary helps you express yourself clearly and understand others better.</p>
-                            
-                            <p>This lesson focuses on three key areas of vocabulary development:</p>
-                            <ul>
-                                <li><strong>Context Clues</strong> – Understanding words from how they're used in sentences.</li>
-                                <li><strong>Word Relationships</strong> – Exploring synonyms, antonyms, and word families.</li>
-                                <li><strong>Affixes and Roots</strong> – Breaking down words into meaningful parts.</li>
-                            </ul>
-                            
-                            <p>By the end of this lesson, you will be able to:</p>
-                            <ul>
-                                <li>Determine the meaning of unfamiliar words using context clues</li>
-                                <li>Understand relationships between words with similar or opposite meanings</li>
-                                <li>Use prefixes, suffixes, and root words to determine word meanings</li>
-                                <li>Expand your vocabulary with commonly used academic words</li>
-                            </ul>
+                <!-- Lessons Content -->
+                <!-- Lessons Content -->
+                <div class="lessons-container">
+                    <?php if (empty($lessons)): ?>
+                    <div class="coming-soon-content">
+                        <div class="coming-soon-card">
+                            <div class="coming-soon-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h2>No Lessons Yet</h2>
+                            <p>There are currently no lessons available for Grade 7.</p>
+                            <p>Please check back later!</p>
                         </div>
                     </div>
-
-                    <div class="lesson-section">
-                        <h2 class="section-title">B. Understanding Words Through Context</h2>
-                        <div class="lesson-text">
-                            <p><strong>Context is key to understanding new words.</strong><br>
-                            The words and sentences around an unfamiliar word can help you figure out its meaning.</p>
-                            
-                            <h3>1. Types of Context Clues</h3>
-                            <p>Here are different ways context can help you understand new words:</p>
-                            
-                            <h4>Definition Clues</h4>
-                            <p>The sentence defines the word directly or gives a synonym.</p>
-                            <div class="example-box">
-                                <p><em>Example:</em> The <strong>archaeologist</strong>, a scientist who studies ancient cultures, discovered a 2,000-year-old vase.</p>
-                            </div>
-                            
-                            <h4>Example Clues</h4>
-                            <p>The sentence gives examples that help explain the word's meaning.</p>
-                            <div class="example-box">
-                                <p><em>Example:</em> <strong>Amphibians</strong> like frogs, toads, and salamanders can live both on land and in water.</p>
-                            </div>
-                            
-                            <h4>Contrast Clues</h4>
-                            <p>The word is contrasted with its opposite.</p>
-                            <div class="example-box">
-                                <p><em>Example:</em> Unlike her <strong>gregarious</strong> sister, Maria was shy and preferred to be alone.</p>
-                            </div>
-                            
-                            <h3>2. Practice with Context Clues</h3>
-                            <p>Let's practice using context clues with these sentences from Philippine literature:</p>
-                            
-                            <div class="activity-box">
-                                <p><strong>Activity 1:</strong> Determine the meaning of the bolded word in each sentence.</p>
-                                <ol>
-                                    <li>The old man's <strong>gaunt</strong> face showed that he hadn't eaten in days.
-                                        <div class="hint">(Hint: What would someone's face look like if they haven't eaten?)</div>
-                                    </li>
-                                    <li>She spoke in a <strong>monotone</strong> voice, making the lecture difficult to stay awake through.
-                                        <div class="hint">(Hint: What kind of voice would make something boring?)</div>
-                                    </li>
-                                    <li>The <strong>aroma</strong> of adobo cooking in the kitchen made everyone's mouth water.
-                                        <div class="hint">(Hint: What sense is being described here?)</div>
-                                    </li>
-                                </ol>
-                            </div>
-                            
-                            <h3>3. Common Academic Vocabulary</h3>
-                            <p>Here are some important academic words you'll encounter in Grade 7:</p>
-                            
-                            <div class="vocab-list">
-                                <div class="vocab-card">
-                                    <div class="vocab-word">Analyze</div>
-                                    <div class="vocab-definition">To examine in detail to understand better</div>
-                                    <div class="vocab-example">We will <em>analyze</em> the story's main characters.</div>
+                    <?php else: ?>
+                        <div class="lessons-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; padding: 15px 0;">
+                            <?php foreach ($lessons as $lesson): ?>
+                                <div class="lesson-card" onclick="window.location.href='view_lesson.php?id=<?= $lesson['id'] ?>'" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); padding: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; display: flex; flex-direction: column; gap: 8px;">
+                                    <div class="lesson-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #6e8efb, #a777e3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">
+                                        <i class="fas fa-book-reader"></i>
+                                    </div>
+                                    <h3 style="color: white; margin: 0; font-size: 1rem; line-height: 1.3;"><?= htmlspecialchars($lesson['title']) ?></h3>
+                                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; margin: 0; flex-grow: 1;">
+                                        <?= date('M j, Y', strtotime($lesson['created_at'])) ?>
+                                    </p>
+                                    <div class="lesson-footer" style="display: flex; justify-content: flex-end;">
+                                        <span style="color: #a777e3; font-size: 0.8rem; font-weight: 600;">Read <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></span>
+                                    </div>
                                 </div>
-                                
-                                <div class="vocab-card">
-                                    <div class="vocab-word">Convey</div>
-                                    <div class="vocab-definition">To make an idea or feeling known</div>
-                                    <div class="vocab-example">The author uses similes to <em>convey</em> the character's emotions.</div>
-                                </div>
-                                
-                                <div class="vocab-card">
-                                    <div class="vocab-word">Significant</div>
-                                    <div class="vocab-definition">Important or meaningful</div>
-                                    <div class="vocab-example">The discovery was <em>significant</em> for the research team.</div>
-                                </div>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
-                    </div>
-                                <li>Explaining character traits and motivations</li>
-                                <li>Identifying the author's point of view and style</li>
-                            </ul>
-                            
-                            <h3>3. Drama</h3>
-                            <p>Drama is a story meant to be performed by actors for an audience.</p>
-                            
-                            <h4>Traditional Philippine drama:</h4>
-                            <ul>
-                                <li><strong>Sarsuwela</strong> – musical play with songs, dialogue, and dances</li>
-                                <li><strong>Moro-moro and senakulo</strong> – plays with historical or religious themes</li>
-                            </ul>
-                            
-                            <h4>Modern Philippine drama:</h4>
-                            <p>Stage plays in English or Filipino that discuss social issues or personal struggles.</p>
-                            
-                            <h4>Skills to practice in Drama:</h4>
-                            <ul>
-                                <li>Recognizing dialogue, stage directions, and acts / scenes</li>
-                                <li>Interpreting characters' emotions and motivations</li>
-                                <li>Understanding how performance elements (tone of voice, gesture, costume, setting) help convey meaning</li>
-                            </ul>
-                            
-                            <h4>Key Points about Literature</h4>
-                            <ul>
-                                <li>Reflects Filipino values, traditions, and history</li>
-                                <li>Helps us understand human experiences across time and place</li>
-                                <li>Inspires creativity and empathy</li>
-                                <li>Strengthens skills in reading, listening, and interpreting texts</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="lesson-section">
-                        <h2 class="section-title">C. Informational Texts</h2>
-                        <div class="lesson-text">
-                            <p>Informational texts provide factual details, explanations, and instructions about real-world topics.</p>
-                            <p>These texts are part of daily learning in school and life.</p>
-                            
-                            <h4>Examples:</h4>
-                            <ul>
-                                <li>Newspaper and magazine articles</li>
-                                <li>Textbook chapters</li>
-                                <li>Pamphlets and brochures (e.g., about health, environment, tourism)</li>
-                                <li>Charts, graphs, diagrams in educational materials</li>
-                                <li>Informational websites and digital resources</li>
-                            </ul>
-                            
-                            <h4>Skills to practice in Informational Texts:</h4>
-                            <ul>
-                                <li>Finding the main idea and key details</li>
-                                <li>Understanding text structures such as description, sequence, cause-and-effect, problem-solution</li>
-                                <li>Interpreting charts, tables, captions, and visuals</li>
-                                <li>Identifying the author's purpose – to inform, explain, or describe</li>
-                                <li>Evaluating the reliability of sources in print and online</li>
-                            </ul>
-                            
-                            <p><strong>Informational texts help us gain knowledge and make better decisions.</strong></p>
-                        </div>
-                    </div>
-
-                    <div class="lesson-section">
-                        <h2 class="section-title">D. Transactional Texts</h2>
-                        <div class="lesson-text">
-                            <p>Transactional texts are used for direct communication and practical purposes.</p>
-                            <p>We encounter them in school, at home, and online.</p>
-                            
-                            <h4>Examples:</h4>
-                            <ul>
-                                <li>Personal and formal letters</li>
-                                <li>Emails and messaging for school or official communication</li>
-                                <li>Announcements and notices</li>
-                                <li>Schedules, instructions, and guidelines</li>
-                                <li>Application forms, requests, and receipts</li>
-                                <li>Social media posts that share official information (e.g., government alerts, school reminders)</li>
-                            </ul>
-                            
-                            <h4>Skills to practice in Transactional Texts:</h4>
-                            <ul>
-                                <li>Identifying the purpose (to inform, request, invite, instruct)</li>
-                                <li>Recognizing the audience (friend, teacher, official, community)</li>
-                                <li>Using the correct format and polite tone for different situations</li>
-                                <li>Understanding instructions and details accurately</li>
-                                <li>Communicating in a clear, concise, and respectful way</li>
-                            </ul>
-                            
-                            <p><strong>Mastering transactional texts helps students participate confidently in real-life communication.</strong></p>
-                        </div>
-                    </div>
-
-                    <div class="lesson-section">
-                        <h2 class="section-title">E. Reading Focus Strategies</h2>
-                        <div class="lesson-text">
-                            <p>For all kinds of texts, Grade 7 learners should ask:</p>
-                            <ul>
-                                <li><strong>Purpose:</strong> Why was the text written?</li>
-                                <li><strong>Audience:</strong> Who is it for?</li>
-                                <li><strong>Structure:</strong> How is the text organized (stanzas, paragraphs, dialogue, lists)?</li>
-                                <li><strong>Language Features:</strong> Are there figurative expressions, technical terms, or formal / informal tone?</li>
-                                <li><strong>Message:</strong> What idea, feeling, or action should I take away from the text?</li>
-                            </ul>
-                            
-                            <p><strong>These strategies help students become active, thoughtful readers.</strong></p>
-                        </div>
-                    </div>
-
-                    <div class="lesson-section">
-                        <h2 class="section-title">F. Summary of the Lesson</h2>
-                        <div class="lesson-text">
-                            <ul>
-                                <li><strong>Philippine Literary Texts</strong> – poetry, prose, drama – express the culture and emotions of the Filipino people.</li>
-                                <li><strong>Informational Texts</strong> – explain facts, ideas, and processes.</li>
-                                <li><strong>Transactional Texts</strong> – help us communicate and function in everyday situations.</li>
-                            </ul>
-                        </div>
-                    </div>
+                    <?php endif; ?>
                 </div>
                 
                 <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <button class="back-button" onclick="goBack()">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>Back to Grade Selection</span>
-                    </button>
+                <div class="action-buttons" style="display: flex; justify-content: center; margin-top: 20px;">
+                    <a href="learn.php" style="display: inline-flex; align-items: center; padding: 6px 16px; background: rgba(255, 255, 255, 0.1); color: white; text-decoration: none; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 0.8rem; transition: all 0.3s ease; font-family: 'Poppins', sans-serif;">
+                        <i class="fas fa-arrow-left" style="margin-right: 6px; font-size: 0.9rem;"></i> Back to Grade Selection
+                    </a>
                 </div>
             </div>
         </div>
@@ -386,9 +203,7 @@ if ($shard_balance) {
             username: '<?php echo addslashes($user['username']); ?>',
             gradeLevel: '<?php echo addslashes($user['grade_level']); ?>',
             shards: <?php echo $user_shards; ?>,
-            characterData: <?php echo $character_data ? json_encode($character_data) : 'null'; ?>,
-            averagePercentage: <?php echo $average_percentage; ?>,
-            totalSessions: <?php echo $total_sessions; ?>
+            characterData: <?php echo $character_data ? json_encode($character_data) : 'null'; ?>
         };
 
         // Logout functionality
@@ -437,6 +252,12 @@ if ($shard_balance) {
             initializeShardDisplay();
         });
 
+        // Toggle currency dropdown on mobile
+        function toggleCurrencyDropdown(element) {
+            if (window.innerWidth <= 768) {
+                element.classList.toggle('show-dropdown');
+            }
+        }
         // Toggle currency dropdown on mobile
         function toggleCurrencyDropdown(element) {
             if (window.innerWidth <= 768) {

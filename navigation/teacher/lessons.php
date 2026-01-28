@@ -26,28 +26,39 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $notification_count = $stmt->fetch()['count'];
 
-// Get vocabulary questions with choices (Fetch ALL for client-side filtering)
-$vocabulary_questions = [];
-$total_vocab = 0;
+// Handle Section Filter
+$selected_grade = $_GET['grade'] ?? 'all';
+$selected_section = $_GET['section'] ?? 'all';
 
-try {
-    $query = "SELECT vq.*, u.username as creator_name, u.profile_image as creator_image,
-              (SELECT COUNT(*) FROM vocabulary_choices WHERE question_id = vq.id) as choice_count
-              FROM vocabulary_questions vq
-              LEFT JOIN users u ON vq.created_by = u.id
-              WHERE vq.is_active = 1
-              ORDER BY vq.created_at DESC";
+// Build Query
+$query = "SELECT l.*, u.username as creator_name, u.profile_image as creator_image 
+          FROM lessons l 
+          LEFT JOIN users u ON l.created_by = u.id 
+          WHERE 1=1";
+$params = [];
 
-    $stmt = $pdo->prepare($query);
-    $stmt->execute();
-    $vocabulary_questions = $stmt->fetchAll();
-} catch (PDOException $e) {
-    // vocabulary_questions table may not exist yet
-    $vocabulary_questions = [];
+if ($selected_grade !== 'all') {
+    $query .= " AND l.grade_level = ?";
+    $params[] = $selected_grade;
 }
 
-// Get total count
-$total_vocab = count($vocabulary_questions);
+if ($selected_section !== 'all') {
+    $query .= " AND l.section = ?";
+    $params[] = $selected_section;
+}
+
+$query .= " ORDER BY l.created_at DESC";
+
+$stmt = $pdo->prepare($query);
+$stmt->execute($params);
+$lessons = $stmt->fetchAll();
+
+$total_lessons = count($lessons);
+
+// Get unique sections for filter (optional, can be hardcoded or fetched)
+$sections_stmt = $pdo->query("SELECT DISTINCT section FROM users WHERE section IS NOT NULL AND section != '' ORDER BY section");
+$sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,13 +66,22 @@ $total_vocab = count($vocabulary_questions);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php include '../../includes/favicon.php'; ?>
-    <title>Vocabulary Bank - Word Weavers</title>
+    <title>Lessons - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css?v=<?php echo filemtime('../../styles.css'); ?>">
     <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo filemtime('../../navigation/shared/navigation.css'); ?>">
     <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo filemtime('../../notif/toast.css'); ?>">
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="assets/css/vocabulary.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/vocabulary.css?v=<?php echo time(); ?>"> <!-- Reusing vocabulary css for table styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Specific styles for lessons page if needed */
+        .lesson-truncate {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
 </head>
 <body>
     <?php include '../../includes/page-loader.php'; ?>
@@ -94,11 +114,12 @@ $total_vocab = count($vocabulary_questions);
                     <img src="../../MainGame/vocabworld/assets/menu/vv_logo.webp" alt="Vocabworld" class="nav-section-logo">
                     <span>Vocabworld</span>
                 </div>
-                <a href="lessons.php" class="nav-link nav-sub-link">
+                <!-- Lessons Link (Active) -->
+                <a href="lessons.php" class="nav-link nav-sub-link active">
                     <i class="fas fa-chalkboard-teacher"></i>
                     <span>Lessons</span>
                 </a>
-                <a href="vocabulary.php" class="nav-link nav-sub-link active">
+                <a href="vocabulary.php" class="nav-link nav-sub-link">
                     <i class="fas fa-book"></i>
                     <span>Vocabulary Bank</span>
                 </a>
@@ -164,12 +185,12 @@ $total_vocab = count($vocabulary_questions);
         <div class="welcome-section">
             <div class="welcome-content" style="flex: 0 0 auto;">
                 <div class="quick-stat-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #00C853 0%, #009624 100%);">
-                        <i class="fas fa-book"></i>
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                        <i class="fas fa-chalkboard-teacher"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 style="color: var(--white);">Total Vocabularies</h3>
-                        <div class="value" style="color: var(--white);"><?php echo number_format($total_vocab); ?></div>
+                        <h3 style="color: var(--white);">Total Lessons</h3>
+                        <div class="value" id="totalLessonsValue" style="color: var(--white);"><?php echo number_format($total_lessons); ?></div>
                     </div>
                 </div>
             </div>
@@ -202,10 +223,9 @@ $total_vocab = count($vocabulary_questions);
         updateDateTime();
         setInterval(updateDateTime, 1000);
         </script>
-
         <style>
         /* Responsive adjustments for table controls */
-        .filter-group {
+        #filterForm {
             display: flex; 
             gap: 10px; 
             align-items: center;
@@ -227,7 +247,7 @@ $total_vocab = count($vocabulary_questions);
                 gap: 10px;
             }
 
-            .filter-group {
+            #filterForm {
                 width: 100%;
                 flex-direction: column;
                 align-items: stretch;
@@ -243,43 +263,43 @@ $total_vocab = count($vocabulary_questions);
             }
         }
         </style>
-        <!-- Vocabulary Bank View -->
+        <!-- Lessons View -->
         <div class="teacher-container">
             <div class="vocabulary-section">
                 <div class="section-header">
-                    <h3 style="transform: translateY(-3px);"><i class="fas fa-list"></i> All Vocabulary Questions</h3>
+                    <h3 style="transform: translateY(-3px);"><i class="fas fa-chalkboard-teacher"></i> All Lessons</h3>
                     <div class="table-controls" style="margin-left: auto;">
-                        <div class="filter-group">
+                        <div id="filterForm">
                             <div class="grade-filter">
-                                <label for="gradeFilterVocab">Grade:</label>
-                                <select id="gradeFilterVocab">
-                                    <option value="all">All Grades</option>
-                                    <option value="7">Grade 7</option>
-                                    <option value="8">Grade 8</option>
-                                    <option value="9">Grade 9</option>
-                                    <option value="10">Grade 10</option>
+                                <label for="gradeFilter">Grade:</label>
+                                <select id="gradeFilter" name="grade" onchange="filterLessons()">
+                                    <option value="all" <?= $selected_grade === 'all' ? 'selected' : '' ?>>All Grades</option>
+                                    <option value="7" <?= $selected_grade === '7' ? 'selected' : '' ?>>Grade 7</option>
+                                    <option value="8" <?= $selected_grade === '8' ? 'selected' : '' ?>>Grade 8</option>
+                                    <option value="9" <?= $selected_grade === '9' ? 'selected' : '' ?>>Grade 9</option>
+                                    <option value="10" <?= $selected_grade === '10' ? 'selected' : '' ?>>Grade 10</option>
                                 </select>
                             </div>
                             <div class="grade-filter">
-                                <label for="difficultyFilter">Difficulty:</label>
-                                <select id="difficultyFilter">
-                                    <option value="all">All Levels</option>
-                                    <option value="1">Level 1</option>
-                                    <option value="2">Level 2</option>
-                                    <option value="3">Level 3</option>
-                                    <option value="4">Level 4</option>
-                                    <option value="5">Level 5</option>
+                                <label for="sectionFilter">Section:</label>
+                                <select id="sectionFilter" name="section" onchange="filterLessons()">
+                                    <option value="all">All Sections</option>
+                                    <?php foreach ($sections as $sec): ?>
+                                        <option value="<?= htmlspecialchars($sec) ?>" <?= $selected_section === $sec ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($sec) ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                         </div>
                         <div class="search-box">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="vocabSearch" placeholder="Search vocabulary...">
+                            <input type="text" id="lessonSearch" placeholder="Search lessons..." onkeyup="filterLessons()">
                         </div>
-                        <button class="add-vocab-btn" onclick="openAddModal()" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                        <a href="create_lesson.php" class="add-vocab-btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; text-decoration: none;">
                             <i class="fas fa-plus"></i>
-                            <span>Add New Word</span>
-                        </button>
+                            <span>Create Lesson</span>
+                        </a>
                     </div>
                 </div>
 
@@ -287,53 +307,48 @@ $total_vocab = count($vocabulary_questions);
                     <table class="vocab-table">
                         <thead>
                             <tr>
-                                <th class="sortable" data-sort="word" data-order="asc">Title</th>
-                                <th class="sortable" data-sort="definition" data-order="asc">Question</th>
-                                <th class="sortable" data-sort="grade" data-order="asc">Grade</th>
-                                <th class="sortable" data-sort="difficulty" data-order="asc">Difficulty</th>
+                                <th>Title</th>
+                                <th>Grade</th>
+                                <th>Section</th>
                                 <th>Created by</th>
+                                <th>Date</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="vocabTbody">
-                            <?php if (empty($vocabulary_questions)): ?>
+                        <tbody id="lessonsTableBody">
+                            <?php if (empty($lessons)): ?>
                                 <tr>
-                                    <td colspan="6" class="no-vocab">No vocabulary questions found. Click "Add New Word" to create one.</td>
+                                    <td colspan="6" class="no-vocab">No lessons found. Click "Create Lesson" to add one.</td>
                                 </tr>
                             <?php else: ?>
-                                <?php foreach ($vocabulary_questions as $question): ?>
-                                    <tr data-word="<?= strtolower(htmlspecialchars($question['word'])) ?>" 
-                                        data-definition="<?= strtolower(htmlspecialchars($question['definition'])) ?>"
-                                        data-grade="<?= htmlspecialchars($question['grade_level']) ?>"
-                                        data-difficulty="<?= htmlspecialchars($question['difficulty']) ?>">
+                                <?php foreach ($lessons as $lesson): ?>
+                                    <tr>
                                         <td data-label="Title">
-                                            <strong><?= htmlspecialchars($question['word']) ?></strong>
-                                        </td>
-                                        <td data-label="Question" class="definition-cell">
-                                            <?= htmlspecialchars(substr($question['definition'], 0, 80)) . (strlen($question['definition']) > 80 ? '...' : '') ?>
+                                            <strong><?= htmlspecialchars($lesson['title']) ?></strong>
                                         </td>
                                         <td data-label="Grade">
-                                            <span class="grade-badge">Grade <?= htmlspecialchars($question['grade_level']) ?></span>
+                                            <span class="grade-badge">Grade <?= htmlspecialchars($lesson['grade_level']) ?></span>
                                         </td>
-                                        <td data-label="Difficulty">
-                                            <span class="difficulty-badge diff-<?= $question['difficulty'] ?>">
-                                                Level <?= $question['difficulty'] ?>
-                                            </span>
+                                        <td data-label="Section">
+                                            <?= htmlspecialchars($lesson['section'] ?: 'All Sections') ?>
                                         </td>
                                         <td data-label="Created by">
                                             <div class="creator-info" style="display: flex; align-items: center; gap: 8px;">
-                                                <img src="<?= !empty($question['creator_image']) ? '../../' . htmlspecialchars($question['creator_image']) : '../../assets/menu/defaultuser.png' ?>" 
+                                                <img src="<?= !empty($lesson['creator_image']) ? '../../' . htmlspecialchars($lesson['creator_image']) : '../../assets/menu/defaultuser.png' ?>" 
                                                      alt="Avatar" 
                                                      class="creator-avatar"
                                                      style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.2);">
-                                                <span class="creator-name"><?= htmlspecialchars(explode(' ', $question['creator_name'])[0]) ?></span>
+                                                <span class="creator-name"><?= htmlspecialchars(explode(' ', $lesson['creator_name'])[0]) ?></span>
                                             </div>
                                         </td>
+                                        <td data-label="Date">
+                                            <?= date('M d, Y', strtotime($lesson['created_at'])) ?>
+                                        </td>
                                         <td data-label="Actions" class="action-buttons">
-                                            <button class="btn-edit" onclick="editVocab(<?= $question['id'] ?>)" title="Edit">
+                                            <a href="edit_lesson.php?id=<?= $lesson['id'] ?>" class="btn-edit" title="Edit">
                                                 <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-delete" onclick="deleteVocab(<?= $question['id'] ?>, '<?= htmlspecialchars($question['word']) ?>')" title="Delete">
+                                            </a>
+                                            <button class="btn-delete" onclick="deleteLesson(<?= $lesson['id'] ?>, '<?= addslashes(htmlspecialchars($lesson['title'])) ?>')" title="Delete">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
@@ -347,97 +362,6 @@ $total_vocab = count($vocabulary_questions);
         </div>
     </div>
 
-    <!-- Add/Edit Vocabulary Modal -->
-    <div class="modal-overlay" id="vocabModal">
-        <div class="modal-content vocab-modal">
-            <div class="modal-header">
-                <div class="modal-title-wrapper" style="display: flex; align-items: center; gap: 15px;">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #00C853 0%, #009624 100%); width: 40px; height: 40px; font-size: 18px;">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <h2 id="modalTitle">Add New Vocabulary</h2>
-                </div>
-                <button class="modal-close" onclick="closeVocabModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form id="vocabForm" onsubmit="saveVocab(event)">
-                <input type="hidden" id="vocabId" name="vocab_id">
-                
-                <div class="form-group">
-                    <label for="word">Title <span class="required">*</span></label>
-                    <input type="text" id="word" name="word" required placeholder="Enter title">
-                </div>
-
-                <div class="form-group">
-                    <label for="definition">Question <span class="required">*</span></label>
-                    <textarea id="definition" name="definition" required rows="3" placeholder="Enter question"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="example">Example Sentence</label>
-                    <textarea id="example" name="example" rows="2" placeholder="Enter example sentence (optional)"></textarea>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="gradeLevel">Grade Level <span class="required">*</span></label>
-                        <select id="gradeLevel" name="grade_level" required>
-                            <option value="">Select Grade</option>
-                            <option value="7">Grade 7</option>
-                            <option value="8">Grade 8</option>
-                            <option value="9">Grade 9</option>
-                            <option value="10">Grade 10</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="difficulty">Difficulty Level <span class="required">*</span></label>
-                        <select id="difficulty" name="difficulty" required>
-                            <option value="">Select Level</option>
-                            <option value="1">Level 1 (Easy)</option>
-                            <option value="2">Level 2</option>
-                            <option value="3">Level 3 (Medium)</option>
-                            <option value="4">Level 4</option>
-                            <option value="5">Level 5 (Hard)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Multiple Choice Options <span class="required">*</span></label>
-                    <p class="form-hint">Enter 4 choices. Mark the correct answer with the radio button.</p>
-                    
-                    <div class="choices-container">
-                        <div class="choice-item">
-                            <input type="radio" name="correct_choice" value="0" id="correct0" required>
-                            <input type="text" name="choices[]" id="choice0" placeholder="Choice 1" required>
-                        </div>
-                        <div class="choice-item">
-                            <input type="radio" name="correct_choice" value="1" id="correct1" required>
-                            <input type="text" name="choices[]" id="choice1" placeholder="Choice 2" required>
-                        </div>
-                        <div class="choice-item">
-                            <input type="radio" name="correct_choice" value="2" id="correct2" required>
-                            <input type="text" name="choices[]" id="choice2" placeholder="Choice 3" required>
-                        </div>
-                        <div class="choice-item">
-                            <input type="radio" name="correct_choice" value="3" id="correct3" required>
-                            <input type="text" name="choices[]" id="choice3" placeholder="Choice 4" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancel" onclick="closeVocabModal()">Cancel</button>
-                    <button type="submit" class="btn-save">
-                        <i class="fas fa-save"></i> Save Vocabulary
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Delete Confirmation Modal -->
     <div class="modal-overlay" id="deleteModal">
         <div class="modal-content delete-modal">
@@ -448,7 +372,7 @@ $total_vocab = count($vocabulary_questions);
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete the vocabulary word "<strong id="deleteWordName"></strong>"?</p>
+                <p>Are you sure you want to delete the lesson "<strong id="deleteLessonTitle"></strong>"?</p>
                 <p class="warning-text">This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
@@ -481,7 +405,6 @@ $total_vocab = count($vocabulary_questions);
     function showLogoutModal() {
         const modal = document.getElementById('logoutModal');
         const confirmation = document.getElementById('logoutConfirmation');
-        
         if (modal && confirmation) {
             modal.classList.add('show');
             confirmation.classList.remove('hide');
@@ -492,7 +415,6 @@ $total_vocab = count($vocabulary_questions);
     function hideLogoutModal() {
         const modal = document.getElementById('logoutModal');
         const confirmation = document.getElementById('logoutConfirmation');
-        
         if (modal && confirmation) {
             confirmation.classList.remove('show');
             confirmation.classList.add('hide');
@@ -502,6 +424,66 @@ $total_vocab = count($vocabulary_questions);
 
     function confirmLogout() {
         window.location.href = '../../onboarding/logout.php';
+    }
+
+    // Delete Lesson functionality
+    let lessonToDeleteId = null;
+
+    function deleteLesson(id, title) {
+        lessonToDeleteId = id;
+        document.getElementById('deleteLessonTitle').textContent = title;
+        document.getElementById('deleteModal').classList.add('show');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('show');
+        lessonToDeleteId = null;
+    }
+
+    function confirmDelete() {
+        if (!lessonToDeleteId) return;
+        
+        fetch('delete_lesson.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'id=' + lessonToDeleteId
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // If filtering is in place, we should reload the list or remove row, 
+                // but reloading page to be safe is fine, OR we could call filterLessons()
+                // simpler is to reload, but user wanted no reload on FILTER.
+                // Let's call filterLessons() to refresh the list without page reload.
+                filterLessons(); 
+                closeDeleteModal();
+                // We might also need to reload because 'total lessons' might change
+            } else {
+                alert('Error deleting lesson: ' + data.message);
+                closeDeleteModal();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred.');
+            closeDeleteModal();
+        });
+    }
+
+    function filterLessons() {
+        const grade = document.getElementById('gradeFilter').value;
+        const section = document.getElementById('sectionFilter').value;
+        const search = document.getElementById('lessonSearch').value;
+
+        fetch(`fetch_lessons.php?grade=${encodeURIComponent(grade)}&section=${encodeURIComponent(section)}&search=${encodeURIComponent(search)}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('lessonsTableBody').innerHTML = data.html;
+                document.getElementById('totalLessonsValue').textContent = data.total;
+            })
+            .catch(error => console.error('Error fetching lessons:', error));
     }
     </script>
 </body>

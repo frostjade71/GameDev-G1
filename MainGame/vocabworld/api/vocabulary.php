@@ -69,29 +69,25 @@ function handleGetRequest() {
     error_log("User grade level: " . ($user['grade_level'] ?? 'NOT SET'));
     
     // Get user's grade level (extract number from grade level string)
-    $grade_level = $user['grade_level'] ?? '7';
+    // Get user's grade level string
+    $grade_level_str = $user['grade_level'] ?? '7';
     
-    // Extract numeric grade from strings like "Grade 7", "7", etc.
-    if (preg_match('/\d+/', $grade_level, $matches)) {
-        $grade_level = $matches[0];
+    // Check if user is a Teacher, Admin, or Developer
+    $is_special_role = false;
+    $special_roles = ['Teacher', 'Admin', 'Developer'];
+    foreach ($special_roles as $role) {
+        if (stripos($grade_level_str, $role) !== false) {
+            $is_special_role = true;
+            break;
+        }
     }
     
-    // Fetch questions from database based on user's grade level
-    $stmt = $pdo->prepare("
-        SELECT vq.id, vq.word, vq.definition, vq.difficulty, vq.grade_level
-        FROM vocabulary_questions vq
-        WHERE vq.is_active = 1 AND vq.grade_level = ?
-        ORDER BY RAND()
-        LIMIT 1
-    ");
-    $stmt->execute([$grade_level]);
-    $question = $stmt->fetch();
-    
-    // If no questions found for this grade, try any grade
-    if (!$question) {
-        error_log("No questions found for grade $grade_level, trying any grade");
+    if ($is_special_role) {
+        // Teachers/Admins get questions from ALL grade levels
+        error_log("User is Teacher/Admin, fetching random question from ANY grade.");
+        
         $stmt = $pdo->prepare("
-            SELECT vq.id, vq.word, vq.definition, vq.difficulty, vq.grade_level
+            SELECT vq.id, vq.word, vq.definition, vq.difficulty, vq.grade_level, vq.example_sentence as example
             FROM vocabulary_questions vq
             WHERE vq.is_active = 1
             ORDER BY RAND()
@@ -99,6 +95,39 @@ function handleGetRequest() {
         ");
         $stmt->execute();
         $question = $stmt->fetch();
+        
+    } else {
+        // Students get questions ONLY from their grade level
+        $grade_level = '7'; // Default
+        if (preg_match('/\d+/', $grade_level_str, $matches)) {
+            $grade_level = $matches[0];
+        }
+        
+        error_log("User is Student (Grade $grade_level), fetching question for Grade $grade_level.");
+        
+        $stmt = $pdo->prepare("
+            SELECT vq.id, vq.word, vq.definition, vq.difficulty, vq.grade_level, vq.example_sentence as example
+            FROM vocabulary_questions vq
+            WHERE vq.is_active = 1 AND vq.grade_level = ?
+            ORDER BY RAND()
+            LIMIT 1
+        ");
+        $stmt->execute([$grade_level]);
+        $question = $stmt->fetch();
+        
+        // If no questions found for this grade, fallback to any grade (optional, but good for empty DBs)
+        if (!$question) {
+            error_log("No questions found for specific grade $grade_level, trying any grade as fallback");
+            $stmt = $pdo->prepare("
+                SELECT vq.id, vq.word, vq.definition, vq.difficulty, vq.grade_level, vq.example_sentence as example
+                FROM vocabulary_questions vq
+                WHERE vq.is_active = 1
+                ORDER BY RAND()
+                LIMIT 1
+            ");
+            $stmt->execute();
+            $question = $stmt->fetch();
+        }
     }
     
     // If still no questions, return fallback
@@ -157,7 +186,8 @@ function handleGetRequest() {
         echo json_encode([
             'text' => "What is the meaning of \"{$question['word']}\"?",
             'correct' => $question['definition'],
-            'options' => $options
+            'options' => $options,
+            'example' => $question['example'] ?? null // Add example to response
         ]);
         return;
     }
@@ -173,13 +203,46 @@ function handleGetRequest() {
         }
     }
     
+    // Determine Question Text based on what the Correct Answer is
+    $question_text = "";
+    
+    // Clean strings for comparison (remove whitespace, lowercase)
+    $clean_correct = strtolower(trim($correct_answer));
+    $clean_word = strtolower(trim($question['word']));
+    $clean_definition = strtolower(trim($question['definition']));
+    
+    // Check match
+    if ($clean_correct == $clean_word || strpos($clean_correct, $clean_word) !== false) {
+        // The answer is the WORD (or contains it), so the Question must be the DEFINITION
+        // Example: Answer "NASA", Question "Which is an acronym?"
+        $question_text = $question['definition'];
+    } elseif ($clean_correct == $clean_definition || strpos($clean_correct, $clean_definition) !== false) {
+        // The answer is the DEFINITION, so the Question must be the WORD
+        // Example: Answer "Plentiful", Question "Meaning of Abundant?"
+        $question_text = "What is the meaning of \"{$question['word']}\"?";
+    } else {
+        // Fallback: If no direct match (e.g. slight variation), default to asking for the meaning of the word
+        // Unless... maybe reasonable to check similarity? 
+        // Let's assume standard usage mostly, but if user repurposed fields:
+        // If choices seem short (Words) and Definition is long, show Definition.
+        // If choices are long (Definitions) and Word is short, show Word.
+        
+        if (strlen($correct_answer) < strlen($question['definition']) && strlen($question['definition']) > 20) {
+             // Likely a "Question" in definition field
+             $question_text = $question['definition'];
+        } else {
+             $question_text = "What is the meaning of \"{$question['word']}\"?";
+        }
+    }
+    
     // Shuffle options for randomness
     shuffle($all_options);
     
     echo json_encode([
-        'text' => "What is the meaning of \"{$question['word']}\"?",
+        'text' => $question_text,
         'correct' => $correct_answer,
-        'options' => $all_options
+        'options' => $all_options,
+        'example' => $question['example'] ?? null // Add example to response
     ]);
 }
 

@@ -174,8 +174,13 @@ if ($shard_result['success']) {
             <div class="menu-container">
                 <div class="vocabworld-grid">
                     <?php
-                    // Get user's grade level and convert to number for comparison
-                    $user_grade = (int) filter_var($user['grade_level'], FILTER_SANITIZE_NUMBER_INT);
+                    // Get user's grade level
+                    $user_role = $user['grade_level'];
+                    $user_grade = (int) filter_var($user_role, FILTER_SANITIZE_NUMBER_INT);
+                    
+                    // Define privileged roles that can access all grades
+                    $privileged_roles = ['Teacher', 'Admin', 'Developer'];
+                    $has_privileged_access = in_array($user_role, $privileged_roles);
                     
                     // Define grade cards with their properties
                     $grade_cards = [
@@ -203,7 +208,9 @@ if ($shard_result['success']) {
                     
                     // Generate grade cards
                     foreach ($grade_cards as $grade => $card) {
-                        $is_locked = $grade != $user_grade; // Lock all grades except the user's current grade
+                        // Lock if user doesn't have privileged access AND grade doesn't match
+                        $is_locked = !$has_privileged_access && ($grade != $user_grade);
+                        
                         $card_class = $is_locked ? 'locked' : '';
                         $card_url = $is_locked ? '#' : "grade{$grade}.php";
                         $onclick = $is_locked ? "onclick='event.preventDefault(); window.showToast(\"You are not a Grade {$grade} student\", \"error\")'" : '';

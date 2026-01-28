@@ -11,37 +11,20 @@ if (!function_exists('isLoggedIn') || !isLoggedIn() || !$isTeacherOrAdmin) {
     exit();
 }
 
-// Get current user information
+// Get user info
 $user_id = $_SESSION['user_id'];
 $stmt = $pdo->prepare("SELECT username, email, grade_level, section, profile_image FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $current_user = $stmt->fetch();
 
 // Get notification count
-$stmt = $pdo->prepare("
-    SELECT COUNT(*) as count 
-    FROM friend_requests 
-    WHERE receiver_id = ? AND status = 'pending'
-");
+$stmt = $pdo->prepare("SELECT COUNT(*) as count FROM friend_requests WHERE receiver_id = ? AND status = 'pending'");
 $stmt->execute([$user_id]);
 $notification_count = $stmt->fetch()['count'];
 
-// Get sort parameters for student table
-// Build the query for students (exclude Teacher, Admin, Developer roles)
-$query = "SELECT id, username, email, grade_level, section, created_at FROM users WHERE grade_level NOT IN ('Teacher', 'Admin', 'Developer')";
-$params = [];
-
-$query .= " ORDER BY username ASC";
-
-$stmt = $pdo->prepare($query);
-$stmt->execute($params);
-$students = $stmt->fetchAll();
-
-// Get unique grade levels for filter (excluding Teacher, Admin, Developer)
-$grade_levels = $pdo->query("SELECT DISTINCT grade_level FROM users WHERE grade_level NOT IN ('Teacher', 'Admin', 'Developer') ORDER BY grade_level")->fetchAll(PDO::FETCH_COLUMN);
-
-// Get total student count
-$total_students = count($students);
+// Get Sections for Dropdown
+$sections_stmt = $pdo->query("SELECT DISTINCT section FROM users WHERE section IS NOT NULL AND section != '' ORDER BY section");
+$sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,23 +32,26 @@ $total_students = count($students);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php include '../../includes/favicon.php'; ?>
-    <title>Students - Word Weavers</title>
+    <title>Create Lesson - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css?v=<?php echo filemtime('../../styles.css'); ?>">
     <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo filemtime('../../navigation/shared/navigation.css'); ?>">
-    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo filemtime('../../notif/toast.css'); ?>">
+    <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="assets/css/students.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/vocabulary.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- TinyMCE -->
+    <script src="https://cdn.tiny.cloud/1/zsakvou710vz1lno9jg4cswebk4agq3rkdm6xptw78gctcl5/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+      tinymce.init({
+        selector: '#lessonContent',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+      });
+    </script>
 </head>
 <body>
-    <?php include '../../includes/page-loader.php'; ?>
-    <!-- Mobile Menu Button -->
-    <button class="mobile-menu-btn" aria-label="Open menu">
-        <i class="fas fa-bars"></i>
-    </button>
-
-    <!-- Custom Teacher Sidebar -->
     <div class="sidebar teacher-sidebar">
+        <!-- Sidebar Content (Same as lessons.php) -->
         <div class="sidebar-logo">
             <img src="../../assets/menu/Word-Weavers.png" alt="Word Weavers" class="sidebar-logo-img">
         </div>
@@ -79,7 +65,7 @@ $total_students = count($students);
                 <i class="fas fa-chart-line"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="students.php" class="nav-link active">
+            <a href="students.php" class="nav-link">
                 <i class="fas fa-user-graduate"></i>
                 <span>Students</span>
             </a>
@@ -88,7 +74,7 @@ $total_students = count($students);
                     <img src="../../MainGame/vocabworld/assets/menu/vv_logo.webp" alt="Vocabworld" class="nav-section-logo">
                     <span>Vocabworld</span>
                 </div>
-                <a href="lessons.php" class="nav-link nav-sub-link">
+                <a href="lessons.php" class="nav-link nav-sub-link active">
                     <i class="fas fa-chalkboard-teacher"></i>
                     <span>Lessons</span>
                 </a>
@@ -100,7 +86,6 @@ $total_students = count($students);
         </nav>
     </div>
 
-    <!-- Header -->
     <header class="top-header">
         <div class="header-right">
             <div class="notification-icon" onclick="window.location.href='../notification.php'">
@@ -152,107 +137,54 @@ $total_students = count($students);
         </div>
     </header>
 
-    <!-- Main Content -->
     <div class="main-content">
-        <!-- Welcome Section -->
-        <div class="welcome-section">
-            <div class="welcome-content" style="flex: 0 0 auto;">
-                <div class="quick-stat-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 style="color: var(--white);">Total Students</h3>
-                        <div class="value" style="color: var(--white);"><?php echo number_format($total_students); ?></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="welcome-datetime">
-                <div class="datetime-display">
-                    <div class="date-text" id="currentDate"></div>
-                    <div class="time-text" id="currentTime"></div>
-                </div>
-            </div>
-        </div>
-
-        <script>
-        function updateDateTime() {
-            const now = new Date();
-            
-            // Format date: December 15, 2025
-            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-            const dateStr = now.toLocaleDateString('en-US', dateOptions);
-            
-            // Format time: 1:16 PM
-            const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
-            const timeStr = now.toLocaleTimeString('en-US', timeOptions);
-            
-            document.getElementById('currentDate').textContent = dateStr;
-            document.getElementById('currentTime').textContent = timeStr;
-        }
-
-        // Update immediately and then every second
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-        </script>
-
-        <!-- Students View -->
         <div class="teacher-container">
-            <div class="students-section">
-                <div class="section-header">
-                    <h3><i class="fas fa-list"></i> All Students</h3>
-                    <div class="table-controls">
-                        <div class="grade-filter">
-                            <label for="gradeFilter">Filter by Grade:</label>
-                            <select id="gradeFilter">
-                                <option value="all">All Grades</option>
-                                <?php foreach ($grade_levels as $grade): ?>
-                                    <option value="<?= htmlspecialchars($grade) ?>">
-                                        <?= htmlspecialchars($grade) ?>
-                                    </option>
+            <div class="vocabulary-section">
+                <div class="section-header" style="justify-content: flex-start; gap: 1rem;">
+                    <div class="stat-icon" style="width: 40px; height: 40px; font-size: 1.1rem; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 8px; box-shadow: none;">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.5rem;">Create New Lesson</h3>
+                </div>
+                
+                <form id="createLessonForm" onsubmit="saveLesson(event)" style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="title" style="display: block; color: var(--text-secondary); margin-bottom: 0.5rem;">Lesson Title <span style="color: #ff6b6b;">*</span></label>
+                        <input type="text" id="title" name="title" required placeholder="Enter lesson title" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;">
+                    </div>
+
+                    <div class="form-row" style="display: flex; gap: 20px; margin-bottom: 1.5rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="gradeLevel" style="display: block; color: var(--text-secondary); margin-bottom: 0.5rem;">Grade Level <span style="color: #ff6b6b;">*</span></label>
+                            <select id="gradeLevel" name="grade_level" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;">
+                                <option value="">Select Grade</option>
+                                <option value="7">Grade 7</option>
+                                <option value="8">Grade 8</option>
+                                <option value="9">Grade 9</option>
+                                <option value="10">Grade 10</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="section" style="display: block; color: var(--text-secondary); margin-bottom: 0.5rem;">Section</label>
+                            <select id="section" name="section" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;">
+                                <option value="">All Sections</option>
+                                <?php foreach ($sections as $sec): ?>
+                                    <option value="<?= htmlspecialchars($sec) ?>"><?= htmlspecialchars($sec) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="studentSearch" placeholder="Search students...">
-                        </div>
                     </div>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="student-table">
-                        <thead>
-                            <tr>
-                                <th class="sortable" data-sort="username" data-order="asc">Name</th>
-                                <th class="sortable" data-sort="grade_level" data-order="asc">Grade Level</th>
-                                <th class="sortable" data-sort="section" data-order="asc">Section</th>
-                                <th class="sortable" data-sort="email" data-order="asc">Email</th>
-                                <th class="sortable" data-sort="created_at" data-order="asc">Join Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentsTbody">
-                            <?php if (empty($students)): ?>
-                                <tr>
-                                    <td colspan="5" class="no-students">No students found</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($students as $student): ?>
-                                    <tr>
-                                        <td data-label="Name"><?= htmlspecialchars($student['username']) ?></td>
-                                        <td data-label="Grade Level">
-                                            <span class="grade-badge"><?= htmlspecialchars($student['grade_level']) ?></span>
-                                        </td>
-                                        <td data-label="Section"><?= !empty($student['section']) ? htmlspecialchars($student['section']) : 'N/A' ?></td>
-                                        <td data-label="Email"><?= htmlspecialchars($student['email']) ?></td>
-                                        <td data-label="Join Date"><?= date('M j, Y', strtotime($student['created_at'])) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
+
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label for="lessonContent" style="display: block; color: var(--text-secondary); margin-bottom: 0.5rem;">Content</label>
+                        <textarea id="lessonContent" name="content"></textarea>
+                    </div>
+
+                    <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" onclick="window.location.href='lessons.php'" style="padding: 0.8rem 1.5rem; border-radius: 8px; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer;">Cancel</button>
+                        <button type="submit" style="padding: 0.8rem 1.5rem; border-radius: 8px; background: #10b981; border: none; color: white; cursor: pointer; font-weight: 600;">Create Lesson</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -300,6 +232,40 @@ $total_students = count($students);
     function confirmLogout() {
         window.location.href = '../../onboarding/logout.php';
     }
+    </script>
+
+    <script>
+        function saveLesson(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('title').value;
+            const gradeLevel = document.getElementById('gradeLevel').value;
+            const section = document.getElementById('section').value;
+            const content = tinymce.get('lessonContent').getContent();
+
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('grade_level', gradeLevel);
+            formData.append('section', section);
+            formData.append('content', content);
+
+            fetch('save_lesson.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = 'lessons.php';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred.');
+            });
+        }
     </script>
 </body>
 </html>

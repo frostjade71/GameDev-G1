@@ -88,7 +88,8 @@ $default_character = 'assets/characters/boy_char/character_ethan.png';
 $character_path = $character ? str_replace('../', '', $character['character_image_path']) : $default_character;
 
 // Note: game_scores table has been removed
-$current_gwa = 0;
+// Note: game_scores table has been removed
+$current_gwa = $player_level * 1.5;
 
 // Note: game_scores table has been removed
 $total_sessions = 0;
@@ -165,6 +166,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
 </head>
 <body>
     <?php include 'loaders/loader-component.php'; ?>
+    <?php include 'loaders/phaser-loader.php'; ?>
     <!-- Victory Overview Screen -->
     <div class="victory-screen" id="victory-screen">
         <div class="victory-content">
@@ -178,10 +180,6 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 <div class="stat-row essence">
                     <span class="victory-stat-label">Essence Earned</span>
                     <span class="victory-stat-value" id="victory-essence">0</span>
-                </div>
-                <div class="stat-row gwa">
-                    <span class="victory-stat-label">Final GWA</span>
-                    <span class="victory-stat-value" id="victory-gwa">0.00</span>
                 </div>
             </div>
             <div class="victory-buttons">
@@ -238,17 +236,22 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                     </div>
                 </div>
             </div>
-            <div class="stat-item essence">
-                <img src="assets/currency/essence.png" alt="Essence" class="stat-icon">
-                <span class="stat-label">Essence</span>
-                <span class="stat-value" id="player-essence"><?php echo $current_essence; ?></span>
-            </div>
-            <div class="stat-item gwa">
-                <img src="assets/stats/gwa.png" alt="GWA" class="stat-icon">
-                <span class="stat-label">GWA</span>
-                <span class="stat-value" id="player-gwa"><?php echo number_format($current_gwa, 2); ?></span>
+            <div class="stat-item essence-gwa">
+                <div class="stat-sub-item">
+                    <img src="assets/currency/essence.png" alt="Essence" class="stat-icon">
+                    <span class="stat-value" id="player-essence"><?php echo $current_essence; ?></span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-sub-item">
+                    <img src="assets/stats/gwa.png" alt="GWA" class="stat-icon">
+                    <span class="stat-value" id="player-gwa"><?php echo number_format($current_gwa, 2); ?></span>
+                </div>
             </div>
         </div>
+        <!-- Mobile Back Button -->
+        <button class="mobile-back-btn" id="mobile-back-btn" onclick="handleMobileBack()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
     </div>
 
     <div class="battle-ui" id="battle-ui">
@@ -263,6 +266,13 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
     </div>
 
     <div id="game-container"></div>
+
+    <!-- Mobile Joystick -->
+    <div class="joystick-container" id="joystick-container">
+        <div class="joystick-base">
+            <div class="joystick-stick" id="joystick-stick"></div>
+        </div>
+    </div>
 
     <!-- Logout Confirmation Modal -->
     <div class="toast-overlay" id="logoutModal">
@@ -319,6 +329,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             });
         }
         
+        
         let player;
         let cursors;
         let wasdKeys;
@@ -327,21 +338,122 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
         let currentEnemy = null;
         let battleUI;
 
+        // Joystick variables
+        let joystickActive = false;
+        let joystickDirection = { x: 0, y: 0 };
+
+        // Initialize joystick for mobile
+        function initJoystick() {
+            const joystickContainer = document.getElementById('joystick-container');
+            const joystickStick = document.getElementById('joystick-stick');
+            const joystickBase = joystickContainer.querySelector('.joystick-base');
+            
+            if (!joystickContainer || !joystickStick || !joystickBase) return;
+            
+            const baseRect = joystickBase.getBoundingClientRect();
+            const maxDistance = 35; // Maximum distance the stick can move from center
+            
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            
+            function handleStart(e) {
+                if (inBattle) return;
+                isDragging = true;
+                joystickActive = true;
+                
+                const touch = e.touches ? e.touches[0] : e;
+                startX = touch.clientX;
+                startY = touch.clientY;
+            }
+            
+            function handleMove(e) {
+                if (!isDragging || inBattle) return;
+                e.preventDefault();
+                
+                const touch = e.touches ? e.touches[0] : e;
+                const deltaX = touch.clientX - startX;
+                const deltaY = touch.clientY - startY;
+                
+                // Calculate distance from center
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                
+                // Limit the stick movement
+                let moveX = deltaX;
+                let moveY = deltaY;
+                
+                if (distance > maxDistance) {
+                    const angle = Math.atan2(deltaY, deltaX);
+                    moveX = Math.cos(angle) * maxDistance;
+                    moveY = Math.sin(angle) * maxDistance;
+                }
+                
+                // Update stick position
+                joystickStick.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                
+                // Update direction for game movement
+                joystickDirection.x = moveX / maxDistance;
+                joystickDirection.y = moveY / maxDistance;
+            }
+            
+            function handleEnd() {
+                isDragging = false;
+                joystickActive = false;
+                joystickStick.style.transform = 'translate(0, 0)';
+                joystickDirection = { x: 0, y: 0 };
+            }
+            
+            // Touch events
+            joystickBase.addEventListener('touchstart', handleStart, { passive: false });
+            document.addEventListener('touchmove', handleMove, { passive: false });
+            document.addEventListener('touchend', handleEnd);
+            document.addEventListener('touchcancel', handleEnd);
+            
+            // Mouse events for testing on desktop
+            joystickBase.addEventListener('mousedown', handleStart);
+            document.addEventListener('mousemove', handleMove);
+            document.addEventListener('mouseup', handleEnd);
+        }
+
+        // Initialize joystick when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initJoystick);
+        } else {
+            initJoystick();
+        }
+
         function preload() {
             // Load assets
             this.load.image('world', 'assets/maps/world_test.png');
-            this.load.image('tiles', 'assets/tilesets/fantasy_tiles.png');
-            this.load.image('player', characterPath); // Use player's equipped character
+            // Commenting out missing assets to avoid 404s
+            // this.load.image('tiles', 'assets/tilesets/fantasy_tiles.png');
+            
+            // Check if character has a spritesheet version
+            let spritesheetPath = null;
+            if (characterPath.includes('character_ethan.png')) {
+                spritesheetPath = characterPath.replace('character_ethan.png', 'character_ethan_frame32x32.png');
+            } else if (characterPath.includes('amber.png')) {
+                spritesheetPath = characterPath.replace('amber.png', 'character_6_frame32x32.png');
+            } else if (characterPath.includes('character_emma.png')) {
+                spritesheetPath = characterPath.replace('character_emma.png', 'character_emma_frame32x32.png');
+            }
+
+            if (spritesheetPath) {
+                this.load.spritesheet('player', spritesheetPath, { frameWidth: 32, frameHeight: 32 });
+            } else {
+                this.load.image('player', characterPath); // Use player's equipped character
+            }
             
             // Load monster image
             this.load.image('monster', 'assets/monsters/monster_test.png');
-            this.load.tilemapTiledJSON('map', 'assets/maps/world_map.json');
+            // Commenting out missing assets to avoid 404s
+            // this.load.tilemapTiledJSON('map', 'assets/maps/world_map.json');
             
             // Add error handling for character image
             this.load.on('loaderror', (file) => {
                 if (file.key === 'player') {
                     // If character image fails to load, use default
-                    this.load.image('player', 'assets/characters/default_hero.png');
+                    this.load.image('player', 'assets/characters/boy_char/character_ethan.png');
                     this.load.start(); // Restart loading for the default image
                 }
             });
@@ -358,6 +470,30 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             // Create player
             player = this.physics.add.sprite(400, 300, 'player');
             player.setCollideWorldBounds(true);
+            
+            // Define animations if character is animated
+            const isAnimated = characterPath.includes('character_ethan.png') || 
+                               characterPath.includes('amber.png') || 
+                               characterPath.includes('character_emma.png');
+
+            if (isAnimated) {
+                const anims = this.anims;
+                const config = [
+                    { key: 'down', start: 0, end: 2 },
+                    { key: 'left', start: 3, end: 5 },
+                    { key: 'right', start: 6, end: 8 },
+                    { key: 'up', start: 9, end: 11 }
+                ];
+                
+                config.forEach(anim => {
+                    anims.create({
+                        key: anim.key,
+                        frames: anims.generateFrameNumbers('player', { start: anim.start, end: anim.end }),
+                        frameRate: 10,
+                        repeat: -1
+                    });
+                });
+            }
             
             // Scale the player sprite to a reasonable size
             const targetHeight = 64; // Desired height in pixels
@@ -397,26 +533,67 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
 
             // Initialize battle UI
             battleUI = document.getElementById('battle-ui');
+
+            // Hide the Phaser loader once everything is created
+            if (typeof hidePhaserLoader === 'function') {
+                hidePhaserLoader();
+            }
         }
 
         function update() {
             if (!inBattle) {
-                // Player movement with both arrow keys and WASD
                 const speed = 160;
+                let velocityX = 0;
+                let velocityY = 0;
+                
+                // Keyboard controls (Arrow keys and WASD)
                 if (cursors.left.isDown || wasdKeys.left.isDown) {
-                    player.setVelocityX(-speed);
+                    velocityX = -speed;
                 } else if (cursors.right.isDown || wasdKeys.right.isDown) {
-                    player.setVelocityX(speed);
-                } else {
-                    player.setVelocityX(0);
+                    velocityX = speed;
                 }
 
                 if (cursors.up.isDown || wasdKeys.up.isDown) {
-                    player.setVelocityY(-speed);
+                    velocityY = -speed;
                 } else if (cursors.down.isDown || wasdKeys.down.isDown) {
-                    player.setVelocityY(speed);
+                    velocityY = speed;
+                }
+                
+                // Joystick controls (override keyboard if active)
+                if (joystickActive) {
+                    velocityX = joystickDirection.x * speed;
+                    velocityY = joystickDirection.y * speed;
+                }
+                
+                player.setVelocityX(velocityX);
+                player.setVelocityY(velocityY);
+
+                // Play animations with priority for the stronger axis (helpful for joysticks)
+                if (velocityX !== 0 || velocityY !== 0) {
+                    if (Math.abs(velocityX) > Math.abs(velocityY)) {
+                        // Horizontal movement is stronger
+                        if (velocityX < 0) {
+                            player.anims.play('left', true);
+                        } else {
+                            player.anims.play('right', true);
+                        }
+                    } else {
+                        // Vertical movement is stronger
+                        if (velocityY < 0) {
+                            player.anims.play('up', true);
+                        } else {
+                            player.anims.play('down', true);
+                        }
+                    }
                 } else {
-                    player.setVelocityY(0);
+                    player.anims.stop();
+                    // Set idle frame if animated
+                    const isAnimated = characterPath.includes('character_ethan.png') || 
+                                       characterPath.includes('amber.png') || 
+                                       characterPath.includes('character_emma.png');
+                    if (isAnimated) {
+                        player.setFrame(0);
+                    }
                 }
             } else {
                 // Stop player movement during battle
@@ -579,6 +756,10 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             // Update level number if leveled up
             if (levelResult.leveled_up) {
                 levelNumber.textContent = levelResult.new_level;
+                const gwaDisplay = document.getElementById('player-gwa');
+                if (gwaDisplay) {
+                    gwaDisplay.textContent = (levelResult.new_level * 1.5).toFixed(2);
+                }
             }
             
             // Calculate percentage for progress bar
@@ -692,13 +873,9 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             // Save level progress before showing victory screen
             await saveLevelProgress();
             
-            // Calculate final stats
-            const currentGWA = parseFloat(document.getElementById('player-gwa').textContent);
-            
             // Update victory screen with stats
             document.getElementById('victory-exp').textContent = tempExpGained;
             document.getElementById('victory-essence').textContent = tempEssenceGained;
-            document.getElementById('victory-gwa').textContent = currentGWA.toFixed(2);
             
             // Show victory screen
             document.getElementById('victory-screen').classList.add('active');
@@ -748,6 +925,16 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 return '';
             }
         });
+        
+        // Handle mobile back button click
+        function handleMobileBack() {
+            if (inGameSession && !allowLeave && !modalShown) {
+                showWarningModal();
+            } else if (!inGameSession) {
+                // If game hasn't started, allow direct navigation
+                window.location.href = 'index.php';
+            }
+        }
         
         // Custom warning modal functions
         function showWarningModal() {

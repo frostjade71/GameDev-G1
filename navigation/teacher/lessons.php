@@ -81,6 +81,46 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
+        /* Toast Redesign (Stacking Support) */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: -5px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .game-toast {
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(5px);
+            font-size: 0.9rem;
+            pointer-events: auto;
+        }
+
+        .game-toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .game-toast.success {
+            border-left-color: #10b981;
+        }
+
+        .game-toast.error {
+            border-left-color: #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -394,6 +434,24 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
         </div>
     </div>
 
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Check for Session Toast -->
+    <?php
+    if (isset($_SESSION['toast_message'])) {
+        $message = addslashes($_SESSION['toast_message']);
+        $type = $_SESSION['toast_type'] ?? 'success';
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showToast('$message', '$type');
+            });
+        </script>";
+        unset($_SESSION['toast_message']);
+        unset($_SESSION['toast_type']);
+    }
+    ?>
+
     <!-- Logout Confirmation Modal -->
     <div class="toast-overlay" id="logoutModal">
         <div class="toast" id="logoutConfirmation">
@@ -469,15 +527,15 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
                 // Let's call filterLessons() to refresh the list without page reload.
                 filterLessons(); 
                 closeDeleteModal();
-                // We might also need to reload because 'total lessons' might change
+                showToast('Lesson deleted successfully', 'success');
             } else {
-                alert('Error deleting lesson: ' + data.message);
+                showToast('Error deleting lesson: ' + data.message, 'error');
                 closeDeleteModal();
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred.');
+            showToast('An error occurred.', 'error');
             closeDeleteModal();
         });
     }
@@ -494,6 +552,35 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
                 document.getElementById('totalLessonsValue').textContent = data.total;
             })
             .catch(error => console.error('Error fetching lessons:', error));
+    }
+
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = `game-toast ${type}`;
+        toast.textContent = message;
+        
+        // Append to container
+        container.appendChild(toast);
+        
+        // Trigger animation
+        requestAnimationFrame(() => {
+            toast.classList.add('show');
+        });
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            
+            // Wait for transition to finish before removing from DOM
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    container.removeChild(toast);
+                }
+            }, 300); // Match transition duration
+        }, 3000);
     }
     </script>
 </body>

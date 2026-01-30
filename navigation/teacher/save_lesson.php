@@ -31,11 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Update
             $stmt = $pdo->prepare("UPDATE lessons SET title = ?, content = ?, grade_level = ?, section = ? WHERE id = ?");
             $stmt->execute([$title, $content, $grade_level, $section, $id]);
+            $_SESSION['toast_message'] = 'Lesson changes saved successfully';
         } else {
             // Create
             $stmt = $pdo->prepare("INSERT INTO lessons (title, content, grade_level, section, created_by) VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([$title, $content, $grade_level, $section, $user_id]);
+            $_SESSION['toast_message'] = 'Lesson created successfully';
         }
+
+        $_SESSION['toast_type'] = 'success';
 
         ob_clean();
         echo json_encode(['success' => true]);

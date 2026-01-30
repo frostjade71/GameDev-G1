@@ -40,10 +40,23 @@ $essenceManager = new EssenceManager($pdo);
 $current_essence = $essenceManager->getEssence($user_id);
 
 // Fetch Lessons for Grade 9
-$user_section = $user['section'] ?? '';
-$lessons_query = "SELECT * FROM lessons WHERE grade_level = '9' AND (section = '' OR section IS NULL OR section = ?) ORDER BY created_at DESC";
-$stmt = $pdo->prepare($lessons_query);
-$stmt->execute([$user_section]);
+// Check for privileged access
+$user_role = $user['grade_level'];
+$privileged_roles = ['Teacher', 'Admin', 'Developer'];
+$has_privileged_access = in_array($user_role, $privileged_roles);
+
+if ($has_privileged_access) {
+    // Show all lessons for this grade
+    $lessons_query = "SELECT * FROM lessons WHERE grade_level = '9' ORDER BY created_at DESC";
+    $stmt = $pdo->prepare($lessons_query);
+    $stmt->execute();
+} else {
+    // Show only lessons for user's section
+    $user_section = $user['section'] ?? '';
+    $lessons_query = "SELECT * FROM lessons WHERE grade_level = '9' AND (section = '' OR section IS NULL OR section = ?) ORDER BY created_at DESC";
+    $stmt = $pdo->prepare($lessons_query);
+    $stmt->execute([$user_section]);
+}
 $lessons = $stmt->fetchAll();
 ?>
 

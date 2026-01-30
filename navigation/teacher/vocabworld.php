@@ -28,7 +28,7 @@ $notification_count = $stmt->fetch()['count'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="../../assets/menu/favicon.ico">
+    <?php include '../../includes/favicon.php'; ?>
     <title>Game Controls - Word Weavers</title>
     <link rel="stylesheet" href="../../styles.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo time(); ?>">
@@ -36,34 +36,25 @@ $notification_count = $stmt->fetch()['count'];
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        .controls-container {
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .control-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 1.5rem;
-        }
+        /* Removed controls-container max-width to match other teacher pages */
+        /* .control-card styles replaced by .vocabulary-section from dashboard.css */
+        /* .control-card styles are now handled by .vocabulary-section */
         .control-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 1rem;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(96, 239, 255, 0.2);
             padding-bottom: 1rem;
         }
         .control-title h3 {
             margin: 0;
-            color: #1f2937;
+            color: white;
             font-size: 1.25rem;
         }
         .control-title p {
             margin: 0.25rem 0 0;
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.875rem;
         }
         .toggle-list {
@@ -74,17 +65,18 @@ $notification_count = $stmt->fetch()['count'];
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #f9fafb;
+            background: rgba(255, 255, 255, 0.05);
             padding: 1rem;
             border-radius: 8px;
             transition: background 0.2s;
+            border: 1px solid rgba(96, 239, 255, 0.1);
         }
         .toggle-item:hover {
-            background: #f3f4f6;
+            background: rgba(255, 255, 255, 0.1);
         }
         .grade-label {
             font-weight: 600;
-            color: #374151;
+            color: rgba(255, 255, 255, 0.9);
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -140,6 +132,119 @@ $notification_count = $stmt->fetch()['count'];
         }
         input:checked + .slider:before {
             transform: translateX(22px);
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .teacher-container {
+                padding: 0.8rem !important;
+                border-radius: 15px;
+            }
+            
+            .vocabulary-section {
+                padding: 1rem !important; /* Override dashboard.css padding */
+            }
+
+            .welcome-section {
+                padding: 1.5rem !important;
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .welcome-content h2 {
+                justify-content: center;
+                font-size: 1.5rem;
+            }
+            
+            .quick-stat-card {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .welcome-datetime {
+                display: none !important;
+            }
+
+            .control-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .control-title h3 {
+                font-size: 1.1rem;
+            }
+            
+            .toggle-item {
+                padding: 0.8rem;
+                gap: 1rem;
+                /* Ensure items stay within bounds */
+                max-width: 100%; 
+                box-sizing: border-box;
+            }
+            
+            /* Prevent label from pushing switch off-screen */
+            .grade-label {
+                font-size: 0.9rem;
+                flex: 1; /* Allow taking available space */
+                min-width: 0; /* Allow shrinking if needed */
+                white-space: normal; /* Allow text wrapping */
+            }
+
+            /* Prevent switch from shrinking */
+            .switch {
+                flex-shrink: 0; 
+            }
+
+            .grade-status {
+                font-size: 0.7rem;
+                padding: 0.1rem 0.3rem;
+            }
+            .grade-status {
+                font-size: 0.7rem;
+                padding: 0.1rem 0.3rem;
+            }
+        }
+
+        /* Toast Redesign (Stacking Support) */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: -5px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .game-toast {
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(5px);
+            font-size: 0.9rem;
+            pointer-events: auto;
+        }
+
+        .game-toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .game-toast.success {
+            border-left-color: #10b981;
+        }
+
+        .game-toast.error {
+            border-left-color: #ef4444;
         }
     </style>
 </head>
@@ -238,21 +343,57 @@ $notification_count = $stmt->fetch()['count'];
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="controls-container">
-            <div class="welcome-section" style="margin-bottom: 2rem;">
-                <div class="welcome-content">
-                    <h2>Game Configuration</h2>
-                    <p>Manage access and settings for Vocabworld.</p>
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-content" style="flex: 0 0 auto;">
+                <div class="quick-stat-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 style="color: var(--white);">Game Access</h3>
+                        <div class="value" style="color: var(--white); font-size: 1rem; margin-top: 5px;">Manage Grades</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="control-card">
-                <div class="control-header">
-                    <div class="control-title">
-                        <h3><i class="fas fa-lock text-blue-500 mr-2"></i> Access Control</h3>
-                        <p>Toggle game access for each grade level.</p>
-                    </div>
+            <div class="welcome-datetime">
+                <div class="datetime-display">
+                    <div class="date-text" id="currentDate"></div>
+                    <div class="time-text" id="currentTime"></div>
                 </div>
+            </div>
+        </div>
+
+        <script>
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Format date: December 15, 2025
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = now.toLocaleDateString('en-US', dateOptions);
+            
+            // Format time: 1:16 PM
+            const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
+            const timeStr = now.toLocaleTimeString('en-US', timeOptions);
+            
+            document.getElementById('currentDate').textContent = dateStr;
+            document.getElementById('currentTime').textContent = timeStr;
+        }
+
+        // Update immediately and then every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        </script>
+
+        <div class="teacher-container">
+            <div class="vocabulary-section">
+                <!-- Header with Icon -->
+                <div class="section-header" style="margin-bottom: 20px;">
+                    <h3 style="transform: translateY(-3px);"><i class="fas fa-lock text-blue-500 mr-2"></i> Access Control</h3>
+                    <p style="margin: 0; color: #6b7280; font-size: 0.95rem; margin-left: 10px;">Toggle game access for each grade level.</p>
+                </div>
+
                 <div class="toggle-list" id="gradeToggles">
                     <!-- Loading toggles... -->
                     <div class="toggle-item">Loading settings...</div>
@@ -261,8 +402,8 @@ $notification_count = $stmt->fetch()['count'];
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast-notification"></div>
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
 
     <script src="../../script.js"></script>
     <script src="../shared/profile-dropdown.js"></script>
@@ -338,11 +479,31 @@ $notification_count = $stmt->fetch()['count'];
         }
 
         function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
+            const container = document.getElementById('toast-container');
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `game-toast ${type}`;
             toast.textContent = message;
-            toast.className = `toast-notification show ${type}`;
+            
+            // Append to container
+            container.appendChild(toast);
+            
+            // Trigger animation
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+            
+            // Remove after 3 seconds
             setTimeout(() => {
                 toast.classList.remove('show');
+                
+                // Wait for transition to finish before removing from DOM
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        container.removeChild(toast);
+                    }
+                }, 300); // Match transition duration
             }, 3000);
         }
 

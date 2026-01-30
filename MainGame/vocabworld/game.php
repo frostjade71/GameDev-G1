@@ -351,7 +351,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             if (!joystickContainer || !joystickStick || !joystickBase) return;
             
             const baseRect = joystickBase.getBoundingClientRect();
-            const maxDistance = 35; // Maximum distance the stick can move from center
+            const maxDistance = 25; // Maximum distance the stick can move from center
             
             let isDragging = false;
             let startX = 0;
@@ -465,7 +465,17 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             // Scale the world image to fit the game canvas
             const scaleX = 800 / worldImage.width;
             const scaleY = 600 / worldImage.height;
-            worldImage.setScale(Math.max(scaleX, scaleY));
+            const worldScale = Math.max(scaleX, scaleY);
+            worldImage.setScale(worldScale);
+
+            // Calculate actual world dimensions and position
+            const actualWidth = worldImage.width * worldScale;
+            const actualHeight = worldImage.height * worldScale;
+            const worldX = 400 - (actualWidth / 2);
+            const worldY = 300 - (actualHeight / 2);
+
+            // Set physics world bounds
+            this.physics.world.setBounds(worldX, worldY, actualWidth, actualHeight);
 
             // Create player
             player = this.physics.add.sprite(400, 300, 'player');
@@ -534,6 +544,23 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             // Initialize battle UI
             battleUI = document.getElementById('battle-ui');
 
+            // --- CAMERA SETUP ---
+            const updateCameraZoom = () => {
+                const isMobile = window.innerWidth <= 768;
+                this.cameras.main.setZoom(isMobile ? 1.8 : 1.0);
+            };
+
+            // Set camera bounds to the size of the world
+            this.cameras.main.setBounds(worldX, worldY, actualWidth, actualHeight);
+            
+            // Initial zoom set and listener for window resizing
+            updateCameraZoom();
+            window.addEventListener('resize', updateCameraZoom);
+            
+            // Centering the character always with responsive lerping
+            this.cameras.main.startFollow(player, false, 0.2, 0.2);
+            // --------------------
+
             // Hide the Phaser loader once everything is created
             if (typeof hidePhaserLoader === 'function') {
                 hidePhaserLoader();
@@ -586,13 +613,18 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                         }
                     }
                 } else {
-                    player.anims.stop();
-                    // Set idle frame if animated
-                    const isAnimated = characterPath.includes('character_ethan.png') || 
-                                       characterPath.includes('amber.png') || 
-                                       characterPath.includes('character_emma.png');
-                    if (isAnimated) {
-                        player.setFrame(0);
+                    // When stopping, snap to the middle "standing" frame of the current direction
+                    const currentAnim = player.anims.currentAnim;
+                    if (currentAnim) {
+                        const key = currentAnim.key;
+                        player.anims.stop();
+                        
+                        if (key === 'down') player.setFrame(1);
+                        else if (key === 'left') player.setFrame(4);
+                        else if (key === 'right') player.setFrame(7);
+                        else if (key === 'up') player.setFrame(10);
+                    } else {
+                        player.anims.stop();
                     }
                 }
             } else {

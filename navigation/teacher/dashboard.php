@@ -98,6 +98,10 @@ $grade_levels_count = $stmt->fetch()['count'];
                     <img src="../../MainGame/vocabworld/assets/menu/vv_logo.webp" alt="Vocabworld" class="nav-section-logo">
                     <span>Vocabworld</span>
                 </div>
+                <a href="vocabworld.php" class="nav-link nav-sub-link">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Controls</span>
+                </a>
                 <a href="lessons.php" class="nav-link nav-sub-link">
                     <i class="fas fa-chalkboard-teacher"></i>
                     <span>Lessons</span>

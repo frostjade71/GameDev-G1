@@ -122,6 +122,30 @@ if ($shard_result['success']) {
     }
     error_log("VocabWorld: Shard account creation failed for user ID: $user_id - " . $shard_result['error']);
 }
+
+// Check game access permission
+$game_access_allowed = true;
+$user_grade = $user['grade_level'] ?? '';
+
+// Only check for students (non-staff)
+if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
+    // Extract just the number if grade matches "Grade 7" format, or use as is if just "7"
+    // Assuming database stores "7", "8" etc. based on previous context, but user table might have "Grade 7".
+    // Let's try to parse integer from the string to be safe, or match exact string if needed.
+    // Based on game_access_controls.sql which uses INT, we need the number.
+    $grade_num = (int)filter_var($user_grade, FILTER_SANITIZE_NUMBER_INT);
+    
+    if ($grade_num > 0) {
+        $stmt = $pdo->prepare("SELECT is_enabled FROM game_access_controls WHERE grade_level = ?");
+        $stmt->execute([$grade_num]);
+        $access_control = $stmt->fetch();
+
+        // If record exists and is_enabled is 0, deny access
+        if ($access_control && $access_control['is_enabled'] == 0) {
+            $game_access_allowed = false;
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -172,10 +196,24 @@ if ($shard_result['success']) {
         <div class="warning-content">
             <h2>⚠️ Reset World?</h2>
             <p>Your current HP and progress in this session will be lost.</p>
-            <p style="color: #4ade80; font-size: 0.95rem;">(XP, Essence, and GWA are already saved)</p>
+            <p style="color: #4ade80; font-size: 0.95rem;">(Essence is saved, but XP is lost)</p>
             <div class="warning-buttons">
                 <button class="warning-btn stay" onclick="closeWarningModal()">Stay in Game</button>
                 <button class="warning-btn leave" onclick="confirmLeave()">Leave Anyway</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Access Denied Modal -->
+    <div class="warning-modal" id="access-denied-modal" style="z-index: 2000;">
+        <div class="warning-content">
+            <h2>⛔ Not Started Yet</h2>
+            <p>Please wait for your teacher to begin the game or study some lessons.</p>
+            <div class="warning-buttons">
+                <!-- Button to Study -->
+                <button class="warning-btn stay" onclick="window.location.href='learnvocabmenu/learn.php'">Study</button>
+                <!-- Button to Exit -->
+                <button class="warning-btn leave" onclick="window.location.href='../../menu.php'">Okay</button>
             </div>
         </div>
     </div>
@@ -266,8 +304,21 @@ if ($shard_result['success']) {
             }
         };
 
-        // Initialize game
-        const game = new Phaser.Game(config);
+        // Access Control Flag from PHP
+        const isGameAllowed = <?php echo $game_access_allowed ? 'true' : 'false'; ?>;
+
+        // Initialize game variable
+        let game = null;
+
+        if (isGameAllowed) {
+            game = new Phaser.Game(config);
+        } else {
+            // Show access denied modal immediately
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('access-denied-modal').classList.add('active');
+            });
+        }
+        
         let player;
         let cursors;
         let wasdKeys;
@@ -711,7 +762,7 @@ if ($shard_result['success']) {
         
         function confirmLeave() {
             allowLeave = true;
-            location.reload();
+            window.location.href = 'index.php';
         }
         
         // Intercept back button or navigation attempts

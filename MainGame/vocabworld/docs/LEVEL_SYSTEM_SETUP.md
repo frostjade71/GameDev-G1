@@ -10,31 +10,35 @@ SOURCE C:/xampp/htdocs/GameDev-G1/MainGame/vocabworld/setup_level_system.sql;
 ```
 
 Or manually execute:
+
 ```sql
-ALTER TABLE game_progress 
+ALTER TABLE game_progress
 ADD COLUMN IF NOT EXISTS player_level INT DEFAULT 1,
 ADD COLUMN IF NOT EXISTS experience_points INT DEFAULT 0,
 ADD COLUMN IF NOT EXISTS total_monsters_defeated INT DEFAULT 0;
 
-UPDATE game_progress 
-SET player_level = 1, experience_points = 0, total_monsters_defeated = 0 
+UPDATE game_progress
+SET player_level = 1, experience_points = 0, total_monsters_defeated = 0
 WHERE player_level IS NULL;
 ```
 
 ## 2. Level System Features
 
 ### Experience Points (EXP)
+
 - **Correct Answer**: +25 EXP + Monster defeated
 - **Wrong Answer**: +5 EXP (participation reward)
 
 ### Level Progression
-- **Formula**: EXP needed = 100 × level^1.5
-- **Level 1 → 2**: 141 EXP needed
-- **Level 2 → 3**: 245 EXP needed
-- **Level 3 → 4**: 374 EXP needed
-- And so on (exponential growth)
+
+- **Formula**: EXP needed = 50 × level (Linear Growth)
+- **Level 1 → 2**: 50 EXP needed
+- **Level 2 → 3**: 100 EXP needed
+- **Level 3 → 4**: 150 EXP needed
+- And so on (Increases by 50 each level)
 
 ### Level Up Notifications
+
 - Gold "🎉 LEVEL UP!" message appears when leveling up
 - Level display updates in real-time
 - Longer pause to celebrate level up (2.5 seconds)
@@ -42,11 +46,13 @@ WHERE player_level IS NULL;
 ## 3. Files Created/Modified
 
 ### New Files:
+
 1. `api/level_manager.php` - Level system logic
 2. `api/update_level.php` - API endpoint for level updates
 3. `setup_level_system.sql` - Database migration
 
 ### Modified Files:
+
 1. `game.php` - Added level loading and display
    - Loads player level from database
    - Awards EXP after each battle
@@ -54,7 +60,7 @@ WHERE player_level IS NULL;
 
 ## 4. How It Works
 
-1. **On Game Load**: 
+1. **On Game Load**:
    - Player's current level is loaded from database
    - Displayed in the stats UI
 
@@ -82,6 +88,7 @@ WHERE player_level IS NULL;
 ## 6. Future Enhancements
 
 Possible additions:
+
 - EXP bar visual progress indicator
 - Level-based rewards (unlock features at certain levels)
 - Level requirements for harder monsters

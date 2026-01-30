@@ -80,7 +80,7 @@
 .nav-sub-link {
     padding-left: 2.5rem;
     font-size: 0.9rem;
-    background: rgba(255, 255, 255, 0.02);
+    background: transparent;
 }
 
 .nav-sub-link:hover {

@@ -53,6 +53,29 @@ if ($shard_result['success']) {
     }
     error_log("VocabWorld: Shard account creation failed for user ID: $user_id - " . $shard_result['error']);
 }
+
+// Check game access permission
+$game_access_allowed = true;
+$user_grade = $user['grade_level'] ?? '';
+$db_is_enabled = null;
+
+// Only check for students (non-staff)
+if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
+    $grade_num = (int)filter_var($user_grade, FILTER_SANITIZE_NUMBER_INT);
+    
+    if ($grade_num > 0) {
+        $stmt = $pdo->prepare("SELECT is_enabled FROM game_access_controls WHERE grade_level = ?");
+        $stmt->execute([$grade_num]);
+        $access_control = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($access_control) {
+            $db_is_enabled = (int)$access_control['is_enabled'];
+            if ($db_is_enabled === 0) {
+                $game_access_allowed = false;
+            }
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -139,7 +162,7 @@ if ($shard_result['success']) {
         <div id="main-menu" class="screen active" style="padding-top: calc(50px + 2rem) !important; padding: 1rem !important;">
             <div class="menu-container" style="min-height: calc(100vh - 200px) !important; padding: 5rem 0 !important;">
                 <div class="vocabworld-grid">
-                    <a href="game.php" class="vocabworld-card start-game-card" style="background-image: url('assets/menu/spaceplay.gif'); background-size: cover; background-position: center;">
+                    <a href="javascript:void(0)" onclick="handleStartGame()" class="vocabworld-card start-game-card" style="background-image: url('assets/menu/spaceplay.gif'); background-size: cover; background-position: center;">
                         <img src="assets/menu/playsys.png" alt="Play" class="card-icon">
                         <h2>Start Game</h2>
                         <p>Begin your vocabulary adventure</p>
@@ -168,6 +191,97 @@ if ($shard_result['success']) {
             </div>
         </div>
 
+    </div>
+
+    </div>
+
+    <!-- Access Denied Modal -->
+    <!-- Access Denied Modal -->
+    <style>
+        .access-modal-content {
+            background: rgba(20, 20, 30, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 0;
+            width: 90%;
+            max-width: 340px; /* Smaller default width */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .access-modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .access-modal-body {
+            padding: 20px;
+            text-align: left;
+        }
+        .access-modal-footer {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0 0 16px 16px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .access-icon-box {
+            width: 36px;
+            height: 36px;
+            font-size: 16px;
+        }
+        
+        /* Mobile Compact Styles */
+        @media (max-width: 480px) {
+            .access-modal-content {
+                max-width: 90%;
+            }
+            .access-modal-header {
+                padding: 12px 15px;
+            }
+            .access-modal-body {
+                padding: 15px 15px 20px;
+            }
+            .access-modal-footer {
+                padding: 12px 15px;
+            }
+            .access-modal-header h2 {
+                font-size: 1.1rem !important;
+            }
+            .access-icon-box {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+                border-radius: 8px !important;
+            }
+        }
+    </style>
+    
+    <div id="accessDeniedModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);" onclick="hideAccessDeniedModal()">
+        <div class="access-modal-content" onclick="event.stopPropagation()">
+            <div class="access-modal-header">
+                <div class="modal-title-wrapper" style="display: flex; align-items: center; gap: 12px;">
+                    <div class="stat-icon access-icon-box" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2 style="margin: 0; color: white; font-size: 1.2rem; font-family: 'Poppins', sans-serif; font-weight: 600;">Not Started Yet</h2>
+                </div>
+                <button onclick="hideAccessDeniedModal()" style="background: transparent; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 1.1rem;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="access-modal-body">
+                <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; line-height: 1.5; margin-bottom: 5px;">This game is currently locked for your grade level.</p>
+                <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.85rem; margin: 0;">Please wait for your teacher to begin the game or study some lessons.</p>
+            </div>
+            <div class="access-modal-footer">
+                <button onclick="hideAccessDeniedModal()" style="background: transparent; color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.2); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 0.9rem; transition: all 0.3s ease;">Okay</button>
+                <button onclick="window.location.href='learnvocabmenu/learn.php'" style="background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); display: flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-book-open"></i> Study
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Logout Confirmation Modal -->
@@ -238,13 +352,43 @@ if ($shard_result['success']) {
         document.addEventListener('DOMContentLoaded', function() {
             initializeShardDisplay();
         });
-        // Toggle currency dropdown on mobile
         function toggleCurrencyDropdown(element) {
             if (window.innerWidth <= 768) {
                 element.classList.toggle('show-dropdown');
             }
         }
 
+        // Access Control Logic
+        const isGameAllowed = <?php echo $game_access_allowed ? 'true' : 'false'; ?>;
+
+        function handleStartGame() {
+            if (isGameAllowed) {
+                window.location.href = 'game.php';
+            } else {
+                showAccessDeniedModal();
+            }
+        }
+
+        function showAccessDeniedModal() {
+            const modal = document.getElementById('accessDeniedModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                // Remove toast related logic since we aren't using toast classes anymore
+            }
+        }
+
+        function hideAccessDeniedModal() {
+            const modal = document.getElementById('accessDeniedModal');
+            const toast = document.getElementById('accessDeniedToast');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+                if (toast) {
+                    toast.classList.remove('show');
+                    toast.classList.add('hide');
+                }
+            }
+        }
     </script>
 </body>
 </html>

@@ -114,6 +114,11 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
                     <img src="../../MainGame/vocabworld/assets/menu/vv_logo.webp" alt="Vocabworld" class="nav-section-logo">
                     <span>Vocabworld</span>
                 </div>
+                <!-- Controls Link -->
+                <a href="vocabworld.php" class="nav-link nav-sub-link">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Controls</span>
+                </a>
                 <!-- Lessons Link (Active) -->
                 <a href="lessons.php" class="nav-link nav-sub-link active">
                     <i class="fas fa-chalkboard-teacher"></i>
@@ -366,18 +371,23 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
     <div class="modal-overlay" id="deleteModal">
         <div class="modal-content delete-modal">
             <div class="modal-header">
-                <h2>Confirm Delete</h2>
+                <div class="modal-title-wrapper" style="display: flex; align-items: center; gap: 15px;">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #ff4757 0%, #ff6b6b 100%); width: 40px; height: 40px; font-size: 18px;">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <h2 style="margin: 0; color: white; font-size: 1.3rem;">Delete Lesson</h2>
+                </div>
                 <button class="modal-close" onclick="closeDeleteModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete the lesson "<strong id="deleteLessonTitle"></strong>"?</p>
-                <p class="warning-text">This action cannot be undone.</p>
+                <p>Are you sure you want to delete the lesson "<strong id="deleteLessonTitle" style="color: #ff4757;"></strong>"?</p>
+                <p class="warning-text" style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 5px;">This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-                <button type="button" class="btn-delete-confirm" onclick="confirmDelete()">
+                <button type="button" class="btn-delete-confirm" onclick="confirmDelete()" style="background: rgba(255, 71, 87, 0.1); border: 1px solid rgba(255, 71, 87, 0.3); color: #ff4757; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
                     <i class="fas fa-trash"></i> Delete
                 </button>
             </div>

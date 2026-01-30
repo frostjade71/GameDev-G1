@@ -80,7 +80,7 @@
 .nav-sub-link {
     padding-left: 2.5rem;
     font-size: 0.9rem;
-    background: rgba(255, 255, 255, 0.02);
+    background: transparent;
 }
 
 .nav-sub-link:hover {
@@ -637,6 +637,27 @@
     flex-direction: column;
 }
 
+.modal-content.delete-modal {
+    max-width: 400px;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 0.5rem;
+    }
+
+    .modal-header h2 {
+        font-size: 1rem;
+    }
+
+    .stat-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 14px !important;
+    }
+}
+
 .modal-content::-webkit-scrollbar {
     width: 6px;
 }
@@ -676,6 +697,10 @@
     justify-content: center;
     border-radius: 10px; /* Slightly softer */
     box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+}
+
+.delete-modal .stat-icon {
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
 }
 
 .modal-header h2 {

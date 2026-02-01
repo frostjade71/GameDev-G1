@@ -138,61 +138,64 @@ $game_progress = [];
         <div class="games-carousel-container">
             <h1 class="game-title">Select a Game</h1>
             
-            <div class="carousel-container">
-                <button class="carousel-button prev">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                
-                <div class="carousel-track">
-                    <div class="game-card" data-game="grammarbg">
-                        <div class="card-content">
-                            <div class="game-logo">
-                                <img src="../assets/selection/Grammarlogo.webp" alt="Grammar Heroes Logo">
-                            </div>
-                            <h2>Grammar Heroes</h2>
-                            <p class="game-description">Battle grammar challenges by correcting sentences, and unlock new levels.</p>
-                            <?php if (isset($game_progress['grammar-heroes'])): ?>
-                                <div class="game-progress">
-                                    <span class="progress-text">Best Score: <?php echo $game_progress['grammar-heroes']['best_score']; ?></span>
-                                    <span class="progress-text">Level: <?php echo $game_progress['grammar-heroes']['max_level']; ?></span>
-                                </div>
-                            <?php endif; ?>
+            <div class="cards-container">
+                <!-- VocabWorld Card -->
+                <div class="main card game-card" data-game="vocabbg">
+                    <div class="card_content">
+                        <img src="../MainGame/vocabworld/assets/menu/spaceplay.gif" alt="VocabWorld Preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 7px;">
+                        <div class="play-icon-overlay">
+                            <i class="fas fa-play"></i>
                         </div>
                     </div>
-
-                    <div class="game-card" data-game="vocabbg">
-                        <div class="card-content">
-                            <div class="game-logo">
-                                <img src="../assets/selection/vocablogo.webp" alt="Vocabworld Logo">
-                            </div>
-                            <h2>Vocabworld</h2>
-                            <p class="game-description">Practice word skills and earn points to customize your character.</p>
-                            <?php if (isset($game_progress['vocabworld'])): ?>
-                                <div class="game-progress">
-                                    <span class="progress-text">Best Score: <?php echo $game_progress['vocabworld']['best_score']; ?></span>
-                                    <span class="progress-text">Level: <?php echo $game_progress['vocabworld']['max_level']; ?></span>
-                                </div>
-                            <?php endif; ?>
+                    <div class="card_back"></div>
+                    <div class="data">
+                        <div class="img">
+                            <img src="../MainGame/vocabworld/assets/menu/vv_logo.webp" alt="Vocabworld Logo">
+                        </div>
+                        <div class="text">
+                            <div class="text_m">Vocabworld</div>
                         </div>
                     </div>
-
-                    <div class="game-card coming-soon" data-game="coming-soon">
-                        <div class="card-content">
-                            <div class="game-logo">
-                                <i class="fas fa-gamepad"></i>
-                            </div>
-                            <h2>More Games</h2>
-                            <p class="game-description">New exciting games coming soon! Stay tuned for updates.</p>
-                            <div class="coming-soon-badge">Coming Soon</div>
+                    <div class="btns">
+                        <div class="likes">
+                            <svg class="likes_svg" viewBox="-2 0 105 92"><path d="M85.24 2.67C72.29-3.08 55.75 2.67 50 14.9 44.25 2 27-3.8 14.76 2.67 1.1 9.14-5.37 25 5.42 44.38 13.33 58 27 68.11 50 86.81 73.73 68.11 87.39 58 94.58 44.38c10.79-18.7 4.32-35.24-9.34-41.71Z"></path></svg>
+                            <span class="likes_text"><?php echo isset($game_progress['vocabworld']) ? $game_progress['vocabworld']['best_score'] : '0'; ?></span>
+                        </div>
+                        <div class="comments">
+                            <svg class="comments_svg" viewBox="-405.9 238 56.3 54.8" title="Level"><path d="M-391 291.4c0 1.5 1.2 1.7 1.9 1.2 1.8-1.6 15.9-14.6 15.9-14.6h19.3c3.8 0 4.4-.8 4.4-4.5v-31.1c0-3.7-.8-4.5-4.4-4.5h-47.4c-3.6 0-4.4.9-4.4 4.5v31.1c0 3.7.7 4.4 4.4 4.4h10.4v13.5z"></path></svg>
+                            <span class="comments_text"><?php echo isset($game_progress['vocabworld']) ? $game_progress['vocabworld']['max_level'] : '1'; ?></span>
                         </div>
                     </div>
                 </div>
 
-                <button class="carousel-button next">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-
-                <div class="carousel-dots"></div>
+                <!-- Grammar Heroes Card -->
+                <div class="main card game-card" data-game="grammarbg">
+                    <div class="card_content">
+                        <img src="../MainGame/vocabworld/assets/menu/grammarbg.gif" alt="Grammar Heroes Preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 7px;">
+                        <div class="play-icon-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="card_back"></div>
+                    <div class="data">
+                        <div class="img">
+                            <img src="../assets/selection/Grammarlogo.webp" alt="Grammar Heroes Logo">
+                        </div>
+                        <div class="text">
+                            <div class="text_m">Grammar Heroes</div>
+                        </div>
+                    </div>
+                    <div class="btns">
+                        <div class="likes">
+                            <svg class="likes_svg" viewBox="-2 0 105 92"><path d="M85.24 2.67C72.29-3.08 55.75 2.67 50 14.9 44.25 2 27-3.8 14.76 2.67 1.1 9.14-5.37 25 5.42 44.38 13.33 58 27 68.11 50 86.81 73.73 68.11 87.39 58 94.58 44.38c10.79-18.7 4.32-35.24-9.34-41.71Z"></path></svg>
+                            <span class="likes_text"><?php echo isset($game_progress['grammar-heroes']) ? $game_progress['grammar-heroes']['best_score'] : '0'; ?></span>
+                        </div>
+                        <div class="comments">
+                            <svg class="comments_svg" viewBox="-405.9 238 56.3 54.8" title="Level"><path d="M-391 291.4c0 1.5 1.2 1.7 1.9 1.2 1.8-1.6 15.9-14.6 15.9-14.6h19.3c3.8 0 4.4-.8 4.4-4.5v-31.1c0-3.7-.8-4.5-4.4-4.5h-47.4c-3.6 0-4.4.9-4.4 4.5v31.1c0 3.7.7 4.4 4.4 4.4h10.4v13.5z"></path></svg>
+                            <span class="comments_text"><?php echo isset($game_progress['grammar-heroes']) ? $game_progress['grammar-heroes']['max_level'] : '1'; ?></span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <nav class="menu-buttons">

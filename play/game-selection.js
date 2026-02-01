@@ -4,70 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Greeting update is handled by script.js
 
     // Game Selection Carousel Logic
-    const carouselTrack = document.querySelector('.carousel-track');
-    const carouselContainer = document.querySelector('.carousel-container');
-    if (carouselTrack && carouselContainer) {
-        const cards = Array.from(carouselTrack.children);
-        const prevButton = document.querySelector('.carousel-button.prev');
-        const nextButton = document.querySelector('.carousel-button.next');
-        const dotsContainer = document.querySelector('.carousel-dots');
-
-        let currentIndex = 0;
-
-        // Create dots (limited to 3)
-        const maxDots = 3;
-        for (let i = 0; i < maxDots; i++) {
-            const dot = document.createElement('div');
-            dot.classList.add('carousel-dot');
-            if (i === 0) dot.classList.add('active');
-            dotsContainer.appendChild(dot);
-
-            dot.addEventListener('click', () => {
-                moveToSlide(i);
-            });
-        }
-
-        const dots = Array.from(dotsContainer.children);
-
-        // Update dots
-        const updateDots = (index) => {
-            dots.forEach(dot => dot.classList.remove('active'));
-            // Map the current index to the appropriate dot (0-2 for 3 dots)
-            const dotIndex = Math.min(index, maxDots - 1);
-            dots[dotIndex].classList.add('active');
-        };
-
-        // Move to specific slide
-        const moveToSlide = (index) => {
-            const slideWidth = cards[0].getBoundingClientRect().width;
-            const gap = 32; // 2rem gap
-            carouselTrack.style.transform = `translateX(-${index * (slideWidth + gap)}px)`;
-            currentIndex = index;
-            updateDots(index);
-
-            // Update button states
-            prevButton.style.opacity = index === 0 ? '0.5' : '1';
-            nextButton.style.opacity = index === cards.length - 1 ? '0.5' : '1';
-        };
-
-        // Button click handlers
-        prevButton.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                moveToSlide(currentIndex - 1);
-                playClickSound();
-            }
-        });
-
-        nextButton.addEventListener('click', () => {
-            if (currentIndex < cards.length - 1) {
-                moveToSlide(currentIndex + 1);
-                playClickSound();
-            }
-        });
-
-        // Initialize button states
-        prevButton.style.opacity = '0.5';
-    }
+    // Carousel logic removed as we switched to card view
 
     // Navigation links are handled by script.js
 

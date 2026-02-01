@@ -170,15 +170,16 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
     <!-- Victory Overview Screen -->
     <div class="victory-screen" id="victory-screen">
         <div class="victory-content">
-            <h1>🎉 World Cleared! 🎉</h1>
+            <img src="assets/stats/trophy.png" alt="Victory Trophy" class="victory-trophy">
+            <h1>World Cleared!</h1>
             <h2>All Monsters Defeated!</h2>
             <div class="stats-summary">
-                <div class="stat-row exp">
-                    <span class="victory-stat-label">Total EXP Gained</span>
+                <div class="victory-stat-item">
+                    <img src="assets/stats/total_xp.png" alt="EXP" class="victory-stat-icon">
                     <span class="victory-stat-value" id="victory-exp">0</span>
                 </div>
-                <div class="stat-row essence">
-                    <span class="victory-stat-label">Essence Earned</span>
+                <div class="victory-stat-item">
+                    <img src="assets/currency/essence.png" alt="Essence" class="victory-stat-icon">
                     <span class="victory-stat-value" id="victory-essence">0</span>
                 </div>
             </div>
@@ -436,6 +437,18 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 spritesheetPath = characterPath.replace('amber.png', 'character_6_frame32x32.png');
             } else if (characterPath.includes('character_emma.png')) {
                 spritesheetPath = characterPath.replace('character_emma.png', 'character_emma_frame32x32.png');
+            } else if (characterPath.includes('kael.png')) {
+                spritesheetPath = characterPath.replace('kael.png', 'character_kael_frame32x32.png');
+            } else if (characterPath.includes('rex.png')) {
+                spritesheetPath = characterPath.replace('rex.png', 'character_rex_frame32x32.png');
+            } else if (characterPath.includes('orion.png')) {
+                spritesheetPath = characterPath.replace('orion.png', 'character_orion_frame32x32.png');
+            } else if (characterPath.includes('ember.png')) {
+                spritesheetPath = characterPath.replace('ember.png', 'character_ember_frame32x32.png');
+            } else if (characterPath.includes('astra.png')) {
+                spritesheetPath = characterPath.replace('astra.png', 'character_astra_frame32x32.png');
+            } else if (characterPath.includes('sylvi.png')) {
+                spritesheetPath = characterPath.replace('sylvi.png', 'character_sylvi_frame32x32.png');
             }
 
             if (spritesheetPath) {
@@ -484,7 +497,13 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             // Define animations if character is animated
             const isAnimated = characterPath.includes('character_ethan.png') || 
                                characterPath.includes('amber.png') || 
-                               characterPath.includes('character_emma.png');
+                               characterPath.includes('character_emma.png') ||
+                               characterPath.includes('kael.png') ||
+                               characterPath.includes('rex.png') ||
+                               characterPath.includes('orion.png') ||
+                               characterPath.includes('ember.png') ||
+                               characterPath.includes('astra.png') ||
+                               characterPath.includes('sylvi.png');
 
             if (isAnimated) {
                 const anims = this.anims;

@@ -31,6 +31,18 @@ if ($character_selection) {
         $current_character = 'girl';
     } elseif ($character_name === 'Amber') {
         $current_character = 'amber';
+    } elseif ($character_name === 'Kael') {
+        $current_character = 'kael';
+    } elseif ($character_name === 'Rex') {
+        $current_character = 'rex';
+    } elseif ($character_name === 'Orion') {
+        $current_character = 'orion';
+    } elseif ($character_name === 'Ember') {
+        $current_character = 'ember';
+    } elseif ($character_name === 'Astra') {
+        $current_character = 'astra';
+    } elseif ($character_name === 'Sylvi') {
+        $current_character = 'sylvi';
     }
 }
 
@@ -186,7 +198,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                 </div>
                                 <div class="character-card-info">
                                     <h4>Ethan</h4>
-                                    <p>Adventurous and curious</p>
+                                    <p>Rising Adventurer</p>
                                     <div class="character-price">
                                         <span class="price-label">Price:</span>
                                         <span class="price-value">FREE</span>
@@ -207,7 +219,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                 </div>
                                 <div class="character-card-info">
                                     <h4>Emma</h4>
-                                    <p>Smart and determined</p>
+                                    <p>Eager Explorer</p>
                                     <div class="character-price">
                                         <span class="price-label">Price:</span>
                                         <span class="price-value">FREE</span>
@@ -228,7 +240,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                 </div>
                                 <div class="character-card-info">
                                     <h4>Amber</h4>
-                                    <p>Mysterious and magical</p>
+                                    <p>Twin of Warmth</p>
                                     <div class="character-price">
                                         <span class="price-label">Price:</span>
                                         <span class="price-value"><img src="../assets/currency/shard1.png" alt="Shards" style="width: 20px; height: 20px; vertical-align: middle;"> 20</span>
@@ -241,6 +253,174 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                     </button>
                                 <?php else: ?>
                                     <button class="purchase-btn" data-character="amber" onclick="purchaseCharacter('amber')">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Buy
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Ember Character Card -->
+                            <div class="shop-character-card" data-character="ember">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/ember_char/ember.png" alt="Ember Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Ember</h4>
+                                    <p>Twin of Passion</p>
+                                    <div class="character-price">
+                                        <span class="price-label">Price:</span>
+                                        <span class="price-value"><img src="../assets/currency/shard1.png" alt="Shards" style="width: 20px; height: 20px; vertical-align: middle;"> 30</span>
+                                    </div>
+                                </div>
+                                <?php if (in_array('ember', $owned_characters)): ?>
+                                    <button class="purchase-btn owned" data-character="ember">
+                                        <i class="fas fa-check"></i>
+                                        Owned
+                                    </button>
+                                <?php else: ?>
+                                    <button class="purchase-btn" data-character="ember" onclick="purchaseCharacter('ember')">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Buy
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Rex Character Card -->
+                            <div class="shop-character-card" data-character="rex">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/rex_char/rex.png" alt="Rex Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Rex</h4>
+                                    <p>Nimble Warrior</p>
+                                    <div class="character-price">
+                                        <span class="price-label">Price:</span>
+                                        <span class="price-value"><img src="../assets/currency/shard1.png" alt="Shards" style="width: 20px; height: 20px; vertical-align: middle;"> 20</span>
+                                    </div>
+                                </div>
+                                <?php if (in_array('rex', $owned_characters)): ?>
+                                    <button class="purchase-btn owned" data-character="rex">
+                                        <i class="fas fa-check"></i>
+                                        Owned
+                                    </button>
+                                <?php else: ?>
+                                    <button class="purchase-btn" data-character="rex" onclick="purchaseCharacter('rex')">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Buy
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Orion Character Card -->
+                            <div class="shop-character-card" data-character="orion">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/orion_char/orion.png" alt="Orion Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Orion</h4>
+                                    <p>Cosmic traveler</p>
+                                    <div class="character-price">
+                                        <span class="price-label">Price:</span>
+                                        <span class="price-value"><img src="../assets/currency/shard1.png" alt="Shards" style="width: 20px; height: 20px; vertical-align: middle;"> 50</span>
+                                    </div>
+                                </div>
+                                <?php if (in_array('orion', $owned_characters)): ?>
+                                    <button class="purchase-btn owned" data-character="orion">
+                                        <i class="fas fa-check"></i>
+                                        Owned
+                                    </button>
+                                <?php else: ?>
+                                    <button class="purchase-btn" data-character="orion" onclick="purchaseCharacter('orion')">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Buy
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Astra Character Card -->
+                            <div class="shop-character-card" data-character="astra">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/astra_char/astra.png" alt="Astra Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Astra</h4>
+                                    <p>Star walker</p>
+                                    <div class="character-price">
+                                        <span class="price-label">Price:</span>
+                                        <span class="price-value"><img src="../assets/currency/shard1.png" alt="Shards" style="width: 20px; height: 20px; vertical-align: middle;"> 50</span>
+                                    </div>
+                                </div>
+                                <?php if (in_array('astra', $owned_characters)): ?>
+                                    <button class="purchase-btn owned" data-character="astra">
+                                        <i class="fas fa-check"></i>
+                                        Owned
+                                    </button>
+                                <?php else: ?>
+                                    <button class="purchase-btn" data-character="astra" onclick="purchaseCharacter('astra')">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Buy
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Sylvi Character Card -->
+                            <div class="shop-character-card" data-character="sylvi">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/sylvi_char/sylvi.png" alt="Sylvi Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Sylvi</h4>
+                                    <p>Nature's Heart</p>
+                                    <div class="character-price">
+                                        <span class="price-label">Price:</span>
+                                        <span class="price-value"><img src="../assets/currency/shard1.png" alt="Shards" style="width: 20px; height: 20px; vertical-align: middle;"> 50</span>
+                                    </div>
+                                </div>
+                                <?php if (in_array('sylvi', $owned_characters)): ?>
+                                    <button class="purchase-btn owned" data-character="sylvi">
+                                        <i class="fas fa-check"></i>
+                                        Owned
+                                    </button>
+                                <?php else: ?>
+                                    <button class="purchase-btn" data-character="sylvi" onclick="purchaseCharacter('sylvi')">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Buy
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Kael Character Card -->
+                            <div class="shop-character-card" data-character="kael">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/kael_char/kael.png" alt="Kael Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Kael</h4>
+                                    <p>Cosmic Warlord</p>
+                                    <div class="character-price">
+                                        <span class="price-label">Price:</span>
+                                        <span class="price-value"><img src="../assets/currency/shard1.png" alt="Shards" style="width: 20px; height: 20px; vertical-align: middle;"> 200</span>
+                                    </div>
+                                </div>
+                                <?php if (in_array('kael', $owned_characters)): ?>
+                                    <button class="purchase-btn owned" data-character="kael">
+                                        <i class="fas fa-check"></i>
+                                        Owned
+                                    </button>
+                                <?php else: ?>
+                                    <button class="purchase-btn" data-character="kael" onclick="purchaseCharacter('kael')">
                                         <i class="fas fa-shopping-cart"></i>
                                         Buy
                                     </button>
@@ -356,6 +536,18 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
             let characterName = '';
             if (characterType === 'amber') {
                 characterName = 'Amber';
+            } else if (characterType === 'kael') {
+                characterName = 'Kael';
+            } else if (characterType === 'rex') {
+                characterName = 'Rex';
+            } else if (characterType === 'orion') {
+                characterName = 'Orion';
+            } else if (characterType === 'ember') {
+                characterName = 'Ember';
+            } else if (characterType === 'astra') {
+                characterName = 'Astra';
+            } else if (characterType === 'sylvi') {
+                characterName = 'Sylvi';
             }
             
             // Set the message with shard icon
@@ -412,15 +604,17 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 console.log('Purchase response:', data);
                 if (data.success) {
                     // Show success message
-                    showToast(`Successfully bought ${characterType}!`, 'success');
+                    const characterName = characterType.charAt(0).toUpperCase() + characterType.slice(1);
+                    showToast(`Successfully bought ${characterName}!`, 'success');
+                    
+                    // Update shard display
+                    updateShardDisplay(data.newShardCount);
+                    
+                    // Update character ownership in UI
+                    updateCharacterOwnership(characterType);
                     
                     // Clear purchase data
                     currentPurchaseData = null;
-                    
-                    // Refresh the page after a short delay to show the toast
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
                 } else {
                     showToast(`Error: ${data.error}`, 'error');
                     // Clear purchase data on error too
@@ -465,8 +659,8 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                     btn.disabled = true;
                     btn.style.pointerEvents = 'none';
                     btn.style.cursor = 'default';
-                } else if (character === 'amber') {
-                    // Set up buy button for Amber if not owned
+                } else if (['amber', 'kael', 'rex', 'orion', 'ember', 'astra'].includes(character)) {
+                    // Set up buy button for purchasable characters if not owned
                     btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Buy';
                     btn.onclick = function(e) {
                         e.stopPropagation();
@@ -513,6 +707,18 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 previewSprite.innerHTML = '<img src="../assets/characters/girl_char/character_emma.png" alt="Emma Character">';
             } else if (characterType === 'amber') {
                 previewSprite.innerHTML = '<img src="../assets/characters/amber_char/amber.png" alt="Amber Character">';
+            } else if (characterType === 'kael') {
+                previewSprite.innerHTML = '<img src="../assets/characters/kael_char/kael.png" alt="Kael Character">';
+            } else if (characterType === 'rex') {
+                previewSprite.innerHTML = '<img src="../assets/characters/rex_char/rex.png" alt="Rex Character">';
+            } else if (characterType === 'orion') {
+                previewSprite.innerHTML = '<img src="../assets/characters/orion_char/orion.png" alt="Orion Character">';
+            } else if (characterType === 'ember') {
+                previewSprite.innerHTML = '<img src="../assets/characters/ember_char/ember.png" alt="Ember Character">';
+            } else if (characterType === 'astra') {
+                previewSprite.innerHTML = '<img src="../assets/characters/astra_char/astra.png" alt="Astra Character">';
+            } else if (characterType === 'sylvi') {
+                previewSprite.innerHTML = '<img src="../assets/characters/sylvi_char/sylvi.png" alt="Sylvi Character">';
             }
         }
 
@@ -522,7 +728,13 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
             console.log('User data:', window.userData);
             
             const characterPrices = {
-                'amber': 20
+                'amber': 20,
+                'kael': 200,
+                'rex': 20,
+                'orion': 50,
+                'ember': 30,
+                'astra': 50,
+                'sylvi': 50
             };
             
             const price = characterPrices[characterType];
@@ -578,27 +790,132 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
             }
         }
 
+        function initToastSystem() {
+            if (!document.getElementById('toast-container')) {
+                const toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                document.body.appendChild(toastContainer);
+            }
+            
+            if (!document.querySelector('link[href*="Press+Start+2P"]')) {
+                const link = document.createElement('link');
+                link.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
+                link.rel = 'stylesheet';
+                document.head.appendChild(link);
+            }
+            
+            if (!document.querySelector('style#toast-styles')) {
+                const style = document.createElement('style');
+                style.id = 'toast-styles';
+                style.textContent = `
+                    #toast-container {
+                        position: fixed;
+                        top: 100px;
+                        right: -69px;
+                        z-index: 9999;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-end;
+                        pointer-events: none;
+                    }
+                    
+                    @media (min-width: 768px) {
+                        #toast-container {
+                            right: 40px;
+                        }
+                    }
+                    
+                    @media (min-width: 1024px) {
+                        #toast-container {
+                            right: 270px;
+                        }
+                    }
+                    
+                    .toast {
+                        background: rgba(0, 0, 0, 0.9);
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 4px;
+                        margin: 5px 0;
+                        box-shadow: 0 0 10px rgba(96, 239, 255, 0.3);
+                        opacity: 0;
+                        transform: translateX(100%);
+                        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+                        max-width: 300px;
+                        min-width: 250px;
+                        text-align: center;
+                        word-wrap: break-word;
+                        position: relative;
+                        overflow: hidden;
+                        font-family: 'Press Start 2P', cursive;
+                        font-size: 0.45rem;
+                        line-height: 1.5;
+                    }
+                    
+                    .toast.show {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                    
+                    .toast::after {
+                        content: '';
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 4px;
+                        background: #e74c3c;
+                        animation: progress 3s linear forwards;
+                    }
+                    
+                    .toast-success::after {
+                        background: #2ecc71;
+                    }
+
+                    @keyframes progress {
+                        from { width: 100%; }
+                        to { width: 0%; }
+                    }
+                    
+                    .toast-error {
+                        border-left: 4px solid #e74c3c;
+                    }
+                    
+                    .toast-success {
+                        border-left: 4px solid #2ecc71;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
         function showToast(message, type = 'info') {
+            console.log('Toast:', message, type);
+            initToastSystem();
+            
+            const container = document.getElementById('toast-container');
+            
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+            
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
-            toast.textContent = message;
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: var(--royal-blue);
-                color: var(--white);
-                padding: 1rem 2rem;
-                border-radius: 8px;
-                box-shadow: var(--shadow-lg);
-                z-index: 1000;
-                animation: slideIn 0.3s ease-out;
-            `;
+            toast.innerHTML = message;
             
-            document.body.appendChild(toast);
+            container.appendChild(toast);
+            
+            void toast.offsetWidth;
+            
+            toast.classList.add('show');
             
             setTimeout(() => {
-                toast.remove();
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode === container) {
+                        container.removeChild(toast);
+                    }
+                }, 300);
             }, 3000);
         }
         

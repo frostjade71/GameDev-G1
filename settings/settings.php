@@ -426,7 +426,7 @@ $notification_count = count($friend_requests) + count($cresent_notifications);
             <div class="settings-header">
                 <img src="../assets/menu/settingsmain.png" alt="Settings" class="settings-logo">
             </div>
-            <form class="settings-form" id="settingsForm">
+            <form class="settings-form" id="settingsForm" data-no-loader="true">
                 <div class="form-group">
                     <label for="bgmToggle">Background Music</label>
                     <input type="checkbox" id="bgmToggle" <?php echo $settings['bgm_enabled'] ? 'checked' : ''; ?>>

@@ -150,7 +150,7 @@ $progress = $stmt->fetch();
                 </div>
 
                 <!-- Right Side: Conversion Options -->
-                <div class="progress-section shop-characters-container">
+                <div class="progress-section shop-characters-container essence-exchange-container">
                     <div class="shop-characters-card transparent-card slide-in-right">
                         <h3><img src="assets/fc131.png" alt="Convert" class="title-icon"> Essence Exchange</h3>
                         
@@ -392,7 +392,7 @@ $progress = $stmt->fetch();
                     #toast-container {
                         position: fixed;
                         top: 100px;
-                        right: 110px;
+                        right: -68px;
                         z-index: 9999;
                         display: flex;
                         flex-direction: column;

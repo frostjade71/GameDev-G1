@@ -427,10 +427,11 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0, 0, 0, 0.9);
     z-index: 10000;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(5px);
 }
 
 .victory-screen.active {
@@ -438,116 +439,219 @@ html, body {
 }
 
 .victory-content {
-    background: linear-gradient(135deg, rgba(30, 30, 60, 0.98), rgba(20, 20, 40, 0.98));
-    padding: 50px;
-    border-radius: 25px;
-    border: 5px solid rgba(255, 215, 0, 0.8);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 100px rgba(255, 215, 0, 0.3);
+    background: linear-gradient(180deg, #2a2a4e 0%, #1a1a2e 100%);
+    padding: 30px; /* Reduced padding */
+    border-radius: 20px;
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 0 3px #000, 0 15px 40px rgba(0, 0, 0, 0.9);
     text-align: center;
-    max-width: 600px;
+    max-width: 380px; /* Reduced max-width */
+    width: 85%;
     color: white;
     font-family: 'Poppins', sans-serif;
-    animation: victoryAppear 0.5s ease-out;
+    position: relative;
+    animation: victoryPop 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
-@keyframes victoryAppear {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+@keyframes victoryPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.victory-trophy {
+    width: 80px; /* Reduced size */
+    height: auto;
+    margin-top: -60px; /* Adjusted float */
+    margin-bottom: 15px;
+    filter: drop-shadow(0 8px 0 rgba(0,0,0,0.3));
+    animation: trophyFloat 3s ease-in-out infinite;
+}
+
+@keyframes trophyFloat {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url('../../fonts/PressStart2P-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
 
 .victory-content h1 {
     color: #ffd700;
-    font-size: 2.5rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.2rem;
     margin-bottom: 10px;
-    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6);
-    animation: glow 2s ease-in-out infinite;
-}
-
-@keyframes glow {
-    0%, 100% { text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6); }
-    50% { text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.9); }
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+    font-weight: normal;
+    text-transform: uppercase;
+    line-height: 1.5;
+    letter-spacing: 1px;
 }
 
 .victory-content h2 {
     color: #4ade80;
-    font-size: 1.3rem;
-    margin-bottom: 30px;
-    font-weight: 400;
+    font-size: 0.9rem; /* Reduced font size */
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0 #000;
 }
 
 .stats-summary {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 30px;
-    border-radius: 15px;
-    margin-bottom: 30px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.stat-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.victory-stat-item {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 15px 20px;
-    margin-bottom: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    border-left: 4px solid;
+    gap: 5px;
 }
 
-.stat-row.exp {
-    border-left-color: #ffd700;
+.victory-stat-icon {
+    width: 36px; /* Reduced icon size */
+    height: 36px;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 0 rgba(0,0,0,0.2));
+    transition: transform 0.2s ease;
 }
 
-.stat-row.essence {
-    border-left-color: #a78bfa;
+.victory-stat-item:hover .victory-stat-icon {
+    transform: scale(1.1);
 }
 
-/* Add any additional styles that were in the original file */
+.victory-stat-value {
+    font-size: 1.2rem; /* Reduced value size */
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 2px 2px 0 #000;
+}
+
 .victory-buttons {
     display: flex;
-    gap: 15px;
+    gap: 12px;
     justify-content: center;
-    margin-top: 30px;
+    margin-top: 5px;
 }
 
+/* Game-y Buttons */
 .victory-btn {
-    padding: 12px 30px;
-    font-size: 1rem;
-    font-weight: 600;
-    border: none;
-    border-radius: 10px;
+    padding: 10px 16px; /* Smaller buttons */
+    font-size: 0.85rem;
+    font-weight: 800;
+    border: 2px solid #000;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    position: relative;
+    box-shadow: 0 4px 0 rgba(0,0,0,1);
+    transition: all 0.1s;
+    font-family: inherit;
+    min-width: 100px;
+    flex: 1; /* Make button widths equal flex */
 }
 
-.victory-btn.continue {
-    background: linear-gradient(135deg, #4a90e2, #357abd);
-    color: white;
+.victory-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 rgba(0,0,0,1);
 }
 
-.victory-btn.continue:hover {
-    background: linear-gradient(135deg, #357abd, #2868a8);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(74, 144, 226, 0.5);
+.victory-btn.play-again {
+    background: #4ade80;
+    color: #1a2e1a;
+}
+
+.victory-btn.play-again:hover {
+    background: #5cf095;
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(0,0,0,1); /* Reduced shadow shift on hover */
+}
+
+.victory-btn.play-again:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 rgba(0,0,0,1);
 }
 
 .victory-btn.main-menu {
-    background: linear-gradient(135deg, #6b7280, #4b5563);
-    color: white;
+    background: #f472b6; /* Pink/Reddish */
+    color: #2d1a22;
 }
 
 .victory-btn.main-menu:hover {
-    background: linear-gradient(135deg, #4b5563, #374151);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(107, 114, 128, 0.5);
+    background: #f98ac5;
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(0,0,0,1);
+}
+
+.victory-btn.main-menu:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 rgba(0,0,0,1);
+}
+
+/* Mobile Adjustments for Victory Screen */
+@media (max-width: 600px) {
+    .victory-content {
+        padding: 20px;
+        max-width: 320px;
+        border-width: 2px;
+    }
+
+    .victory-trophy {
+        width: 64px;
+        margin-top: -50px;
+    }
+
+    .victory-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .victory-content h2 {
+        font-size: 0.8rem;
+        margin-bottom: 15px;
+    }
+
+    .stats-summary {
+        padding: 10px;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .victory-stat-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .victory-stat-value {
+        font-size: 1rem;
+    }
+
+    .victory-buttons {
+        flex-direction: column; /* Stack buttons on very small screens if needed, likely fine side-by-side but let's check */
+        gap: 10px;
+    }
+    
+    .victory-buttons {
+         flex-direction: row; /* Keep side by side but smaller gaps */
+    }
+    
+    .victory-btn {
+        padding: 10px 10px;
+        font-size: 0.75rem;
+        min-width: auto;
+    }
 }
 
 /* Toast/Modal Styles */

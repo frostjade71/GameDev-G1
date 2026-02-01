@@ -72,6 +72,24 @@ class CharacterMenu {
             if (characterName) {
                 characterName.textContent = 'Amber';
             }
+        } else if (currentCharacter === 'kael') {
+            characterSprite.innerHTML = `<img src="${assetsPath}characters/kael_char/kael.png" alt="Kael Character">`;
+            if (characterName) { characterName.textContent = 'Kael'; }
+        } else if (currentCharacter === 'rex') {
+            characterSprite.innerHTML = `<img src="${assetsPath}characters/rex_char/rex.png" alt="Rex Character">`;
+            if (characterName) { characterName.textContent = 'Rex'; }
+        } else if (currentCharacter === 'orion') {
+            characterSprite.innerHTML = `<img src="${assetsPath}characters/orion_char/orion.png" alt="Orion Character">`;
+            if (characterName) { characterName.textContent = 'Orion'; }
+        } else if (currentCharacter === 'ember') {
+            characterSprite.innerHTML = `<img src="${assetsPath}characters/ember_char/ember.png" alt="Ember Character">`;
+            if (characterName) { characterName.textContent = 'Ember'; }
+        } else if (currentCharacter === 'astra') {
+            characterSprite.innerHTML = `<img src="${assetsPath}characters/astra_char/astra.png" alt="Astra Character">`;
+            if (characterName) { characterName.textContent = 'Astra'; }
+        } else if (currentCharacter === 'sylvi') {
+            characterSprite.innerHTML = `<img src="${assetsPath}characters/sylvi_char/sylvi.png" alt="Sylvi Character">`;
+            if (characterName) { characterName.textContent = 'Sylvi'; }
         } else {
             characterSprite.innerHTML = '<div class="character-base">👤</div>';
             if (characterName) {
@@ -135,8 +153,18 @@ class CharacterMenu {
             characterName = 'Ethan';
         } else if (characterType === 'girl') {
             characterName = 'Emma';
-        } else if (characterType === 'amber') {
-            characterName = 'Amber';
+        } else if (characterType === 'kael') {
+            characterName = 'Kael';
+        } else if (characterType === 'rex') {
+            characterName = 'Rex';
+        } else if (characterType === 'orion') {
+            characterName = 'Orion';
+        } else if (characterType === 'ember') {
+            characterName = 'Ember';
+        } else if (characterType === 'astra') {
+            characterName = 'Astra';
+        } else if (characterType === 'sylvi') {
+            characterName = 'Sylvi';
         }
         this.showToast(`Character changed to ${characterName}!`, 'success');
     }
@@ -153,6 +181,20 @@ class CharacterMenu {
             previewSprite.innerHTML = '<img src="../assets/characters/boy_char/character_ethan.png" alt="Ethan Character">';
         } else if (characterType === 'girl') {
             previewSprite.innerHTML = '<img src="../assets/characters/girl_char/character_emma.png" alt="Emma Character">';
+        } else if (characterType === 'amber') {
+            previewSprite.innerHTML = '<img src="../assets/characters/amber_char/amber.png" alt="Amber Character">';
+        } else if (characterType === 'kael') {
+            previewSprite.innerHTML = '<img src="../assets/characters/kael_char/kael.png" alt="Kael Character">';
+        } else if (characterType === 'rex') {
+            previewSprite.innerHTML = '<img src="../assets/characters/rex_char/rex.png" alt="Rex Character">';
+        } else if (characterType === 'orion') {
+            previewSprite.innerHTML = '<img src="../assets/characters/orion_char/orion.png" alt="Orion Character">';
+        } else if (characterType === 'ember') {
+            previewSprite.innerHTML = '<img src="../assets/characters/ember_char/ember.png" alt="Ember Character">';
+        } else if (characterType === 'astra') {
+            previewSprite.innerHTML = '<img src="../assets/characters/astra_char/astra.png" alt="Astra Character">';
+        } else if (characterType === 'sylvi') {
+            previewSprite.innerHTML = '<img src="../assets/characters/sylvi_char/sylvi.png" alt="Sylvi Character">';
         }
     }
 

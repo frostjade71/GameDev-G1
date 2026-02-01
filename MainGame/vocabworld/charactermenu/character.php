@@ -89,6 +89,18 @@ if ($character_selection) {
         $current_character = 'girl';
     } elseif ($character_name === 'Amber') {
         $current_character = 'amber';
+    } elseif ($character_name === 'Kael') {
+        $current_character = 'kael';
+    } elseif ($character_name === 'Rex') {
+        $current_character = 'rex';
+    } elseif ($character_name === 'Orion') {
+        $current_character = 'orion';
+    } elseif ($character_name === 'Ember') {
+        $current_character = 'ember';
+    } elseif ($character_name === 'Astra') {
+        $current_character = 'astra';
+    } elseif ($character_name === 'Sylvi') {
+        $current_character = 'sylvi';
     }
 }
 
@@ -445,6 +457,21 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 } else if (currentCharacter === 'amber') {
                     characterNameText = 'Amber';
                     characterImagePath = '../assets/characters/amber_char/amber.png';
+                } else if (currentCharacter === 'kael') {
+                    characterNameText = 'Kael';
+                    characterImagePath = '../assets/characters/kael_char/kael.png';
+                } else if (currentCharacter === 'rex') {
+                    characterNameText = 'Rex';
+                    characterImagePath = '../assets/characters/rex_char/rex.png';
+                } else if (currentCharacter === 'orion') {
+                    characterNameText = 'Orion';
+                    characterImagePath = '../assets/characters/orion_char/orion.png';
+                } else if (currentCharacter === 'ember') {
+                    characterNameText = 'Ember';
+                    characterImagePath = '../assets/characters/ember_char/ember.png';
+                } else if (currentCharacter === 'astra') {
+                    characterNameText = 'Astra';
+                    characterImagePath = '../assets/characters/astra_char/astra.png';
                 }
                 
                 // Use database data if available

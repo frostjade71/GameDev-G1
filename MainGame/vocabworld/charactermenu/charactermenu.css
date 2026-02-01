@@ -537,6 +537,22 @@
     .character-preview-section {
         margin-top: 0;
     }
+
+    #shop-characters-screen .character-preview-section {
+        position: sticky;
+        top: 20px;
+        margin-bottom: 10px;
+        z-index: 90;
+        padding-bottom: 1rem;
+        background: rgba(30, 59, 138, 0.368);
+        backdrop-filter: blur(5px);
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
     
     .progress-section {
         margin-top: 0;
@@ -579,6 +595,33 @@
         max-width: 200px;
         justify-content: center;
         padding: 0.7rem 1.2rem;
+    }
+
+    .back-to-character-btn {
+        width: 40px !important;
+        height: 40px !important;
+        padding: 0 !important;
+        border-radius: 50%;
+        min-width: unset;
+        font-size: 0 !important;
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        gap: 0 !important;
+    }
+    
+    .back-to-character-btn i {
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    .character-preview-card {
+        position: relative; /* Ensure absolute positioning works */
     }
     
     .character-selection-grid {
@@ -799,15 +842,15 @@
 }
 
 .character-card-sprite {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
     margin: 0 auto;
     background: rgba(59, 130, 246, 0.3);
-    border-radius: 8px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: none;
     overflow: hidden;
     position: relative;
 }
@@ -816,7 +859,7 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 /* Animated sprites - No animation */
@@ -947,8 +990,8 @@
     }
     
     .character-card-sprite {
-        width: 45px;
-        height: 45px;
+        width: 70px;
+        height: 70px;
     }
     
     .character-selection-container {
@@ -958,18 +1001,18 @@
 
 @media (max-width: 480px) {
     .character-cards-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
     }
     
     .character-card-sprite {
-        width: 40px;
-        height: 40px;
+        width: 55px;
+        height: 55px;
     }
     
     .character-card {
-        padding: 0.75rem;
-        min-height: 160px;
+        padding: 0.5rem;
+        min-height: 140px;
     }
     
     .character-card-info h4 {
@@ -978,6 +1021,9 @@
     
     .character-card-info p {
         font-size: 0.65rem;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     
     .equip-btn {
@@ -1055,29 +1101,35 @@
 }
 
 .shop-character-card .character-card-sprite {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
     margin: 0 auto;
     background: rgba(59, 130, 246, 0.3);
-    border-radius: 8px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: none;
     overflow: hidden;
     position: relative;
 }
 
+/* Smaller icons for Essence Exchange */
+.essence-exchange-container .shop-character-card .character-card-sprite {
+    width: 60px;
+    height: 60px;
+}
+
 .shop-character-card.locked .character-card-sprite {
     background: rgba(100, 100, 100, 0.3);
-    border-color: rgba(100, 100, 100, 0.3);
+    border: none;
 }
 
 .shop-character-card .character-card-sprite img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    border-radius: 6px;
+    border-radius: 10px;
 }
 
 .locked-sprite {
@@ -1189,6 +1241,16 @@
     .shop-character-card {
         min-height: 180px;
     }
+
+    .shop-character-card .character-card-sprite {
+        width: 70px;
+        height: 70px;
+    }
+
+    .essence-exchange-container .shop-character-card .character-card-sprite {
+        width: 50px;
+        height: 50px;
+    }
     
     .shop-characters-container {
         animation: none; /* Disable animation on mobile for better performance */
@@ -1197,31 +1259,56 @@
 
 @media (max-width: 480px) {
     .shop-characters-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
     }
     
     .shop-character-card {
-        min-height: 160px;
-        padding: 0.75rem;
+        min-height: 140px;
+        padding: 0.5rem;
     }
     
     .shop-character-card .character-card-sprite {
+        width: 55px;
+        height: 55px;
+    }
+
+    .essence-exchange-container .shop-character-card .character-card-sprite {
         width: 40px;
         height: 40px;
     }
     
     .shop-character-card .character-card-info h4 {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+        margin-bottom: 0.15rem;
     }
     
     .shop-character-card .character-card-info p {
+        font-size: 0.6rem;
+        margin-bottom: 0.35rem;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .character-price {
+        padding: 0.15rem 0;
+        margin-bottom: 0.35rem;
+    }
+
+    .price-label, .price-value {
         font-size: 0.65rem;
+    }
+
+    .price-value img {
+        width: 14px !important;
+        height: 14px !important;
     }
     
     .purchase-btn {
-        font-size: 0.7rem;
-        padding: 0.4rem 0.6rem;
+        font-size: 0.65rem;
+        padding: 0.35rem 0.5rem;
+        gap: 0.15rem;
     }
 }
 

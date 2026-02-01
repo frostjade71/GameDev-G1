@@ -114,6 +114,12 @@ $character_images = [
     'emma' => '../../MainGame/vocabworld/assets/characters/girl_char/character_emma.png',
     'ethan' => '../../MainGame/vocabworld/assets/characters/boy_char/character_ethan.png',
     'amber' => '../../MainGame/vocabworld/assets/characters/amber_char/amber.png',
+    'kael' => '../../MainGame/vocabworld/assets/characters/kael_char/kael.png',
+    'rex' => '../../MainGame/vocabworld/assets/characters/rex_char/rex.png',
+    'orion' => '../../MainGame/vocabworld/assets/characters/orion_char/orion.png',
+    'ember' => '../../MainGame/vocabworld/assets/characters/ember_char/ember.png',
+    'astra' => '../../MainGame/vocabworld/assets/characters/astra_char/astra.png',
+    'sylvi' => '../../MainGame/vocabworld/assets/characters/sylvi_char/sylvi.png',
     'girl' => '../../MainGame/vocabworld/assets/characters/girl_char/character_emma.png',
     'boy' => '../../MainGame/vocabworld/assets/characters/boy_char/character_ethan.png'
 ];
@@ -865,7 +871,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     <!-- Combat Stats -->
                     <div class="stats-category">
                         <div class="category-header">
-                            <img src="../../assets/pixels/blueorb.png" alt="Stats" style="width: 24px; height: 24px; margin-right: 8px;">
+                            <img src="../../MainGame/vocabworld/charactermenu/assets/fc1089.png" alt="Stats" style="width: 24px; height: 24px; margin-right: 8px;">
                             <h4>Stats</h4>
                         </div>
                         <div class="stats-cards-grid">
@@ -902,7 +908,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     <!-- Resources -->
                     <div class="stats-category">
                         <div class="category-header">
-                            <img src="../../assets/pixels/bluedias.png" alt="Resources" style="width: 24px; height: 24px; margin-right: 8px;">
+                            <img src="../profile/assets/fc133.png" alt="Resources" style="width: 24px; height: 24px; margin-right: 8px;">
                             <h4>Resources</h4>
                         </div>
                         <div class="stats-cards-grid resources-grid">
@@ -930,7 +936,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     <!-- Performance -->
                     <div class="stats-category">
                         <div class="category-header">
-                            <img src="../../MainGame/vocabworld/assets/menu/instructionicon.png" alt="Performance" style="width: 24px; height: 24px; margin-right: 8px;">
+                            <img src="../profile/assets/fc112.png" alt="Performance" style="width: 24px; height: 24px; margin-right: 8px;">
                             <h4>Performance</h4>
                         </div>
                         <div class="stats-cards-grid">

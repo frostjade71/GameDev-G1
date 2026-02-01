@@ -2585,9 +2585,6 @@
 .stat-card-icon {
     width: 32px;
     height: 32px;
-    border-radius: 6px;
-    background: rgba(65, 105, 225, 0.15);
-    border: 1px solid rgba(65, 105, 225, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2596,8 +2593,6 @@
 }
 
 .stat-card-modern:hover .stat-card-icon {
-    background: rgba(65, 105, 225, 0.2);
-    border-color: rgba(65, 105, 225, 0.5);
     transform: scale(1.05);
 }
 
@@ -2656,8 +2651,8 @@
 }
 
 .gwa-icon {
-    background: linear-gradient(135deg, rgba(65, 105, 225, 0.25), rgba(135, 206, 235, 0.25));
-    border-color: rgba(65, 105, 225, 0.5);
+    background: transparent;
+    border: none;
 }
 
 .gwa-value-display {

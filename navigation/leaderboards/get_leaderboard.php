@@ -40,7 +40,7 @@ try {
             COALESCE(gp.total_monsters_defeated, 0) as monsters_defeated,
             COALESCE((
                 SELECT COUNT(*) 
-                FROM character_selections 
+                FROM character_ownership 
                 WHERE user_id = u.id
             ), 0) as characters_owned,
             COALESCE(ug.gwa, 0) as gwa,
@@ -65,7 +65,7 @@ try {
     } elseif ($sortBy === 'shards') {
         $orderByClause = 'COALESCE(us.current_shards, 0) ' . $sortDir;
     } elseif ($sortBy === 'characters_owned') {
-        $orderByClause = 'characters_owned ' . $sortDir;
+        $orderByClause = 'COALESCE((SELECT COUNT(*) FROM character_ownership WHERE user_id = u.id), 0) ' . $sortDir;
     } elseif ($sortBy === 'gwa') {
         $orderByClause = 'COALESCE(ug.gwa, 0) ' . $sortDir;
     }
@@ -81,7 +81,7 @@ try {
             COALESCE(gp.total_monsters_defeated, 0) as monsters_defeated,
             COALESCE((
                 SELECT COUNT(*) 
-                FROM character_selections 
+                FROM character_ownership 
                 WHERE user_id = u.id
             ), 0) as characters_owned,
             COALESCE(ug.gwa, 0) as gwa
@@ -106,7 +106,7 @@ try {
             COALESCE(gp.total_monsters_defeated, 0) as monsters_defeated,
             COALESCE((
                 SELECT COUNT(*) 
-                FROM character_selections 
+                FROM character_ownership 
                 WHERE user_id = u.id
             ), 0) as characters_owned,
             COALESCE(ug.gwa, 0) as gwa

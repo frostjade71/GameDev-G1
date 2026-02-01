@@ -167,15 +167,23 @@
 @media (max-width: 768px) {
     .toast {
         left: 50%;  /* Reset for mobile */
-        width: 80%;
-        padding: 12px 20px;
-        font-size: 0.65rem;
+        width: auto;
+        min-width: 280px; /* Increased to fit text comfortably */
+        max-width: 90vw;
+        padding: 20px 25px !important; /* Increased padding */
+        font-size: 12px !important; 
+        line-height: 1.4 !important; /* Slightly more breathing room */
         border-radius: 12px;
+        white-space: normal; 
+        word-wrap: break-word; 
     }
 
-    .toast.show,
+    .toast.show {
+        transform: translate(-50%, -50%) scale(0.6) !important; /* Force scale down */
+    }
+    
     .toast.hide {
-        transform: translate(-50%, -50%) scale(1);  /* Reset transform for mobile */
+        transform: translate(-50%, -50%) scale(0.5) !important;
     }
 }
 

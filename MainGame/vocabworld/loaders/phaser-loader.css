@@ -727,3 +727,16 @@
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     z-index: 10;
 }
+@media (max-width: 768px) {
+    .scene {
+        transform: scale(0.5); /* Significantly smaller for mobile */
+        transform-origin: bottom center;
+        margin-bottom: 20px; /* Increased space between tent and text */
+        transform: translateY(-20px) scale(0.5); /* Move tent up and scale */
+    }
+
+    .loading-text {
+        font-size: 0.9rem;
+        margin-top: 0; /* Reset margin */
+    }
+}

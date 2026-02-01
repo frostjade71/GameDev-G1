@@ -39,6 +39,66 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/vocabulary.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .skeleton-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; /* Cover the textarea/editor area */
+            background: rgba(30, 30, 40, 0.5);
+            border-radius: 8px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .skeleton-toolbar {
+            height: 40px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skeleton-content {
+            flex: 1;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skeleton-toolbar::after,
+        .skeleton-content::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0,
+                rgba(255, 255, 255, 0.05) 20%,
+                rgba(255, 255, 255, 0.1) 60%,
+                rgba(255, 255, 255, 0)
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
     <!-- TinyMCE -->
     <script src="https://cdn.tiny.cloud/1/zsakvou710vz1lno9jg4cswebk4agq3rkdm6xptw78gctcl5/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
@@ -46,10 +106,21 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
         selector: '#lessonContent',
         plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
         toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        init_instance_callback: function(editor) {
+            const skeleton = document.getElementById('tinymce-skeleton');
+            if (skeleton) {
+                skeleton.style.display = 'none';
+            }
+        }
       });
     </script>
 </head>
 <body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <div class="sidebar teacher-sidebar">
         <!-- Sidebar Content (Same as lessons.php) -->
         <div class="sidebar-logo">
@@ -144,11 +215,11 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
     <div class="main-content">
         <div class="teacher-container">
             <div class="vocabulary-section">
-                <div class="section-header" style="justify-content: flex-start; gap: 1rem;">
+                <div class="section-header" style="justify-content: flex-start; gap: 1rem; flex-direction: row; align-items: center;">
                     <div class="stat-icon" style="width: 40px; height: 40px; font-size: 1.1rem; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 8px; box-shadow: none;">
                         <i class="fas fa-plus-circle"></i>
                     </div>
-                    <h3 style="margin: 0; font-size: 1.5rem;">Create New Lesson</h3>
+                    <h3 style="margin: 0; font-size: 1rem; font-family: 'Press Start 2P', cursive; line-height: 1.5;">Create New Lesson</h3>
                 </div>
                 
                 <form id="createLessonForm" onsubmit="saveLesson(event)" style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
@@ -181,7 +252,13 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
 
                     <div class="form-group" style="margin-bottom: 2rem;">
                         <label for="lessonContent" style="display: block; color: var(--text-secondary); margin-bottom: 0.5rem;">Content</label>
-                        <textarea id="lessonContent" name="content"></textarea>
+                        <div style="position: relative; min-height: 300px;">
+                            <div id="tinymce-skeleton" class="skeleton-container">
+                                <div class="skeleton-toolbar"></div>
+                                <div class="skeleton-content"></div>
+                            </div>
+                            <textarea id="lessonContent" name="content"></textarea>
+                        </div>
                     </div>
 
                     <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end;">

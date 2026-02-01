@@ -9,36 +9,15 @@ const settingsForm = document.getElementById('settingsForm');
 // Save settings to database
 function saveSettings(event) {
     event.preventDefault();
-    
-    const formData = new FormData();
-    formData.append('action', 'save_settings');
-    formData.append('bgm_enabled', bgmToggle.checked ? '1' : '0');
-    formData.append('sfx_enabled', sfxToggle.checked ? '1' : '0');
-    formData.append('language', languageSelect.value);
-    
-    fetch('settings.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Play toast notification sound
-            const toastSound = new Audio('../assets/sounds/toast/toastnotifwarn.mp3');
-            toastSound.volume = 0.5;
-            toastSound.play().catch(error => {
-                console.log('Error playing toast sound:', error);
-            });
-            
-            showToast(data.message);
-        } else {
-            showToast('Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('not implemented yet...');
+
+    // Play toast notification sound
+    const toastSound = new Audio('../assets/sounds/toast/toastnotifwarn.mp3');
+    toastSound.volume = 0.5;
+    toastSound.play().catch(error => {
+        console.log('Error playing toast sound:', error);
     });
+
+    showToast('not implemented yet...');
 }
 
 // Show toast notification

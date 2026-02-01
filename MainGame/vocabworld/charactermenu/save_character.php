@@ -36,6 +36,10 @@ $characterDefinitions = [
     'amber' => [
         'name' => 'Amber',
         'image_path' => '../assets/characters/amber_char/amber.png'
+    ],
+    'sylvi' => [
+        'name' => 'Sylvi',
+        'image_path' => '../assets/characters/sylvi_char/sylvi.png'
     ]
 ];
 

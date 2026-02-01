@@ -31,6 +31,18 @@ if ($character_selection) {
         $current_character = 'girl';
     } elseif ($character_name === 'Amber') {
         $current_character = 'amber';
+    } elseif ($character_name === 'Kael') {
+        $current_character = 'kael';
+    } elseif ($character_name === 'Rex') {
+        $current_character = 'rex';
+    } elseif ($character_name === 'Orion') {
+        $current_character = 'orion';
+    } elseif ($character_name === 'Ember') {
+        $current_character = 'ember';
+    } elseif ($character_name === 'Astra') {
+        $current_character = 'astra';
+    } elseif ($character_name === 'Sylvi') {
+        $current_character = 'sylvi';
     }
 }
 
@@ -186,7 +198,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                 </div>
                                 <div class="character-card-info">
                                     <h4>Ethan</h4>
-                                    <p>Adventurous and curious</p>
+                                    <p>Rising Adventurer</p>
                                 </div>
                                 <button class="equip-btn" data-character="boy">
                                     <i class="fas fa-check"></i>
@@ -203,7 +215,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                 </div>
                                 <div class="character-card-info">
                                     <h4>Emma</h4>
-                                    <p>Smart and determined</p>
+                                    <p>Eager Explorer</p>
                                 </div>
                                 <button class="equip-btn" data-character="girl">
                                     <i class="fas fa-check"></i>
@@ -211,7 +223,6 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                 </button>
                             </div>
                             
-                            <!-- Amber Character Card (if owned) -->
                             <?php if (in_array('amber', $owned_characters)): ?>
                             <div class="character-card" data-character="amber">
                                 <div class="character-card-preview">
@@ -221,9 +232,123 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                 </div>
                                 <div class="character-card-info">
                                     <h4>Amber</h4>
-                                    <p>Mysterious and magical</p>
+                                    <p>Twin of Warmth</p>
                                 </div>
                                 <button class="equip-btn" data-character="amber">
+                                    <i class="fas fa-check"></i>
+                                    Equipped
+                                </button>
+                            </div>
+                            <?php endif; ?>
+
+                            <!-- Kael -->
+                            <?php if (in_array('kael', $owned_characters)): ?>
+                            <div class="character-card" data-character="kael">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/kael_char/kael.png" alt="Kael Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Kael</h4>
+                                    <p>Cosmic Warlord</p>
+                                </div>
+                                <button class="equip-btn" data-character="kael">
+                                    <i class="fas fa-check"></i>
+                                    Equipped
+                                </button>
+                            </div>
+                            <?php endif; ?>
+
+                            <!-- Rex -->
+                            <?php if (in_array('rex', $owned_characters)): ?>
+                            <div class="character-card" data-character="rex">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/rex_char/rex.png" alt="Rex Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Rex</h4>
+                                    <p>Nimble Warrior</p>
+                                </div>
+                                <button class="equip-btn" data-character="rex">
+                                    <i class="fas fa-check"></i>
+                                    Equipped
+                                </button>
+                            </div>
+                            <?php endif; ?>
+
+                            <!-- Orion -->
+                            <?php if (in_array('orion', $owned_characters)): ?>
+                            <div class="character-card" data-character="orion">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/orion_char/orion.png" alt="Orion Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Orion</h4>
+                                    <p>Cosmic traveler</p>
+                                </div>
+                                <button class="equip-btn" data-character="orion">
+                                    <i class="fas fa-check"></i>
+                                    Equipped
+                                </button>
+                            </div>
+                            <?php endif; ?>
+
+                            <!-- Ember -->
+                            <?php if (in_array('ember', $owned_characters)): ?>
+                            <div class="character-card" data-character="ember">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/ember_char/ember.png" alt="Ember Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Ember</h4>
+                                    <p>Twin of Passion</p>
+                                </div>
+                                <button class="equip-btn" data-character="ember">
+                                    <i class="fas fa-check"></i>
+                                    Equipped
+                                </button>
+                            </div>
+                            <?php endif; ?>
+
+                            <!-- Astra -->
+                            <?php if (in_array('astra', $owned_characters)): ?>
+                            <div class="character-card" data-character="astra">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/astra_char/astra.png" alt="Astra Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Astra</h4>
+                                    <p>Star walker</p>
+                                </div>
+                                <button class="equip-btn" data-character="astra">
+                                    <i class="fas fa-check"></i>
+                                    Equipped
+                                </button>
+                            </div>
+                            <?php endif; ?>
+
+                            <!-- Sylvi -->
+                            <?php if (in_array('sylvi', $owned_characters)): ?>
+                            <div class="character-card" data-character="sylvi">
+                                <div class="character-card-preview">
+                                    <div class="character-card-sprite">
+                                        <img src="../assets/characters/sylvi_char/sylvi.png" alt="Sylvi Character">
+                                    </div>
+                                </div>
+                                <div class="character-card-info">
+                                    <h4>Sylvi</h4>
+                                    <p>Nature's Heart</p>
+                                </div>
+                                <button class="equip-btn" data-character="sylvi">
                                     <i class="fas fa-check"></i>
                                     Equipped
                                 </button>
@@ -366,6 +491,18 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 characterName = 'Emma';
             } else if (characterType === 'amber') {
                 characterName = 'Amber';
+            } else if (characterType === 'kael') {
+                characterName = 'Kael';
+            } else if (characterType === 'rex') {
+                characterName = 'Rex';
+            } else if (characterType === 'orion') {
+                characterName = 'Orion';
+            } else if (characterType === 'ember') {
+                characterName = 'Ember';
+            } else if (characterType === 'astra') {
+                characterName = 'Astra';
+            } else if (characterType === 'sylvi') {
+                characterName = 'Sylvi';
             }
             showToast(`Character changed to ${characterName}!`, 'success');
         }
@@ -405,6 +542,18 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 previewSprite.innerHTML = '<img src="../assets/characters/girl_char/character_emma.png" alt="Emma Character">';
             } else if (characterType === 'amber') {
                 previewSprite.innerHTML = '<img src="../assets/characters/amber_char/amber.png" alt="Amber Character">';
+            } else if (characterType === 'kael') {
+                previewSprite.innerHTML = '<img src="../assets/characters/kael_char/kael.png" alt="Kael Character">';
+            } else if (characterType === 'rex') {
+                previewSprite.innerHTML = '<img src="../assets/characters/rex_char/rex.png" alt="Rex Character">';
+            } else if (characterType === 'orion') {
+                previewSprite.innerHTML = '<img src="../assets/characters/orion_char/orion.png" alt="Orion Character">';
+            } else if (characterType === 'ember') {
+                previewSprite.innerHTML = '<img src="../assets/characters/ember_char/ember.png" alt="Ember Character">';
+            } else if (characterType === 'astra') {
+                previewSprite.innerHTML = '<img src="../assets/characters/astra_char/astra.png" alt="Astra Character">';
+            } else if (characterType === 'sylvi') {
+                previewSprite.innerHTML = '<img src="../assets/characters/sylvi_char/sylvi.png" alt="Sylvi Character">';
             }
         }
 

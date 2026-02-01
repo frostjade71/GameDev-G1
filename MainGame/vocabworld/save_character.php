@@ -44,6 +44,30 @@ try {
             'amber' => [
                 'name' => 'Amber',
                 'image_path' => '../assets/characters/amber_char/amber.png'
+            ],
+            'kael' => [
+                'name' => 'Kael',
+                'image_path' => '../assets/characters/kael_char/kael.png'
+            ],
+            'rex' => [
+                'name' => 'Rex',
+                'image_path' => '../assets/characters/rex_char/rex.png'
+            ],
+            'orion' => [
+                'name' => 'Orion',
+                'image_path' => '../assets/characters/orion_char/orion.png'
+            ],
+            'ember' => [
+                'name' => 'Ember',
+                'image_path' => '../assets/characters/ember_char/ember.png'
+            ],
+            'astra' => [
+                'name' => 'Astra',
+                'image_path' => '../assets/characters/astra_char/astra.png'
+            ],
+            'sylvi' => [
+                'name' => 'Sylvi',
+                'image_path' => '../assets/characters/sylvi_char/sylvi.png'
             ]
         ];
         

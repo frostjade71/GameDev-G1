@@ -47,6 +47,8 @@
         transition: transform 0.3s ease-in-out;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+        background-color: #1a1a2e;
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
     }
 
     .sidebar-logo-img {
@@ -84,6 +86,11 @@
     .mobile-menu-toggle:checked~.sidebar {
         transform: translateX(0);
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .nav-link {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
     }
 }
 

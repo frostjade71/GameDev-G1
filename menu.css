@@ -52,36 +52,87 @@
     }
 }
 
-/* Changelog Banner */
-.changelog-banner {
-    display: block;
+/* Banner Slider Styles */
+.banner-slider-container {
     width: 100%;
-    margin-bottom: 2rem;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(96, 239, 255, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    margin: 0 auto 2rem auto;
+    max-width: 900px;
 }
 
-.changelog-banner:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+.banner-slider {
+    width: 100%;
+    position: relative;
+    border-radius: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(96, 239, 255, 0.3);
+    display: flex;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.banner-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.banner-slide {
+    display: block;
+    min-width: 100%;
+    width: 100%;
+    scroll-snap-align: center;
+}
+
+.banner-slide a {
+    display: block;
+    width: 100%;
 }
 
 .changelog-banner-image {
     width: 100%;
     height: auto;
     display: block;
-    border-radius: 20px;
+    border-radius: 18px; /* Slightly less than container to fit inside border */
+    pointer-events: none; /* Prevent image dragging interfering with swipe */
 }
 
-/* Desktop styles for banner */
+/* Dots/bullets/indicators */
+.slider-dots {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.dot {
+    cursor: pointer;
+    height: 8px;
+    width: 8px;
+    margin: 0 4px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.active, .dot:hover {
+    background-color: #717171;
+}
+
+@media (max-width: 480px) {
+    .dot {
+        height: 6px;
+        width: 6px;
+        margin: 0 3px;
+    }
+}
+
+/* Desktop styles for banner container */
 @media screen and (min-width: 1024px) {
-    .changelog-banner {
+    .banner-slider-container {
         width: 80%;
-        max-width: 900px;
-        margin: 0 auto 2rem auto;
     }
 }
 
@@ -660,5 +711,13 @@ html body .main-content {
         width: 22px;
         height: 22px;
         font-size: 0.75rem;
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .sidebar {
+        background-color: #1a1a2e !important;
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
     }
 }

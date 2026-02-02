@@ -168,10 +168,29 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
     <!-- Main Content -->
     <div class="main-content">
         <div class="menu-container">
-            <!-- Banner -->
-            <a href="play/game-selection.php" class="changelog-banner">
-                <img src="assets/banner/changelog_banner.png" alt="What's New" class="changelog-banner-image">
-            </a>
+            <!-- Banner Slider -->
+            <div class="banner-slider-container">
+                <div class="banner-slider">
+                    <!-- Slide 1 -->
+                    <div class="banner-slide">
+                        <a href="play/game-selection.php">
+                            <img src="assets/banner/new_characters.png" alt="New Characters" class="changelog-banner-image">
+                        </a>
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="banner-slide">
+                        <a href="play/game-selection.php">
+                            <img src="assets/banner/changelog_banner.png" alt="What's New" class="changelog-banner-image">
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Dots -->
+                <div class="slider-dots">
+                    <span class="dot" onclick="currentSlide(1)"></span>
+                    <span class="dot" onclick="currentSlide(2)"></span>
+                </div>
+            </div>
 
             <!-- Separator -->
             <div class="menu-separator"></div>
@@ -253,7 +272,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                 <i class="fas fa-times"></i>
             </button>
             <div class="changelog-content">
-                <img src="assets/banner/changelog_banner.png" alt="Changelog Banner" class="changelog-banner-img">
+                <img src="assets/banner/new_characters.png" alt="Changelog Banner" class="changelog-banner-img">
             </div>
         </div>
     </div>

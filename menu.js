@@ -53,7 +53,7 @@ function initializeMenu() {
 // Initialize animations
 function initializeAnimations() {
     // Animate banner on load
-    const banner = document.querySelector('.whats-new-banner');
+    const banner = document.querySelector('.banner-slider-container');
     if (banner) {
         banner.style.opacity = '0';
         banner.style.transform = 'translateY(-30px)';
@@ -64,6 +64,8 @@ function initializeAnimations() {
             banner.style.transform = 'translateY(0)';
         }, 100);
     }
+    
+
 
     // Animate menu buttons on load
     const menuButtons = document.querySelectorAll('.menu-button');
@@ -339,5 +341,77 @@ function initializeChangelog() {
             modalOverlay.style.opacity = '';
         }, 300);
     }
+}
+
+// Banner Slider Logic
+// Banner Slider Logic (Swipeable)
+function initializeBannerSlider() {
+    const slider = document.querySelector('.banner-slider');
+    const dots = document.querySelectorAll('.dot');
+    
+    if (!slider || !dots.length) return;
+
+    // Update active dot on scroll
+    slider.addEventListener('scroll', () => {
+        const scrollPosition = slider.scrollLeft;
+        const slideWidth = slider.offsetWidth;
+        const activeIndex = Math.round(scrollPosition / slideWidth);
+        
+        dots.forEach((dot, index) => {
+            if (index === activeIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    });
+
+    // Handle dot clicks
+    /* 
+    Note: currentSlide(n) is called from HTML onclick attributes: currentSlide(1), currentSlide(2)
+    We need to keep the function name exposed globally or attach listeners here.
+    Since HTML has onclick="currentSlide(1)", we will define it globally.
+    */
+    window.currentSlide = function(n) {
+        // n is 1-based index from HTML
+        const slideIndex = n - 1;
+        const slideWidth = slider.offsetWidth;
+        
+        slider.scrollTo({
+            left: slideIndex * slideWidth,
+            behavior: 'smooth'
+        });
+    };
+    
+    // Set initial active dot
+    dots[0].classList.add('active');
+
+    // Auto-slide every 6 seconds
+    setInterval(() => {
+        const slideWidth = slider.offsetWidth;
+        const scrollPosition = slider.scrollLeft;
+        const slideCount = document.querySelectorAll('.banner-slide').length;
+        
+        // Calculate current index based on scroll position
+        let currentIndex = Math.round(scrollPosition / slideWidth);
+        let nextIndex = currentIndex + 1;
+        
+        // Loop back to start if at the end
+        if (nextIndex >= slideCount) {
+            nextIndex = 0;
+        }
+        
+        slider.scrollTo({
+            left: nextIndex * slideWidth,
+            behavior: 'smooth'
+        });
+    }, 10000);
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeBannerSlider);
+} else {
+    initializeBannerSlider();
 }
 

@@ -308,6 +308,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 pixelArt: true,  // This tells Phaser to handle pixel art better
                 antialias: false // Disables anti-aliasing
             },
+            backgroundColor: '#756e63', // Solid background color for transparent map areas
             scene: {
                 preload: preload,
                 create: create,
@@ -425,7 +426,9 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
 
         function preload() {
             // Load assets
-            this.load.image('world', 'assets/maps/world_test.png');
+            this.load.image('world', 'assets/maps/elmvale.png');
+            this.load.image('walls', 'assets/maps/layer/elmvale_wall.png');
+            this.load.image('top_layer', 'assets/maps/layer/elmvale_3rd_layer.png');
             // Commenting out missing assets to avoid 404s
             // this.load.image('tiles', 'assets/tilesets/fantasy_tiles.png');
             
@@ -473,26 +476,58 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
         }
 
         function create() {
-            // Create world background
-            const worldImage = this.add.image(400, 300, 'world');
-            // Scale the world image to fit the game canvas
-            const scaleX = 800 / worldImage.width;
-            const scaleY = 600 / worldImage.height;
-            const worldScale = Math.max(scaleX, scaleY);
-            worldImage.setScale(worldScale);
+            // Create world background - set origin to 0,0 for easier coordinate management
+            const worldImage = this.add.image(0, 0, 'world').setOrigin(0, 0);
+            const wallsImage = this.add.image(0, 0, 'walls').setOrigin(0, 0);
+            const topLayerImage = this.add.image(0, 0, 'top_layer').setOrigin(0, 0);
+            
+            // Set depths
+            worldImage.setDepth(0);
+            wallsImage.setDepth(1); // Behind player
+            // Player is depth 2 (set below)
+            topLayerImage.setDepth(3); // Top scene (over player)
+            
+            // Apply scale to make it "even larger" (2x zoom)
+            const mapScale = 1.8; 
+            worldImage.setScale(mapScale);
+            wallsImage.setScale(mapScale);
+            topLayerImage.setScale(mapScale);
 
-            // Calculate actual world dimensions and position
-            const actualWidth = worldImage.width * worldScale;
-            const actualHeight = worldImage.height * worldScale;
-            const worldX = 400 - (actualWidth / 2);
-            const worldY = 300 - (actualHeight / 2);
+            // Calculate actual world dimensions based on scale
+            const actualWidth = worldImage.width * mapScale;
+            const actualHeight = worldImage.height * mapScale;
+            const worldX = 0;
+            const worldY = 0;
 
             // Set physics world bounds
             this.physics.world.setBounds(worldX, worldY, actualWidth, actualHeight);
 
-            // Create player
-            player = this.physics.add.sprite(400, 300, 'player');
+            // Create player at a safe starting position (e.g., center of map or specific start point)
+            // Using 400, 300 might be too close to edge if map is huge, but it's a safe default.
+            // Let's try to center the player in the new map or keep 400, 300 if it's a good start.
+            // If the map is huge, 400,300 is top-left corner. Let's start there.
+            // Spawn player at the center of the map
+            player = this.physics.add.sprite(actualWidth / 2, actualHeight / 2, 'player');
+            player.setDepth(2); // On top of walls as requested 
+                                // BUT user asked for: elmvale.png (layer 1/behind) and elmvale_wall.png (layer 2)
+                                // If walls are solid obstacles, player should usually be visually in front or behind depending on y-sort.
+                                // However, simple layering as requested:
+                                // Layer 1: elmvale (bottom)
+                                // Layer 2: elmvale_wall (top)
+                                // Player needs to be visible? If walls are transparent overlays (like trees headers), player might be under.
+                                // If walls are just collidable walls, usually player is on top of ground.
+                                // Let's set player depth to 1 and walls to 2 (as overhead obstacles/roofs) or just normal layering.
+                                // Request says: "stack this map to be a wall, dont let players get passed"
+                                // "make elmvale.png layer 1... elmvale_wall.png as a layer 2"
+                                // Effectively Player should collide. Visually, if it's a "wall", usually players stand in front of it (bottom) or behind it (top).
+                                // Let's stick thereto: Ground(0) -> Player(1) -> Walls(2) to ensure walls cover player if they go "under" or "behind" them visually?
+                                // Actually, if it's top-down, standard is Y-sorting.
+                                // But for this specific request "layer 2 is ... wall.png", I will put it on top.
             player.setCollideWorldBounds(true);
+            
+            // Initialize last valid position for collision handling
+            player.lastValidX = player.x;
+            player.lastValidY = player.y;
             
             // Define animations if character is animated
             const isAnimated = characterPath.includes('character_ethan.png') || 
@@ -532,18 +567,51 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             // Create enemies
             enemies = this.physics.add.group();
             
-            // Create 3-5 random monsters
-            const monsterCount = Phaser.Math.Between(3, 5);
+            // Create 3-5 random monsters spread across the map
+            const monsterCount = Phaser.Math.Between(5, 8); // Increased count for larger map
+            
+            // Get the world texture to check for bounds
+            const worldTexture = this.textures.get('world').getSourceImage();
+            const worldTexWidth = worldTexture.width;
+            const worldTexHeight = worldTexture.height;
+
             for (let i = 0; i < monsterCount; i++) {
-                const x = Phaser.Math.Between(100, 700);
-                const y = Phaser.Math.Between(100, 500);
-                const enemy = enemies.create(x, y, 'monster');
-                enemy.setCollideWorldBounds(true);
+                let x, y;
+                let validPosition = false;
+                let attempts = 0;
                 
-                // Scale monster to match character size (similar to player scaling)
-                const monsterTargetHeight = 50; // Slightly smaller than player
-                const monsterScale = monsterTargetHeight / enemy.height;
-                enemy.setScale(monsterScale);
+                // Try to find a valid position inside the map (non-transparent area)
+                while (!validPosition && attempts < 50) {
+                    // Random position within world bounds with some padding
+                    x = Phaser.Math.Between(100, actualWidth - 100);
+                    y = Phaser.Math.Between(100, actualHeight - 100);
+                    
+                    // Convert world coordinates to texture coordinates
+                    const texX = Math.floor(x / mapScale);
+                    const texY = Math.floor(y / mapScale);
+                    
+                    // Check if within texture bounds
+                    if (texX >= 0 && texX < worldTexWidth && texY >= 0 && texY < worldTexHeight) {
+                        // Check pixel alpha (transparency)
+                        const alpha = this.textures.getPixelAlpha(texX, texY, 'world');
+                        if (alpha > 0) {
+                            validPosition = true;
+                        }
+                    }
+                    attempts++;
+                }
+                
+                // If we couldn't find a valid position after 50 tries, just use the last generated one
+                // or skip spawning this monster to avoid it being in the void
+                if (validPosition) {
+                    const enemy = enemies.create(x, y, 'monster');
+                    enemy.setCollideWorldBounds(true);
+                    
+                    // Scale monster to match character size (similar to player scaling)
+                    const monsterTargetHeight = 50; // Slightly smaller than player
+                    const monsterScale = monsterTargetHeight / enemy.height;
+                    enemy.setScale(monsterScale);
+                }
             }
 
             // Set up overlap detection (not collision) to prevent pushing monsters
@@ -586,7 +654,8 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             }
         }
 
-        function update() {
+        function update(time, delta) {
+
             if (!inBattle) {
                 const speed = 160;
                 let velocityX = 0;
@@ -611,41 +680,120 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                     velocityY = joystickDirection.y * speed;
                 }
                 
+                // Predictive Collision Detection
+                // Instead of moving then resetting, we check if we CAN move
+                
+                // Helper function to check for wall at a given position
+                const isWall = (x, y) => {
+                    const mapScale = 1.8;
+                    // Check multiple points around the player's collision box to prevent clipping
+                    // Using a smaller hitbox than the visual sprite usually feels better
+                    const hitBoxWidth = 32 * 0.6; 
+                    const hitBoxHeight = 32 * 0.4;
+                    const offsetX = 0;
+                    const offsetY = 16; // Shift hitbox to feet
+
+                    const pointsToCheck = [
+                        { x: x + offsetX, y: y + offsetY }, // Center feet
+                        { x: x + offsetX - hitBoxWidth/2, y: y + offsetY }, // Left feet
+                        { x: x + offsetX + hitBoxWidth/2, y: y + offsetY }, // Right feet
+                        { x: x + offsetX, y: y + offsetY - hitBoxHeight/2 } // Top of feet box
+                    ];
+
+                    for (const point of pointsToCheck) {
+                        const checkX = Math.floor(point.x / mapScale);
+                        const checkY = Math.floor(point.y / mapScale);
+
+                        if (checkX >= 0 && checkY >= 0 && 
+                            checkX < this.textures.get('walls').getSourceImage().width && 
+                            checkY < this.textures.get('walls').getSourceImage().height) {
+                            
+                            const pixel = this.textures.getPixelAlpha(checkX, checkY, 'walls');
+                            if (pixel > 0) return true; // It's a wall
+                        }
+                    }
+                    return false;
+                };
+
+                // Check Horizontal Movement
+                if (velocityX !== 0) {
+                    const step = velocityX * (delta / 1000);
+                    const buffer = 4; // Check 4 pixels ahead to prevent sticking
+                    const direction = velocityX > 0 ? 1 : -1;
+                    const nextX = player.x + step + (direction * buffer);
+                    
+                    if (isWall(nextX, player.y)) {
+                        velocityX = 0; // Block movement
+                    }
+                }
+
+                // Check Vertical Movement
+                if (velocityY !== 0) {
+                    const step = velocityY * (delta / 1000);
+                    const buffer = 4; // Check 4 pixels ahead
+                    const direction = velocityY > 0 ? 1 : -1;
+                    const nextY = player.y + step + (direction * buffer);
+                    
+                    if (isWall(player.x, nextY)) {
+                        velocityY = 0; // Block movement
+                    }
+                }
+                
                 player.setVelocityX(velocityX);
                 player.setVelocityY(velocityY);
 
                 // Play animations with priority for the stronger axis (helpful for joysticks)
-                if (velocityX !== 0 || velocityY !== 0) {
-                    if (Math.abs(velocityX) > Math.abs(velocityY)) {
+                // We use the ORIGINAL inputs (cursors/keys) to decide animation, 
+                // so the character "walks" even if pushing against a wall (velocity is 0).
+                
+                let intendedX = 0;
+                let intendedY = 0;
+
+                // input calculation
+                if (cursors.left.isDown || wasdKeys.left.isDown) intendedX = -1;
+                else if (cursors.right.isDown || wasdKeys.right.isDown) intendedX = 1;
+
+                if (cursors.up.isDown || wasdKeys.up.isDown) intendedY = -1;
+                else if (cursors.down.isDown || wasdKeys.down.isDown) intendedY = 1;
+                
+                if (joystickActive) {
+                    intendedX = joystickDirection.x;
+                    intendedY = joystickDirection.y;
+                }
+
+                if (intendedX !== 0 || intendedY !== 0) {
+                    if (Math.abs(intendedX) > Math.abs(intendedY)) {
                         // Horizontal movement is stronger
-                        if (velocityX < 0) {
+                        if (intendedX < 0) {
                             player.anims.play('left', true);
                         } else {
                             player.anims.play('right', true);
                         }
                     } else {
                         // Vertical movement is stronger
-                        if (velocityY < 0) {
+                        if (intendedY < 0) {
                             player.anims.play('up', true);
                         } else {
                             player.anims.play('down', true);
                         }
                     }
+            } else {
+                // When stopping, snap to the middle "standing" frame of the current direction
+                const currentAnim = player.anims.currentAnim;
+                if (currentAnim) {
+                    const key = currentAnim.key;
+                    player.anims.stop();
+                    
+                    if (key === 'down') player.setFrame(1);
+                    else if (key === 'left') player.setFrame(4);
+                    else if (key === 'right') player.setFrame(7);
+                    else if (key === 'up') player.setFrame(10);
                 } else {
-                    // When stopping, snap to the middle "standing" frame of the current direction
-                    const currentAnim = player.anims.currentAnim;
-                    if (currentAnim) {
-                        const key = currentAnim.key;
-                        player.anims.stop();
-                        
-                        if (key === 'down') player.setFrame(1);
-                        else if (key === 'left') player.setFrame(4);
-                        else if (key === 'right') player.setFrame(7);
-                        else if (key === 'up') player.setFrame(10);
-                    } else {
-                        player.anims.stop();
-                    }
+                    player.anims.stop();
                 }
+            }
+
+            // Removed retroactive collision check to prevent vibration
             } else {
                 // Stop player movement during battle
                 player.setVelocity(0, 0);

@@ -165,23 +165,25 @@ $total_vocab = count($vocabulary_questions);
     <!-- Main Content -->
     <div class="main-content">
         <!-- Welcome Section -->
-        <div class="welcome-section">
-            <div class="welcome-content" style="flex: 0 0 auto;">
-                <div class="quick-stat-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #00C853 0%, #009624 100%);">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 style="color: var(--white);">Total Vocabularies</h3>
-                        <div class="value" style="color: var(--white);"><?php echo number_format($total_vocab); ?></div>
+        <div class="hero-container">
+            <div class="welcome-section">
+                <div class="welcome-content" style="flex: 0 0 auto;">
+                    <div class="quick-stat-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #00C853 0%, #009624 100%);">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 style="color: var(--white);">Total Vocabularies</h3>
+                            <div class="value" style="color: var(--white);"><?php echo number_format($total_vocab); ?></div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="welcome-datetime">
-                <div class="datetime-display">
-                    <div class="date-text" id="currentDate"></div>
-                    <div class="time-text" id="currentTime"></div>
+                <div class="welcome-datetime">
+                    <div class="datetime-display">
+                        <div class="date-text" id="currentDate"></div>
+                        <div class="time-text" id="currentTime"></div>
+                    </div>
                 </div>
             </div>
         </div>

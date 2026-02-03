@@ -65,6 +65,7 @@ $grade_levels_count = $stmt->fetch()['count'];
     <link rel="stylesheet" href="../../navigation/shared/navigation.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../../notif/toast.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/nav_buttons.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -169,6 +170,7 @@ $grade_levels_count = $stmt->fetch()['count'];
     <!-- Main Content -->
     <div class="main-content">
         <!-- Dashboard View -->
+        <div class="hero-container">
             <!-- Welcome Section -->
             <div class="welcome-section">
                 <div class="welcome-content">
@@ -193,7 +195,7 @@ $grade_levels_count = $stmt->fetch()['count'];
                         $firstName = $nameParts[0];
                         
                         echo htmlspecialchars($greeting . ', ' . $firstName);
-                    ?> <i class="fas <?php echo $weatherIcon; ?>" style="margin-left: 8px; opacity: 0.9;"></i></h2>
+                    ?> <i class="fas <?php echo $weatherIcon; ?> weather-icon"></i></h2>
                     <div class="welcome-roles">
                         <span class="welcome-role-badge">
                             <i class="fas fa-chalkboard-teacher"></i>
@@ -208,27 +210,6 @@ $grade_levels_count = $stmt->fetch()['count'];
                     </div>
                 </div>
             </div>
-
-            <script>
-            function updateDateTime() {
-                const now = new Date();
-                
-                // Format date: December 15, 2025
-                const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-                const dateStr = now.toLocaleDateString('en-US', dateOptions);
-                
-                // Format time: 1:16 PM
-                const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
-                const timeStr = now.toLocaleTimeString('en-US', timeOptions);
-                
-                document.getElementById('currentDate').textContent = dateStr;
-                document.getElementById('currentTime').textContent = timeStr;
-            }
-
-            // Update immediately and then every second
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
-            </script>
 
             <!-- Quick Stats -->
             <div class="quick-stats">
@@ -266,6 +247,68 @@ $grade_levels_count = $stmt->fetch()['count'];
                     <div class="stat-content">
                         <h3>Grade Levels</h3>
                         <div class="value"><?php echo number_format($grade_levels_count); ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        function updateDateTime() {
+            const now = new Date();
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = now.toLocaleDateString('en-US', dateOptions);
+            const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
+            const timeStr = now.toLocaleTimeString('en-US', timeOptions);
+            
+            document.getElementById('currentDate').textContent = dateStr;
+            document.getElementById('currentTime').textContent = timeStr;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        </script>
+
+            <!-- Navigation Buttons Section -->
+            <div class="dashboard-navigation">
+                <!-- Vocabworld Section -->
+                <div class="vocabworld-section">
+                    <div class="vocab-nav-row">
+                        <div class="vocabworld-header">
+                            <img src="../../MainGame/vocabworld/assets/menu/vocab_new.png" alt="Vocabworld" class="vocabworld-header-img">
+                        </div>
+                        <div class="vocab-cards-container">
+                            <div class="nav-card vocab-card" onclick="window.location.href='vocabworld.php'">
+                                <div class="nav-card-icon">
+                                    <i class="fas fa-gamepad"></i>
+                                </div>
+                                <div class="nav-card-content">
+                                    <h3>Controls</h3>
+                                </div>
+                            </div>
+                            <div class="nav-card vocab-card" onclick="window.location.href='lessons.php'">
+                                <div class="nav-card-icon">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <div class="nav-card-content">
+                                    <h3>Lessons</h3>
+                                </div>
+                            </div>
+                            <div class="nav-card vocab-card" onclick="window.location.href='vocabulary.php'">
+                                <div class="nav-card-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="nav-card-content">
+                                    <h3>Vocabulary Bank</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More Games Section -->
+                <div class="more-games-section">
+                    <div class="more-games-header">
+                        <h3>More games soon</h3>
+                        <div class="coming-soon-badge">Coming Soon</div>
                     </div>
                 </div>
             </div>

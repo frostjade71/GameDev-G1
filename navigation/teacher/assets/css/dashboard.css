@@ -131,8 +131,7 @@
   font-size: 0.9rem;
 }
 
-.student-count-badge,
-.add-vocab-btn {
+.student-count-badge {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -146,10 +145,30 @@
   transition: all 0.3s ease;
 }
 
+a.add-vocab-btn,
+button.add-vocab-btn,
+.add-vocab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #3b82f6 !important;
+  border: 1px solid #2563eb !important;
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  color: #ffffff !important;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+a.add-vocab-btn:hover,
+button.add-vocab-btn:hover,
 .add-vocab-btn:hover {
-  background: rgba(0, 255, 135, 0.2);
-  border-color: rgba(0, 255, 135, 0.5);
+  background: #2563eb !important;
+  border-color: #1d4ed8 !important;
   transform: translateY(-2px);
+  color: #ffffff !important;
 }
 
 .student-count-badge i,
@@ -164,27 +183,41 @@
 }
 
 /* Welcome Section Styles - Matching Reference Dashboard */
-.welcome-section {
+/* Hero Container (Merged Welcome & Stats) */
+.hero-container {
   background:
     linear-gradient(
       to right,
-      rgba(19, 32, 51) 0%,
-      rgba(19, 32, 51, 0.721) 20%,
-      rgba(19, 32, 51, 0.171) 100%
+      rgba(19, 32, 51, 0.95) 0%,
+      rgba(19, 32, 51, 0.7) 20%,
+      rgba(19, 32, 51, 0.4) 100%
     ),
     linear-gradient(
       135deg,
-      rgba(10, 10, 15, 0.85) 0%,
-      rgba(0, 0, 0, 0.85) 100%
+      rgba(10, 10, 15, 0.8) 0%,
+      rgba(0, 0, 0, 0.6) 100%
     ),
     url("../images/wordweav_cover.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  color: white;
-  padding: 32px 40px;
-  border-radius: 12px;
+  border-radius: 20px;
+  padding: 2.5rem;
   margin-bottom: 2rem;
+  border: 1px solid #000000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-section {
+  color: white;
+  padding: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -192,6 +225,9 @@
   width: 100%;
   box-sizing: border-box;
   position: relative;
+  background: none !important;
+  border: none !important;
+  margin-bottom: 0 !important;
 }
 
 .welcome-content {
@@ -271,22 +307,23 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  margin-bottom: 2rem;
   width: 100%;
   box-sizing: border-box;
 }
 
 .quick-stat-card {
-  background: rgba(10, 10, 15, 0.95);
-  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  padding: 16px;
   border-radius: 12px;
-  border: 2px solid rgba(96, 239, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .quick-stat-card:hover {
@@ -667,25 +704,25 @@
 }
 
 .modal-content.delete-modal {
-    max-width: 400px;
+  max-width: 400px;
 }
 
 @media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        padding: 0;
-        margin: 1rem;
-    }
-    
-    .modal-header h2 {
-        font-size: 1rem;
-    }
-    
-    .stat-icon {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 14px !important;
-    }
+  .modal-content {
+    width: 95%;
+    padding: 0;
+    margin: 1rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1rem;
+  }
+
+  .stat-icon {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 14px !important;
+  }
 }
 
 /* Minimalistic Scrollbar */
@@ -1031,73 +1068,50 @@
     font-size: 0.9rem;
   }
 
-  /* Welcome Section Mobile - Compact horizontal layout */
+  /* Hero Mobile Adaptations */
+  .hero-container {
+    padding: 1.25rem 1rem;
+    gap: 1.2rem;
+    border-radius: 15px;
+  }
+
   .welcome-section {
-    padding: 20px 16px;
+    padding: 0;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 20px;
-    min-height: 90px;
+    gap: 12px;
+    margin-bottom: 0;
+    min-height: auto;
   }
 
-  .welcome-content {
-    flex: 0 1 auto;
-  }
-
-  .welcome-content h2 {
-    font-size: 16px;
-    margin-bottom: 8px;
-    line-height: 1.3;
-  }
-
-  .welcome-roles {
-    gap: 6px;
-  }
-
-  .welcome-role-badge {
-    padding: 5px 12px;
-    font-size: 11px;
-  }
-
-  .welcome-datetime {
-    flex: 0 0 auto;
-  }
-
-  .datetime-display {
-    text-align: right;
-    padding: 10px 14px;
-  }
-
-  .date-text {
-    font-size: 10px;
-    margin-bottom: 4px;
-  }
-
-  .time-text {
-    font-size: 16px;
-  }
-
-  /* Quick Stats - 2 per row on mobile with horizontal rectangular layout */
+  /* 2 Stat cards per row on mobile */
   .quick-stats {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 0;
   }
 
   .quick-stat-card {
-    padding: 12px;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
+    padding: 10px;
+    gap: 8px;
+    border-radius: 10px;
   }
 
   .stat-icon {
-    width: 44px;
-    height: 44px;
-    font-size: 20px;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
     flex-shrink: 0;
+  }
+
+  .stat-content h3 {
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  .stat-content .value {
+    font-size: 14px;
   }
 
   .stat-content {
@@ -1133,6 +1147,25 @@
   .stat-icon-online .online-status-indicator::before {
     width: 12px;
     height: 12px;
+  }
+
+  /* Fix for sidebar consistency on mobile */
+  .teacher-sidebar .sidebar-nav {
+    gap: 0.5rem;
+  }
+
+  .nav-sub-link {
+    padding-left: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .nav-section-header {
+    padding: 0.6rem 0.8rem;
+  }
+
+  /* Hide weather icon on mobile */
+  .weather-icon {
+    display: none;
   }
 }
 

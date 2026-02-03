@@ -142,222 +142,162 @@ $admin_logs = $stmt->fetchAll();
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="dashboard-container">
-            <!-- Dashboard Header -->
-            <div class="dashboard-header">
-                <div class="header-title">
-                    <img src="../../assets/menu/ww_logo_main.webp" alt="Word Weavers Logo" class="header-logo">
-                    <div>
-                        <h1>Admin Dashboard</h1>
-                        <p>System Overview & Statistics</p>
+        <!-- Dashboard View -->
+        <div class="hero-container">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <div class="welcome-content">
+                    <h2><?php 
+                        // Get current hour
+                        $currentHour = (int)date('G');
+                        
+                        // Determine greeting and icon based on time
+                        if ($currentHour >= 0 && $currentHour < 12) {
+                            $greeting = 'Good Morning';
+                            $weatherIcon = 'fa-cloud-sun';
+                        } elseif ($currentHour >= 12 && $currentHour < 18) {
+                            $greeting = 'Good Afternoon';
+                            $weatherIcon = 'fa-cloud-sun';
+                        } else {
+                            $greeting = 'Good Evening';
+                            $weatherIcon = 'fa-cloud-moon';
+                        }
+                        
+                        // Get first name from username
+                        $nameParts = explode(' ', $current_user['username']);
+                        $firstName = $nameParts[0];
+                        
+                        echo htmlspecialchars($greeting . ', ' . $firstName);
+                    ?> <i class="fas <?php echo $weatherIcon; ?> weather-icon"></i></h2>
+                    <div class="welcome-roles">
+                        <span class="welcome-role-badge">
+                            <i class="fas fa-user-shield"></i>
+                            Admin Dashboard
+                        </span>
+                        <span class="welcome-role-badge">
+                            <i class="fas fa-code"></i>
+                            <?php echo htmlspecialchars($current_user['grade_level']); ?>
+                        </span>
+                    </div>
+                </div>
+                <div class="welcome-datetime">
+                    <div class="datetime-display">
+                        <div class="date-text" id="currentDate"></div>
+                        <div class="time-text" id="currentTime"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Statistics Cards -->
-            <div class="stats-grid">
-                <!-- Total Users Card -->
-                <div class="stat-card stat-primary">
-                    <div class="stat-icon">
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="quick-stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value" data-target="<?php echo $dashboardStats['total_users']; ?>">0</div>
-                        <div class="stat-label">Total Users</div>
+                        <h3>Total Users</h3>
+                        <div class="value stat-value" data-target="<?php echo $dashboardStats['total_users']; ?>">0</div>
                         <div class="stat-sublabel">
                             <i class="fas fa-user-plus"></i>
-                            <?php echo $dashboardStats['recent_users']; ?> new this week
+                            <?php echo $dashboardStats['recent_users']; ?> this week
                         </div>
                     </div>
                 </div>
-
-                <!-- Active Users Card -->
-                <div class="stat-card stat-success">
-                    <div class="stat-icon">
+                <div class="quick-stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
                         <i class="fas fa-user-check"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value" data-target="<?php echo $dashboardStats['active_users']; ?>">0</div>
-                        <div class="stat-label">Active Users</div>
+                        <h3>Active Today</h3>
+                        <div class="value stat-value" data-target="<?php echo $dashboardStats['active_today']; ?>">0</div>
                         <div class="stat-sublabel">
                             <i class="fas fa-clock"></i>
-                            <?php echo $dashboardStats['active_today']; ?> active this day
+                            <?php echo $dashboardStats['active_users']; ?> active total
                         </div>
                     </div>
                 </div>
-
-                <!-- Average GWA Card -->
-                <div class="stat-card stat-warning">
-                    <div class="stat-icon">
+                <div class="quick-stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value"><?php echo number_format($dashboardStats['avg_gwa'], 2); ?></div>
-                        <div class="stat-label">Average GWA</div>
+                        <h3>Average GWA</h3>
+                        <div class="value"><?php echo number_format($dashboardStats['avg_gwa'], 2); ?></div>
                         <div class="stat-sublabel">
                             <i class="fas fa-graduation-cap"></i> 
-                            Academic Performance
+                            Student Performance
                         </div>
                     </div>
                 </div>
-
-                <!-- Total Essence Card -->
-                <div class="stat-card stat-info">
-                    <div class="stat-icon">
+                <div class="quick-stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
                         <i class="fas fa-gem"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-value" data-target="<?php echo $dashboardStats['total_essence']; ?>">0</div>
-                        <div class="stat-label">Total Essence</div>
+                        <h3>Total Essence</h3>
+                        <div class="value stat-value" data-target="<?php echo $dashboardStats['total_essence']; ?>">0</div>
                         <div class="stat-sublabel">
                             <i class="fas fa-coins"></i> 
-                            <?php echo number_format($dashboardStats['total_shards']); ?> shards
+                            <?php echo number_format($dashboardStats['total_shards'] / 1000, 1); ?>k shards
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Charts and Activity Section -->
-            <div class="dashboard-grid">
-                <!-- Analytics Chart -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-chart-pie"></i> User Distribution</h3>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="gradeChart"></canvas>
-                    </div>
-                </div>
+        <script>
+        function updateDateTime() {
+            const now = new Date();
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = now.toLocaleDateString('en-US', dateOptions);
+            const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
+            const timeStr = now.toLocaleTimeString('en-US', timeOptions);
+            
+            const dateEl = document.getElementById('currentDate');
+            const timeEl = document.getElementById('currentTime');
+            if(dateEl) dateEl.textContent = dateStr;
+            if(timeEl) timeEl.textContent = timeStr;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        </script>
 
-                <!-- Recent Activity Timeline -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-clock"></i> Recent Logins</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="activity-timeline">
-                            <?php if (!empty($dashboardStats['recent_activity'])): ?>
-                                <?php foreach (array_slice($dashboardStats['recent_activity'], 0, 5) as $activity): ?>
-                                    <div class="timeline-item">
-                                        <div class="timeline-dot"></div>
-                                        <div class="timeline-content">
-                                            <div class="timeline-title"><?php echo htmlspecialchars($activity['username']); ?></div>
-                                            <div class="timeline-meta">
-                                                <span class="timeline-badge"><?php echo htmlspecialchars($activity['grade_level']); ?></span>
-                                                <span class="timeline-time">
-                                                    <i class="fas fa-sign-in-alt"></i>
-                                                    <?php 
-                                                    if ($activity['last_login']) {
-                                                        $loginTime = strtotime($activity['last_login']);
-                                                        $now = time();
-                                                        $diff = $now - $loginTime;
-                                                        
-                                                        if ($diff < 60) {
-                                                            echo 'Just now';
-                                                        } elseif ($diff < 3600) {
-                                                            echo floor($diff / 60) . ' min ago';
-                                                        } elseif ($diff < 86400) {
-                                                            echo floor($diff / 3600) . ' hours ago';
-                                                        } else {
-                                                            echo date('M j, g:i A', $loginTime);
-                                                        }
-                                                    } else {
-                                                        echo 'Never logged in';
-                                                    }
-                                                    ?>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <p class="no-data">No recent login activity</p>
-                            <?php endif; ?>
+        <!-- Navigation Buttons Section -->
+        <div class="dashboard-navigation">
+            <div class="admin-management-section">
+                <div class="admin-nav-row">
+                    <div class="management-header">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); width: 32px; height: 32px; font-size: 1rem;">
+                            <i class="fas fa-cogs"></i>
                         </div>
+                        <h3>System Management</h3>
                     </div>
-                </div>
-            </div>
-
-            <!-- Top Performers Card -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-trophy"></i> Leaderboard</h3>
-                    <div class="chart-filter">
-                        <select id="leaderboardFilter" onchange="updateLeaderboard(this.value)">
-                            <option value="fame">Top Fame</option>
-                            <option value="gwa">Top GWA</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <!-- Top Fame Content -->
-                    <div id="leaderboard-fame" class="leaderboard-content">
-                        <div class="performers-grid">
-                            <?php if (!empty($dashboardStats['top_performers'])): ?>
-                                <?php foreach ($dashboardStats['top_performers'] as $index => $performer): ?>
-                                    <div class="performer-card">
-                                        <div class="performer-rank">#<?php echo $index + 1; ?></div>
-                                        <div class="performer-info">
-                                            <div class="performer-name"><?php echo htmlspecialchars($performer['username']); ?></div>
-                                            <div class="performer-stats">
-                                                <span><i class="fas fa-eye"></i> <?php echo number_format($performer['views']); ?></span>
-                                                <span><i class="fas fa-moon"></i> <?php echo $performer['cresents']; ?></span>
-                                            </div>
-                                        </div>
-                                        <div class="performer-score"><?php echo number_format($performer['fame_score']); ?></div>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <p class="no-data">No performance data available</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <!-- Top GWA Content -->
-                    <div id="leaderboard-gwa" class="leaderboard-content" style="display: none;">
-                        <div class="performers-grid">
-                            <?php if (!empty($dashboardStats['top_gwa_users'])): ?>
-                                <?php foreach ($dashboardStats['top_gwa_users'] as $index => $student): ?>
-                                    <div class="performer-card">
-                                        <div class="performer-rank">#<?php echo $index + 1; ?></div>
-                                        <div class="performer-info">
-                                            <div class="performer-name"><?php echo htmlspecialchars($student['username']); ?></div>
-                                            <div class="performer-stats">
-                                                <span><i class="fas fa-user-graduate"></i> <?php echo htmlspecialchars($student['grade_level']); ?></span>
-                                            </div>
-                                        </div>
-                                        <div class="performer-score"><?php echo number_format($student['gwa'], 2); ?></div>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <p class="no-data">No GWA data available</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Admin Activity Log -->
-            <?php if (!empty($admin_logs)): ?>
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-history"></i> Admin Activity Log</h3>
-                </div>
-                <div class="card-body">
-                    <div class="log-timeline">
-                        <?php foreach ($admin_logs as $log): ?>
-                            <div class="log-item">
-                                <div class="log-time"><?php echo date('M j, g:i A', strtotime($log['action_timestamp'])); ?></div>
-                                <div class="log-content">
-                                    <span class="log-admin"><?php echo htmlspecialchars($log['admin_username']); ?></span>
-                                    <span class="log-action"><?php echo htmlspecialchars($log['action']); ?></span>
-                                </div>
+                    <div class="admin-cards-container">
+                        <div class="nav-card" onclick="window.location.href='analytics.php'">
+                            <div class="nav-card-icon">
+                                <i class="fas fa-chart-pie"></i>
                             </div>
-                        <?php endforeach; ?>
+                            <div class="nav-card-content">
+                                <h3>Analytics</h3>
+                            </div>
+                        </div>
+                        <div class="nav-card" onclick="window.location.href='user-management.php'">
+                            <div class="nav-card-icon">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                            <div class="nav-card-content">
+                                <h3>User Management</h3>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <?php endif; ?>
+        </div>
+
+            <!-- Charts and Activity Section & Leaderboard - Removed as per request -->
+            
+            <!-- Admin Activity Log - Removed as per request -->
+            
         </div>
     </div>
 

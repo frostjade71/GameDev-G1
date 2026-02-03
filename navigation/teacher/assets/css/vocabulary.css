@@ -469,30 +469,7 @@
     }
 }
 
-/* Add Vocabulary Button */
-.add-vocab-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(0, 255, 135, 0.1);
-    border: 1px solid rgba(0, 255, 135, 0.3);
-    border-radius: 12px;
-    padding: 0.6rem 1rem;
-    color: rgba(0, 255, 135, 0.9);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.add-vocab-btn:hover {
-    background: rgba(0, 255, 135, 0.2);
-    border-color: rgba(0, 255, 135, 0.5);
-    transform: translateY(-2px);
-}
-
-.add-vocab-btn i {
-    font-size: 1.2rem;
-}
+/* Add Vocabulary Button styles removed - using dashboard.css */
 
 /* Vocabulary Section */
 .vocabulary-section {

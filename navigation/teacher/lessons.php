@@ -227,23 +227,25 @@ $sections = $sections_stmt->fetchAll(PDO::FETCH_COLUMN);
     <!-- Main Content -->
     <div class="main-content">
         <!-- Welcome Section -->
-        <div class="welcome-section">
-            <div class="welcome-content" style="flex: 0 0 auto;">
-                <div class="quick-stat-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 style="color: var(--white);">Total Lessons</h3>
-                        <div class="value" id="totalLessonsValue" style="color: var(--white);"><?php echo number_format($total_lessons); ?></div>
+        <div class="hero-container">
+            <div class="welcome-section">
+                <div class="welcome-content" style="flex: 0 0 auto;">
+                    <div class="quick-stat-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 style="color: var(--white);">Total Lessons</h3>
+                            <div class="value" id="totalLessonsValue" style="color: var(--white);"><?php echo number_format($total_lessons); ?></div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="welcome-datetime">
-                <div class="datetime-display">
-                    <div class="date-text" id="currentDate"></div>
-                    <div class="time-text" id="currentTime"></div>
+                <div class="welcome-datetime">
+                    <div class="datetime-display">
+                        <div class="date-text" id="currentDate"></div>
+                        <div class="time-text" id="currentTime"></div>
+                    </div>
                 </div>
             </div>
         </div>

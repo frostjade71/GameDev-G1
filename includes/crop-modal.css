@@ -18,7 +18,7 @@
 }
 
 .crop-modal {
-  background: white;
+  background: #132033;
   border-radius: 12px;
   padding: 24px;
   max-width: 600px;
@@ -38,7 +38,7 @@
 .crop-modal-header h3 {
   margin: 0;
   font-size: 20px;
-  color: #333;
+  color: #ffffff;
 }
 
 .crop-modal-close {
@@ -46,7 +46,7 @@
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #666;
+  color: #ffffff;
   padding: 0;
   width: 32px;
   height: 32px;
@@ -58,7 +58,7 @@
 }
 
 .crop-modal-close:hover {
-  background: #f0f0f0;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .crop-container {

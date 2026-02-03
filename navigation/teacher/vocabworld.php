@@ -344,23 +344,25 @@ $notification_count = $stmt->fetch()['count'];
     <!-- Main Content -->
     <div class="main-content">
         <!-- Welcome Section -->
-        <div class="welcome-section">
-            <div class="welcome-content" style="flex: 0 0 auto;">
-                <div class="quick-stat-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 style="color: var(--white);">Game Access</h3>
-                        <div class="value" style="color: var(--white); font-size: 1rem; margin-top: 5px;">Manage Grades</div>
+        <div class="hero-container">
+            <div class="welcome-section">
+                <div class="welcome-content" style="flex: 0 0 auto;">
+                    <div class="quick-stat-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 style="color: var(--white);">Game Access</h3>
+                            <div class="value" style="color: var(--white); font-size: 1rem; margin-top: 5px;">Manage Permissions</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="welcome-datetime">
-                <div class="datetime-display">
-                    <div class="date-text" id="currentDate"></div>
-                    <div class="time-text" id="currentTime"></div>
+                <div class="welcome-datetime">
+                    <div class="datetime-display">
+                        <div class="date-text" id="currentDate"></div>
+                        <div class="time-text" id="currentTime"></div>
+                    </div>
                 </div>
             </div>
         </div>

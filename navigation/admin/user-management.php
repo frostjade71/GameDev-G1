@@ -155,17 +155,28 @@ $grade_levels = $pdo->query("SELECT DISTINCT grade_level FROM users ORDER BY gra
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="dashboard-container">
-            <!-- User Management Header -->
-            <div class="dashboard-header">
-                <div class="header-title">
-                    <img src="../../assets/menu/ww_logo_main.webp" alt="Word Weavers Logo" class="header-logo">
-                    <div>
-                        <h1>User Management</h1>
-                        <p>Manage Users & Permissions</p>
+        <!-- User Management Header -->
+        <div class="hero-container">
+            <div class="welcome-section">
+                <div class="welcome-content">
+                    <h2>
+                        <img src="../../assets/menu/ww_logo_main.webp" alt="Word Weavers Logo" style="height: 40px; width: auto; margin-right: 15px;">
+                        User Management
+                    </h2>
+                    <div class="welcome-roles">
+                        <span class="welcome-role-badge">
+                            <i class="fas fa-users-cog"></i>
+                            Manage Users
+                        </span>
+                        <span class="welcome-role-badge">
+                            <i class="fas fa-shield-alt"></i>
+                            Permissions
+                        </span>
                     </div>
                 </div>
+                <div class="welcome-datetime" style="display: none;"></div>
             </div>
+        </div>
 
             <!-- User Management Section -->
             <div class="dashboard-card">
@@ -264,7 +275,7 @@ $grade_levels = $pdo->query("SELECT DISTINCT grade_level FROM users ORDER BY gra
                     </div>
                 </div>
             </div>
-        </div>
+
     </div>
 
     <!-- Logout Confirmation Modal -->

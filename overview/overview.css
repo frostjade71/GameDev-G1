@@ -136,21 +136,6 @@ body.sidebar-open {
     margin: 1.5rem 0;
 }
 
-/* Override toast.css positioning for logout modal in this page */
-#logoutModal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#logoutConfirmation {
-    margin: 0;
-    position: relative;
-    transform: none;
-    left: auto;
-    top: auto;
-}
-
 /* Responsive Design */
 @media screen and (max-width: 768px) {
     .main-content {

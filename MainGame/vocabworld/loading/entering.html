@@ -52,158 +52,331 @@
 
         @media (max-width: 768px) {
             .loading-text {
-                font-size: 0.75rem; /* Even smaller for mobile */
+                font-size: 0.5rem; /* Even smaller for mobile */
                 letter-spacing: 2px;
             }
-            .rings {
-                width: 300px; /* Scale down rings for mobile */
-            }
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; transform: scale(0.98); }
-            50% { opacity: 1; transform: scale(1); }
-        }
+.solar-system {
+  position: relative;
+  width: 20rem;
+  height: 20rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-        .rings {
-            --border-width: 2px;
-            --border-style: solid;
-            --animation-duration: 4s;
-            --animation-delay: 100ms;
-            --animation-count: infinite;
-            --animation-direction: normal;
-            --animation-fill-mode: both;
-            --animation-timing: ease-in-out;
-            position: relative;
-            width: 400px;
-            aspect-ratio: 1/1;
-            animation-delay: var(--animation-delay);
-            animation-duration: var(--animation-duration);
-            animation-iteration-count: var(--animation-count);
-            animation-timing-function: var(--animation-timing);
-        }
+.sun {
+  position: absolute;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  background: linear-gradient(to bottom right, #f59e0b, #ea580c, #dc2626);
+  animation: pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 60px rgba(255, 165, 0, 0.5);
+  z-index: 4;
+}
 
-        .rings > .ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            aspect-ratio: 1/1;
-            border-width: var(--border-width);
-            border-style: var(--border-style);
-            border-radius: 50%;
-            transform-origin: center;
-            animation-duration: var(--animation-duration);
-            animation-delay: calc(0.4s * var(--delay));
-            animation-iteration-count: var(--animation-count);
-            animation-direction: var(--animation-direction);
-            animation-fill-mode: var(--animation-fill-mode);
-            filter: opacity(0);
-            will-change: transform;
-            overflow: hidden;
-        }
+.sun::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 236, 153, 0.2),
+    rgba(220, 38, 38, 0.2)
+  );
+  animation: spin 3s linear infinite;
+}
 
-        .rings > .ring:nth-child(even) {
-            border-color: whitesmoke;
-            box-shadow:
-                0 0 4px cyan,
-                0 0 20px cyan,
-                inset 0 0 4px cyan,
-                inset 0 0 20px cyan;
-        }
+.corona {
+  position: absolute;
+  inset: -1rem;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(245, 158, 11, 0.2),
+    rgba(220, 38, 38, 0.2)
+  );
+  filter: blur(8px);
+  animation: pulse 2s ease-in-out infinite;
+}
 
-        .rings > .ring:nth-child(odd) {
-            border-color: whitesmoke;
-            box-shadow:
-                0 0 4px magenta,
-                0 0 20px magenta,
-                inset 0 0 4px magenta,
-                inset 0 0 20px magenta;
-        }
+/* Orbity */
+.orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-        .rings > .ring:first-child {
-            width: 50px;
-            margin: -25px 0 0 -25px;
-        }
+.mercury-orbit {
+  width: 8rem;
+  height: 8rem;
+}
 
-        .rings > .ring:nth-child(2) {
-            width: 64px;
-            margin: -32px 0 0 -32px;
-        }
+.venus-orbit {
+  width: 11rem;
+  height: 11rem;
+}
 
-        .rings > .ring:nth-child(3) {
-            width: 78px;
-            margin: -39px 0 0 -39px;
-        }
+.earth-orbit {
+  width: 14rem;
+  height: 14rem;
+  z-index: 2;
+}
 
-        .rings > .ring:nth-child(4) {
-            width: 92px;
-            margin: -46px 0 0 -46px;
-        }
+.mars-orbit {
+  width: 18rem;
+  height: 18rem;
+}
 
-        .rings > .ring:nth-child(5) {
-            width: 104px;
-            margin: -52px 0 0 -52px;
-        }
+/* Planety */
+.planet {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 3;
+}
 
-        .rings > .ring:nth-child(6) {
-            width: 118px;
-            margin: -59px 0 0 -59px;
-        }
+.mercury {
+  width: 0.75rem;
+  height: 0.75rem;
+  background: linear-gradient(to bottom right, #d1d5db, #9ca3af);
+  box-shadow: 0 0 15px rgba(156, 163, 175, 0.5);
+  --orbit-width: 8rem;
+  animation: orbit 4s linear infinite;
+}
 
-        .anim-zoomIn {
-            animation-name: zoomIn;
-        }
+.venus {
+  width: 1rem;
+  height: 1rem;
+  background: linear-gradient(to bottom right, #fef3c7, #fcd34d);
+  box-shadow: 0 0 15px rgba(252, 211, 77, 0.5);
+  --orbit-width: 11rem;
+  animation: orbit 6s linear infinite;
+}
 
-        .anim-pan {
-            animation-name: anim-pan;
-        }
+.earth {
+  width: 1.25rem;
+  height: 1.25rem;
+  background: linear-gradient(to bottom right, #60a5fa, #34d399);
+  box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+  --orbit-width: 14rem;
+  animation: orbit 8s linear infinite;
+}
 
-        @keyframes zoomIn {
-            0% {
-                transform: perspective(200px) translatez(0);
-                filter: opacity(0);
-            }
-            60% {
-                filter: opacity(100%);
-            }
-            100% {
-                transform: perspective(200px) translatez(200px);
-            }
-        }
+.moon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #d1d5db;
+  box-shadow: inset 0 0 4px rgba(156, 163, 175, 0.5);
+  animation: orbit 2s linear infinite;
+}
 
-        @keyframes anim-pan {
-            0% {
-                transform: translate3d(0, 0, 0);
-            }
-            50% {
-                transform: translate3d(-50%, -45%, 0);
-            }
-            75% {
-                transform: translate3d(45%, 35%, 0);
-            }
-            85% {
-                transform: translate3d(-60%, 25%, 0);
-            }
-            100% {
-                transform: translate3d(0, 0, 0);
-            }
-        }
+.mars {
+  width: 1rem;
+  height: 1rem;
+  background: linear-gradient(to bottom right, #f87171, #dc2626);
+  box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
+  --orbit-width: 18rem;
+  animation: orbit 10s linear infinite;
+}
+
+/* ISS */
+.iss {
+  position: absolute;
+  width: 0.6rem;
+  height: 0.3rem;
+  background: #e5e7eb;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  z-index: 3;
+  --iss-orbit: 7.5rem;
+  animation: iss-orbit 5s linear infinite;
+}
+
+.iss-panels {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.2rem;
+  height: 0.15rem;
+  background: linear-gradient(to right, #60a5fa, #93c5fd);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 5px rgba(96, 165, 250, 0.5);
+}
+
+.iss::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: white;
+  border-radius: 2px;
+  opacity: 0;
+  animation: iss-flare 1.5s linear infinite;
+}
+
+/* Gwiazdy */
+.stars {
+  position: absolute;
+  inset: -2.5rem;
+  z-index: 1;
+}
+
+.star {
+  position: absolute;
+  width: 0.25rem;
+  height: 0.25rem;
+  background: white;
+  border-radius: 50%;
+}
+
+.star-1 {
+  top: 25%;
+  left: 25%;
+  animation: ping 2s ease-in-out infinite;
+}
+.star-2 {
+  top: 75%;
+  left: 33%;
+  animation: ping 3s ease-in-out infinite 0.5s;
+}
+.star-3 {
+  top: 33%;
+  right: 25%;
+  animation: ping 2.5s ease-in-out infinite 0.7s;
+}
+.star-4 {
+  bottom: 25%;
+  right: 33%;
+  animation: ping 2.7s ease-in-out infinite 0.3s;
+}
+.star-5 {
+  top: 50%;
+  right: 50%;
+  animation: ping 2.3s ease-in-out infinite 0.8s;
+}
+
+/* Animacje */
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(calc(var(--orbit-width) / 2))
+      rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(calc(var(--orbit-width) / 2))
+      rotate(-360deg);
+  }
+}
+
+@keyframes iss-orbit {
+  from {
+    transform: rotate(0deg) translateX(var(--iss-orbit)) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(var(--iss-orbit)) rotate(-360deg);
+  }
+}
+
+@keyframes iss-tilt {
+  0%,
+  100% {
+    transform: rotate(-15deg);
+  }
+  50% {
+    transform: rotate(15deg);
+  }
+}
+
+@keyframes iss-flare {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
     </style>
 </head>
 <body>
     <div class="loader-container">
-        <div class="rings anim-pan">
-            <div style="--delay:06" class="ring anim-zoomIn"></div>
-            <div style="--delay:04" class="ring anim-zoomIn"></div>
-            <div style="--delay:03" class="ring anim-zoomIn"></div>
-            <div style="--delay:02" class="ring anim-zoomIn"></div>
-            <div style="--delay:01" class="ring anim-zoomIn"></div>
-            <div style="--delay:00" class="ring anim-zoomIn"></div>
-        </div>
-        <div class="loading-text">Entering Vocabworld...</div>
+        <div class="solar-system">
+  <div class="sun">
+    <div class="corona"></div>
+  </div>
+
+  <div class="orbit mercury-orbit">
+    <div class="planet mercury"></div>
+  </div>
+
+  <div class="orbit venus-orbit">
+    <div class="planet venus"></div>
+  </div>
+
+  <div class="orbit earth-orbit">
+    <div class="planet earth">
+      <div class="moon"></div>
+    </div>
+
+    <div class="iss">
+      <div class="iss-panels"></div>
+    </div>
+  </div>
+
+  <div class="orbit mars-orbit">
+    <div class="planet mars"></div>
+  </div>
+
+  <div class="stars">
+    <div class="star star-1"></div>
+    <div class="star star-2"></div>
+    <div class="star star-3"></div>
+    <div class="star star-4"></div>
+    <div class="star star-5"></div>
+  </div>
+</div>
+        <div class="loading-text">Loading assets...</div>
     </div>
 
     <script>
+        const loadingText = document.querySelector('.loading-text');
+        
+        setTimeout(() => {
+            loadingText.textContent = "Preparing player data...";
+        }, 1500);
+
+        setTimeout(() => {
+            loadingText.textContent = "Successfully loaded!";
+        }, 3000);
+
         // Redirect after animation (4 seconds)
         setTimeout(() => {
             window.location.href = '../index.php';

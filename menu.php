@@ -174,13 +174,13 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                     <!-- Slide 1 -->
                     <div class="banner-slide">
                         <a href="play/game-selection.php">
-                            <img src="assets/banner/new_characters.png" alt="New Characters" class="changelog-banner-image">
+                            <img src="assets/banner/new_characters.webp" alt="New Characters" class="changelog-banner-image">
                         </a>
                     </div>
                     <!-- Slide 2 -->
                     <div class="banner-slide">
                         <a href="play/game-selection.php">
-                            <img src="assets/banner/changelog_banner.png" alt="What's New" class="changelog-banner-image">
+                            <img src="assets/banner/changelog_banner.webp" alt="What's New" class="changelog-banner-image">
                         </a>
                     </div>
                 </div>
@@ -272,7 +272,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                 <i class="fas fa-times"></i>
             </button>
             <div class="changelog-content">
-                <img src="assets/banner/new_characters.png" alt="Changelog Banner" class="changelog-banner-img">
+                <img src="assets/banner/new_characters.webp" alt="Changelog Banner" class="changelog-banner-img">
             </div>
         </div>
     </div>

@@ -130,91 +130,103 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="dashboard-container">
-            <!-- Analytics Header -->
-            <div class="dashboard-header">
-                <div class="header-title">
-                    <img src="../../assets/menu/ww_logo_main.webp" alt="Word Weavers Logo" class="header-logo">
-                    <div>
-                        <h1>Analytics</h1>
-                        <p>Detailed System Analytics & Insights</p>
+        <!-- Analytics Header -->
+        <div class="hero-container">
+            <div class="welcome-section">
+                <div class="welcome-content">
+                    <h2>
+                        <img src="../../assets/menu/ww_logo_main.webp" alt="Word Weavers Logo" style="height: 40px; width: auto; margin-right: 15px;">
+                        Analytics
+                    </h2>
+                    <div class="welcome-roles">
+                        <span class="welcome-role-badge">
+                            <i class="fas fa-chart-pie"></i>
+                            System Overview
+                        </span>
+                        <span class="welcome-role-badge">
+                            <i class="fas fa-search-plus"></i>
+                            Detailed Insights
+                        </span>
+                    </div>
+                </div>
+                <div class="welcome-datetime" style="display: none;">
+                    <!-- Hide datetime on subpages if not needed, or keep consistent -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Charts Grid -->
+        <div class="dashboard-grid">
+            <!-- User Distribution Chart -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-users"></i> User Distribution by Grade</h3>
+                    <div class="chart-filter">
+                        <select id="distributionFilter" onchange="updateDistributionChart(this.value)">
+                            <option value="grade">By Grade</option>
+                            <option value="role">By Role</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- GWA Performance Chart -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-graduation-cap"></i> Average GWA by Grade</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="gwaChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Analytics Cards -->
+        <div class="dashboard-grid">
+            <!-- Role Distribution -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-user-tag"></i> Role Distribution</h3>
+                </div>
+                <div class="card-body">
+                    <div class="role-stats">
+                        <?php if (!empty($dashboardStats['role_distribution'])): ?>
+                            <?php foreach ($dashboardStats['role_distribution'] as $role): ?>
+                                <div class="role-item">
+                                    <div class="role-label"><?php echo htmlspecialchars($role['role']); ?></div>
+                                    <div class="role-value"><?php echo $role['count']; ?> users</div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="no-data">No role data available</p>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
 
-            <!-- Analytics Charts Grid -->
-            <div class="dashboard-grid">
-                <!-- User Distribution Chart -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-users"></i> User Distribution by Grade</h3>
-                        <div class="chart-filter">
-                            <select id="distributionFilter" onchange="updateDistributionChart(this.value)">
-                                <option value="grade">By Grade</option>
-                                <option value="role">By Role</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="distributionChart"></canvas>
-                    </div>
+            <!-- Top GWA by Grade -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-trophy"></i> Top GWA by Grade Level</h3>
                 </div>
-
-                <!-- GWA Performance Chart -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-graduation-cap"></i> Average GWA by Grade</h3>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="gwaChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Additional Analytics Cards -->
-            <div class="dashboard-grid">
-                <!-- Role Distribution -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-user-tag"></i> Role Distribution</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="role-stats">
-                            <?php if (!empty($dashboardStats['role_distribution'])): ?>
-                                <?php foreach ($dashboardStats['role_distribution'] as $role): ?>
-                                    <div class="role-item">
-                                        <div class="role-label"><?php echo htmlspecialchars($role['role']); ?></div>
-                                        <div class="role-value"><?php echo $role['count']; ?> users</div>
+                <div class="card-body">
+                    <div class="gwa-grade-list">
+                        <?php if (!empty($dashboardStats['top_gwa_by_grade'])): ?>
+                            <?php foreach ($dashboardStats['top_gwa_by_grade'] as $grade): ?>
+                                <div class="gwa-grade-item">
+                                    <div class="gwa-grade-name"><?php echo htmlspecialchars($grade['grade_level']); ?></div>
+                                    <div class="gwa-grade-stats">
+                                        <span>Avg: <?php echo number_format($grade['avg_gwa'], 2); ?></span>
+                                        <span>Students: <?php echo $grade['student_count']; ?></span>
                                     </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <p class="no-data">No role data available</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Top GWA by Grade -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-trophy"></i> Top GWA by Grade Level</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="gwa-grade-list">
-                            <?php if (!empty($dashboardStats['top_gwa_by_grade'])): ?>
-                                <?php foreach ($dashboardStats['top_gwa_by_grade'] as $grade): ?>
-                                    <div class="gwa-grade-item">
-                                        <div class="gwa-grade-name"><?php echo htmlspecialchars($grade['grade_level']); ?></div>
-                                        <div class="gwa-grade-stats">
-                                            <span>Avg: <?php echo number_format($grade['avg_gwa'], 2); ?></span>
-                                            <span>Students: <?php echo $grade['student_count']; ?></span>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <p class="no-data">No GWA data available</p>
-                            <?php endif; ?>
-                        </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="no-data">No GWA data available</p>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -419,34 +431,5 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
         window.location.href = '../../onboarding/logout.php';
     }
     </script>
-    <style>
-    .role-stats, .gwa-grade-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .role-item, .gwa-grade-item {
-        background: #252525;
-        border-radius: 4px;
-        padding: 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .role-label, .gwa-grade-name {
-        color: #fff;
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
-
-    .role-value, .gwa-grade-stats {
-        color: #4cc9f0;
-        font-size: 0.85rem;
-        display: flex;
-        gap: 12px;
-    }
-    </style>
 </body>
 </html>

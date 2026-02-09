@@ -15,9 +15,9 @@ try {
     CREATE TABLE IF NOT EXISTS character_selections (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
+        username VARCHAR(100) NOT NULL,
         game_type VARCHAR(50) NOT NULL DEFAULT 'vocabworld',
-        selected_character VARCHAR(50) NOT NULL,
-        character_name VARCHAR(100) NOT NULL,
+        selected_character VARCHAR(100) NOT NULL,
         character_image_path VARCHAR(255) NOT NULL,
         equipped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -137,11 +137,11 @@ try {
     
     // Insert default character selections for existing users
     $sql = "
-    INSERT IGNORE INTO character_selections (user_id, game_type, selected_character, character_name, character_image_path)
+    INSERT IGNORE INTO character_selections (user_id, username, game_type, selected_character, character_image_path)
     SELECT 
         u.id,
+        u.username,
         'vocabworld',
-        'boy',
         'Ethan',
         '../assets/characters/boy_char/character_ethan.png'
     FROM users u

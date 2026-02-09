@@ -635,6 +635,15 @@ function showInstructions() {
     game.showInstructions();
 }
 
+function showComingSoon() {
+    if (game) game.showToast('Coming Soon', 'info');
+    else {
+        // Fallback if game is not initialized
+        const tempGame = new VocabWorldGame();
+        tempGame.showToast('Coming Soon', 'info');
+    }
+}
+
 function showMainMenu() {
     if (!game) game = new VocabWorldGame();
     game.showMainMenu();

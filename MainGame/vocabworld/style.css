@@ -289,16 +289,22 @@ body {
   grid-template-columns: repeat(2, 1fr);
   grid-template-areas:
     "start-game start-game"
+    "lobby lobby"
     "learn character"
     "instructions back-to-games";
-  gap: 2rem;
-  max-width: 800px;
+  gap: 1.5rem;
+  max-width: 720px;
   width: 100%;
+}
+
+.lobby-card {
+  grid-area: lobby;
+  min-height: 130px;
 }
 
 .start-game-card {
   grid-area: start-game;
-  min-height: 200px;
+  min-height: 160px;
 }
 
 .learn-card {
@@ -318,8 +324,8 @@ body {
 }
 
 .vocabworld-card {
-  border-radius: 24px;
-  padding: 2.5rem;
+  border-radius: 20px;
+  padding: 1.8rem;
   text-align: center;
   color: white;
   text-decoration: none;
@@ -328,7 +334,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.2rem;
+  gap: 1rem;
   cursor: pointer;
   background: linear-gradient(
     135deg,
@@ -361,7 +367,7 @@ body {
   opacity: 1;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
-  border-radius: 24px;
+  border-radius: inherit;
 }
 
 .vocabworld-card * {
@@ -375,25 +381,25 @@ body {
 }
 
 .vocabworld-card i {
-  font-size: 3.5rem;
+  font-size: 2.8rem;
   color: var(--gold);
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.8rem;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   filter: drop-shadow(0 4px 8px rgba(251, 191, 36, 0.3));
 }
 
 .card-icon {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 2.8rem;
+  height: 2.8rem;
   object-fit: contain;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.8rem;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   filter: drop-shadow(0 4px 8px rgba(251, 191, 36, 0.3));
 }
 
 .vocabworld-card h2 {
   font-family: "Poppins", sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 700;
   margin: 0;
   text-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
@@ -404,7 +410,7 @@ body {
 .vocabworld-card p {
   color: rgba(255, 255, 255, 0.9);
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 1.5;
   font-weight: 400;
 }
@@ -521,6 +527,24 @@ body {
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.5),
     0 10px 20px rgba(239, 68, 68, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.lobby-card {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.8),
+    rgba(30, 58, 138, 0.9),
+    rgba(59, 130, 246, 0.4)
+  );
+}
+
+.lobby-card:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    0 10px 20px rgba(59, 130, 246, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
@@ -889,6 +913,7 @@ body {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
       "start-game start-game"
+      "lobby lobby"
       "learn character"
       "instructions back-to-games";
     gap: 1.5rem;
@@ -897,6 +922,10 @@ body {
 
   .start-game-card {
     min-height: 180px;
+  }
+
+  .lobby-card {
+    min-height: 140px;
   }
 
   .vocabworld-card {
@@ -935,6 +964,7 @@ body {
   /* Hide descriptions for all cards except Start Game on mobile */
   .learn-card p,
   .character-card p,
+  .lobby-card p,
   .instructions-card p,
   .back-to-games-card p {
     display: none;

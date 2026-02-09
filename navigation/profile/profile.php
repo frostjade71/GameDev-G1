@@ -255,6 +255,7 @@ if ($character_result) {
 
 
 // Get Essence
+$essence = 0;
 $essence_manager_path = '../../MainGame/vocabworld/api/essence_manager.php';
 if (file_exists($essence_manager_path)) {
     require_once $essence_manager_path;
@@ -265,6 +266,7 @@ if (file_exists($essence_manager_path)) {
 }
 
 // Get Shards
+$shards = 0;
 $shard_manager_path = '../../MainGame/vocabworld/shard_manager.php';
 if (file_exists($shard_manager_path)) {
     require_once $shard_manager_path;

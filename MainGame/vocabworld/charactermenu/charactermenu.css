@@ -35,6 +35,13 @@
     margin-top: 1.5rem;
 }
 
+@media (min-width: 1024px) {
+    .character-profile-layout {
+        width: 80% !important;
+        max-width: 1100px !important;
+    }
+}
+
 .title-icon {
     height: 1.8rem;
     vertical-align: middle;

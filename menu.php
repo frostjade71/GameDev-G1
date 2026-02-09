@@ -174,10 +174,16 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                     <!-- Slide 1 -->
                     <div class="banner-slide">
                         <a href="play/game-selection.php">
-                            <img src="assets/banner/new_characters.webp" alt="New Characters" class="changelog-banner-image">
+                            <img src="assets/banner/new_minimap.webp" alt="New Minimap" class="changelog-banner-image">
                         </a>
                     </div>
                     <!-- Slide 2 -->
+                    <div class="banner-slide">
+                        <a href="play/game-selection.php">
+                            <img src="assets/banner/new_characters.webp" alt="New Characters" class="changelog-banner-image">
+                        </a>
+                    </div>
+                    <!-- Slide 3 -->
                     <div class="banner-slide">
                         <a href="play/game-selection.php">
                             <img src="assets/banner/changelog_banner.webp" alt="What's New" class="changelog-banner-image">
@@ -189,6 +195,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                 <div class="slider-dots">
                     <span class="dot" onclick="currentSlide(1)"></span>
                     <span class="dot" onclick="currentSlide(2)"></span>
+                    <span class="dot" onclick="currentSlide(3)"></span>
                 </div>
             </div>
 

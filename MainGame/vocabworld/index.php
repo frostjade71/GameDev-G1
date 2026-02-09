@@ -90,6 +90,65 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
     <link rel="stylesheet" href="../../notif/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Snackbar/Toast container */
+        #vocab-toast-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: auto;
+            pointer-events: none;
+        }
+        
+        /* Snackbar styles */
+        .vocab-toast {
+            background: rgba(15, 23, 42, 0.95);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px; /* Pill shape for snackbar */
+            margin-bottom: 10px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90vw;
+            min-width: 280px;
+            word-wrap: break-word;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            pointer-events: auto;
+        }
+        
+        .vocab-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .vocab-toast-info i { color: #60a5fa; }
+        .vocab-toast-success i { color: #4ade80; }
+        .vocab-toast-error i { color: #f87171; }
+
+        @media (max-width: 768px) {
+            .vocab-toast {
+                bottom: 20px;
+                padding: 12px 20px;
+                font-size: 0.85rem;
+                min-width: 250px;
+            }
+        }
+    </style>
 </head>
 <body>
     <?php include 'loaders/loader-component.php'; ?>
@@ -166,6 +225,11 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                         <img src="assets/menu/playsys.png" alt="Play" class="card-icon">
                         <h2>Start Game</h2>
                         <p>Begin your vocabulary adventure</p>
+                    </a>
+                    <a href="javascript:void(0)" onclick="showComingSoon()" class="vocabworld-card lobby-card" style="background-image: url('assets/menu/lobbybg.png'); background-size: cover; background-position: center;">
+                        <img src="assets/menu/lobby.png" alt="Lobby" class="card-icon">
+                        <h2>Lobby</h2>
+                        <p>Interect with players while waiting for the world to open</p>
                     </a>
                     <a href="learnvocabmenu/learn.php" class="vocabworld-card learn-card" style="background-image: url('assets/menu/learnvocab.webp'); background-size: cover; background-position: center;">
                         <img src="assets/menu/vocabsys.png" alt="Learn" class="card-icon">
@@ -375,6 +439,41 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 modal.style.display = 'flex';
                 // Remove toast related logic since we aren't using toast classes anymore
             }
+        }
+
+        function showComingSoon() {
+            showToast('Lobby feature is coming soon!', 'info');
+        }
+
+        function showToast(message, type = 'info') {
+            // Create container if it doesn't exist
+            let container = document.getElementById('vocab-toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'vocab-toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `vocab-toast vocab-toast-${type}`;
+            
+            // Add icon based on type
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            
+            toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Remove toast after delay
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
         }
 
         function hideAccessDeniedModal() {

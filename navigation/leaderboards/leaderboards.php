@@ -57,7 +57,7 @@ $stmt = $pdo->prepare("
         COALESCE(gp.total_monsters_defeated, 0) as monsters_defeated,
         COALESCE((
             SELECT COUNT(*) 
-            FROM character_selections 
+            FROM character_ownership 
             WHERE user_id = u.id
         ), 0) as characters_owned,
         COALESCE(ug.gwa, 0) as gwa
@@ -679,12 +679,6 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }
 
-        // Logout function
-        function showLogoutModal() {
-            if (confirm('Are you sure you want to log out?')) {
-                window.location.href = '../../onboarding/logout.php';
-            }
-        }
     </script>
 
     <!-- Logout Confirmation Modal -->
@@ -709,23 +703,25 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <script>
         // Profile dropdown toggle
-        document.querySelector('.profile-icon').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelector('.profile-dropdown-content').classList.toggle('show');
-        });
+        const profileIcon = document.querySelector('.profile-icon');
+        const dropdownContent = document.querySelector('.profile-dropdown-content');
+        
+        if (profileIcon && dropdownContent) {
+            profileIcon.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropdownContent.classList.toggle('show');
+            });
 
-        // Close dropdown when clicking outside
-        window.addEventListener('click', function(e) {
-            if (!e.target.matches('.profile-icon, .profile-icon *')) {
-                const dropdowns = document.getElementsByClassName('profile-dropdown-content');
-                for (let i = 0; i < dropdowns.length; i++) {
-                    const openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
+            // Close dropdown when clicking outside
+            window.addEventListener('click', function(e) {
+                if (!e.target.matches('.profile-icon, .profile-icon *')) {
+                    if (dropdownContent.classList.contains('show')) {
+                        dropdownContent.classList.remove('show');
                     }
                 }
-            }
-        });
+            });
+        }
 
         // Functions for friend requests
         function handleFriendRequest(action, requestId, element) {
@@ -778,26 +774,6 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         function markAllNotificationsAsRead() {
-            // This is a simplified version - you'll need to implement the actual API call
-            const notificationItems = document.querySelectorAll('.notification-item');
-            notificationItems.forEach(item => {
-                item.remove();
-            });
-            
-            const notificationList = document.querySelector('.notification-list');
-            notificationList.innerHTML = `
-                <div class="no-notifications">
-                    <i class="far fa-bell-slash"></i>
-                    <p>No new notifications</p>
-                </div>
-            `;
-            
-            const badge = document.querySelector('.notification-badge');
-            if (badge) badge.remove();
-            
-            const markAllReadBtn = document.getElementById('markAllRead');
-            if (markAllReadBtn) markAllReadBtn.style.display = 'none';
-            
             // Here you would typically make an API call to mark all as read
             fetch('../../api/mark_all_notifications_read.php', {
                 method: 'POST'
@@ -807,22 +783,30 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         // Show toast message
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = 'toast show ' + type;
-            setTimeout(() => {
-                toast.className = toast.className.replace('show', '');
-            }, 3000);
+            if (toast) {
+                toast.textContent = message;
+                toast.className = 'toast show ' + type;
+                setTimeout(() => {
+                    toast.className = toast.className.replace('show', '');
+                }, 3000);
+            }
         }
 
         // Logout functions
         function showLogoutModal() {
-            document.getElementById('logoutModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            const modal = document.getElementById('logoutModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
         }
 
         function closeLogoutModal() {
-            document.getElementById('logoutModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
+            const modal = document.getElementById('logoutModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
         }
 
         function logout() {
@@ -833,6 +817,5 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
-    <script src="../shared/navigation.js"></script>
 </body>
 </html>

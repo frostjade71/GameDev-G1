@@ -24,6 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         // OTP is valid, proceed with user registration
         try {
+            $pdo->beginTransaction();
+            
             $user_data = $_SESSION['temp_user_data'];
             
             $stmt = $pdo->prepare("INSERT INTO users (username, email, grade_level, password) VALUES (?, ?, ?, ?)");
@@ -33,6 +35,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $user_data['grade_level'],
                 $user_data['password']
             ]);
+            
+            $new_user_id = $pdo->lastInsertId();
+            
+            // Seed default character ownership (Ethan and Emma)
+            $default_characters = [
+                ['type' => 'boy', 'name' => 'Ethan', 'path' => '../assets/characters/boy_char/character_ethan.png'],
+                ['type' => 'girl', 'name' => 'Emma', 'path' => '../assets/characters/girl_char/character_emma.png']
+            ];
+            
+            foreach ($default_characters as $char) {
+                // Check if ownership table has username column
+                $stmt = $pdo->prepare("INSERT IGNORE INTO character_ownership (user_id, username, character_type, character_name, character_image_path) VALUES (?, ?, ?, ?, ?)");
+                $stmt->execute([$new_user_id, $user_data['username'], $char['type'], $char['name'], $char['path']]);
+            }
+            
+            // Set default character selection (Ethan) - Store "Ethan" in selected_character as per game logic
+            $stmt = $pdo->prepare("INSERT IGNORE INTO character_selections (user_id, username, game_type, selected_character, character_image_path) VALUES (?, ?, 'vocabworld', 'Ethan', '../assets/characters/boy_char/character_ethan.png')");
+            $stmt->execute([$new_user_id, $user_data['username']]);
+            
+            // Initialize shard account
+            $stmt = $pdo->prepare("INSERT IGNORE INTO user_shards (user_id, username, current_shards, total_earned) VALUES (?, ?, 0, 0)");
+            $stmt->execute([$new_user_id, $user_data['username']]);
+            
+            $pdo->commit();
             
             // Clear temporary session data
             unset($_SESSION['temp_user_data']);
@@ -44,8 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
             
         } catch (PDOException $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             $error_message = 'Registration failed. Please try again.';
-            error_log($e->getMessage());
+            error_log("Registration Error: " . $e->getMessage());
         }
     }
 }

@@ -367,6 +367,9 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 const touch = e.touches ? e.touches[0] : e;
                 startX = touch.clientX;
                 startY = touch.clientY;
+                
+                // Mark session as active on first joystick interaction
+                inGameSession = true;
             }
             
             function handleMove(e) {
@@ -611,11 +614,40 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                     const monsterTargetHeight = 50; // Slightly smaller than player
                     const monsterScale = monsterTargetHeight / enemy.height;
                     enemy.setScale(monsterScale);
+
+                    // --- MINIMAP INDICATOR ---
+                    // Create a red dot indicator for the minimap
+                    const indicator = this.add.circle(x, y, 40, 0xff0000);
+                    indicator.setDepth(2000); // Very high depth
+                    indicator.setAlpha(0.8);
+                    
+                    // Main camera ignores the indicator
+                    this.cameras.main.ignore(indicator);
+                    
+                    // Link indicator to enemy for updates
+                    enemy.minimapIndicator = indicator;
+                    
+                    // Auto-destroy indicator when monster is destroyed
+                    enemy.on('destroy', () => {
+                        if (indicator) indicator.destroy();
+                    });
+
+                    // Add pulsing animation to the indicator
+                    this.tweens.add({
+                        targets: indicator,
+                        scale: 1.5,
+                        alpha: 0.4,
+                        duration: 800,
+                        yoyo: true,
+                        repeat: -1,
+                        ease: 'Sine.easeInOut'
+                    });
                 }
             }
 
             // Set up overlap detection (not collision) to prevent pushing monsters
             this.physics.add.overlap(player, enemies, startBattle, null, this);
+            
 
             // Set up controls
             cursors = this.input.keyboard.createCursorKeys();
@@ -635,17 +667,94 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             const updateCameraZoom = () => {
                 const isMobile = window.innerWidth <= 768;
                 this.cameras.main.setZoom(isMobile ? 1.8 : 1.0);
-            };
+                
+                // Update Minimap Position/Size on Resize
+                if (this.minimap) {
+                    const isMobile = window.innerWidth <= 768;
+                    const minimapSize = isMobile ? 100 : 150;
+                    const padding = 15;
+                    
+                    // Calculate visible width within the canvas coordinates
+                    const canvasDisplayWidth = this.sys.game.canvas.clientWidth;
+                    const screenWidth = window.innerWidth;
+                    const visibleWidth = Math.min(canvasDisplayWidth, screenWidth);
+                    const minimapX = (this.scale.width / 2) + (visibleWidth / 2) - minimapSize - padding;
+                    const minimapY = padding;
+                    
+                    this.minimap.setPosition(minimapX, minimapY);
+                    this.minimap.setSize(minimapSize, minimapSize);
+                    
+                    // Update Circle Border
+                if (this.mmBorder) {
+                    const radius = minimapSize / 2;
+                    const centerX = minimapX + radius;
+                    const centerY = minimapY + radius;
+                    
+                    this.mmBorder.clear();
+                    this.mmBorder.lineStyle(2, 0x343436, 0.9); // Thin #343436 border
+                    this.mmBorder.strokeCircle(centerX, centerY, radius);
+                }
 
-            // Set camera bounds to the size of the world
-            this.cameras.main.setBounds(worldX, worldY, actualWidth, actualHeight);
-            
-            // Initial zoom set and listener for window resizing
-            updateCameraZoom();
-            window.addEventListener('resize', updateCameraZoom);
-            
-            // Centering the character always with responsive lerping
-            this.cameras.main.startFollow(player, false, 0.2, 0.2);
+                // Update Mask Position
+                if (this.mmMask) {
+                    const radius = minimapSize / 2;
+                    this.mmMask.clear();
+                    this.mmMask.fillStyle(0xffffff);
+                    this.mmMask.fillCircle(minimapX + radius, minimapY + radius, radius);
+                }
+            }
+        };
+
+        // Set camera bounds to the size of the world
+        this.cameras.main.setBounds(worldX, worldY, actualWidth, actualHeight);
+        
+        // Initial zoom set and listener for window resizing
+        updateCameraZoom();
+        window.addEventListener('resize', updateCameraZoom);
+        
+        // Centering the character always with responsive lerping
+        this.cameras.main.startFollow(player, false, 0.2, 0.2);
+
+        // --- MINIMAP SETUP ---
+        const isMobile = window.innerWidth <= 768;
+        const minimapSize = isMobile ? 100 : 150;
+        const padding = 15;
+        
+        const canvasDisplayWidth = this.sys.game.canvas.clientWidth;
+        const screenWidth = window.innerWidth;
+        const visibleWidth = Math.min(canvasDisplayWidth, screenWidth);
+        const minimapX = (this.scale.width / 2) + (visibleWidth / 2) - minimapSize - padding;
+        const minimapY = padding;
+
+        this.minimap = this.cameras.add(minimapX, minimapY, minimapSize, minimapSize)
+            .setZoom(0.12)
+            .setName('mini')
+            .setBackgroundColor(0x756f64)
+            .startFollow(player);
+        
+        // Create circular mask for the minimap
+        const radius = minimapSize / 2;
+        this.mmMask = this.add.graphics();
+        this.mmMask.fillStyle(0xffffff);
+        this.mmMask.fillCircle(minimapX + radius, minimapY + radius, radius);
+        this.mmMask.setScrollFactor(0);
+        this.mmMask.setVisible(false); // Mask source shouldn't be visible
+        
+        this.minimap.setMask(this.mmMask.createGeometryMask());
+        
+        // Add a circular border to the minimap
+        this.mmBorder = this.add.graphics();
+        this.mmBorder.lineStyle(2, 0x343436, 0.9); // Thin #343436 border
+        this.mmBorder.strokeCircle(minimapX + radius, minimapY + radius, radius);
+        this.mmBorder.setScrollFactor(0);
+        this.mmBorder.setDepth(1001);
+
+        // --- CAMERA IGNORE LOGIC ---
+        // Minimap ignores actual monster sprites (only shows dots)
+        if (this.minimap && enemies) {
+            this.minimap.ignore(enemies);
+        }
+        // ---------------------------
             // --------------------
 
             // Hide the Phaser loader once everything is created
@@ -803,6 +912,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
         function startBattle(player, enemy) {
             if (!inBattle) {
                 inBattle = true;
+                inGameSession = true; // Also mark session as active if battle starts
                 currentEnemy = enemy;
                 player.setVelocity(0, 0);
                 
@@ -878,6 +988,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 
                 // Award experience for correct answer
                 const levelResult = await updateLevel(true);
+                tempMonstersDefeated++;
                 
                 // Show success feedback with EXP
                 let message = '✓ Correct! Monster defeated! +' + levelResult.exp_gained + ' EXP';
@@ -990,6 +1101,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
 
         // Track temporary level progress (not saved to DB until session ends properly)
         let tempExpGained = 0;
+        let tempMonstersDefeated = 0;
         let tempLevelUps = 0;
         let tempEssenceGained = 0;
         let initialLevel = parseInt(document.getElementById('player-level').textContent);
@@ -1041,6 +1153,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                     body: JSON.stringify({ 
                         action: 'add_exp',
                         exp_amount: tempExpGained,
+                        monster_count: tempMonstersDefeated,
                         is_correct: true // Just to pass validation
                     })
                 });

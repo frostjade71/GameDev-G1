@@ -252,7 +252,6 @@ if ($shard_result['success']) {
         </div>
     </div>
 
-    <script src="../navigation/navigation.js"></script>
     <script src="grade-access.js"></script>
     <script src="learnvocabmenu.js"></script>
     <script src="../../../navigation/shared/profile-dropdown.js"></script>
@@ -299,7 +298,7 @@ if ($shard_result['success']) {
 
         // Go to main menu
         function goToMainMenu() {
-            window.location.href = '../../../menu.php';
+            window.location.href = '../index.php';
         }
 
         // Grade selection is now handled by direct links
@@ -323,6 +322,5 @@ if ($shard_result['success']) {
             }
         }
     </script>
-    <script src="grade-access.js"></script>
 </body>
 </html>

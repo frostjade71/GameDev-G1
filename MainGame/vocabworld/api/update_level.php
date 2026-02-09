@@ -70,9 +70,10 @@ try {
             
             $result = $levelManager->addExperience($user_id, $exp_amount);
             
-            // Increment monster count if correct answer
-            if ($is_correct) {
-                $levelManager->incrementMonsterCount($user_id);
+            // Increment monster count if provided, otherwise default to 1 if is_correct
+            $monster_count = intval($input['monster_count'] ?? ($is_correct ? 1 : 0));
+            if ($monster_count > 0) {
+                $levelManager->incrementMonsterCount($user_id, $monster_count);
             }
             
             echo json_encode([

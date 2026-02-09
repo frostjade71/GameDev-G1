@@ -149,13 +149,13 @@ class LevelManager {
     /**
      * Increment monster defeat count
      */
-    public function incrementMonsterCount($user_id) {
+    public function incrementMonsterCount($user_id, $amount = 1) {
         $stmt = $this->pdo->prepare("
             UPDATE game_progress 
-            SET total_monsters_defeated = total_monsters_defeated + 1 
+            SET total_monsters_defeated = total_monsters_defeated + ? 
             WHERE user_id = ? AND game_type = 'vocabworld'
         ");
-        $stmt->execute([$user_id]);
+        $stmt->execute([$amount, $user_id]);
     }
     
     /**

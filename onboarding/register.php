@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $grade_level = $_POST['grade_level'] ?? '';
+    $teacher_unlock_password = $_POST['teacher_unlock_password'] ?? '';
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     
@@ -32,6 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     if (empty($grade_level)) {
         $errors[] = 'Grade level is required.';
+    } elseif ($grade_level === 'Teacher') {
+        $teacher_hash = '$2y$10$l6VUPLAFCfjhnesAHY/ACuWqI7I5LDlazSG..3PpqQZD7aT6Beeny';
+        if (empty($teacher_unlock_password)) {
+            $errors[] = 'Teacher unlock password is required.';
+        } elseif (!password_verify($teacher_unlock_password, $teacher_hash)) {
+            $errors[] = 'Incorrect Teacher unlock password.';
+        }
     }
     
     if (empty($password)) {
@@ -737,7 +745,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <option value="Grade 8" <?php echo ($_POST['grade_level'] ?? '') === 'Grade 8' ? 'selected' : ''; ?>>Grade 8</option>
                     <option value="Grade 9" <?php echo ($_POST['grade_level'] ?? '') === 'Grade 9' ? 'selected' : ''; ?>>Grade 9</option>
                     <option value="Grade 10" <?php echo ($_POST['grade_level'] ?? '') === 'Grade 10' ? 'selected' : ''; ?>>Grade 10</option>
+                    <option value="Teacher" <?php echo ($_POST['grade_level'] ?? '') === 'Teacher' ? 'selected' : ''; ?>>Teacher</option>
                 </select>
+            </div>
+
+            <div class="form-group" id="teacher_unlock_group" style="display: <?php echo ($_POST['grade_level'] ?? '') === 'Teacher' ? 'block' : 'none'; ?>;">
+                <label for="teacher_unlock_password">
+                    <i class="fas fa-key"></i>
+                    Teacher Unlock Password
+                </label>
+                <input 
+                    type="password" 
+                    id="teacher_unlock_password" 
+                    name="teacher_unlock_password" 
+                    placeholder="Enter unlock password"
+                >
             </div>
             
             <div class="form-group">
@@ -849,6 +871,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             input.addEventListener('blur', function() {
                 this.parentElement.classList.remove('focused');
             });
+        });
+
+        // Toggle Teacher Unlock Password field
+        const gradeLevelSelect = document.getElementById('grade_level');
+        const teacherUnlockGroup = document.getElementById('teacher_unlock_group');
+        const teacherUnlockInput = document.getElementById('teacher_unlock_password');
+
+        gradeLevelSelect.addEventListener('change', function() {
+            if (this.value === 'Teacher') {
+                teacherUnlockGroup.style.display = 'block';
+                teacherUnlockInput.setAttribute('required', 'required');
+            } else {
+                teacherUnlockGroup.style.display = 'none';
+                teacherUnlockInput.removeAttribute('required');
+                teacherUnlockInput.value = '';
+            }
         });
         
         // Real-time password strength indicator

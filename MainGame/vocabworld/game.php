@@ -167,7 +167,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
 <body>
     <?php include 'loaders/loader-component.php'; ?>
     <?php include 'loaders/phaser-loader.php'; ?>
-    <!-- Victory Overview Screen -->
+    <!-- Victory Overview Screen ... unchanged ... -->
     <div class="victory-screen" id="victory-screen">
         <div class="victory-content">
             <img src="assets/stats/trophy.png" alt="Victory Trophy" class="victory-trophy">
@@ -185,6 +185,22 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             </div>
             <div class="victory-buttons">
                 <button class="victory-btn play-again" onclick="playAgain()">Enter Again</button>
+                <button class="victory-btn main-menu" onclick="goToMainMenu()">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Defeat Screen -->
+    <div class="victory-screen defeat-screen" id="defeat-screen">
+        <div class="victory-content defeat-content">
+            <img src="assets/stats/dead.png" alt="Defeated" class="victory-trophy defeat-icon">
+            <h1 class="defeat-title">DEFEATED</h1>
+            <h2>You Have Run Out of Health!</h2>
+            <div class="stats-summary defeat-stats">
+                <p>Don't give up! Visit "Learn Vocabulary" in the Main Menu to start learning lessons provided by your Teachers.</p>
+            </div>
+            <div class="victory-buttons">
+                <button class="victory-btn play-again" onclick="playAgain()">Try Again</button>
                 <button class="victory-btn main-menu" onclick="goToMainMenu()">Main Menu</button>
             </div>
         </div>
@@ -570,8 +586,8 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             // Create enemies
             enemies = this.physics.add.group();
             
-            // Create 3-5 random monsters spread across the map
-            const monsterCount = Phaser.Math.Between(5, 8); // Increased count for larger map
+            // Create 6-9 random monsters spread across the map
+            const monsterCount = Phaser.Math.Between(4, 8); 
             
             // Get the world texture to check for bounds
             const worldTexture = this.textures.get('world').getSourceImage();
@@ -1007,7 +1023,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 const hpDisplay = document.getElementById('player-hp');
                 let currentHP = parseInt(hpDisplay.textContent);
                 const maxHP = 100;
-                const damage = Math.floor(Math.random() * 16) + 10; // Random damage between 10-25 HP
+                const damage = Math.floor(Math.random() * 11) + 15; // Random damage between 15-25 HP
                 currentHP = Math.max(0, currentHP - damage);
                 hpDisplay.textContent = currentHP;
                 
@@ -1032,8 +1048,7 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 
                 // Check if player is defeated
                 if (currentHP <= 0) {
-                    alert('Game Over! You ran out of health.');
-                    window.location.href = 'index.php';
+                    showDefeatScreen();
                     return;
                 }
             }
@@ -1193,6 +1208,14 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             document.getElementById('victory-screen').classList.add('active');
             
             // Disable game session warning since we're done
+            inGameSession = false;
+        }
+
+        function showDefeatScreen() {
+            // Show defeat screen
+            document.getElementById('defeat-screen').classList.add('active');
+            
+            // Disable game session warning
             inGameSession = false;
         }
         

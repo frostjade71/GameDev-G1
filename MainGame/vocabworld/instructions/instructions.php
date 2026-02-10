@@ -116,221 +116,77 @@ $current_essence = $essenceManager->getEssence($user_id);
         <!-- Instructions Screen -->
         <div id="instructions-screen" class="screen active">
             <div class="instructions-wrapper">
-                <div class="instructions-grid">
-                    <!-- Game Overview -->
-                    <div class="instruction-card featured">
-                        <div class="logo-container">
-                            <img src="../assets/menu/instructionsmain.png" alt="VocabWorld Instructions" class="instructions-logo">
-                        </div>
-                        <h2>Game Overview</h2>
-                        <p>VocabWorld is an RPG adventure where you battle monsters by answering vocabulary questions. Explore the world, defeat enemies, and grow stronger with every correct answer!</p>
-                        <div class="key-features">
-                            <span class="feature-tag"><i class="fas fa-map"></i> Open World Exploration</span>
-                            <span class="feature-tag"><i class="fas fa-dragon"></i> Monster Battles</span>
-                            <span class="feature-tag"><i class="fas fa-brain"></i> Vocabulary Challenges</span>
-                        </div>
-                    </div>
+                <header class="instructions-header">
+                    <h1>How to Play</h1>
+                    <p>Master the world of vocabulary and become the ultimate explorer.</p>
+                </header>
 
+                <div class="instructions-grid">
                     <!-- Movement & Controls -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <img src="../assets/menu/playsys.png" alt="Movement" style="width: 100%; height: 100%; object-fit: contain;">
+                            <img src="assets/fc667.png" alt="Movement">
                         </div>
                         <h2>Movement & Controls</h2>
-                        <div class="controls-grid">
-                            <div class="control-item">
-                                <kbd>↑</kbd>
-                                <span>Move Up</span>
-                            </div>
-                            <div class="control-item">
-                                <kbd>↓</kbd>
-                                <span>Move Down</span>
-                            </div>
-                            <div class="control-item">
-                                <kbd>←</kbd>
-                                <span>Move Left</span>
-                            </div>
-                            <div class="control-item">
-                                <kbd>→</kbd>
-                                <span>Move Right</span>
-                            </div>
-                        </div>
-                        <p class="tip"><i class="fas fa-lightbulb"></i> Use arrow keys to navigate the world and approach monsters to initiate battles.</p>
+                        <p>Use the arrow keys to navigate the world. Approach monsters to trigger a vocabulary battle.</p>
                     </div>
 
-                    <!-- Battle System -->
+                    <!-- Battle Monsters -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <img src="../assets/menu/vocabsys.png" alt="Battle System">
+                            <img src="../assets/stats/sword1.png" alt="Battle">
                         </div>
-                        <h2>Battle System</h2>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i> Collide with monsters to start a battle</li>
-                            <li><i class="fas fa-check-circle"></i> Answer vocabulary questions to defeat enemies</li>
-                            <li><i class="fas fa-check-circle"></i> Correct answers destroy the monster</li>
-                            <li><i class="fas fa-check-circle"></i> Wrong answers end the battle without reward</li>
-                            <li><i class="fas fa-check-circle"></i> Defeat all monsters to complete the level</li>
-                        </ul>
-                        <div class="battle-example">
-                            <strong>Example Question:</strong>
-                            <p>"What is the meaning of 'Benevolent'?"</p>
-                            <div class="example-options">
-                                <span class="option correct">✓ Kind and generous</span>
-                                <span class="option">✗ Angry and hostile</span>
-                            </div>
-                        </div>
+                        <h2>Battle Monsters</h2>
+                        <p>Answer vocabulary questions correctly to defeat enemies. Correct answers deal damage, mistakes cost you health.</p>
                     </div>
 
                     <!-- Rewards & Progression -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <i class="fas fa-trophy"></i>
+                            <img src="assets/fc15.png" alt="Rewards">
                         </div>
                         <h2>Rewards & Progression</h2>
-                        <div class="rewards-grid">
-                            <div class="reward-item">
-                                <img src="../assets/currency/essence.png" alt="Essence" class="reward-icon">
-                                <h3>Essence</h3>
-                                <p>Earn 5-10 essence per correct answer</p>
-                                <p class="current-balance">Current: <strong><?php echo $current_essence; ?></strong></p>
-                            </div>
-                            <div class="reward-item">
-                                <img src="../assets/currency/shard1.png" alt="Shards" class="reward-icon">
-                                <h3>Shards</h3>
-                                <p>Use for character customization</p>
-                                <p class="current-balance">Current: <strong><?php echo $user_shards; ?></strong></p>
-                            </div>
-                            <div class="reward-item">
-                                <img src="../assets/stats/ratings1.png" alt="Score" class="reward-icon">
-                                <h3>Score Points</h3>
-                                <p>100 points per correct answer</p>
-                                <p class="current-balance">Tracks your performance</p>
-                            </div>
-                        </div>
+                        <p>Earn Shards and Essence from every victory. Unlock new character's using shards.</p>
                     </div>
 
                     <!-- Character Stats -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <img src="../assets/menu/charactersys.png" alt="Character Stats" style="width: 100%; height: 100%; object-fit: contain;">
+                            <img src="../charactermenu/assets/fc1089.png" alt="Stats">
                         </div>
                         <h2>Character Stats</h2>
-                        <div class="stats-explanation">
-                            <div class="stat-item">
-                                <img src="../assets/stats/heart.png" alt="HP" class="stat-icon-img">
-                                <div>
-                                    <strong>HP (Health Points)</strong>
-                                    <p>Your character's health - starts at 100</p>
-                                </div>
-                            </div>
-                            <div class="stat-item">
-                                <img src="../assets/stats/level.png" alt="Level" class="stat-icon-img">
-                                <div>
-                                    <strong>Level</strong>
-                                    <p>Increases as you defeat more monsters</p>
-                                </div>
-                            </div>
-                            <div class="stat-item">
-                                <img src="../assets/currency/essence.png" alt="Essence" class="stat-icon-img">
-                                <div>
-                                    <strong>Essence</strong>
-                                    <p>Currency earned from battles</p>
-                                </div>
-                            </div>
-                            <div class="stat-item">
-                                <img src="../assets/stats/gwa.png" alt="GWA" class="stat-icon-img">
-                                <div>
-                                    <strong>GWA (Game Weighted Average)</strong>
-                                    <p>Your average score over the last 30 days</p>
-                                </div>
-                            </div>
-                        </div>
+                        <p>Monitor your HP, Level, and GWA. High GWA shows your mastery over the English language.</p>
                     </div>
 
                     <!-- Tips & Strategies -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <img src="../assets/menu/instructionicon.png" alt="Tips" style="width: 100%; height: 100%; object-fit: contain;">
+                            <img src="../assets/menu/instructionicon.png" alt="Tips">
                         </div>
                         <h2>Tips & Strategies</h2>
-                        <ul class="tips-list">
-                            <li>
-                                <i class="fas fa-book-reader"></i>
-                                <div>
-                                    <strong>Study First</strong>
-                                    <p>Visit the Learning Mode to review vocabulary before playing</p>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="fas fa-bullseye"></i>
-                                <div>
-                                    <strong>Take Your Time</strong>
-                                    <p>Read questions carefully - there's no time limit</p>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="fas fa-redo"></i>
-                                <div>
-                                    <strong>Practice Regularly</strong>
-                                    <p>Daily play improves your vocabulary retention</p>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="fas fa-users"></i>
-                                <div>
-                                    <strong>Customize Your Character</strong>
-                                    <p>Use earned shards to personalize your hero</p>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="fas fa-chart-bar"></i>
-                                <div>
-                                    <strong>Track Progress</strong>
-                                    <p>Monitor your GWA to see improvement over time</p>
-                                </div>
-                            </li>
-                        </ul>
+                        <p>Read questions carefully. Visit "Learn Vocabulary" before entering the world.</p>
                     </div>
 
-                    <!-- Learning Mode -->
+                    <!-- Learn Lessons -->
                     <div class="instruction-card">
                         <div class="card-icon">
-                            <img src="../assets/menu/learnvocab.webp" alt="Learning Mode" style="width: 100%; height: 100%; object-fit: contain;">
+                            <img src="../assets/menu/vocabsys.png" alt="Learn">
                         </div>
-                        <h2>Learning Mode</h2>
-                        <p>Before jumping into battle, use Learning Mode to:</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i> Browse vocabulary words by grade level</li>
-                            <li><i class="fas fa-check-circle"></i> Study definitions and examples</li>
-                            <li><i class="fas fa-check-circle"></i> Filter by difficulty (Easy, Medium, Hard)</li>
-                            <li><i class="fas fa-check-circle"></i> Search for specific words</li>
-                            <li><i class="fas fa-check-circle"></i> Prepare for tougher battles</li>
-                        </ul>
-                        <div class="cta-box">
-                            <i class="fas fa-info-circle"></i>
-                            <p>Words are aligned with Grade 7-10 curriculum standards</p>
-                        </div>
+                        <h2>Learn Lessons</h2>
+                        <p>Navigate Learn Vocabulary in the Main menu to start learning lessons provided by your Teachers</p>
                     </div>
+                </div>
 
-                    <!-- Ready to Play -->
-                    <div class="instruction-card cta-card">
-                        <div class="card-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <h2>Ready to Begin Your Adventure?</h2>
-                        <p>You now have everything you need to start your VocabWorld journey!</p>
-                        <div class="action-buttons">
-                            <button class="btn-primary" onclick="startGame()">
-                                <i class="fas fa-play"></i> Start Playing
-                            </button>
-                            <button class="btn-secondary" onclick="goToLearning()">
-                                <i class="fas fa-book"></i> Learning Mode
-                            </button>
-                            <button class="btn-secondary" onclick="goToMainMenu()">
-                                <i class="fas fa-home"></i> Main Menu
-                            </button>
-                        </div>
-                    </div>
+                <div class="instructions-cta">
+                    <button class="btn-game btn-primary" onclick="startGame()">
+                        <i class="fas fa-play"></i> Start Playing
+                    </button>
+                    <button class="btn-game btn-secondary" onclick="goToLearning()">
+                        <i class="fas fa-book"></i> Learn Now
+                    </button>
+                    <button class="btn-game btn-secondary" onclick="goToMainMenu()">
+                        <i class="fas fa-home"></i> Home
+                    </button>
                 </div>
             </div>
         </div>

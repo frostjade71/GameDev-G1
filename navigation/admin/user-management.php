@@ -45,7 +45,7 @@ if ($grade_filter !== 'all') {
     $params[] = $grade_filter;
 }
 
-$query .= " ORDER BY $sort $order LIMIT 10";
+$query .= " ORDER BY $sort $order";
 
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);

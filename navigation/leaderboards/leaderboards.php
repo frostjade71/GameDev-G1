@@ -319,7 +319,6 @@ $leaderboard_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../shared/navigation.js?v=<?php echo filemtime('../shared/navigation.js'); ?>"></script>
     <script src="../../script.js?v=<?php echo filemtime('../../script.js'); ?>"></script>
     <script></script>
     <script>

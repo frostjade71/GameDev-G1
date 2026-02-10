@@ -217,14 +217,14 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                 </div>
                                 <div class="character-info">
                                     <div class="character-name" id="character-name"><?php echo $character_name; ?></div>
-                                    <div class="character-level">Level 1</div>
+                                    <div class="character-level" id="character-level">Level <?php echo htmlspecialchars($progress['player_level'] ?? 1); ?></div>
                                 </div>
                             </div>
                             
                             <div class="character-actions">
                                 <button class="action-btn edit-character-btn" onclick="goToEditCharacter()">
                                     <img src="assets/fc5.png" class="action-icon" alt="Customize">
-                                    <span>Customize</span>
+                                    <span>Characters</span>
                                 </button>
                                 <button class="action-btn shop-characters-btn" onclick="showCharacterShop()">
                                     <img src="assets/fc1839.png" class="action-icon" alt="Shop">
@@ -351,7 +351,7 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
             shards: <?php echo $user_shards; ?>,
             characterData: <?php echo $character_data ? json_encode($character_data) : 'null'; ?>,
             averagePercentage: <?php echo $average_percentage; ?>,
-            totalSessions: <?php echo $total_sessions; ?>,
+            playerLevel: <?php echo htmlspecialchars($progress['player_level'] ?? 1); ?>,
             currentCharacter: '<?php echo $current_character; ?>',
             characterName: '<?php echo $character_name; ?>',
             characterImagePath: '<?php echo $character_image_path; ?>'
@@ -484,6 +484,12 @@ $owned_characters = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 
                 // Display the character sprite
                 characterSprite.innerHTML = `<img src="${characterImagePath}" alt="${characterNameText} Character" style="width: 100%; height: 100%; object-fit: contain;">`;
+                
+                // Update character level
+                const characterLevel = document.getElementById('character-level');
+                if (characterLevel) {
+                    characterLevel.textContent = `Level ${window.userData.playerLevel || 1}`;
+                }
                 
                 // Update character name
                 if (characterName) {

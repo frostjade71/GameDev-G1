@@ -196,7 +196,16 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
                         <?php if (!empty($dashboardStats['role_distribution'])): ?>
                             <?php foreach ($dashboardStats['role_distribution'] as $role): ?>
                                 <div class="role-item">
-                                    <div class="role-label"><?php echo htmlspecialchars($role['role']); ?></div>
+                                    <div class="role-label">
+                                        <?php 
+                                            $roleIcon = 'fa-user';
+                                            if ($role['role'] === 'Admin') $roleIcon = 'fa-user-shield';
+                                            elseif ($role['role'] === 'Teacher') $roleIcon = 'fa-chalkboard-teacher';
+                                            elseif ($role['role'] === 'Student') $roleIcon = 'fa-user-graduate';
+                                        ?>
+                                        <i class="fas <?php echo $roleIcon; ?>" style="margin-right: 8px; opacity: 0.8;"></i>
+                                        <?php echo htmlspecialchars($role['role']); ?>
+                                    </div>
                                     <div class="role-value"><?php echo $role['count']; ?> users</div>
                                 </div>
                             <?php endforeach; ?>
@@ -217,7 +226,10 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
                         <?php if (!empty($dashboardStats['top_gwa_by_grade'])): ?>
                             <?php foreach ($dashboardStats['top_gwa_by_grade'] as $grade): ?>
                                 <div class="gwa-grade-item">
-                                    <div class="gwa-grade-name"><?php echo htmlspecialchars($grade['grade_level']); ?></div>
+                                    <div class="gwa-grade-name">
+                                        <i class="fas fa-graduation-cap" style="margin-right: 8px; opacity: 0.8;"></i>
+                                        <?php echo htmlspecialchars($grade['grade_level']); ?>
+                                    </div>
                                     <div class="gwa-grade-stats">
                                         <span>Avg: <?php echo number_format($grade['avg_gwa'], 2); ?></span>
                                         <span>Students: <?php echo $grade['student_count']; ?></span>
@@ -259,6 +271,30 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
     
     let distributionChart = null;
     let gwaChart = null;
+
+    const COLOR_PALETTE = [
+        '#4cc9f0', // Blue
+        '#00ff87', // Green
+        '#ffc107', // Amber
+        '#f44336', // Red
+        '#9c27b0', // Purple
+        '#ff6b6b', // Pink
+        '#4ecdc4', // Teal
+        '#45b7d1'  // Light Blue
+    ];
+
+    // Helper to get consistent color for a label
+    const labelColorMap = {};
+    function getColorForLabel(label, index) {
+        if (!labelColorMap[label]) {
+            labelColorMap[label] = COLOR_PALETTE[Object.keys(labelColorMap).length % COLOR_PALETTE.length];
+        }
+        return labelColorMap[label];
+    }
+
+    function getColorsForLabels(labels) {
+        return labels.map((label, index) => getColorForLabel(label, index));
+    }
     
     // Initialize Charts
     document.addEventListener('DOMContentLoaded', function() {
@@ -295,16 +331,7 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
                 datasets: [{
                     label: 'Users',
                     data: values,
-                    backgroundColor: [
-                        '#4cc9f0',
-                        '#00ff87',
-                        '#ffc107',
-                        '#f44336',
-                        '#9c27b0',
-                        '#ff6b6b',
-                        '#4ecdc4',
-                        '#45b7d1'
-                    ],
+                    backgroundColor: getColorsForLabels(labels),
                     borderColor: '#1a1a1a',
                     borderWidth: 2
                 }]
@@ -355,9 +382,9 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
                 datasets: [{
                     label: 'Average GWA',
                     data: values,
-                    backgroundColor: '#4cc9f0',
-                    borderColor: '#00ff87',
-                    borderWidth: 2
+                    backgroundColor: getColorsForLabels(labels),
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    borderWidth: 1
                 }]
             },
             options: {

@@ -1,117 +1,97 @@
-// Initialize toast container and styles if they don't exist
+// Initialize toast/snackbar container and styles if they don't exist
 function initToastSystem() {
-    if (!document.getElementById('toast-container')) {
+    if (!document.getElementById('vocab-toast-container')) {
         const toastContainer = document.createElement('div');
-        toastContainer.id = 'toast-container';
+        toastContainer.id = 'vocab-toast-container';
         document.body.appendChild(toastContainer);
     }
     
-    if (!document.querySelector('link[href*="Press+Start+2P"]')) {
-        const link = document.createElement('link');
-        link.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
-        link.rel = 'stylesheet';
-        document.head.appendChild(link);
-    }
-    
-    if (!document.querySelector('style#toast-styles')) {
+    if (!document.querySelector('style#vocab-toast-styles')) {
         const style = document.createElement('style');
-        style.id = 'toast-styles';
+        style.id = 'vocab-toast-styles';
         style.textContent = `
-            #toast-container {
+            #vocab-toast-container {
                 position: fixed;
-                top: 100px;
-                right: 120px;
-                z-index: 9999;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 99999;
                 display: flex;
                 flex-direction: column;
-                align-items: flex-end;
+                align-items: center;
+                width: auto;
                 pointer-events: none;
             }
             
-            @media (min-width: 768px) {
-                #toast-container {
-                    right: 40px;
-                }
-            }
-            
-            @media (min-width: 1024px) {
-                #toast-container {
-                    right: 270px;
-                }
-            }
-            
-            .toast {
-                background: rgba(0, 0, 0, 0.9);
+            .vocab-toast {
+                background: rgba(15, 23, 42, 0.95);
                 color: white;
-                padding: 12px 20px;
-                border-radius: 4px;
-                margin: 5px 0;
-                box-shadow: 0 0 10px rgba(96, 239, 255, 0.3);
+                padding: 14px 28px;
+                border-radius: 50px;
+                margin-bottom: 10px;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
                 opacity: 0;
-                transform: translateX(100%);
-                transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-                max-width: 300px;
-                min-width: 250px;
-                text-align: center;
+                transform: translateY(20px);
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                max-width: 90vw;
+                min-width: 280px;
                 word-wrap: break-word;
-                position: relative;
-                overflow: hidden;
-                font-family: 'Press Start 2P', cursive;
-                font-size: 0.45rem;
-                line-height: 1.5;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(12px);
+                font-family: 'Poppins', sans-serif;
+                font-weight: 500;
+                font-size: 0.95rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                pointer-events: auto;
             }
             
-            .toast.show {
+            .vocab-toast.show {
                 opacity: 1;
-                transform: translateX(0);
+                transform: translateY(0);
             }
-            
-            .toast::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 4px;
-                background: #e74c3c;
-                animation: progress 3s linear forwards;
-            }
-            
-            @keyframes progress {
-                from { width: 100%; }
-                to { width: 0%; }
-            }
-            
-            .toast-error {
-                border-left: 4px solid #e74c3c;
+
+            .vocab-toast-info i { color: #60a5fa; }
+            .vocab-toast-success i { color: #4ade80; }
+            .vocab-toast-error i { color: #f87171; }
+
+            @media (max-width: 768px) {
+                #vocab-toast-container {
+                    bottom: 20px;
+                }
+                .vocab-toast {
+                    padding: 12px 20px;
+                    font-size: 0.85rem;
+                    min-width: 250px;
+                }
             }
         `;
         document.head.appendChild(style);
     }
 }
 
-// Global toast notification function
+// Global toast/snackbar notification function
 window.showToast = function(message, type = 'info') {
     initToastSystem();
     
-    const container = document.getElementById('toast-container');
-    
-    // Remove any existing toasts
-    while (container.firstChild) {
-        container.removeChild(container.firstChild);
-    }
+    const container = document.getElementById('vocab-toast-container');
     
     const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.textContent = message;
+    toast.className = `vocab-toast vocab-toast-${type}`;
+    
+    // Add icon based on type
+    let icon = 'fa-info-circle';
+    if (type === 'success') icon = 'fa-check-circle';
+    if (type === 'error') icon = 'fa-exclamation-circle';
+    
+    toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
     
     container.appendChild(toast);
     
-    // Trigger reflow
-    void toast.offsetWidth;
-    
-    // Show toast
-    toast.classList.add('show');
+    // Trigger animation
+    setTimeout(() => toast.classList.add('show'), 10);
     
     // Remove toast after delay
     setTimeout(() => {
@@ -120,7 +100,7 @@ window.showToast = function(message, type = 'info') {
             if (toast.parentNode === container) {
                 container.removeChild(toast);
             }
-        }, 300);
+        }, 400);
     }, 3000);
 };
 

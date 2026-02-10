@@ -14,7 +14,7 @@
     border-radius: 25px;
     padding: 1.25rem;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     border: 2px solid rgba(96, 239, 255, 0.15);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -650,7 +650,7 @@
 }
 
 .card-body {
-    padding: 20px;
+    padding: 12px 20px;
 }
 
 /* Chart Styling */
@@ -1335,7 +1335,7 @@
 .role-item, .gwa-grade-item {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 12px;
-    padding: 16px 20px;
+    padding: 12px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;

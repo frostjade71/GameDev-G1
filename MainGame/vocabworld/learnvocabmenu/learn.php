@@ -68,39 +68,6 @@ if ($shard_result['success']) {
     <link rel="stylesheet" href="../../../notif/toast.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Toast container */
-        #toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
-        
-        /* Toast styles */
-        .toast {
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
-            max-width: 300px;
-            word-wrap: break-word;
-        }
-        
-        .toast.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        
-        .toast-error {
-            border-left: 4px solid #e74c3c;
-        }
-    </style>
 </head>
 <body>
     <?php include '../loaders/loader-component.php'; ?>
@@ -213,7 +180,7 @@ if ($shard_result['success']) {
                         
                         $card_class = $is_locked ? 'locked' : '';
                         $card_url = $is_locked ? '#' : "grade{$grade}.php";
-                        $onclick = $is_locked ? "onclick='event.preventDefault(); window.showToast(\"You are not a Grade {$grade} student\", \"error\")'" : '';
+                        $onclick = '';
                         
                         echo "
                         <div class='grade-card-container {$card_class}'>

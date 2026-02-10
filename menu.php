@@ -174,16 +174,22 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                     <!-- Slide 1 -->
                     <div class="banner-slide">
                         <a href="play/game-selection.php">
-                            <img src="assets/banner/new_minimap.webp" alt="New Minimap" class="changelog-banner-image">
+                            <img src="assets/banner/Thank you for your Participation!_20260210_165345_0000.webp" alt="Thank You" class="changelog-banner-image">
                         </a>
                     </div>
                     <!-- Slide 2 -->
                     <div class="banner-slide">
                         <a href="play/game-selection.php">
-                            <img src="assets/banner/new_characters.webp" alt="New Characters" class="changelog-banner-image">
+                            <img src="assets/banner/new_minimap.webp" alt="New Minimap" class="changelog-banner-image">
                         </a>
                     </div>
                     <!-- Slide 3 -->
+                    <div class="banner-slide">
+                        <a href="play/game-selection.php">
+                            <img src="assets/banner/new_characters.webp" alt="New Characters" class="changelog-banner-image">
+                        </a>
+                    </div>
+                    <!-- Slide 4 -->
                     <div class="banner-slide">
                         <a href="play/game-selection.php">
                             <img src="assets/banner/changelog_banner.webp" alt="What's New" class="changelog-banner-image">
@@ -196,6 +202,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                     <span class="dot" onclick="currentSlide(1)"></span>
                     <span class="dot" onclick="currentSlide(2)"></span>
                     <span class="dot" onclick="currentSlide(3)"></span>
+                    <span class="dot" onclick="currentSlide(4)"></span>
                 </div>
             </div>
 
@@ -279,7 +286,7 @@ $favorites_count = $favorites['favorites_count'] ?? 0;
                 <i class="fas fa-times"></i>
             </button>
             <div class="changelog-content">
-                <img src="assets/banner/new_characters.webp" alt="Changelog Banner" class="changelog-banner-img">
+                <img src="assets/banner/Thank you for your Participation!_20260210_165345_0000.webp" alt="Changelog Banner" class="changelog-banner-img">
             </div>
         </div>
     </div>

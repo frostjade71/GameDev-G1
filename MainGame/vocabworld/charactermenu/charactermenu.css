@@ -592,21 +592,38 @@
     }
     
     .character-actions {
-        flex-direction: column;
-        align-items: center;
-        gap: 0.8rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+            "chars chars"
+            "shop conv";
+        gap: 0.6rem;
+        width: 100%;
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
     }
     
+    .edit-character-btn { grid-area: chars; }
+    .shop-characters-btn { grid-area: shop; }
+    .convert-btn { grid-area: conv; }
+
     .action-btn {
         width: 100%;
-        max-width: 200px;
+        max-width: none !important;
         justify-content: center;
-        padding: 0.7rem 1.2rem;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .action-icon {
+        width: 16px;
+        height: 16px;
     }
 
     .back-to-character-btn {
-        width: 40px !important;
-        height: 40px !important;
+        width: 36px !important;
+        height: 36px !important;
         padding: 0 !important;
         border-radius: 50%;
         min-width: unset;
@@ -650,11 +667,11 @@
     }
 
     .stat-value {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     .stat-label {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
 
     .soon-badge {
@@ -740,14 +757,18 @@
     }
     
     .character-actions {
-        flex-direction: column;
-        gap: 0.5rem;
+        gap: 0.4rem;
     }
     
     .action-btn {
-        font-size: 0.8rem;
-        padding: 0.6rem 1rem;
-        width: 100%;
+        font-size: 0.75rem;
+        padding: 0.5rem 0.4rem;
+        min-width: 80px;
+    }
+
+    .action-icon {
+        width: 14px;
+        height: 14px;
     }
 }
 
@@ -1038,10 +1059,7 @@
         padding: 0.4rem 0.6rem;
     }
     
-    .back-to-character-btn {
-        font-size: 0.8rem;
-        padding: 0.6rem 1rem;
-    }
+
 }
 
 /* Shop Characters Page Styles */
@@ -1471,3 +1489,15 @@
         transform: rotate(180deg);
     }
 }
+
+/* Optimization for Shop Scrolling performance */
+#shop-characters-screen .transparent-card,
+#shop-characters-screen .shop-character-card,
+#shop-characters-screen .purchase-btn,
+#shop-characters-screen .back-to-character-btn,
+#shop-characters-screen .character-card-sprite,
+#shop-characters-screen .purchase-modal-content {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+

@@ -112,7 +112,7 @@ try {
     $stmt = $pdo->query("
         SELECT 
             CASE 
-                WHEN grade_level IN ('Admin', 'Developer') THEN 'Admin/Dev'
+                WHEN grade_level IN ('Admin', 'Developer') THEN 'Admin'
                 WHEN grade_level = 'Teacher' THEN 'Teacher'
                 ELSE 'Student'
             END as role,

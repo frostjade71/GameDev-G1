@@ -160,23 +160,23 @@ $lessons = $stmt->fetchAll();
                                 <i class="fas fa-book-open"></i>
                             </div>
                             <h2>No Lessons Yet</h2>
-                            <p>There are currently no lessons available for Grade 10.</p>
-                            <p>Please check back later!</p>
+                            <p>Your Teacher hasn't provided a lesson yet for your Grade Level</p>
+                            <p>Please check back later</p>
                         </div>
                     </div>
                     <?php else: ?>
-                        <div class="lessons-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; padding: 15px 0;">
+                        <div class="lessons-grid">
                             <?php foreach ($lessons as $lesson): ?>
-                                <div class="lesson-card" onclick="window.location.href='view_lesson.php?id=<?= $lesson['id'] ?>'" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); padding: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; display: flex; flex-direction: column; gap: 8px;">
-                                    <div class="lesson-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #6e8efb, #a777e3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">
+                                <div class="lesson-card" onclick="window.location.href='view_lesson.php?id=<?= $lesson['id'] ?>'">
+                                    <div class="lesson-icon">
                                         <i class="fas fa-book-reader"></i>
                                     </div>
-                                    <h3 style="color: white; margin: 0; font-size: 1rem; line-height: 1.3;"><?= htmlspecialchars($lesson['title']) ?></h3>
-                                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; margin: 0; flex-grow: 1;">
+                                    <h3><?= htmlspecialchars($lesson['title']) ?></h3>
+                                    <p>
                                         <?= date('M j, Y', strtotime($lesson['created_at'])) ?>
                                     </p>
-                                    <div class="lesson-footer" style="display: flex; justify-content: flex-end;">
-                                        <span style="color: #a777e3; font-size: 0.8rem; font-weight: 600;">Read <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></span>
+                                    <div class="lesson-footer">
+                                        <span class="read-more-text">Read <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></span>
                                     </div>
                                 </div>
                             <?php endforeach; ?>

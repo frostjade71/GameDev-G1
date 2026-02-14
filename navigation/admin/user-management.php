@@ -13,7 +13,7 @@ if (!function_exists('isLoggedIn') || !isLoggedIn() || !$isAdminDev) {
 
 // Get current user information
 $user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT username, email, grade_level, section, profile_image FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT username, email, grade_level, profile_image FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $current_user = $stmt->fetch();
 
@@ -32,12 +32,12 @@ $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 $grade_filter = isset($_GET['grade']) ? $_GET['grade'] : 'all';
 
 // Validate sort column
-$valid_columns = ['id', 'username', 'email', 'grade_level', 'section', 'created_at'];
+$valid_columns = ['id', 'username', 'email', 'grade_level', 'created_at'];
 $sort = in_array($sort, $valid_columns) ? $sort : 'id';
 $order = $order === 'desc' ? 'DESC' : 'ASC';
 
 // Build the query for user table
-$query = "SELECT id, username, email, grade_level, section, created_at FROM users";
+$query = "SELECT id, username, email, grade_level, created_at FROM users";
 $params = [];
 
 if ($grade_filter !== 'all') {
@@ -67,6 +67,32 @@ $grade_levels = $pdo->query("SELECT DISTINCT grade_level FROM users ORDER BY gra
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?php echo filemtime('assets/css/dashboard.css'); ?>">
     <link rel="stylesheet" href="assets/css/delete-modal.css?v=<?php echo filemtime('assets/css/delete-modal.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../../navigation/teacher/assets/css/vocabulary.css?v=<?php echo time(); ?>">
+    <style>
+        /* Override or add specific admin styles if needed */
+        .admin-container {
+            /* Inherit base styles from teacher-container in vocabulary.css */
+            background: rgba(10, 10, 15, 0.95);
+            border-radius: 25px;
+            padding: 1.25rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            border: 2px solid rgba(96, 239, 255, 0.15);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .admin-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+        }
+    </style>
 </head>
 <body>
     <?php include '../../includes/page-loader.php'; ?>
@@ -97,6 +123,10 @@ $grade_levels = $pdo->query("SELECT DISTINCT grade_level FROM users ORDER BY gra
             <a href="user-management.php" class="nav-link active">
                 <i class="fas fa-users-cog"></i>
                 <span>User Management</span>
+            </a>
+            <a href="audit-logs.php" class="nav-link">
+                <i class="fas fa-history"></i>
+                <span>Audit Logs</span>
             </a>
         </nav>
     </div>
@@ -179,42 +209,43 @@ $grade_levels = $pdo->query("SELECT DISTINCT grade_level FROM users ORDER BY gra
         </div>
 
             <!-- User Management Section -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-users-cog"></i> User Management</h3>
-                    <div class="card-actions">
-                        <button class="btn-action" onclick="exportUsers()">
-                            <i class="fas fa-download"></i> Export
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="table-controls">
-                        <div class="grade-filter">
-                            <label for="gradeFilter">Filter by Grade:</label>
-                            <select id="gradeFilter" onchange="updateGradeFilter(this.value)">
-                                <option value="all" <?= $grade_filter === 'all' ? 'selected' : '' ?>>All Grades</option>
-                                <?php foreach ($grade_levels as $grade): ?>
-                                    <option value="<?= htmlspecialchars($grade) ?>" <?= $grade_filter === $grade ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($grade) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+            <div class="admin-container">
+                <div class="vocabulary-section">
+                    <div class="section-header">
+                        <h3 style="transform: translateY(-3px);"><i class="fas fa-users-cog"></i> User Management</h3>
+                        <div class="table-controls" style="margin-left: auto;">
+                            <div class="filter-group">
+                                <div class="grade-filter">
+                                    <label for="gradeFilter">Filter by Grade:</label>
+                                    <select id="gradeFilter" onchange="updateGradeFilter(this.value)">
+                                        <option value="all" <?= $grade_filter === 'all' ? 'selected' : '' ?>>All Grades</option>
+                                        <?php foreach ($grade_levels as $grade): ?>
+                                            <option value="<?= htmlspecialchars($grade) ?>" <?= $grade_filter === $grade ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($grade) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="userSearch" placeholder="Search users...">
+                            </div>
+                            <button class="add-vocab-btn" onclick="exportUsers()" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: rgba(0, 255, 135, 0.15); border: 1px solid rgba(0, 255, 135, 0.3); color: rgba(0, 255, 135, 1);">
+                                <i class="fas fa-download"></i>
+                                <span>Export</span>
+                            </button>
                         </div>
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="userSearch" placeholder="Search users...">
-                        </div>
                     </div>
-                    
+
                     <div class="table-responsive">
                         <div id="loadingIndicator" style="display:none;">
                             <div class="loading-content">
                                 <i class="fas fa-spinner fa-spin"></i>
-                                <div>Loading users...</div>
+                                <div style="color:white; margin-top:10px;">Loading users...</div>
                             </div>
                         </div>
-                        <table class="user-table">
+                        <table class="vocab-table">
                             <thead>
                                 <tr>
                                     <th class="sortable" data-sort="id" data-order="<?= $sort === 'id' && $order === 'ASC' ? 'desc' : 'asc' ?>">
@@ -227,7 +258,6 @@ $grade_levels = $pdo->query("SELECT DISTINCT grade_level FROM users ORDER BY gra
                                         Email <?= $sort === 'email' ? ($order === 'ASC' ? '↑' : '↓') : '' ?>
                                     </th>
                                     <th>Grade Level</th>
-                                    <th>Section</th>
                                     <th class="sortable" data-sort="created_at" data-order="<?= $sort === 'created_at' && $order === 'ASC' ? 'desc' : 'asc' ?>">
                                         Join Date <?= $sort === 'created_at' ? ($order === 'ASC' ? '↑' : '↓') : '' ?>
                                     </th>
@@ -237,35 +267,33 @@ $grade_levels = $pdo->query("SELECT DISTINCT grade_level FROM users ORDER BY gra
                             <tbody id="usersTbody">
                                 <?php if (empty($users)): ?>
                                     <tr>
-                                        <td colspan="7" class="no-users">No users found</td>
+                                        <td colspan="6" class="no-vocab">No users found</td>
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($users as $user): ?>
                                         <tr>
                                             <td data-label="ID"><?= htmlspecialchars($user['id']) ?></td>
-                                            <td data-label="Username"><?= htmlspecialchars($user['username']) ?></td>
+                                            <td data-label="Username">
+                                                <div class="creator-info" style="display: flex; align-items: center; gap: 8px;">
+                                                    <img src="../../assets/menu/defaultuser.png" 
+                                                         alt="Avatar" 
+                                                         class="creator-avatar"
+                                                         style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.2);">
+                                                    <span class="creator-name"><?= htmlspecialchars($user['username']) ?></span>
+                                                </div>
+                                            </td>
                                             <td data-label="Email"><?= htmlspecialchars($user['email']) ?></td>
                                             <td data-label="Grade Level">
                                                 <span class="grade-badge"><?= htmlspecialchars($user['grade_level']) ?></span>
                                             </td>
-                                            <td data-label="Section"><?= !empty($user['section']) ? htmlspecialchars($user['section']) : 'N/A' ?></td>
                                             <td data-label="Join Date"><?= date('M j, Y', strtotime($user['created_at'])) ?></td>
-                                            <td class="actions" data-label="Actions">
-                                                <button class="btn-view" onclick="viewUser(<?= $user['id'] ?>)" title="View">
+                                            <td class="action-buttons" data-label="Actions">
+                                                <button class="btn-edit" onclick="viewUser(<?= $user['id'] ?>)" title="View">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                <button class="btn-warn" onclick="warnUser(<?= $user['id'] ?>)" title="Warn" <?= $user['id'] === $_SESSION['user_id'] ? 'disabled="disabled"' : '' ?>>
-                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                <button class="btn-delete" onclick="deleteUser(<?= $user['id'] ?>, '<?= htmlspecialchars(addslashes($user['username'])) ?>')" title="Delete" <?= ($user['id'] === $_SESSION['user_id'] || $_SESSION['grade_level'] !== 'Developer') ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : '' ?>>
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
-                                                <?php if ($_SESSION['grade_level'] === 'Developer' && $user['id'] !== $_SESSION['user_id']): ?>
-                                                    <button class="btn-delete" onclick="deleteUser(<?= $user['id'] ?>, '<?= htmlspecialchars(addslashes($user['username'])) ?>')" title="Delete">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                <?php else: ?>
-                                                    <button class="btn-delete" disabled title="Delete (Developer only)">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

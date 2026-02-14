@@ -159,6 +159,18 @@ try {
         LIMIT 5
     ");
     $stats['top_gwa_users'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Daily Traffic (last 30 days)
+    $stmt = $pdo->query("
+        SELECT 
+            DATE(login_time) as login_date, 
+            COUNT(DISTINCT user_id) as count 
+        FROM user_sessions 
+        WHERE login_time >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+        GROUP BY DATE(login_time) 
+        ORDER BY login_date ASC
+    ");
+    $stats['daily_traffic'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
 } catch (PDOException $e) {
     error_log("Dashboard Stats Error: " . $e->getMessage());

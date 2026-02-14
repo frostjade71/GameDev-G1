@@ -78,14 +78,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['otp_expiry'] = time() + (5 * 60); // 5 minutes expiry
                 
                 if (sendOTP($email, $username, $otp)) {
+                    // AUDIT LOG: Registered Account (Initial Step)
+                    require_once '../includes/Logger.php';
+                    logAudit('Registered Account', null, $username, "Email: $email - OTP Sent");
+
                     header('Location: otp/verify.php');
                     exit();
                 } else {
                     $errors[] = 'Failed to send verification email. Please try again.';
+                    // AUDIT LOG: Registration Failed (Email)
+                    require_once '../includes/Logger.php';
+                    logAudit('Registration Failed', null, $username, "Failed to send OTP to $email");
                 }
             }
         } catch (PDOException $e) {
             $errors[] = 'Registration failed. Please try again.';
+            // AUDIT LOG: Registration Error
+            require_once '../includes/Logger.php';
+            logAudit('Registration Error', null, $username, $e->getMessage());
         }
     }
     

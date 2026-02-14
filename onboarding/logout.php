@@ -8,6 +8,11 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Mark session as inactive in database
 if (isset($_SESSION['user_id'])) {
+    
+    // AUDIT LOG: Logout
+    require_once '../includes/Logger.php';
+    logAudit('Logout', $_SESSION['user_id'], $_SESSION['username'] ?? null);
+
     try {
         $stmt = $pdo->prepare("UPDATE user_sessions SET is_active = 0 WHERE session_id = ? AND user_id = ?");
         $stmt->execute([session_id(), $_SESSION['user_id']]);

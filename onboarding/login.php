@@ -60,15 +60,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     // Log error but don't prevent login
                     error_log("Failed to create session record: " . $e->getMessage());
                 }
+
+                // AUDIT LOG: Login Success
+                require_once '../includes/Logger.php';
+                logAudit('Login Success', $user['id'], $user['username']);
                 
                 // Redirect to index page
                 header('Location: ../menu.php');
                 exit();
             } else {
                 $error_message = 'Invalid email or password.';
+                // AUDIT LOG: Login Failed
+                require_once '../includes/Logger.php';
+                // Try to find user exists to log who attempted
+                $failedUserId = $user['id'] ?? null;
+                $failedUsername = $user['username'] ?? ($email ? "Email: $email" : 'Unknown');
+                logAudit('Login Failed', $failedUserId, $failedUsername, "Invalid password for email: $email");
             }
         } catch (PDOException $e) {
             $error_message = 'Login failed. Please try again.';
+            // AUDIT LOG: Login Error
+            require_once '../includes/Logger.php';
+             logAudit('Login Error', null, "Email: $email", $e->getMessage());
         }
     }
 }

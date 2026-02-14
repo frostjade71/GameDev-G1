@@ -101,6 +101,17 @@ try {
     $data = json_encode(['requester_id' => $user_id, 'request_id' => $request_id]);
     $stmt->execute([$receiver_id, $message, $data]);
     
+    // AUDIT LOG: Sent Friend Request
+    if (!isset($_SESSION['username'])) {
+        $stmt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
+        $stmt->execute([$user_id]);
+        $u = $stmt->fetch();
+        $_SESSION['username'] = $u['username'];
+    }
+    require_once '../includes/Logger.php';
+    logAudit('Sent Friend Request', $user_id, $_SESSION['username'], "Sent friend request to User ID: $receiver_id");
+    
+    
     // Commit transaction
     $pdo->commit();
     

@@ -85,6 +85,10 @@ $admin_logs = $stmt->fetchAll();
                 <i class="fas fa-users-cog"></i>
                 <span>User Management</span>
             </a>
+            <a href="audit-logs.php" class="nav-link">
+                <i class="fas fa-history"></i>
+                <span>Audit Logs</span>
+            </a>
         </nav>
     </div>
 
@@ -208,11 +212,11 @@ $admin_logs = $stmt->fetchAll();
                         <i class="fas fa-user-check"></i>
                     </div>
                     <div class="stat-content">
-                        <h3>Active Today</h3>
-                        <div class="value stat-value" data-target="<?php echo $dashboardStats['active_today']; ?>">0</div>
+                        <h3>Online Users</h3>
+                        <div class="value stat-value" data-target="<?php echo $dashboardStats['active_users']; ?>">0</div>
                         <div class="stat-sublabel">
                             <i class="fas fa-clock"></i>
-                            <?php echo $dashboardStats['active_users']; ?> active total
+                            <?php echo $dashboardStats['active_today']; ?> Active Today
                         </div>
                     </div>
                 </div>

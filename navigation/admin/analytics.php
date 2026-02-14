@@ -73,6 +73,10 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
                 <i class="fas fa-users-cog"></i>
                 <span>User Management</span>
             </a>
+            <a href="audit-logs.php" class="nav-link">
+                <i class="fas fa-history"></i>
+                <span>Audit Logs</span>
+            </a>
         </nav>
     </div>
 
@@ -156,6 +160,16 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
         </div>
 
         <!-- Analytics Charts Grid -->
+        <!-- Daily Traffic Chart -->
+        <div class="dashboard-card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-line"></i> Daily Traffic (Last 30 Days)</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="dailyTrafficChart" style="height: 300px;"></canvas>
+            </div>
+        </div>
+
         <div class="dashboard-grid">
             <!-- User Distribution Chart -->
             <div class="dashboard-card">
@@ -266,11 +280,13 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
     const chartData = {
         distribution: <?php echo json_encode($dashboardStats['grade_distribution']); ?>,
         role_distribution: <?php echo json_encode($dashboardStats['role_distribution']); ?>,
-        top_gwa: <?php echo json_encode($dashboardStats['top_gwa_by_grade']); ?>
+        top_gwa: <?php echo json_encode($dashboardStats['top_gwa_by_grade']); ?>,
+        daily_traffic: <?php echo json_encode($dashboardStats['daily_traffic'] ?? []); ?>
     };
     
     let distributionChart = null;
     let gwaChart = null;
+    let dailyTrafficChart = null;
 
     const COLOR_PALETTE = [
         '#4cc9f0', // Blue
@@ -300,7 +316,98 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
     document.addEventListener('DOMContentLoaded', function() {
         initializeDistributionChart('grade');
         initializeGWAChart();
+        initializeDailyTrafficChart();
     });
+
+    function initializeDailyTrafficChart() {
+        const ctx = document.getElementById('dailyTrafficChart');
+        if (!ctx) return;
+
+        if (dailyTrafficChart) {
+            dailyTrafficChart.destroy();
+        }
+
+        const data = chartData.daily_traffic || [];
+        // Fill in missing dates with 0 if needed, or just plot available data. 
+        // For simplicity, plotting available data. Ideally, we should fill gaps in PHP or JS.
+        // Let's create a label array for the last 30 days and map counts to it for a continuous line.
+        
+        const labels = [];
+        const counts = [];
+        const today = new Date();
+        const dataMap = {};
+        
+        data.forEach(item => {
+            dataMap[item.login_date] = parseInt(item.count);
+        });
+
+        for (let i = 29; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(today.getDate() - i);
+            const dateStr = d.toISOString().split('T')[0];
+            labels.push(d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
+            counts.push(dataMap[dateStr] || 0);
+        }
+
+        dailyTrafficChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Daily Logins',
+                    data: counts,
+                    borderColor: '#4cc9f0', // Blue
+                    backgroundColor: 'rgba(76, 201, 240, 0.2)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4, // Smooth curves
+                    pointBackgroundColor: '#4cc9f0',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#4cc9f0'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#e0e0e0',
+                            stepSize: 1
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#e0e0e0',
+                            maxTicksLimit: 10
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+    }
 
     function initializeDistributionChart(type) {
         const ctx = document.getElementById('distributionChart');

@@ -24,6 +24,7 @@ if (!function_exists('isLoggedIn') || !isLoggedIn() || !$isAdminDev) {
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'id';
 $order = isset($_GET['order']) ? $_GET['order'] : 'asc';
 $grade_filter = isset($_GET['grade']) ? $_GET['grade'] : 'all';
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Validate sort/order
 $valid_columns = ['id', 'username', 'email', 'grade_level', 'section', 'created_at'];
@@ -36,6 +37,17 @@ $params = [];
 if ($grade_filter !== 'all') {
 	$query .= " WHERE grade_level = ?";
 	$params[] = $grade_filter;
+}
+
+if (!empty($search)) {
+    // Add WHERE or AND depending on if we already have a WHERE clause
+    $query .= ($grade_filter !== 'all') ? " AND" : " WHERE";
+    $query .= " (username LIKE ? OR email LIKE ? OR grade_level LIKE ? OR section LIKE ?)";
+    $searchTerm = "%$search%";
+    $params[] = $searchTerm;
+    $params[] = $searchTerm;
+    $params[] = $searchTerm;
+    $params[] = $searchTerm;
 }
 $query .= " ORDER BY $sort $order_sql";
 
@@ -57,24 +69,31 @@ try {
 			$section = !empty($user['section']) ? htmlspecialchars($user['section']) : 'N/A';
 			$joinDate = date('M j, Y', strtotime($user['created_at']));
 			$selfId = $_SESSION['user_id'] ?? null;
-			$canDelete = (($_SESSION['grade_level'] ?? '') === 'Developer') && ($id != $selfId);
-			$deleteDisabled = $canDelete ? '' : 'disabled title="Delete (Developer only)"';
-			$selfWarnDisabled = ($id == $selfId) ? 'disabled="disabled"' : '';
+			$currentUserGrade = $_SESSION['grade_level'] ?? '';
+			// Logic from user-management.php: disabled if self or not developer
+			$isDeveloper = ($currentUserGrade === 'Developer');
+			$isSelf = ($id == $selfId);
+			$canDelete = $isDeveloper && !$isSelf;
+			$deleteDisabledAttr = $canDelete ? '' : 'disabled style="opacity:0.5;cursor:not-allowed;"';
+
 			echo '<tr>';
 			echo '<td data-label="ID">' . $id . '</td>';
-			echo '<td data-label="Username">' . $username . '</td>';
+			echo '<td data-label="Username">
+				<div class="creator-info" style="display: flex; align-items: center; gap: 8px;">
+					<img src="../../assets/menu/defaultuser.png" 
+						 alt="Avatar" 
+						 class="creator-avatar"
+						 style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.2);">
+					<span class="creator-name">' . $username . '</span>
+				</div>
+			</td>';
 			echo '<td data-label="Email">' . $email . '</td>';
 			echo '<td data-label="Grade Level"><span class="grade-badge">' . $grade . '</span></td>';
-			echo '<td data-label="Section">' . $section . '</td>';
+			// Section column removed to match user-management.php
 			echo '<td data-label="Join Date">' . $joinDate . '</td>';
-			echo '<td class="actions" data-label="Actions">';
-			echo '<button class="btn-view" onclick="viewUser(' . $id . ')" title="View"><i class="fas fa-eye"></i></button>';
-			echo '<button class="btn-warn" onclick="warnUser(' . $id . ')" title="Warn" ' . $selfWarnDisabled . '><i class="fas fa-exclamation-triangle"></i></button>';
-			if ($canDelete) {
-				echo '<button class="btn-delete" onclick="deleteUser(' . $id . ', \'' . htmlspecialchars(addslashes($user['username'])) . '\')" title="Delete"><i class="fas fa-trash"></i></button>';
-			} else {
-				echo '<button class="btn-delete" disabled title="Delete (Developer only)"><i class="fas fa-trash"></i></button>';
-			}
+			echo '<td class="action-buttons" data-label="Actions">';
+			echo '<button class="btn-edit" onclick="viewUser(' . $id . ')" title="View"><i class="fas fa-eye"></i></button>';
+			echo '<button class="btn-delete" onclick="deleteUser(' . $id . ', \'' . htmlspecialchars(addslashes($user['username'])) . '\')" title="Delete" ' . $deleteDisabledAttr . '><i class="fas fa-trash"></i></button>';
 			echo '</td>';
 			echo '</tr>';
 		}

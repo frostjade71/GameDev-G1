@@ -33,8 +33,27 @@ $stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE grade_level NOT I
 $total_students = $stmt->fetch()['count'];
 
 // Active students (logged in within last 7 days)
-// Note: last_login column doesn't exist in the database yet
+// Active students (logged in within last 30 minutes)
 $active_students = 0;
+try {
+    $stmt = $pdo->prepare("
+        SELECT COUNT(DISTINCT us.user_id) as count 
+        FROM user_sessions us
+        JOIN users u ON us.user_id = u.id
+        WHERE us.is_active = 1 
+        AND us.last_activity >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)
+        AND u.grade_level NOT IN ('Teacher', 'Admin', 'Developer')
+    ");
+    $stmt->execute();
+    $result = $stmt->fetch();
+    if ($result) {
+        $active_students = $result['count'];
+    }
+} catch (PDOException $e) {
+    // If table doesn't exist or other error
+    error_log("Failed to count active students: " . $e->getMessage());
+    $active_students = 0;
+}
 
 // Total vocabulary questions
 $total_vocab = 0;

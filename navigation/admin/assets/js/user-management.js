@@ -22,10 +22,12 @@ function debounce(func, wait) {
 }
 
 // Current state
+// Current state
 let userManagementState = {
     sort: 'id',
     order: 'asc',
     grade: 'all',
+    search: '',
     isLoading: false
 };
 
@@ -46,6 +48,14 @@ function initializeUserManagementState() {
     userManagementState.sort = urlParams.get('sort') || 'id';
     userManagementState.order = urlParams.get('order') || 'asc';
     userManagementState.grade = urlParams.get('grade') || 'all';
+    userManagementState.search = urlParams.get('search') || '';
+
+    // Set initial search value if present
+    const searchInput = document.getElementById('userSearch');
+    if (searchInput && userManagementState.search) {
+        searchInput.value = userManagementState.search;
+    }
+
     updateHeaderIndicators();
 }
 
@@ -62,6 +72,7 @@ function loadUsersAjax() {
     if (userManagementState.sort) params.set('sort', userManagementState.sort);
     if (userManagementState.order) params.set('order', userManagementState.order);
     if (userManagementState.grade && userManagementState.grade !== 'all') params.set('grade', userManagementState.grade);
+    if (userManagementState.search) params.set('search', userManagementState.search);
 
     fetch(`api/get_users.php?${params.toString()}`, {
         method: 'GET',
@@ -117,24 +128,8 @@ function initializeEventListeners() {
     const searchInput = document.getElementById('userSearch');
     if (searchInput) {
         searchInput.addEventListener('input', debounce((e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('.user-table tbody tr');
-
-            rows.forEach(row => {
-                const username = row.cells[1]?.textContent?.toLowerCase() || '';
-                const email = row.cells[2]?.textContent?.toLowerCase() || '';
-                const grade = row.cells[3]?.textContent?.toLowerCase() || '';
-                const section = row.cells[4]?.textContent?.toLowerCase() || '';
-
-                if (username.includes(searchTerm) ||
-                    email.includes(searchTerm) ||
-                    grade.includes(searchTerm) ||
-                    section.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+            userManagementState.search = e.target.value.trim();
+            loadUsersAjax();
         }, 300));
     }
 
@@ -330,12 +325,12 @@ function confirmDeleteUser(userId) {
 function exportUsers() {
     // Log admin action
     logAdminAction('Exported user data');
-    
+
     // Create CSV export
     const table = document.querySelector('.user-table');
     let csv = [];
     const rows = table.querySelectorAll('tr');
-    
+
     rows.forEach(row => {
         const cols = row.querySelectorAll('td, th');
         const rowData = [];
@@ -346,7 +341,7 @@ function exportUsers() {
         });
         csv.push(rowData.join(','));
     });
-    
+
     const csvContent = csv.join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -355,7 +350,7 @@ function exportUsers() {
     a.download = 'users_export_' + new Date().toISOString().split('T')[0] + '.csv';
     a.click();
     window.URL.revokeObjectURL(url);
-    
+
     showToast('User data exported successfully', 'success');
 }
 

@@ -72,6 +72,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Game card clicked, gameType:', gameType); // Debug log
 
                 if (gameType === 'vocabbg') {
+                    // AUDIT LOG: Clicked Vocabworld
+                    const logData = JSON.stringify({
+                        action: 'Clicked Vocabworld',
+                        details: 'User selected Vocabworld game'
+                    });
+
+                    // Use sendBeacon for reliable logging during navigation, or fetch with keepalive
+                    if (navigator.sendBeacon) {
+                        navigator.sendBeacon('../api/admin-log.php', logData);
+                    } else {
+                        fetch('../api/admin-log.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: logData,
+                            keepalive: true
+                        }).catch(err => console.error('Log failed', err));
+                    }
+
                     // Redirect to VocabWorld game loader
                     console.log('Redirecting to VocabWorld Loader...'); // Debug log
                     playClickSound();

@@ -59,6 +59,17 @@ try {
     $data = json_encode(['remover_id' => $user_id, 'friendship_id' => $friendship['id']]);
     $stmt->execute([$friend_id, $message, $data]);
     
+    // AUDIT LOG: Removed Friend
+    if (!isset($_SESSION['username'])) {
+        $stmt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
+        $stmt->execute([$user_id]);
+        $u = $stmt->fetch();
+        $_SESSION['username'] = $u['username'];
+    }
+    require_once '../includes/Logger.php';
+    logAudit('Removed Friend', $user_id, $_SESSION['username'], "Removed friend with User ID: $friend_id");
+    
+    
     // Commit transaction
     $pdo->commit();
     

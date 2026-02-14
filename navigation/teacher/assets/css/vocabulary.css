@@ -206,6 +206,11 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
+.grade-filter select option {
+    background: #0a0a0f;
+    color: white;
+}
+
 .search-box {
     position: relative;
     display: flex;

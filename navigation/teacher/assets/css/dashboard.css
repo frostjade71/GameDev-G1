@@ -26,11 +26,9 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(
-    90deg,
-    rgba(96, 239, 255, 0.8),
-    rgba(0, 255, 135, 0.8)
-  );
+  background: linear-gradient(90deg,
+      rgba(96, 239, 255, 0.8),
+      rgba(0, 255, 135, 0.8));
 }
 
 /* Custom Teacher Sidebar Styles */
@@ -186,24 +184,20 @@ button.add-vocab-btn:hover,
 /* Hero Container (Merged Welcome & Stats) */
 .hero-container {
   background:
-    linear-gradient(
-      to right,
+    linear-gradient(to right,
       rgba(19, 32, 51, 0.95) 0%,
       rgba(19, 32, 51, 0.7) 20%,
-      rgba(19, 32, 51, 0.4) 100%
-    ),
-    linear-gradient(
-      135deg,
+      rgba(19, 32, 51, 0.4) 100%),
+    linear-gradient(135deg,
       rgba(10, 10, 15, 0.8) 0%,
-      rgba(0, 0, 0, 0.6) 100%
-    ),
+      rgba(0, 0, 0, 0.6) 100%),
     url("../images/wordweav_cover.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 20px;
   padding: 2.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   border: 1px solid #000000;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   display: flex;
@@ -371,10 +365,12 @@ button.add-vocab-btn:hover,
 }
 
 @keyframes pulse-stat {
+
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
   }
+
   50% {
     box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
   }
@@ -604,21 +600,25 @@ button.add-vocab-btn:hover,
   border: 1px solid rgba(0, 255, 135, 0.3);
   color: rgba(0, 255, 135, 1);
 }
+
 .diff-2 {
   background: rgba(96, 239, 255, 0.15);
   border: 1px solid rgba(96, 239, 255, 0.3);
   color: rgba(96, 239, 255, 1);
 }
+
 .diff-3 {
   background: rgba(255, 215, 0, 0.15);
   border: 1px solid rgba(255, 215, 0, 0.3);
   color: rgba(255, 215, 0, 1);
 }
+
 .diff-4 {
   background: rgba(255, 140, 0, 0.15);
   border: 1px solid rgba(255, 140, 0, 0.3);
   color: rgba(255, 140, 0, 1);
 }
+
 .diff-5 {
   background: rgba(255, 69, 0, 0.15);
   border: 1px solid rgba(255, 69, 0, 0.3);
@@ -1073,6 +1073,7 @@ button.add-vocab-btn:hover,
     padding: 1.25rem 1rem;
     gap: 1.2rem;
     border-radius: 15px;
+    margin-bottom: 0.5rem;
   }
 
   .welcome-section {

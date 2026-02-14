@@ -51,6 +51,10 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'update_profile') 
     // Update user profile
     $stmt = $pdo->prepare("UPDATE users SET username = ?, email = ?, section = ?, about_me = ?, updated_at = NOW() WHERE id = ?");
     if ($stmt->execute([$username, $email, $section, $about_me, $user_id])) {
+        // AUDIT LOG: Updates Profile Settings
+        require_once '../../includes/Logger.php';
+        logAudit('Updates Profile Settings', $user_id, $username, "Updated profile settings (Section: $section)");
+
         // Return the updated values for JavaScript to use
         echo json_encode([
             'success' => true, 
@@ -128,6 +132,10 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'upload_profile_im
         $stmt = $pdo->prepare("UPDATE users SET profile_image = ?, updated_at = NOW() WHERE id = ?");
         
         if ($stmt->execute([$relativePath, $user_id])) {
+            // AUDIT LOG: updates Profile Picture
+            require_once '../../includes/Logger.php';
+            logAudit('updates Profile Picture', $user_id, $user['username'], "Uploaded new profile image: $newFilename");
+
             echo json_encode([
                 'success' => true,
                 'message' => 'Profile image updated successfully!',

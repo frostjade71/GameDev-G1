@@ -2,7 +2,7 @@
 /* Usage: <div class="loader"></div> */
 
 .loader {
-  width: 50px;
+  width: 40px;
   aspect-ratio: 1;
   display: grid;
 }
@@ -27,12 +27,29 @@
 }
 
 @keyframes l12 {
-  0%   { background-position: 50%  0, 100% 100%, 0    100%, 0 0; }
-  25%  { background-position: 0    0, 100% 50%,  0    100%, 0 0; }
-  50%  { background-position: 0    0, 100% 0,    50%  100%, 0 0; }
-  75%  { background-position: 0    0, 100% 0,    100% 100%, 0 50%; }
-  75.01% { background-position: 100% 0, 100% 0,    100% 100%, 0 50%; }
-  100% { background-position: 50%  0, 100% 0,    100% 100%, 0 100%; }
+  0% {
+    background-position: 50% 0, 100% 100%, 0 100%, 0 0;
+  }
+
+  25% {
+    background-position: 0 0, 100% 50%, 0 100%, 0 0;
+  }
+
+  50% {
+    background-position: 0 0, 100% 0, 50% 100%, 0 0;
+  }
+
+  75% {
+    background-position: 0 0, 100% 0, 100% 100%, 0 50%;
+  }
+
+  75.01% {
+    background-position: 100% 0, 100% 0, 100% 100%, 0 50%;
+  }
+
+  100% {
+    background-position: 50% 0, 100% 0, 100% 100%, 0 100%;
+  }
 }
 
 /* Loader Overlay for Upload States */
@@ -69,7 +86,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8); /* Darker background for more premium feel */
+  background: rgba(0, 0, 0, 0.8);
+  /* Darker background for more premium feel */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -96,9 +114,16 @@ body {
 }
 
 @keyframes bodyFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}.page-loader-overlay .loader-text {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.page-loader-overlay .loader-text {
   color: white;
   font-size: 1.2rem;
   font-weight: 700;

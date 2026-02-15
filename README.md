@@ -2,7 +2,7 @@
 
 # <a href="https://wordweavershccci.online"><img src="assets/menu/Word-Weavers.png" alt="Word Weavers Logo" width="400"></a>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
+[![License: Educational](https://img.shields.io/badge/License-Educational-gray?style=for-the-badge)](LICENSE.md)
 [![PHP Version](https://img.shields.io/badge/PHP-8.0%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net/)
 [![Docker](https://img.shields.io/badge/Docker-Verified-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
@@ -13,9 +13,9 @@ A comprehensive web-based educational platform developed by Group 3 Computer Sci
 
 ## Project Overview
 
-![Main Menu Preview](docs/mainmenu.webp)
+![Main Menu Preview](docs/screencapture-localhost-8080-menu-php-2026-02-15-12_51_18.webp)
 
-**Word Weavers** is designed to help Junior High School students (Grades 7-10) learn English in a fun and engaging way, following the **Philippine K-12 Curriculum** standards set by DepEd. Through interactive games, students can improve their vocabulary, grammar, reading comprehension, and communication skills while actually enjoying the learning process. The platform tracks student progress and provides meaningful insights, making it easier for both students and teachers to see real learning outcomes that align with K-12 assessment standards.
+**Word Weavers** is designed to help Junior High School students (Grades 7-10) learn English in a fun and engaging way, with the help from the teachers curated lessons that follow K-12 curriculum. Through interactive games, students can improve their vocabulary, grammar, reading comprehension, and communication skills while actually enjoying the learning process. The platform tracks student progress and provides meaningful insights, making it easier for both students and teachers to see real learning outcomes that align with K-12 assessment standards.
 
 ## Key Features
 
@@ -26,6 +26,7 @@ A comprehensive web-based educational platform developed by Group 3 Computer Sci
 - Real-time progress tracking and GWA (Grade Weighted Average) calculation
 - Global leaderboards and achievement system
 - Interactive game selection interface
+- Classroom-based learning with curriculum-aligned lessons
 
 ### Game Experiences
 
@@ -46,7 +47,8 @@ A comprehensive web-based educational platform developed by Group 3 Computer Sci
 
 ### Teacher Console
 
-- Vocabulary wordbank management
+- vocabulary wordbank management
+- Course and lesson management
 - Student management
 - Real-time student performance analytics
 - Individual student GWA monitoring
@@ -55,6 +57,7 @@ A comprehensive web-based educational platform developed by Group 3 Computer Sci
 
 - User moderation and management
 - Profile management tools
+- System audit logs and tracking
 - System analytics and reporting
 - Complete platform oversight
 
@@ -70,10 +73,10 @@ docker-compose up -d
 
 Access the application:
 
-- **Web Interface**: http://localhost:8080
+- **Web Interface**: http://localhost:8080 or http://localhost/GameDev-G1
 - **phpMyAdmin**: http://localhost:8081
 
-Access the application at `http://localhost/GameDev-G1`
+Access the application at `http://localhost/GameDev-G1` (XAMPP) or `http://localhost:8080` (Docker).
 
 > **Security Note**: Configure your email settings in `onboarding/otp/send_otp.php` for OTP verification!
 
@@ -102,32 +105,6 @@ The platform implements an engaging educational game ecosystem:
   <img src="https://skillicons.dev/icons?i=html,css,js,php,mysql,docker,vscode" alt="Technology Stack" />
 </p>
 
-## Configuration
-
-### Database Setup
-
-Edit `onboarding/config.php` with your credentials:
-
-```php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'your_username');
-define('DB_PASS', 'your_password');
-define('DB_NAME', 'school_portal');
-```
-
-### Docker Environment
-
-The Docker setup uses these environment variables:
-
-- `DB_HOST=db`
-- `DB_USER=root`
-- `DB_PASS=rootpassword`
-- `DB_NAME=school_portal`
-
-### Email Configuration
-
-Configure PHPMailer in `onboarding/otp/send_otp.php` for OTP verification.
-
 ## Security Features
 
 - **Password Hashing**: bcrypt encryption for all passwords
@@ -150,7 +127,7 @@ Configure PHPMailer in `onboarding/otp/send_otp.php` for OTP verification.
 
 ## Contributing
 
-We welcome contributions! Because i cant do this alone lmao.
+We welcome contributions!
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/NewFeature`)
@@ -160,7 +137,7 @@ We welcome contributions! Because i cant do this alone lmao.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
+This project is provided under a custom **Educational / Source Available License**. See the [LICENSE](LICENSE.md) file for details.
 
 ---
 
@@ -190,5 +167,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) fi
 
 ---
 
-**Version**: 2.0.0
-**Last Updated**: January 26, 2026
+**Version**: 2.4.0
+**Last Updated**: February 15, 2026

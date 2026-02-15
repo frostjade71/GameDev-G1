@@ -643,6 +643,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         <div class="auth-links">
             <p>Don't have an account? <a href="register.php">Create one here</a></p>
+            <p style="margin-top: 1rem;">
+                <a href="../index.php">
+                    <i class="fas fa-arrow-left"></i> Back to Homepage
+                </a>
+            </p>
         </div>
     </div>
     

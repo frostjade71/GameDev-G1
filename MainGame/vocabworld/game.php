@@ -321,9 +321,9 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 }
             },
             render: {
-                pixelArt: true,  // This tells Phaser to handle pixel art better
-                antialias: false, // Disables anti-aliasing
-                roundPixels: true // Prevents sub-pixel rendering jitter (mobile shake fix)
+                pixelArt: true,
+                antialias: false,
+                roundPixels: false // Disabled: roundPixels causes jitter at non-1x zoom levels
             },
             backgroundColor: '#756e63', // Solid background color for transparent map areas
             scene: {
@@ -729,9 +729,9 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
         updateCameraZoom();
         window.addEventListener('resize', updateCameraZoom);
         
-        // Centering the character always with responsive lerping
-        // Higher lerp (0.8) reduces visible jitter on mobile at 1.8x zoom
-        this.cameras.main.startFollow(player, true, 0.8, 0.8);
+        // Smooth camera follow — low lerp (0.1) prevents the camera from
+        // chasing every sub-pixel movement, eliminating jitter on mobile.
+        this.cameras.main.startFollow(player, true, 0.1, 0.1);
 
         // --- MINIMAP SETUP ---
         const isMobile = window.innerWidth <= 768;
@@ -803,8 +803,12 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 
                 // Joystick controls (override keyboard if active)
                 if (joystickActive) {
-                    velocityX = joystickDirection.x * speed;
-                    velocityY = joystickDirection.y * speed;
+                    // Dead-zone: ignore tiny joystick deflections that cause micro-jitter
+                    const deadZone = 0.15;
+                    const jx = Math.abs(joystickDirection.x) > deadZone ? joystickDirection.x : 0;
+                    const jy = Math.abs(joystickDirection.y) > deadZone ? joystickDirection.y : 0;
+                    velocityX = jx * speed;
+                    velocityY = jy * speed;
                 }
                 
                 // Predictive Collision Detection
@@ -868,6 +872,12 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
                 
                 player.setVelocityX(velocityX);
                 player.setVelocityY(velocityY);
+
+                // Snap player position to whole pixels to eliminate sub-pixel drift
+                if (velocityX === 0 && velocityY === 0) {
+                    player.x = Math.round(player.x);
+                    player.y = Math.round(player.y);
+                }
 
                 // Play animations with priority for the stronger axis (helpful for joysticks)
                 // We use the ORIGINAL inputs (cursors/keys) to decide animation, 

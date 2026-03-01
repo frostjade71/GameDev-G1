@@ -104,280 +104,209 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            color: white;
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1rem;
         }
 
-        .verification-container {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 20, 0.95));
-            backdrop-filter: blur(15px);
-            border-radius: 25px;
+        .auth-container {
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
             padding: 2.5rem;
             width: 100%;
-            max-width: 500px;
-            border: 2px solid rgba(96, 239, 255, 0.15);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(96, 239, 255, 0.1);
+            max-width: 380px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.4s ease-out;
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
 
-        .verification-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
-            animation: gradientShift 3s infinite linear;
-            background-size: 200% 100%;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .verification-header {
+        .auth-header {
+            text-align: center;
             margin-bottom: 2rem;
-            text-align: center;
         }
 
-        .logo {
-            max-width: 180px;
-            margin-bottom: 1.5rem;
-            filter: drop-shadow(0 2px 15px rgba(0, 255, 135, 0.4));
-            transition: transform 0.3s ease;
+        .auth-logo {
+            max-width: 120px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+            transition: opacity 0.3s;
         }
 
-        .logo:hover {
-            transform: scale(1.02);
+        .auth-logo:hover {
+            opacity: 1;
         }
 
-        .verification-title {
+        .auth-subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 0.3rem;
+        }
+
+        .auth-email {
+            display: block;
             color: #ffffff;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-            font-family: 'Press Start 2P', cursive;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-            letter-spacing: 0.5px;
-            line-height: 1.4;
-            white-space: nowrap;
-        }
-
-        .verification-message {
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 0.5rem;
-            line-height: 1.6;
-        }
-
-        .verification-message strong {
-            color: #00ff87;
             font-weight: 600;
-        }
-
-        .verification-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-top: 1.5rem;
-            border: 1px solid rgba(96, 239, 255, 0.2);
+            font-size: 0.9rem;
+            margin-top: 0.4rem;
+            word-break: break-all;
         }
 
         .otp-input-container {
             display: flex;
-            gap: 0.8rem;
+            gap: 0.6rem;
             justify-content: center;
-            margin-bottom: 2rem;
+            margin: 1.5rem 0;
         }
 
         .otp-digit {
-            width: 45px;
-            height: 55px;
-            border: 2px solid rgba(96, 239, 255, 0.3);
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 12px;
-            font-size: 1.5rem;
-            color: white;
+            width: 42px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 1.4rem;
+            color: #fff;
             text-align: center;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             font-weight: 600;
+            font-family: inherit;
         }
 
         .otp-digit:focus {
             outline: none;
-            border-color: rgba(0, 255, 135, 0.5);
-            box-shadow: 0 0 15px rgba(0, 255, 135, 0.2);
-            transform: scale(1.05);
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .verify-button {
-            background: linear-gradient(45deg, rgba(96, 239, 255, 0.8), rgba(0, 255, 135, 0.8));
+        .auth-button {
+            background: #ffffff;
+            color: #000000;
             border: none;
-            border-radius: 12px;
-            padding: 1rem 2rem;
-            color: white;
-            font-weight: bold;
-            font-size: 1rem;
+            border-radius: 8px;
+            padding: 0.85rem;
+            font-weight: 700;
+            font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-bottom: 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .verify-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .verify-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 255, 135, 0.3);
-        }
-
-        .verify-button:hover::before {
-            left: 100%;
-        }
-
-        .button-container {
+            transition: transform 0.2s, background 0.2s;
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
             width: 100%;
-            position: relative;
+            margin-top: 0.5rem;
         }
 
-        .verify-button {
-            margin-bottom: 0.5rem !important;
+        .auth-button:hover {
+            background: #e6e6e6;
+            transform: translateY(-1px);
+        }
+
+        .auth-button i {
+            font-size: 0.9rem;
+            color: #000;
         }
 
         .resend-button {
             background: transparent;
-            border: 1px solid rgba(96, 239, 255, 0.3);
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            color: rgba(96, 239, 255, 0.8);
+            border: none;
+            padding: 0.6rem 1rem;
+            color: rgba(255, 255, 255, 0.5);
             font-weight: 500;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.4rem;
             width: auto;
-            min-width: 120px;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 0.8rem;
+            margin: 0.8rem auto 0;
+            font-family: inherit;
         }
 
         .resend-button:hover {
-            background: rgba(96, 239, 255, 0.1);
-            border-color: rgba(96, 239, 255, 0.5);
-            color: rgba(96, 239, 255, 1);
-            transform: translateY(-1px);
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .resend-button:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
-            transform: none;
         }
 
         .resend-button i {
             transition: transform 0.3s ease;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .resend-button:hover i {
             transform: rotate(180deg);
         }
 
-        @media (max-width: 480px) {
-            .resend-button {
-                font-size: 0.75rem;
-                padding: 0.4rem 0.8rem;
-            }
-            
-            .resend-button i {
-                font-size: 0.75rem;
-            }
-        }
-
         .verification-footer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
+            margin-top: 1.2rem;
+            text-align: center;
         }
 
         .time-remaining {
-            color: rgba(96, 239, 255, 0.8);
-            font-size: 0.9rem;
-        }
-
-        .resend-link {
-            color: rgba(96, 239, 255, 0.8);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            padding: 0.8rem 1.5rem;
-            border-radius: 20px;
-            border: 1px solid rgba(96, 239, 255, 0.2);
-            background: rgba(96, 239, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0 auto;
-        }
-
-        .resend-link:hover {
-            color: rgba(0, 255, 135, 1);
-            border-color: rgba(0, 255, 135, 0.3);
-            background: rgba(0, 255, 135, 0.1);
-            transform: translateY(-1px);
-        }
-        
-        .resend-link:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .resend-link i {
-            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
         }
 
         .resend-message {
             margin-top: 0.5rem;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             animation: fadeIn 0.3s ease-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .auth-links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .auth-links p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .auth-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .auth-links a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 87, 87, 0.15);
+            color: #ff7676;
+            border: 1px solid rgba(255, 87, 87, 0.2);
+            text-align: left;
         }
 
         .toast-container {
@@ -388,194 +317,113 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         .toast {
-            background: rgba(255, 107, 107, 0.95);
+            background: rgba(255, 87, 87, 0.95);
             color: white;
-            padding: 1rem;
+            padding: 0.8rem 1rem;
             border-radius: 8px;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.5rem;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             animation: slideIn 0.3s ease-out forwards;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
         }
 
         .toast i {
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        .error-message {
-            background: rgba(255, 107, 107, 0.1);
-            border: 1px solid rgba(255, 107, 107, 0.3);
-            color: #ff6b6b;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
         }
 
         @media (max-width: 480px) {
-            .verification-container {
-                padding: 1.5rem 1rem;
-                margin: 1rem;
+            .auth-container {
+                padding: 2rem 1.5rem;
+                border-radius: 12px;
             }
 
-            .verification-box {
-                padding: 1.2rem 0.8rem;
+            .auth-logo {
+                max-width: 100px;
             }
 
             .otp-digit {
-                width: 35px;
-                height: 45px;
+                width: 36px;
+                height: 44px;
                 font-size: 1.1rem;
             }
 
             .otp-input-container {
-                gap: 0.35rem;
-            }
-
-            .verification-title {
-                font-size: 0.7rem;
-                letter-spacing: 0.3px;
-            }
-
-            .verification-message {
-                font-size: 0.75rem;
-                line-height: 1.4;
-                padding: 0 0.5rem;
-            }
-
-            .verification-message strong {
-                font-size: 0.7rem;
-                display: block;
-                margin-top: 0.2rem;
-                word-break: break-all;
-            }
-
-            .verify-button {
-                padding: 0.8rem 1.5rem;
-                font-size: 0.95rem;
-            }
-
-            .logo {
-                max-width: 150px;
+                gap: 0.4rem;
             }
         }
 
-        @media (max-width: 360px) {
-            .verification-container {
-                padding: 1.2rem 0.8rem;
-            }
-
-            .otp-digit {
-                width: 32px;
-                height: 40px;
-                font-size: 1rem;
-            }
-
-            .otp-input-container {
-                gap: 0.25rem;
-            }
-
-            .verification-title {
-                font-size: 0.6rem;
-                letter-spacing: 0.2px;
-            }
-
-            .verification-message {
-                font-size: 0.7rem;
-            }
-
-            .verification-message strong {
-                font-size: 0.65rem;
-            }
-
-            .logo {
-                max-width: 130px;
-            }
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+            transition: opacity 0.2s;
         }
     </style>
 </head>
 <body>
     <?php include '../../includes/page-loader.php'; ?>
     <div class="toast-container"></div>
-    <div class="verification-container">
-        <div class="verification-header">
-            <img src="../../assets/menu/Word-Weavers.png" alt="Word Weavers" class="logo">
-            <div class="header-content">
-                <h1 class="verification-title">Verify Your Email</h1>
-                <p class="verification-message">
-                    <?php if (isset($_SESSION['temp_user_data']['email'])): ?>
-                        We've sent a verification code to:<br>
-                        <strong><?php echo htmlspecialchars($_SESSION['temp_user_data']['email']); ?></strong>
-                    <?php endif; ?>
-                </p>
-            </div>
+    <div class="auth-container">
+        <div class="auth-header">
+            <img src="../../assets/menu/ww_logo_main.webp" alt="Word Weavers" class="auth-logo">
+            <p class="auth-subtitle">
+                <?php if (isset($_SESSION['temp_user_data']['email'])): ?>
+                    We sent a verification code to
+                    <span class="auth-email"><?php echo htmlspecialchars($_SESSION['temp_user_data']['email']); ?></span>
+                <?php else: ?>
+                    Enter your verification code
+                <?php endif; ?>
+            </p>
         </div>
 
         <?php if ($error_message): ?>
             <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i>
+                <i class="fas fa-exclamation-triangle"></i>
                 <?php echo $error_message; ?>
             </div>
         <?php endif; ?>
 
-        <div class="verification-box">
-            <form method="POST" action="" class="verification-form">
-                <div class="otp-input-container">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="1">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="2">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="3">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="4">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="5">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="6">
-                    <input type="hidden" name="otp" id="otp-value">
-                </div>
-
-                <div class="button-container">
-                    <button type="submit" class="verify-button">
-                        <i class="fas fa-check-circle"></i>
-                        Verify Code
-                    </button>
-
-                    <button type="button" class="resend-button" id="resend-button">
-                        <i class="fas fa-redo"></i>
-                        Resend Code
-                    </button>
-                </div>
-            </form>
-
-            <div class="verification-footer">
-                <p class="time-remaining" id="timer">Code expires in: 05:00</p>
-                <p class="resend-message" id="resend-message" style="display: none;"></p>
+        <form method="POST" action="" class="verification-form">
+            <div class="otp-input-container">
+                <input type="text" maxlength="1" class="otp-digit" data-index="1" inputmode="numeric">
+                <input type="text" maxlength="1" class="otp-digit" data-index="2" inputmode="numeric">
+                <input type="text" maxlength="1" class="otp-digit" data-index="3" inputmode="numeric">
+                <input type="text" maxlength="1" class="otp-digit" data-index="4" inputmode="numeric">
+                <input type="text" maxlength="1" class="otp-digit" data-index="5" inputmode="numeric">
+                <input type="text" maxlength="1" class="otp-digit" data-index="6" inputmode="numeric">
+                <input type="hidden" name="otp" id="otp-value">
             </div>
+
+            <button type="submit" class="auth-button">
+                <i class="fas fa-check-circle"></i>
+                Verify Code
+            </button>
+
+            <button type="button" class="resend-button" id="resend-button">
+                <i class="fas fa-redo"></i>
+                Resend Code
+            </button>
+        </form>
+
+        <div class="verification-footer">
+            <p class="time-remaining" id="timer">Code expires in: 05:00</p>
+            <p class="resend-message" id="resend-message" style="display: none;"></p>
+        </div>
+
+        <div class="auth-links">
+            <p><a href="../register.php"><i class="fas fa-arrow-left"></i> Back to Register</a></p>
         </div>
     </div>
 
@@ -629,7 +477,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
                 // Always show the response message from the server
                 resendMessage.textContent = data.message || 'Verification code has been resent!';
-                resendMessage.style.color = data.success ? '#00ff87' : '#ff6b6b';
+                resendMessage.style.color = data.success ? '#4ade80' : '#ff7676';
                 resendMessage.style.display = 'block';
                 
                 if (data.success) {
@@ -648,7 +496,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 console.error('Resend error:', error);
                 const errorMessage = error.message || 'Failed to resend code. Please try again.';
                 resendMessage.textContent = errorMessage;
-                resendMessage.style.color = '#ff6b6b';
+                resendMessage.style.color = '#ff7676';
                 resendMessage.style.display = 'block';
             } finally {
                 resendButton.disabled = false;
@@ -736,12 +584,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 if (timeLeft > 0) {
                     timer.textContent = `Code expires in: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-                    timer.style.color = 'rgba(96, 239, 255, 0.8)';
+                    timer.style.color = 'rgba(255, 255, 255, 0.4)';
                     resendButton.disabled = true;
                 } else {
                     clearInterval(window.timerInterval);
                     timer.textContent = 'Code expired';
-                    timer.style.color = '#ff6b6b';
+                    timer.style.color = '#ff7676';
                     resendButton.disabled = false;
                     localStorage.removeItem('otpExpiryTime');
                 }

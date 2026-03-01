@@ -44,30 +44,28 @@ function sendOTP($email, $username, $otp) {
         
         $mail->Body = "
             <div style='background-color: #1a1a2e; padding: 40px 20px; font-family: Arial, sans-serif; color: #ffffff; text-align: center;'>
-                <div style='max-width: 600px; margin: 0 auto; background: #0f0f1e; border-radius: 25px; border: 2px solid rgba(96, 239, 255, 0.2); padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);'>
-                    " . ($logoUrl ? "<img src='{$logoUrl}' alt='Word Weavers' style='max-width: 200px; margin-bottom: 20px;'>" : "<h1 style='color: #60efff;'>Word Weavers</h1>") . "
-                    <div style='height: 3px; background: linear-gradient(90deg, #60efff, #00ff87); margin-bottom: 30px;'></div>
+                <div style='max-width: 420px; margin: 0 auto; background: rgba(20, 20, 20, 0.95); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.08); padding: 40px 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.4);'>
+                    " . ($logoUrl ? "<img src='{$logoUrl}' alt='Word Weavers' style='max-width: 160px; margin-bottom: 24px; opacity: 0.9;'>" : "<h1 style='color: #ffffff; font-size: 20px; margin-bottom: 24px;'>Word Weavers</h1>") . "
                     
-                    <h2 style='color: #ffffff; font-size: 22px; margin-bottom: 20px;'>Welcome, {$username}!</h2>
-                    <p style='color: #b0b0c0; font-size: 16px; line-height: 1.6; margin-bottom: 30px;'>
-                        Your adventure is about to begin. Use the verification code below to activate your account.
+                    <h2 style='color: #ffffff; font-size: 18px; font-weight: 600; margin-bottom: 8px;'>Welcome, {$username}!</h2>
+                    <p style='color: rgba(255, 255, 255, 0.5); font-size: 14px; line-height: 1.6; margin-bottom: 28px;'>
+                        Use the verification code below to activate your account.
                     </p>
                     
-                    <div style='background: rgba(96, 239, 255, 0.05); border: 1px solid rgba(96, 239, 255, 0.2); border-radius: 15px; padding: 25px 15px; margin-bottom: 30px;'>
-                        <span style='display: block; color: #60efff; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;'>Your Code</span>
-                        <h1 style='color: #00ff87; font-size: 32px; margin: 0; letter-spacing: 6px; font-weight: bold; white-space: nowrap;'>{$otp}</h1>
+                    <div style='background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 20px 15px; margin-bottom: 24px;'>
+                        <span style='display: block; color: rgba(255, 255, 255, 0.4); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;'>Verification Code</span>
+                        <h1 style='color: #ffffff; font-size: 32px; margin: 0; letter-spacing: 8px; font-weight: 700;'>{$otp}</h1>
                     </div>
                     
-                    <p style='color: #ff6b6b; font-size: 13px; margin-bottom: 25px;'>
+                    <p style='color: rgba(255, 255, 255, 0.4); font-size: 13px; margin-bottom: 28px;'>
                         This code will expire in 5 minutes.
                     </p>
                     
-                    <div style='height: 1px; background: rgba(96, 239, 255, 0.1); margin-bottom: 25px;'></div>
+                    <div style='height: 1px; background: rgba(255, 255, 255, 0.08); margin-bottom: 20px;'></div>
                     
-                    <p style='color: #60efff; font-weight: bold; font-size: 14px; margin: 0 0 10px 0;'>Keep Learning!</p>
-                    <p style='color: rgba(255, 255, 255, 0.5); font-size: 11px; line-height: 1.5; margin: 0;'>
+                    <p style='color: rgba(255, 255, 255, 0.3); font-size: 11px; line-height: 1.6; margin: 0;'>
                         &copy; " . date('Y') . " WordWeavers HCCCI. All rights reserved.<br>
-                        This is an automated message, please do not reply to this email.
+                        This is an automated message, please do not reply.
                     </p>
                 </div>
             </div>";

@@ -322,7 +322,8 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
             },
             render: {
                 pixelArt: true,  // This tells Phaser to handle pixel art better
-                antialias: false // Disables anti-aliasing
+                antialias: false, // Disables anti-aliasing
+                roundPixels: true // Prevents sub-pixel rendering jitter (mobile shake fix)
             },
             backgroundColor: '#756e63', // Solid background color for transparent map areas
             scene: {
@@ -729,7 +730,8 @@ if (!in_array($user_grade, ['Teacher', 'Admin', 'Developer'])) {
         window.addEventListener('resize', updateCameraZoom);
         
         // Centering the character always with responsive lerping
-        this.cameras.main.startFollow(player, false, 0.2, 0.2);
+        // Higher lerp (0.8) reduces visible jitter on mobile at 1.8x zoom
+        this.cameras.main.startFollow(player, true, 0.8, 0.8);
 
         // --- MINIMAP SETUP ---
         const isMobile = window.innerWidth <= 768;

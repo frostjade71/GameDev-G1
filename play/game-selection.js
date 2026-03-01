@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Only add listener if the element doesn't have an onclick handler
         if (!backElement.onclick) {
             backElement.addEventListener('click', (event) => {
-                playClickSound();
                 window.location.href = '../menu.php?from=selection';
             });
         }
@@ -92,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Redirect to VocabWorld game loader
                     console.log('Redirecting to VocabWorld Loader...'); // Debug log
-                    playClickSound();
                     // Try immediate redirect
                     setTimeout(() => {
                         window.location.href = '../MainGame/vocabworld/loading/entering.html';
@@ -117,9 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (backButton) {
         backButton.addEventListener('click', (e) => {
             e.preventDefault();
-
-            // Play click sound
-            playClickSound();
 
             // Add visual feedback
             backButton.style.transform = 'scale(0.95)';

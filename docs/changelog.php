@@ -239,6 +239,18 @@
         </h1>
         
         <div class="log-entry">
+            <div class="log-version">v2.4.1</div>
+            <span class="log-date">March 1, 2026</span>
+            <p>VocabWorld Game Engine and Forms Refinements</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Fixed map shaking on mobile by enabling roundPixels and GPU-accelerated camera follow.</li>
+                <li>Redesigned OTP verification page to match minimalistic login/register style.</li>
+                <li>Updated form label colors to be whiter for better readability.</li>
+                <li>Fixed Sign out functionalities on Dashboard pages</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
             <div class="log-version">v2.4.0</div>
             <span class="log-date">February 15, 2026</span>
             <p>Resources and Documentation Update</p>
@@ -335,6 +347,199 @@
             <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
                 <li>Updated OTP verification flow.</li>
                 <li>Fixed and improved Friends page UI and functionality.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v1.9.0</div>
+            <span class="log-date">January 24, 2026</span>
+            <p>VocabWorld UI Polishing</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Polished VocabWorld UI elements.</li>
+                <li>Added loading states to game screens.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v1.8.0</div>
+            <span class="log-date">January 23, 2026</span>
+            <p>Teacher Dashboard Bug Fixes</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Fixed teacher dashboard HTTP 500 issues.</li>
+                <li>Removed last_login column dependency causing errors.</li>
+                <li>Added error reporting for debugging.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v1.7.0</div>
+            <span class="log-date">January 22, 2026</span>
+            <p>Admin Panel and Teacher Dashboard</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Reorganized admin panel and updated navigation UI.</li>
+                <li>Added teacher dashboard and favicon.</li>
+                <li>Fixed teacher dashboard and vocabulary page bugs.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v1.6.0</div>
+            <span class="log-date">January 21, 2026</span>
+            <p>Profile Image System</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Implemented profile image upload system.</li>
+                <li>Added seamless page loader transitions.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v1.5.0</div>
+            <span class="log-date">December 8, 2025</span>
+            <p>Admin Moderation and Security</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Implemented admin moderation system with user management.</li>
+                <li>Added session tracking functionality.</li>
+                <li>Removed exposed database files for security.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v1.4.0</div>
+            <span class="log-date">December 7, 2025</span>
+            <p>Documentation Update</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Updated README.md documentation.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v1.3.0</div>
+            <span class="log-date">December 1, 2025</span>
+            <p>Caching and Performance Fixes</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Added immutable cache headers to prevent unnecessary revalidation.</li>
+                <li>Replaced time() with filemtime() for better caching.</li>
+                <li>Fixed .htaccess configuration.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v1.2.0</div>
+            <span class="log-date">November 26, 2025</span>
+            <p>Profile Display Improvements</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Improved user profile display for mobile and desktop.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v1.1.0</div>
+            <span class="log-date">November 23-25, 2025</span>
+            <p>Mobile Navigation and Fame System</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Refactored navigation for mobile UI.</li>
+                <li>Added user fame system and profile views.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v1.0.0</div>
+            <span class="log-date">November 19, 2025</span>
+            <p>Initial Release</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Added Docker support and major project restructuring.</li>
+                <li>Initial project setup and core game framework.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v0.9.0beta</div>
+            <span class="log-date">October 15, 2025</span>
+            <p>Deployment and Navigation Overhaul</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Merged Deployment branch into main.</li>
+                <li>Enhanced site navigation and interface.</li>
+                <li>Updated menu and friends features.</li>
+                <li>Introduced new overview section.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v0.8.0beta</div>
+            <span class="log-date">October 7, 2025</span>
+            <p>Menu System Update</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Added new menu system.</li>
+                <li>Updated UI components.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v0.7.0beta</div>
+            <span class="log-date">October 4, 2025</span>
+            <p>VocabWorld Game Deployment</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Added initial VocabWorld game deployment.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v0.6.0beta</div>
+            <span class="log-date">September 12, 2025</span>
+            <p>Loading Screen and CSS Refinements</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Added loading screen script.</li>
+                <li>Updated and refined CSS across multiple components.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v0.5.0beta</div>
+            <span class="log-date">September 9, 2025</span>
+            <p>Menu Overhaul and Navigation</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Overhauled menu design and layout.</li>
+                <li>Added favorites and profile navigation.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v0.4.0beta</div>
+            <span class="log-date">August 31, 2025</span>
+            <p>Games Rework and New Features</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Reworked and changed games and designs.</li>
+                <li>Added Settings and Highscore features.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v0.3.0beta</div>
+            <span class="log-date">August 14, 2025</span>
+            <p>Credits and Game Interfaces</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Added credits section and loading screen.</li>
+                <li>Added SpellBee interface and toast notifications.</li>
+                <li>Updated game-selection and styles CSS.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v0.2.0beta</div>
+            <span class="log-date">August 14, 2025</span>
+            <p>Game Selection Styling</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Updated game-selection.css and styles.css.</li>
+            </ul>
+        </div>
+
+        <div class="log-entry">
+            <div class="log-version">v0.1.0beta</div>
+            <span class="log-date">August 12, 2025</span>
+            <p>First Commit</p>
+            <ul style="margin-top: 10px; margin-left: 20px; color: var(--text-muted); line-height: 1.6;">
+                <li>Initial project setup and first commit.</li>
+                <li>Core project structure and foundation.</li>
             </ul>
         </div>
     </main>

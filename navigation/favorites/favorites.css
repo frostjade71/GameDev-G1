@@ -20,6 +20,7 @@ body .main-content .favorites-container,
 
 /* Ensure proper spacing on all screen sizes - FORCE STYLES */
 @media screen and (max-width: 1200px) {
+
     body .main-content .favorites-container,
     .main-content .favorites-container {
         padding: 2rem !important;
@@ -28,6 +29,7 @@ body .main-content .favorites-container,
 }
 
 @media screen and (max-width: 768px) {
+
     body .main-content .favorites-container,
     .main-content .favorites-container {
         padding: 1.5rem !important;
@@ -38,6 +40,7 @@ body .main-content .favorites-container,
 }
 
 @media screen and (max-width: 480px) {
+
     body .main-content .favorites-container,
     .main-content .favorites-container {
         padding: 1rem !important;
@@ -158,6 +161,7 @@ h1.favorites-title {
 }
 
 @media screen and (max-width: 480px) {
+
     .view-toggle,
     .favorites-container .view-toggle {
         flex-direction: column !important;
@@ -209,7 +213,7 @@ h1.favorites-title {
         gap: 0.4rem;
         min-width: 0;
     }
-    
+
     .view-toggle {
         padding: 4px !important;
         gap: 4px !important;
@@ -223,11 +227,11 @@ h1.favorites-title {
         gap: 0.5rem;
         width: 100% !important;
     }
-    
+
     .toggle-btn i {
         font-size: 1em;
     }
-    
+
     .toggle-btn span {
         display: inline-block;
     }
@@ -248,6 +252,7 @@ h1.favorites-title {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -265,6 +270,7 @@ h1.favorites-title {
 }
 
 @media screen and (max-width: 1200px) {
+
     .favorites-grid,
     .browse-games-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -273,6 +279,7 @@ h1.favorites-title {
 }
 
 @media screen and (max-width: 768px) {
+
     .favorites-grid,
     .browse-games-grid {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -281,6 +288,7 @@ h1.favorites-title {
 }
 
 @media screen and (max-width: 480px) {
+
     .favorites-grid,
     .browse-games-grid {
         grid-template-columns: 1fr;
@@ -309,7 +317,7 @@ h1.favorites-title {
 .favorites-container .browse-game-card:hover {
     transform: translateY(-8px) !important;
     border-color: rgba(0, 255, 135, 0.8) !important;
-    box-shadow: 
+    box-shadow:
         0 12px 40px rgba(0, 255, 135, 0.2),
         0 0 20px rgba(0, 255, 135, 0.1) !important;
 }
@@ -339,7 +347,6 @@ h1.favorites-title {
     z-index: 2;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(10px);
     height: 100%;
     min-height: 180px;
     display: flex;
@@ -463,6 +470,7 @@ h1.favorites-title {
 }
 
 @media screen and (max-width: 768px) {
+
     .add-favorite-btn,
     .remove-favorite-btn {
         padding: 0.5rem 0.8rem;
@@ -473,6 +481,7 @@ h1.favorites-title {
 }
 
 @media screen and (max-width: 480px) {
+
     .add-favorite-btn,
     .remove-favorite-btn {
         padding: 0.4rem 0.6rem;
@@ -517,17 +526,17 @@ h1.favorites-title {
     .empty-state {
         padding: 2.5rem 1.5rem;
     }
-    
+
     .empty-state i {
         font-size: 3rem;
         margin-bottom: 1rem;
     }
-    
+
     .empty-state h2 {
         font-size: 0.9rem;
         margin-bottom: 0.6rem;
     }
-    
+
     .empty-state p {
         font-size: 0.8rem;
         margin-bottom: 1.5rem;
@@ -538,17 +547,17 @@ h1.favorites-title {
     .empty-state {
         padding: 2rem 1rem;
     }
-    
+
     .empty-state i {
         font-size: 2.5rem;
         margin-bottom: 0.8rem;
     }
-    
+
     .empty-state h2 {
         font-size: 0.8rem;
         margin-bottom: 0.5rem;
     }
-    
+
     .empty-state p {
         font-size: 0.75rem;
         margin-bottom: 1.2rem;
@@ -637,4 +646,3 @@ h1.favorites-title {
     outline: 2px solid rgba(96, 239, 255, 0.6);
     outline-offset: 2px;
 }
-

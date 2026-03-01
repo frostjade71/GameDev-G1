@@ -963,7 +963,7 @@ if (isLoggedIn()) {
             <div class="why-grid">
                 <div class="why-card reveal reveal-d1">
                     <div class="why-icon">
-                        <img src="../MainGame/vocabworld/assets/menu/playsys.png" alt="Gamified Learning">
+                        <img src="MainGame/vocabworld/assets/menu/playsys.png" alt="Gamified Learning">
                     </div>
                     <h3>Gamified Learning</h3>
                     <p>Explore various games that teaches new vocabulary, grammar rules, and reading comprehension skills.</p>
@@ -971,7 +971,7 @@ if (isLoggedIn()) {
 
                 <div class="why-card reveal reveal-d2">
                     <div class="why-icon">
-                        <img src="../MainGame/vocabworld/assets/menu/vocabsys.png" alt="Classroom-based Learning">
+                        <img src="MainGame/vocabworld/assets/menu/vocabsys.png" alt="Classroom-based Learning">
                     </div>
                     <h3>Classroom-based Learning</h3>
                     <p>Bridge the gap between digital play and traditional education with curriculum-aligned lessons designed for the modern classroom.</p>
@@ -979,7 +979,7 @@ if (isLoggedIn()) {
 
                 <div class="why-card reveal reveal-d3">
                     <div class="why-icon">
-                        <img src="../assets/pixels/trophy.png" alt="Social & Fun">
+                        <img src="assets/pixels/trophy.png" alt="Social & Fun">
                     </div>
                     <h3>Social & Fun</h3>
                     <p>Compete on global leaderboards, add friends, give cresents, and learn together in a vibrant community of learners.</p>
@@ -1003,7 +1003,7 @@ if (isLoggedIn()) {
                 <div class="feature-card featured reveal">
                     <div class="feature-text">
                         <div class="feature-icon">
-                            <img src="../MainGame/vocabworld/assets/menu/vocab_new.png" alt="Vocabworld">
+                            <img src="MainGame/vocabworld/assets/menu/vocab_new.png" alt="Vocabworld">
                         </div>
                         <h3>Vocabworld</h3>
                         <p>Explore a top-down educational RPG featuring character customization, dual currency systems with Essence & Shards, level-based progression, and multiple game worlds.</p>
@@ -1011,7 +1011,7 @@ if (isLoggedIn()) {
                     </div>
                     <div class="feature-visual">
                         <video autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px;">
-                            <source src="../assets/menu/vocabworldloop.mp4" type="video/mp4">
+                            <source src="assets/menu/vocabworldloop.mp4" type="video/mp4">
                         </video>
                     </div>
                 </div>
@@ -1019,7 +1019,7 @@ if (isLoggedIn()) {
                 <!-- Regular Cards -->
                 <div class="feature-card reveal reveal-d1">
                     <div class="feature-icon">
-                        <img src="../MainGame/vocabworld/assets/menu/vocabsys.png" alt="Curriculum Aligned">
+                        <img src="MainGame/vocabworld/assets/menu/vocabsys.png" alt="Curriculum Aligned">
                     </div>
                     <h3>Learn and Play</h3>
                     <p>Study curriculum-aligned lessons curated by teachers to build foundational knowledge before engaging in immersive educational gameplay.</p>
@@ -1027,7 +1027,7 @@ if (isLoggedIn()) {
 
                 <div class="feature-card reveal reveal-d2">
                     <div class="feature-icon">
-                        <img src="../MainGame/vocabworld/assets/menu/instructionicon.png" alt="Teacher Console">
+                        <img src="MainGame/vocabworld/assets/menu/instructionicon.png" alt="Teacher Console">
                     </div>
                     <h3>Teacher Console</h3>
                     <p>Manage lessons and vocabulary wordbanks, monitor individual student GWA, and access real-time performance analytics from a dedicated dashboard.</p>
@@ -1035,7 +1035,7 @@ if (isLoggedIn()) {
 
                 <div class="feature-card reveal reveal-d1">
                     <div class="feature-icon">
-                        <img src="../assets/pixels/save.png" alt="Smart Analytics">
+                        <img src="assets/pixels/save.png" alt="Smart Analytics">
                     </div>
                     <h3>Smart Analytics</h3>
                     <p>Automatic GWA calculations, global leaderboard rankings, and detailed progress reports all in one place.</p>
@@ -1043,7 +1043,7 @@ if (isLoggedIn()) {
 
                 <div class="feature-card reveal reveal-d2">
                     <div class="feature-icon">
-                        <img src="../assets/pixels/sheild.png" alt="Secure Platform">
+                        <img src="assets/pixels/sheild.png" alt="Secure Platform">
                     </div>
                     <h3>Secure Platform</h3>
                     <p>Industry-standard security with bcrypt password hashing, prepared SQL statements, OTP email verification, and secure session management.</p>
@@ -1058,7 +1058,7 @@ if (isLoggedIn()) {
         <div class="footer-content">
             <div class="footer-col footer-brand">
                 <div class="f-logo">
-                    <img src="../assets/menu/ww_logo_main.webp" alt="Word Weavers">
+                    <img src="assets/menu/ww_logo_main.webp" alt="Word Weavers">
                     <span>Word Weavers</span>
                 </div>
                 <p>
@@ -1079,20 +1079,19 @@ if (isLoggedIn()) {
             <div class="footer-col">
                 <h4>Resources</h4>
                 <ul>
-                    <li><a href="#">Student Guide</a></li>
-                    <li><a href="#">Documentation</a></li>
-                    <li><a href="#">System Requirements</a></li>
-                    <li><a href="#">Support</a></li>
+                    <li><a href="docs/student-guide.php">Student Guide</a></li>
+                    <li><a href="docs/documentation.php">Documentation</a></li>
+                    <li><a href="docs/support.php">Support</a></li>
                 </ul>
             </div>
 
             <div class="footer-col">
                 <h4>Legal</h4>
                 <ul>
-                    <li><a href="../LICENSE.md">License</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Credits</a></li>
+                    <li><a href="LICENSE.md">License</a></li>
+                    <li><a href="docs/privacy.php">Privacy Policy</a></li>
+                    <li><a href="docs/terms.php">Terms of Service</a></li>
+                    <li><a href="docs/support.php">Credits</a></li>
                 </ul>
             </div>
         </div>

@@ -225,7 +225,7 @@ $game_progress = [];
     <script src="game-selection.js?v=<?php echo filemtime('game-selection.js'); ?>"></script>
     <script src="../navigation/shared/profile-dropdown.js"></script>
     <script>
-        // Override sound paths for this page
+        // Override showToast to correct notification paths without playing sound locally
         const originalShowToast = window.showToast;
         const originalPlayClickSound = window.playClickSound;
         
@@ -234,13 +234,6 @@ $game_progress = [];
             const overlay = document.querySelector('.toast-overlay');
             
             if (toast && overlay) {
-                // Play toast notification sound with correct path
-                const toastSound = new Audio('../assets/sounds/toast/toastnotifwarn.mp3');
-                toastSound.volume = 0.5;
-                toastSound.play().catch(error => {
-                    console.log('Error playing toast sound:', error);
-                });
-                
                 // Clear previous content
                 toast.innerHTML = '';
                 
@@ -282,10 +275,7 @@ $game_progress = [];
         };
         
         window.playClickSound = function() {
-            const clickSound = new Audio('../assets/sounds/clicks/mixkit-stapling-paper-2995.wav');
-            clickSound.play().catch(error => {
-                console.log('Error playing click sound:', error);
-            });
+            // Sound disabled for this page as requested
         };
         
         // Override notification badge path for this page
@@ -362,7 +352,7 @@ $game_progress = [];
             playClickSound();
             
             // Redirect to logout endpoint
-            window.location.href = 'onboarding/logout.php';
+            window.location.href = '../onboarding/logout.php';
         }
         
     </script>

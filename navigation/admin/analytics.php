@@ -161,12 +161,14 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
 
         <!-- Analytics Charts Grid -->
         <!-- Daily Traffic Chart -->
-        <div class="dashboard-card" style="margin-bottom: 2rem;">
+        <div class="dashboard-card full-width" style="margin-bottom: 2rem;">
             <div class="card-header">
                 <h3><i class="fas fa-chart-line"></i> Daily Traffic (Last 30 Days)</h3>
             </div>
             <div class="card-body">
-                <canvas id="dailyTrafficChart" style="height: 300px;"></canvas>
+                <div class="chart-container" style="position: relative; width: 100%; height: 350px;">
+                    <canvas id="dailyTrafficChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -183,7 +185,9 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
                     </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="distributionChart"></canvas>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -193,7 +197,9 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
                     <h3><i class="fas fa-graduation-cap"></i> Average GWA by Grade</h3>
                 </div>
                 <div class="card-body">
-                    <canvas id="gwaChart"></canvas>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="gwaChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -344,7 +350,13 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
         for (let i = 29; i >= 0; i--) {
             const d = new Date();
             d.setDate(today.getDate() - i);
-            const dateStr = d.toISOString().split('T')[0];
+            
+            // Format to YYYY-MM-DD using local time to prevent UTC timezone shifts
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            
             labels.push(d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
             counts.push(dataMap[dateStr] || 0);
         }
@@ -445,7 +457,7 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -496,7 +508,7 @@ $dashboardStats = require_once 'api/dashboard-stats.php';
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false

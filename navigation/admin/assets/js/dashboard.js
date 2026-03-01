@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function initializeDashboard() {
-    // Any dashboard initialization code
+    // Dashboard specific initialization code goes here
 }
 
 /**
